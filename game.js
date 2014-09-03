@@ -1,7 +1,7 @@
 var width = 50;
 
 Game = {
-  location: northern_ontario,
+  location: locations.idaho,
 
   // this defines our grid's size and the size of each of its tiles
   map_grid: {

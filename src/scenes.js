@@ -46,7 +46,7 @@ Crafty.scene('Game', function() {
     generateEntities('Tree', Game.noise[trees.noise], trees.size, trees.freq, occupied, true);
   }
 
-  generateLocationBasedEntities(northern_ontario, this.occupied);
+  generateLocationBasedEntities(Game.location, this.occupied);
   //generateEntities('Water', Game.noise.perlin2, 1/3, .55, this.occupied, true);
   //generateEntities('Tree', Game.noise.simplex2, 100, .45, this.occupied, true);
 
