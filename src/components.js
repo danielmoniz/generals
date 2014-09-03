@@ -161,7 +161,7 @@ Crafty.c('PlayerCharacter', {
 // game
 Crafty.c('Village', {
   init: function() {
-    this.requires('Actor, spr_village')
+    this.requires('Actor, spr_village, Passable')
       ;
   },
 

@@ -1,0 +1,12 @@
+northern_ontario = {
+  water: {
+    size: 1/4,
+    freq: .65,
+    noise: 'perlin2',
+  },
+  trees: {
+    size: 1/16,
+    freq: .80,
+    noise: 'simplex2',
+  },
+}
