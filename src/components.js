@@ -47,6 +47,7 @@ Crafty.c('Clickable', {
     ;
   },
 
+  /*
   select: function() {
     console.log("Selected item");
     this.unbind("Click", this.select);
@@ -57,6 +58,7 @@ Crafty.c('Clickable', {
     this.unbind("Click", this.deselect);
     //this.bind("Click", this.select);
   },
+  */
 });
 
 // Deals with terrain that can be moved onto.
@@ -69,12 +71,29 @@ Crafty.c('Passable', {
         console.log('Moving item!');
         console.log(this.at());
         console.log(Game.selected.at());
-        //Game.selected.x = 30;
         Game.selected.at(this.at().x, this.at().y);
         console.log("New position:");
         console.log(Game.selected.at());
       }
       delete Game.selected;
+    })
+    ;
+  }
+});
+
+// Deals with terrain that can be moved onto.
+Crafty.c('Impassable', {
+  init: function() {
+    this.requires('Grid, Mouse, Solid')
+      .bind('MouseDown', function(e) {
+      console.log('Clicked Impassable entity!');
+      if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
+        console.log('Terrain is impassable! Cannot move here.');
+        console.log(this.at());
+      } else if (e.mouseButton == Crafty.mouseButtons.LEFT) {
+        console.log("Unselecting.");
+        delete Game.selected;
+      }
     })
     ;
   }
@@ -94,6 +113,14 @@ Crafty.c('Grass', {
       .color('rgb(87, 109, 20)')
       ;
   },
+});
+
+Crafty.c('Water', {
+  init: function() {
+    this.requires('Actor, Color, Impassable')
+      .color('#0080FF')
+      ;
+  }
 });
 
 Crafty.c('PlayerCharacter', {

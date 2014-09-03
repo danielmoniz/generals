@@ -18,11 +18,11 @@ Crafty.scene('Game', function() {
       var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
 
       if (at_edge) {
-        // Place a tree entity at the current tile
+        // Place tree entities aroubd the border of the map
         Crafty.e('Tree').at(x, y);
         this.occupied[x][y] = true;
       } else if (Math.random() < 0.06 && !this.occupied[x][y]) {
-        // Place a bush entity at the current tile
+        // Place tree entities randomly throughout the map.
         Crafty.e('Tree').at(x, y);
         this.occupied[x][y] = true;
       }
@@ -30,14 +30,25 @@ Crafty.scene('Game', function() {
   }
 
   // Generate up to five villages on the map in random locations
-  var max_villages = 5;
+  var est_villages = 5;
   for (var x = 0; x < Game.map_grid.width; x++) {
     for (var y = 0; y < Game.map_grid.height; y++) {
       var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
-      if (!at_edge && Math.random() < 0.02 && !this.occupied[x][y]) {
-        if (Crafty('Village').length < max_villages) {
-          Crafty.e('Village').at(x, y);
-        }
+      if (!at_edge && Math.random() < est_villages / (Game.map_grid.width * Game.map_grid.height) && !this.occupied[x][y]) {
+        Crafty.e('Village').at(x, y);
+        this.occupied[x][y] = true;
+      }
+    }
+  }
+
+  // Place water randomly on the map
+  for (var x = 0; x < Game.map_grid.width; x++) {
+    for (var y = 0; y < Game.map_grid.height; y++) {
+      var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
+
+      if (Math.random() < 0.04 && !this.occupied[x][y]) {
+        Crafty.e('Water').at(x, y);
+        this.occupied[x][y] = true;
       }
     }
   }
