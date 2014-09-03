@@ -12,10 +12,6 @@ Crafty.scene('Game', function() {
     }
   }
 
-  // Player character, placed on the grid
-  this.player = Crafty.e('PlayerCharacter').at(5, 5)
-  this.occupied[this.player.at().x][this.player.at().y] = true
-
   // Place a tree at every edge square on our grid of tiles
   for (var x = 0; x < Game.map_grid.width; x++) {
     for (var y = 0; y < Game.map_grid.height; y++) {
@@ -27,7 +23,7 @@ Crafty.scene('Game', function() {
         this.occupied[x][y] = true;
       } else if (Math.random() < 0.06 && !this.occupied[x][y]) {
         // Place a bush entity at the current tile
-        Crafty.e('Bush').at(x, y);
+        Crafty.e('Tree').at(x, y);
         this.occupied[x][y] = true;
       }
     }
@@ -45,6 +41,19 @@ Crafty.scene('Game', function() {
       }
     }
   }
+
+  // MUST GO LAST - fill everything else with grass
+  for (var x = 0; x < Game.map_grid.width; x++) {
+    for (var y = 0; y < Game.map_grid.height; y++) {
+      if (!this.occupied[x][y]) {
+        Crafty.e('Grass').at(x, y);
+      }
+    }
+  }
+
+  // Player character, placed on the grid
+  this.player = Crafty.e('PlayerCharacter').at(5, 5);
+  this.occupied[this.player.at().x][this.player.at().y] = true;
 
   this.show_victory = this.bind('VillageVisited', function() {
     if (!Crafty('Village').length) {

@@ -26,23 +26,79 @@ Crafty.c('Actor', {
   },
 });
 
-// A Tree is just an actor with a certain color
-Crafty.c('Tree', {
+Crafty.c('Clickable', {
   init: function() {
-    this.requires('Actor, Solid, spr_tree')
+    this.requires('Mouse')
+      //.bind('Click', this.select);
+      // NOTE: 'Click' does not work with right clicking!
+      .bind('MouseUp', function(e) { 
+        if (e.mouseButton == Crafty.mouseButtons.LEFT) {
+          console.log('Left-clicked something Clickable!');
+          if (!Game.selected || Game.selected != this) {
+            Game.selected = this;
+          } else {
+            delete Game.selected;
+          }
+          //this.select();
+        } else if (e.mouseButton == Crafty.mouseButtons.RIGHT) {
+          console.log('Right-clicked something Clickable!');
+        }
+      })
+    ;
+  },
+
+  select: function() {
+    console.log("Selected item");
+    this.unbind("Click", this.select);
+    this.bind("Click", this.deselect);
+  },
+  deselect: function() {
+    console.log("Deselected item");
+    this.unbind("Click", this.deselect);
+    //this.bind("Click", this.select);
   },
 });
 
-// A bush is just an actor with a certain color
-Crafty.c('Bush', {
+// Deals with terrain that can be moved onto.
+Crafty.c('Passable', {
   init: function() {
-    this.requires('Actor, Solid, spr_bush')
+    this.requires('Grid, Mouse')
+      .bind('MouseDown', function(e) {
+      console.log('Clicked Passable entity!');
+      if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
+        console.log('Moving item!');
+        console.log(this.at());
+        console.log(Game.selected.at());
+        //Game.selected.x = 30;
+        Game.selected.at(this.at().x, this.at().y);
+        console.log("New position:");
+        console.log(Game.selected.at());
+      }
+      delete Game.selected;
+    })
+    ;
+  }
+});
+
+// A Tree is just an actor with a certain color
+Crafty.c('Tree', {
+  init: function() {
+    this.requires('Actor, spr_tree, Passable')
+  },
+});
+
+// Grass is just green, passable terrain
+Crafty.c('Grass', {
+  init: function() {
+    this.requires('Actor, Color, Passable')
+      .color('rgb(87, 109, 20)')
+      ;
   },
 });
 
 Crafty.c('PlayerCharacter', {
   init: function() {
-    this.requires('Actor, Fourway, Collision, spr_player')
+    this.requires('Actor, Fourway, Collision, spr_player, Clickable')
       .fourway(4)
       .stopOnSolids()
       // Whenever the PC touches a village, respond to the event
