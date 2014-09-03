@@ -12,6 +12,7 @@ Crafty.scene('Game', function() {
     }
   }
 
+  /*
   // Place a tree at every edge square on our grid of tiles
   for (var x = 0; x < Game.map_grid.width; x++) {
     for (var y = 0; y < Game.map_grid.height; y++) {
@@ -22,15 +23,9 @@ Crafty.scene('Game', function() {
         Crafty.e('Tree').at(x, y);
         this.occupied[x][y] = true;
       } 
-      /*
-      else if (Math.random() < 0.06 && !this.occupied[x][y]) {
-        // Place tree entities randomly throughout the map.
-        Crafty.e('Tree').at(x, y);
-        this.occupied[x][y] = true;
-      }
-      */
     }
   }
+  */
 
   // Generate up to five villages on the map in random locations
   var est_villages = 5;
@@ -44,69 +39,49 @@ Crafty.scene('Game', function() {
     }
   }
 
-  Game.noise.seed(Math.random());
-  // Place water randomly on the map
-  for (var x = 1; x < Game.map_grid.width - 1; x++) {
-    for (var y = 1; y < Game.map_grid.height - 1; y++) {
-      var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
-
-      //var value = Game.noise.simplex2(x, y);
-      var lake_size = 1/4; // relative; larger number means larger lakes
-      var lake_frequency = .65; // relative, between 0 and 1; larger number means more lakes.
-      var value = Game.noise.perlin2(x / Game.map_grid.width / lake_size, y / Game.map_grid.height / lake_size);
-      var noise_value = Math.abs(value);
-      // Used for colour gradients; see below.
-      var color = Math.ceil(noise_value * 255);
-      if (noise_value >= 1 - lake_frequency) {
-        Crafty.e('Water').at(x, y)
-        // The commented code below gives the entities color gradient, instead
-        // of always being one colour. This is useful when wanting to better
-        // understand the generated noise.
-          //.color('rgb(' + color + ', ' + color + ',' + color + ')');
-          ;
-        this.occupied[x][y] = true;
-      }
-    }
+  function generateLocationBasedEntities(location_map, occupied) {
+    water = location_map.water;
+    trees = location_map.trees;
+    generateEntities('Water', Game.noise[water.noise], water.size, water.freq, occupied, true);
+    generateEntities('Tree', Game.noise[trees.noise], trees.size, trees.freq, occupied, true);
   }
 
-  Game.noise.seed(Math.random());
-  // Place trees randomly on the map
-  for (var x = 1; x < Game.map_grid.width - 1; x++) {
-    for (var y = 1; y < Game.map_grid.height - 1; y++) {
-      var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
-
-      //var value = Game.noise.simplex2(x, y);
-      var lake_size = 1/4; // relative; larger number means larger lakes
-      var lake_frequency = .70; // relative, between 0 and 1; larger number means more lakes.
-      var value = Game.noise.perlin2(x / Game.map_grid.width / lake_size, y / Game.map_grid.height / lake_size);
-      var noise_value = Math.abs(value);
-      // Used for colour gradients; see below.
-      var color = Math.ceil(noise_value * 255);
-      if (noise_value >= 1 - lake_frequency && !this.occupied[x][y]) {
-        Crafty.e('Tree').at(x, y);
-        // The commented code below gives the entities color gradient, instead
-        // of always being one colour. This is useful when wanting to better
-        // understand the generated noise.
-          //.color('rgb(' + color + ', ' + color + ',' + color + ')');
-          ;
-        this.occupied[x][y] = true;
-      }
-    }
-  }
+  generateLocationBasedEntities(northern_ontario, this.occupied);
+  //generateEntities('Water', Game.noise.perlin2, 1/3, .55, this.occupied, true);
+  //generateEntities('Tree', Game.noise.simplex2, 100, .45, this.occupied, true);
 
   /*
-  // Place water randomly on the map
-  for (var x = 0; x < Game.map_grid.width; x++) {
-    for (var y = 0; y < Game.map_grid.height; y++) {
-      var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
+   * entity_name: eg. 'Water' or 'Tree'
+   * noise: the noise function object to be used. Eg. Game.noise.perlin2
+   * size: relative; larger number means larger lakes
+   * frequency: // relative, between 0 and 1; larger number means more lakes.
+   * occupied: the array to update when entities are placed
+   */
+  function generateEntities(entity_name, noise, size, frequency, occupied, update_occupied) {
+    // Place entity randomly on the map using noise
+    Game.noise.seed(Math.random());
+    for (var x = 0; x < Game.map_grid.width; x++) {
+      for (var y = 0; y < Game.map_grid.height; y++) {
 
-      if (Math.random() < 0.04 && !this.occupied[x][y]) {
-        Crafty.e('Water').at(x, y);
-        this.occupied[x][y] = true;
+        var value = noise(x / Game.map_grid.width / size, y / Game.map_grid.height / size);
+        var noise_value = Math.abs(value);
+        // Used for colour gradients; see below.
+        var color = Math.ceil(noise_value * 255);
+        
+        if (noise_value >= 1 - frequency && !occupied[x][y]) {
+          Crafty.e(entity_name).at(x, y)
+          // The commented code below gives the entities color gradient, instead
+          // of always being one colour. This is useful when wanting to better
+          // understand the generated noise.
+            //.color('rgb(' + color + ', ' + color + ',' + color + ')');
+            ;
+          if (update_occupied) {
+            occupied[x][y] = true;
+          }
+        }
       }
     }
   }
-  */
 
   // MUST GO LAST - fill everything else with grass
   for (var x = 0; x < Game.map_grid.width; x++) {

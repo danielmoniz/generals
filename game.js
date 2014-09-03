@@ -1,6 +1,8 @@
 var width = 50;
 
 Game = {
+  location: northern_ontario,
+
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
     width: Math.ceil(width),
