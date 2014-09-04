@@ -27,23 +27,13 @@ Crafty.scene('Game', function() {
   }
   */
 
-  // Generate up to five villages on the map in random locations
-  var est_villages = 5;
-  for (var x = 0; x < Game.map_grid.width; x++) {
-    for (var y = 0; y < Game.map_grid.height; y++) {
-      var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
-      if (!at_edge && Math.random() < est_villages / (Game.map_grid.width * Game.map_grid.height) && !this.occupied[x][y]) {
-        Crafty.e('Village').at(x, y);
-        this.occupied[x][y] = true;
-      }
-    }
-  }
-
   function generateLocationBasedEntities(location_map, occupied) {
     water = location_map.water;
     trees = location_map.trees;
     generateEntities('Water', Game.noise[water.noise], water.size, water.freq, occupied, true);
+    generateEntities('Village', 'random', 5, undefined, occupied, true);
     generateEntities('Tree', Game.noise[trees.noise], trees.size, trees.freq, occupied, true);
+
   }
 
   generateLocationBasedEntities(Game.location, this.occupied);
@@ -63,10 +53,16 @@ Crafty.scene('Game', function() {
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
 
-        var value = noise(x / Game.map_grid.width / size, y / Game.map_grid.height / size);
-        var noise_value = Math.abs(value);
-        // Used for colour gradients; see below.
-        var color = Math.ceil(noise_value * 255);
+        if (noise == 'random') {
+          num_tiles = Game.map_grid.width * Game.map_grid.height;
+          frequency = size / num_tiles;
+          noise_value = Math.random();
+        } else {
+          var value = noise(x / Game.map_grid.width / size, y / Game.map_grid.height / size);
+          var noise_value = Math.abs(value);
+          // Used for colour gradients; see below.
+          var color = Math.ceil(noise_value * 255);
+        }
         
         if (noise_value >= 1 - frequency && !occupied[x][y]) {
           Crafty.e(entity_name).at(x, y)
@@ -83,6 +79,20 @@ Crafty.scene('Game', function() {
     }
   }
 
+  // Generate up to five villages on the map in random locations
+  var max_villages = 5;
+  for (var x = 0; x < Game.map_grid.width; x++) {
+    for (var y = 0; y < Game.map_grid.height; y++) {
+      var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
+      if (!at_edge && Math.random() < max_villages / (Game.map_grid.width * Game.map_grid.height) && !this.occupied[x][y]) {
+        /*
+        Crafty.e('Village').at(x, y);
+        this.occupied[x][y] = true;
+        */
+      }
+    }
+  }
+
   // MUST GO LAST - fill everything else with grass
   for (var x = 0; x < Game.map_grid.width; x++) {
     for (var y = 0; y < Game.map_grid.height; y++) {
@@ -94,6 +104,8 @@ Crafty.scene('Game', function() {
 
   // build Game.terrain Graph for pathfinding purposes
   terrain_list = Crafty("Terrain").get();
+  console.log("terrain_list");
+  console.log(terrain_list);
   console.log("test");
   terrain = [];
   terrain_difficulty = [];
@@ -113,6 +125,33 @@ Crafty.scene('Game', function() {
   console.log(Game.terrain);
   Game.terrain_difficulty = terrain_difficulty;
   console.log(Game.terrain_difficulty);
+  console.log(Game.graph_ftn);
+  Game.terrain_graph = new Game.graph_ftn(terrain_difficulty);
+  console.log(Game.terrain_graph);
+
+  // Test roads with path finding
+  villages = Crafty("Village").get();
+  if (villages.length >= 2) {
+    console.log(villages[0].at());
+    start_village = villages[0];
+    end_village = villages[1];
+    console.log("grid:");
+    console.log(start_village.getX());
+    console.log(Game.terrain_graph.grid[start_village.getX()]);
+    start = Game.terrain_graph.grid[start_village.getX()][start_village.getY()];
+    end = Game.terrain_graph.grid[end_village.getX()][end_village.getY()];
+    result = Game.pathfind.search(Game.terrain_graph, start, end);
+    console.log(result);
+
+    for (i = 0; i < result.length - 1; i++) {
+      x = result[i].x;
+      y = result[i].y;
+      Game.terrain[x][y].destroy();
+      road = Crafty.e('Road').at(result[i].x, result[i].y);
+      Game.terrain[x][y] = road;
+    }
+  }
+
 
   // Player character, placed on the grid
   this.player = Crafty.e('PlayerCharacter').at(5, 5);

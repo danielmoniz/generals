@@ -134,6 +134,16 @@ Crafty.c('Grass', {
       ;
   },
 });
+//
+// Grass is just green, passable terrain
+Crafty.c('Road', {
+  init: function() {
+    this.requires('Color, Terrain, Passable')
+      .color('rgb(128, 128, 128)')
+      .attr({ terrain: 0.5 })
+      ;
+  },
+});
 
 Crafty.c('Water', {
   init: function() {
