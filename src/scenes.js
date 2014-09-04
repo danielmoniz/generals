@@ -92,6 +92,28 @@ Crafty.scene('Game', function() {
     }
   }
 
+  // build Game.terrain Graph for pathfinding purposes
+  terrain_list = Crafty("Terrain").get();
+  console.log("test");
+  terrain = [];
+  terrain_difficulty = [];
+  for (var x = 0; x < Game.map_grid.width; x++) {
+    terrain[x] = [];
+    terrain_difficulty[x] = [];
+  }
+
+  for (var i = 0; i < terrain_list.length; i++) {
+    //console.log(terrain_list[i].getX());
+    //console.log(terrain_list[i].getY());
+    terrain[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i];
+    terrain_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].terrain;
+  }
+  console.log(terrain[0][1].terrain);
+  Game.terrain = terrain;
+  console.log(Game.terrain);
+  Game.terrain_difficulty = terrain_difficulty;
+  console.log(Game.terrain_difficulty);
+
   // Player character, placed on the grid
   this.player = Crafty.e('PlayerCharacter').at(5, 5);
   //this.occupied[this.player.at().x][this.player.at().y] = true;

@@ -16,13 +16,29 @@ Crafty.c('Grid', {
       this.attr({ x: x * Game.map_grid.tile.width, y: y * Game.map_grid.tile.height });
       return this;
     }
-  }
+  },
+
+  getX: function() {
+    at = this.at();
+    return at.x;
+  },
+  getY: function() {
+    at = this.at();
+    return at.y;
+  },
 });
 
 // An "Actor" is an entity that is drawn in 2D on canvas
 Crafty.c('Actor', {
   init: function() {
     this.requires('2D, Canvas, Grid');
+  },
+});
+
+// Terrain is an entity that will be drawn on the map and will affect movement
+Crafty.c('Terrain', {
+  init: function() {
+    this.requires('Actor');
   },
 });
 
@@ -64,7 +80,7 @@ Crafty.c('Clickable', {
 // Deals with terrain that can be moved onto.
 Crafty.c('Passable', {
   init: function() {
-    this.requires('Grid, Mouse')
+    this.requires('Grid, Mouse, Terrain')
       .bind('MouseDown', function(e) {
       console.log('Clicked Passable entity!');
       if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
@@ -84,7 +100,7 @@ Crafty.c('Passable', {
 // Deals with terrain that can be moved onto.
 Crafty.c('Impassable', {
   init: function() {
-    this.requires('Grid, Mouse, Solid')
+    this.requires('Grid, Mouse, Solid, Terrain')
       .bind('MouseDown', function(e) {
       console.log('Clicked Impassable entity!');
       if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
@@ -102,23 +118,28 @@ Crafty.c('Impassable', {
 // A Tree is just an actor with a certain color
 Crafty.c('Tree', {
   init: function() {
-    this.requires('Actor, spr_tree, Passable')
+    this.requires('spr_tree, Terrain, Passable')
+      .attr({ terrain: 2 })
+      //.attr({ terrain: 1, "laser": "test" })
+      ;
   },
 });
 
 // Grass is just green, passable terrain
 Crafty.c('Grass', {
   init: function() {
-    this.requires('Actor, Color, Passable')
+    this.requires('Color, Terrain, Passable')
       .color('rgb(87, 109, 20)')
+      .attr({ terrain: 1 })
       ;
   },
 });
 
 Crafty.c('Water', {
   init: function() {
-    this.requires('Actor, Color, Impassable')
+    this.requires('Color, Terrain, Impassable')
       .color('#0080FF')
+      .attr({ terrain: 0 })
       ;
   }
 });
@@ -161,7 +182,8 @@ Crafty.c('PlayerCharacter', {
 // game
 Crafty.c('Village', {
   init: function() {
-    this.requires('Actor, spr_village, Passable')
+    this.requires('spr_village, Terrain, Passable')
+      .attr({ terrain: 2 })
       ;
   },
 

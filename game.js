@@ -1,7 +1,7 @@
 var width = 50;
 
 Game = {
-  location: locations.idaho,
+  location: locations.northern_ontario,
 
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
@@ -12,6 +12,7 @@ Game = {
       height: 16
     }
   },
+  Graph: Graph,
   noise: noise,
   // The total width of the game screen. Since our grid takes up the entire
   // screen this is just the width of a tile times the width of the grid
