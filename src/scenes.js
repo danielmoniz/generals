@@ -104,50 +104,45 @@ Crafty.scene('Game', function() {
 
   // build Game.terrain Graph for pathfinding purposes
   terrain_list = Crafty("Terrain").get();
-  console.log("terrain_list");
-  console.log(terrain_list);
-  console.log("test");
   terrain = [];
   terrain_difficulty = [];
+  terrain_build_difficulty = [];
   for (var x = 0; x < Game.map_grid.width; x++) {
     terrain[x] = [];
     terrain_difficulty[x] = [];
+    terrain_build_difficulty[x] = [];
   }
 
   for (var i = 0; i < terrain_list.length; i++) {
-    //console.log(terrain_list[i].getX());
-    //console.log(terrain_list[i].getY());
     terrain[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i];
     terrain_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].terrain;
+    terrain_build_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].build_over;
   }
-  console.log(terrain[0][1].terrain);
   Game.terrain = terrain;
-  console.log(Game.terrain);
   Game.terrain_difficulty = terrain_difficulty;
-  console.log(Game.terrain_difficulty);
-  console.log(Game.graph_ftn);
+  Game.terrain_build_difficulty = terrain_build_difficulty;
   Game.terrain_graph = new Game.graph_ftn(terrain_difficulty);
-  console.log(Game.terrain_graph);
+  Game.terrain_build_graph = new Game.graph_ftn(terrain_build_difficulty);
 
   // Test roads with path finding
   villages = Crafty("Village").get();
   if (villages.length >= 2) {
-    console.log(villages[0].at());
     start_village = villages[0];
     end_village = villages[1];
-    console.log("grid:");
-    console.log(start_village.getX());
-    console.log(Game.terrain_graph.grid[start_village.getX()]);
-    start = Game.terrain_graph.grid[start_village.getX()][start_village.getY()];
-    end = Game.terrain_graph.grid[end_village.getX()][end_village.getY()];
-    result = Game.pathfind.search(Game.terrain_graph, start, end);
-    console.log(result);
+    start = Game.terrain_build_graph.grid[start_village.getX()][start_village.getY()];
+    end = Game.terrain_build_graph.grid[end_village.getX()][end_village.getY()];
+    result = Game.pathfind.search(Game.terrain_build_graph, start, end);
 
     for (i = 0; i < result.length - 1; i++) {
       x = result[i].x;
       y = result[i].y;
-      Game.terrain[x][y].destroy();
-      road = Crafty.e('Road').at(result[i].x, result[i].y);
+      if (Game.terrain[x][y].has("Water")) {
+        Game.terrain[x][y].destroy();
+        road = Crafty.e('Bridge').at(result[i].x, result[i].y);
+      } else {
+        Game.terrain[x][y].destroy();
+        road = Crafty.e('Road').at(result[i].x, result[i].y);
+      }
       Game.terrain[x][y] = road;
     }
   }

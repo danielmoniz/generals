@@ -119,7 +119,7 @@ Crafty.c('Impassable', {
 Crafty.c('Tree', {
   init: function() {
     this.requires('spr_tree, Terrain, Passable')
-      .attr({ terrain: 2 })
+      .attr({ terrain: 2, build_over: 3 })
       //.attr({ terrain: 1, "laser": "test" })
       ;
   },
@@ -130,26 +130,35 @@ Crafty.c('Grass', {
   init: function() {
     this.requires('Color, Terrain, Passable')
       .color('rgb(87, 109, 20)')
-      .attr({ terrain: 1 })
+      .attr({ terrain: 1, build_over: 1 })
       ;
   },
 });
-//
+
 // Grass is just green, passable terrain
 Crafty.c('Road', {
   init: function() {
     this.requires('Color, Terrain, Passable')
       .color('rgb(128, 128, 128)')
-      .attr({ terrain: 0.5 })
+      .attr({ terrain: 0.5, build_over: 0.01 })
       ;
   },
 });
 
+// Grass is just green, passable terrain
+Crafty.c('Bridge', {
+  init: function() {
+    this.requires('Color, Terrain, Passable')
+      .color('rgb(192, 192, 192)')
+      .attr({ terrain: 0.5, build_over: 20 })
+      ;
+  },
+});
 Crafty.c('Water', {
   init: function() {
     this.requires('Color, Terrain, Impassable')
       .color('#0080FF')
-      .attr({ terrain: 0 })
+      .attr({ terrain: 0, build_over: 10 })
       ;
   }
 });
@@ -193,7 +202,7 @@ Crafty.c('PlayerCharacter', {
 Crafty.c('Village', {
   init: function() {
     this.requires('spr_village, Terrain, Passable')
-      .attr({ terrain: 2 })
+      .attr({ terrain: 2, build_over: 1000 })
       ;
   },
 
