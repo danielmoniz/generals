@@ -158,9 +158,24 @@ Crafty.c('Water', {
   init: function() {
     this.requires('Color, Terrain, Impassable')
       .color('#0080FF')
-      .attr({ terrain: 0, build_over: 10 })
+      .attr({ terrain: 0, build_over: 8 })
       ;
   }
+});
+
+// A village is a tile on the grid that the PC must visit in order to win the
+// game
+Crafty.c('Village', {
+  init: function() {
+    this.requires('spr_village, Terrain, Passable')
+      .attr({ terrain: 2, build_over: 0.01 })
+      ;
+  },
+
+  collect: function() {
+    this.destroy();
+    Crafty.trigger('VillageVisited', this);
+  },
 });
 
 Crafty.c('PlayerCharacter', {
@@ -197,17 +212,3 @@ Crafty.c('PlayerCharacter', {
   },
 });
 
-// A village is a tile on the grid that the PC must visit in order to win the
-// game
-Crafty.c('Village', {
-  init: function() {
-    this.requires('spr_village, Terrain, Passable')
-      .attr({ terrain: 2, build_over: 1000 })
-      ;
-  },
-
-  collect: function() {
-    this.destroy();
-    Crafty.trigger('VillageVisited', this);
-  },
-});

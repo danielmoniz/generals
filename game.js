@@ -9,7 +9,7 @@ Game = {
     height: Math.ceil(width * 3 / 4),
     tile: {
       width: 16,
-      height: 16
+      height: 16,
     }
   },
   graph_ftn: Graph,
