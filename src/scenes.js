@@ -133,9 +133,47 @@ Crafty.scene('Game', function() {
     return total_cost;
   }
 
+  function createRoad(result) {
+    console.log(result);
+    for (i = 0; i < result.length - 1; i++) {
+      x = result[i].x;
+      y = result[i].y;
+      if (Game.terrain[x][y].has("Village")) {
+      } else if (Game.terrain[x][y].has("Water")) {
+        Game.terrain[x][y].destroy();
+        road = Crafty.e('Bridge').at(result[i].x, result[i].y);
+      } else {
+        Game.terrain[x][y].destroy();
+        road = Crafty.e('Road').at(result[i].x, result[i].y);
+      }
+      Game.terrain[x][y] = road;
+    }
+  }
+
   // Test roads with path finding
   villages = Crafty("Village").get();
   if (villages.length >= 2) {
+    for (a = 0; a < villages.length; a++) {
+      start_village = villages[a];
+      closest = undefined;
+      least_cost = undefined;
+      for (b = a; b < villages.length; b++) {
+        if (a == b) continue;
+        end_village = villages[b];
+        start = Game.terrain_build_graph.grid[start_village.getX()][start_village.getY()];
+        end = Game.terrain_build_graph.grid[end_village.getX()][end_village.getY()];
+        result = Game.pathfind.search(Game.terrain_build_graph, start, end);
+        total_cost = totalCost(result);
+        if (least_cost === undefined || total_cost < least_cost) {
+          closest = result;
+          least_cost = total_cost;
+        }
+      }
+      // @TODO Figure out why the last call is always undefined
+      if (closest === undefined) continue;
+      createRoad(closest);
+    }
+    /*
     start_village = villages[0];
     console.log(villages.length);
     for (v = 1; v < villages.length; v++) {
@@ -146,20 +184,8 @@ Crafty.scene('Game', function() {
       result = Game.pathfind.search(Game.terrain_build_graph, start, end);
       total_cost = totalCost(result);
 
-      for (i = 0; i < result.length - 1; i++) {
-        x = result[i].x;
-        y = result[i].y;
-        if (Game.terrain[x][y].has("Village")) {
-        } else if (Game.terrain[x][y].has("Water")) {
-          Game.terrain[x][y].destroy();
-          road = Crafty.e('Bridge').at(result[i].x, result[i].y);
-        } else {
-          Game.terrain[x][y].destroy();
-          road = Crafty.e('Road').at(result[i].x, result[i].y);
-        }
-        Game.terrain[x][y] = road;
-      }
     }
+    */
   }
 
 
