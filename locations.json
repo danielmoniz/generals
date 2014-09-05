@@ -1,13 +1,17 @@
 locations = {
-test: {
+  test: {
+    height_map: {
+      noise: 'perlin2',
+      size: 1/4,
+    },
+    ground: { r: 87, g: 109, b: 20 },
     water: {
       size: 1/4,
-      freq: 0.65,
-      noise: 'perlin2',
+      water_level: 0.65,
     },
     trees: {
       size: 1/16,
-      freq: .80,
+      freq: .70,
       noise: 'simplex2',
     },
   },

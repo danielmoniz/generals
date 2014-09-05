@@ -16,6 +16,7 @@ Game = {
   pathfind: astar,
   terrain: undefined,
   height_map: undefined,
+  occupied: undefined,
   //grid_ftn: grid,
   noise: noise,
   // The total width of the game screen. Since our grid takes up the entire
