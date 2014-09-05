@@ -222,6 +222,15 @@ Crafty.scene('Game', function() {
     }
   }
 
+  function addPlayers() {
+    // Player character, placed on the grid
+    this.player = Crafty.e('PlayerCharacter').at(5, 5);
+    for (var i=0; i<5; i++) {
+      Crafty.e('Cavalry').at(6, 5+i);
+    }
+    //this.occupied[this.player.at().x][this.player.at().y] = true;
+  }
+
   buildEmptyGameData();
   colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
@@ -233,7 +242,7 @@ Crafty.scene('Game', function() {
   addSupplyRoads(1);
   addRoadsBetweenVillages();
   addSupplyRoads(1, 1);
-
+  addPlayers();
   function totalCost(result) {
     total_cost = 0;
     for (var i = 0; i < result.length; i++) {
@@ -299,10 +308,6 @@ Crafty.scene('Game', function() {
 
 
 
-  // Player character, placed on the grid
-  this.player = Crafty.e('PlayerCharacter').at(5, 5);
-  //this.occupied[this.player.at().x][this.player.at().y] = true;
-
   this.show_victory = this.bind('VillageVisited', function() {
     if (!Crafty('Village').length) {
       Crafty.scene('Victory');
@@ -346,7 +351,7 @@ Crafty.scene('Loading', function() {
     ;
 
   // Load our sprite map image
-  Crafty.load(['assets/16x16_forest_1.gif'], function() {
+  Crafty.load(['assets/16x16_forest_1.gif', 'assets/cavalry-white-16.png', 'assets/swords-16.gif'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -358,6 +363,12 @@ Crafty.scene('Loading', function() {
       spr_bush: [1, 0],
       spr_village: [0, 1],
       spr_player: [1, 1],
+    });
+    Crafty.sprite(16, 'assets/cavalry-white-16.png', {
+      spr_cavalry: [0, 0],
+    });
+    Crafty.sprite(16, 'assets/swords-16.gif', {
+      spr_battle: [0, 0],
     });
 
     // Now that are sprites are ready to draw, start the game.

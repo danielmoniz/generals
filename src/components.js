@@ -17,6 +17,12 @@ Crafty.c('Grid', {
       return this;
     }
   },
+  together: function(grid_object) {
+    if (grid_object.getX() == this.getX() && grid_object.getY() == this.getY() && grid_object !== this) {
+      return true;
+    }
+    return false;
+  },
 
   getX: function() {
     at = this.at();
@@ -35,6 +41,82 @@ Crafty.c('Actor', {
   },
 });
 
+Crafty.c('Unit', {
+  init: function() {
+    this.requires('Actor, Collision')
+      .bind("MouseUp", function() {
+        this.report();
+      })
+      ;
+    this.bind("NextTurn", this.nextTurn);
+    this.attr({ battle: false, });
+  },
+  nextTurn: function() {
+    console.log("New turn!");
+    // test - will be more specific later
+    //this.sufferAttrition();
+    if (this.battle) {
+      this.fight();
+      this.report();
+    }
+  },
+  fight: function() {
+    // May nlot need this
+  },
+  report: function() {
+    var update = this.quantity;
+    if (this.quantity <= 0) {
+      update = 'dead!'
+    }
+    console.log(this.name + ": " + update);
+    if (this.quantity <= 0) {
+      this.destroy();
+      return false;
+    }
+    return true;
+  },
+  sufferAttrition: function() {
+    this.quantity = Math.floor(this.quantity * 0.9);
+  },
+  moved: function() {
+    // detect combat
+    present_units = this.get_present_units();
+    if (present_units.length >= 1) {
+      this.start_battle();
+    }
+  },
+  get_present_units: function() {
+    present_units = [];
+    units = Crafty('Unit').get();
+    for (var i=0; i < units.length; i++) {
+      if (units[i].together(this)) {
+        present_units.push(units[i]);
+      }
+    }
+    return present_units;
+  },
+  start_battle: function() {
+    //console.log('Fighting!');
+    var battle = Crafty.e('Battle').at(this.getX(), this.getY());
+    battle.start();
+  },
+  notify_of_battle: function() {
+    this.battle = true;
+    this.report();
+  },
+  battle_finished: function() {
+    this.battle = false;
+    this.report();
+  },
+  kill: function(casualties) {
+    this.quantity -= casualties;
+    this.report();
+    if (this.quantity <= 0) {
+      this.destroy();
+    }
+  },
+});
+
 // Terrain is an entity that will be drawn on the map and will affect movement
 Crafty.c('Terrain', {
   init: function() {
@@ -45,54 +127,62 @@ Crafty.c('Terrain', {
 Crafty.c('Clickable', {
   init: function() {
     this.requires('Mouse')
-      //.bind('Click', this.select);
       // NOTE: 'Click' does not work with right clicking!
       .bind('MouseUp', function(e) { 
         if (e.mouseButton == Crafty.mouseButtons.LEFT) {
-          console.log('Left-clicked something Clickable!');
+          //console.log('Selected something Clickable!');
           if (!Game.selected || Game.selected != this) {
             Game.selected = this;
           } else {
             delete Game.selected;
           }
-          //this.select();
-        } else if (e.mouseButton == Crafty.mouseButtons.RIGHT) {
+        }
+      })
+    ;
+  },
+});
+
+Crafty.c('Movable', {
+  init: function() {
+    this.requires('Clickable')
+      .bind('MouseUp', function(e) {
+        if (Game.selected && e.mouseButton == Crafty.mouseButtons.RIGHT) {
           console.log('Right-clicked something Clickable!');
         }
       })
     ;
   },
+});
 
-  /*
-  select: function() {
-    console.log("Selected item");
-    this.unbind("Click", this.select);
-    this.bind("Click", this.deselect);
+Crafty.c('Receivable', {
+  init: function() {
+    this.requires('Clickable')
+      .bind('MouseUp', function(e) {
+        if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
+          if (Game.selected.together(this)) {
+            console.log("Already there!");
+          } else {
+            Game.selected.at(this.at().x, this.at().y);
+            Game.selected.moved();
+            delete Game.selected;
+          }
+        }
+      })
+    ;
+  }
+});
+
+Crafty.c('Targetable', {
+  init: function() {
+    this.requires('Collision, Receivable')
+      ;
   },
-  deselect: function() {
-    console.log("Deselected item");
-    this.unbind("Click", this.deselect);
-    //this.bind("Click", this.select);
-  },
-  */
 });
 
 // Deals with terrain that can be moved onto.
 Crafty.c('Passable', {
   init: function() {
-    this.requires('Grid, Mouse, Terrain')
-      .bind('MouseDown', function(e) {
-      console.log('Clicked Passable entity!');
-      if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
-        console.log('Moving item!');
-        console.log(this.at());
-        console.log(Game.selected.at());
-        Game.selected.at(this.at().x, this.at().y);
-        console.log("New position:");
-        console.log(Game.selected.at());
-      }
-      delete Game.selected;
-    })
+    this.requires('Grid, Mouse, Terrain, Receivable')
     ;
   }
 });
@@ -187,13 +277,76 @@ Crafty.c('Village', {
   },
 });
 
+Crafty.c('Cavalry', {
+  init: function() {
+    this.requires('Unit, Collision, Targetable, spr_cavalry, Movable')
+      .attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
+      ;
+  },
+});
+
+Crafty.c('Battle', {
+  init: function() {
+    this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
+      .bind("NextTurn", this.resolve)
+      ;
+  },
+  units_in_combat: function() {
+    units_in_combat = [];
+    for (var i=0; i<units.length; i++) {
+      unit = units[i];
+      if (unit.together(this)) units_in_combat.push(unit);
+    }
+    return units_in_combat;
+  },
+  start: function() {
+    console.log("Battle: -------------");
+    var units_in_combat = this.units_in_combat();
+    for (var i=0; i < units_in_combat.length; i++) {
+      var unit = units_in_combat[i];
+      unit.notify_of_battle();
+    }
+  },
+
+  resolve: function() {
+    console.log(this.units_in_combat().length);
+    var units = Crafty('Unit').get();
+    var units_in_combat = this.units_in_combat();
+      // assume 2 units for the time being
+    var unit0 = units_in_combat[0];
+    var unit1 = units_in_combat[1];
+    var unit0_units_to_die = unit1.quantity;
+    var unit1_units_to_die = unit0.quantity;
+    unit0.kill(unit0_units_to_die);
+    unit1.kill(unit1_units_to_die);
+
+    //if (units_in_combat.length <= 1) {
+    if (!unit0.report() || !unit1.report()) {
+      this.report();
+      for (var i=0; i < units_in_combat.length; i++) {
+        units_in_combat[i].battle_finished();
+      }
+      this.destroy();
+    }
+  },
+  report: function() {
+    console.log("Battle report: finished!");
+  },
+});
+
 Crafty.c('PlayerCharacter', {
   init: function() {
-    this.requires('Actor, Fourway, Collision, spr_player, Clickable')
+    this.requires('Actor, Fourway, Collision, spr_player, Movable')
       .fourway(4)
       .stopOnSolids()
-      // Whenever the PC touches a village, respond to the event
       .onHit('Village', this.visitVillage)
+      // TEMPORARY: This moves the turns forward. Need a better place to put
+      // this.
+      .bind('KeyDown', function(e) {
+        if (e.key == Crafty.keys.SPACE) {
+          Crafty.trigger("NextTurn");
+        }
+      })
       ;
   },
 
@@ -218,6 +371,7 @@ Crafty.c('PlayerCharacter', {
   visitVillage: function(data) {
     village = data[0].obj;
     village.collect();
+    Crafty.trigger('NextTurn');
   },
 });
 
