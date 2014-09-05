@@ -31,7 +31,7 @@ Crafty.scene('Game', function() {
     water = location_map.water;
     trees = location_map.trees;
     generateEntities('Water', Game.noise[water.noise], water.size, water.freq, occupied, true);
-    generateEntities('Village', 'random', 15, undefined, occupied, true);
+    generateEntities('Village', 'random', 5, undefined, occupied, true);
     generateEntities('Tree', Game.noise[trees.noise], trees.size, trees.freq, occupied, true);
 
   }
@@ -121,6 +121,7 @@ Crafty.scene('Game', function() {
   Game.terrain = terrain;
   Game.terrain_difficulty = terrain_difficulty;
   Game.terrain_build_difficulty = terrain_build_difficulty;
+
   Game.terrain_graph = new Game.graph_ftn(terrain_difficulty);
   Game.terrain_build_graph = new Game.graph_ftn(terrain_build_difficulty);
 
@@ -150,6 +151,12 @@ Crafty.scene('Game', function() {
     }
   }
 
+  function createShortestPath(graph, start, end) {
+    result = Game.pathfind.search(Game.terrain_build_graph, start, end);
+    total_cost = totalCost(result);
+    return result, total_cost;
+  }
+
   // Test roads with path finding
   villages = Crafty("Village").get();
   if (villages.length >= 2) {
@@ -173,19 +180,6 @@ Crafty.scene('Game', function() {
       if (closest === undefined) continue;
       createRoad(closest);
     }
-    /*
-    start_village = villages[0];
-    console.log(villages.length);
-    for (v = 1; v < villages.length; v++) {
-      end_village = villages[v];
-      console.log(villages[v].at());
-      start = Game.terrain_build_graph.grid[start_village.getX()][start_village.getY()];
-      end = Game.terrain_build_graph.grid[end_village.getX()][end_village.getY()];
-      result = Game.pathfind.search(Game.terrain_build_graph, start, end);
-      total_cost = totalCost(result);
-
-    }
-    */
   }
 
 
