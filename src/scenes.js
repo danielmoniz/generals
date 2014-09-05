@@ -93,6 +93,7 @@ Crafty.scene('Game', function() {
   }
 
   function addVillages(estimated_villages) {
+    //generateRandomEntities('Village', 'random', 
     // Place entity randomly on the map using noise
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
@@ -178,27 +179,15 @@ Crafty.scene('Game', function() {
     }
   }
 
-  // PLAN:
-  // generate heightmap
-  // colour heightmap based on location and height
-  // add water to a certain water level
-  // Add villages randomly
-  // add trees using location-based settings (likely simplex2)
-  // add roads
   buildEmptyGameData();
   colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
-  estimated_villages = 8;
+  estimated_villages = 10;
   addVillages(estimated_villages, this.occupied);
   addTrees(Game.location);
   addGrass();
   buildTerrainData();
   addRoads(Game.location);
-
-
-  //generateLocationBasedEntities(Game.location, this.occupied);
-  //generateRandomEntities('Water', Game.noise.perlin2, 1/3, .55, this.occupied, true);
-  //generateRandomEntities('Tree', Game.noise.simplex2, 100, .45, this.occupied, true);
 
   function totalCost(result) {
     total_cost = 0;
@@ -253,10 +242,7 @@ Crafty.scene('Game', function() {
         }
         
         if (noise_value >= 1 - frequency && !Game.occupied[x][y]) {
-          if (Game.height_map != undefined) {
-            var color = Math.ceil(Game.height_map[x][y] * 255);
-            Crafty.e(entity_name).at(x, y);
-          }
+          Crafty.e(entity_name).at(x, y);
           if (update_occupied) {
             occupied[x][y] = true;
           }

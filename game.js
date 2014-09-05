@@ -1,4 +1,4 @@
-var width = 50;
+var width = 60;
 
 Game = {
   location: locations.test,
