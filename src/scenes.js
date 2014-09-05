@@ -153,7 +153,7 @@ Crafty.scene('Game', function() {
   }
 
 
-  function addRoads() {
+  function addRoadsBetweenVillages() {
     villages = Crafty("Village").get();
     if (villages.length >= 2) {
       for (a = 0; a < villages.length; a++) {
@@ -179,6 +179,49 @@ Crafty.scene('Game', function() {
     }
   }
 
+  function addSupplyRoads(max_roads, offset) {
+    // Entities are placed left to right, so the first will be on the left.
+    if (max_roads === undefined) max_roads = 1;
+    if (offset === undefined) offset = 0;
+    max_roads += offset;
+    var grid = Game.terrain_build_graph.grid;
+    var villages = Crafty('Village').get();
+    for (var i = 0 + offset; i < max_roads; i++) {
+      var left_village = villages[i];
+      if (left_village.getX() == 0) continue;
+      var start = grid[left_village.getX()][left_village.getY()];
+      var best_route = undefined;
+      var best_cost = undefined;
+      for (var j=0; j < Game.map_grid.height; j+=2) {
+        var end = grid[0][j];
+        var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
+        var cost = totalCost(path);
+        if (best_route === undefined || cost < best_cost) {
+          best_route = path;
+          best_cost = cost;
+        }
+      }
+      createRoad(best_route, true);
+    }
+    for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
+      var right_village = villages[i];
+      if (right_village.getX() == Game.map_grid.width - 1) continue;
+      var start = grid[right_village.getX()][right_village.getY()];
+      var best_route = undefined;
+      var best_cost = undefined;
+      for (var j=0; j < Game.map_grid.height; j+=2) {
+        var end = grid[grid.length - 1][j];
+        var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
+        var cost = totalCost(path);
+        if (best_route === undefined || cost < best_cost) {
+          best_route = path;
+          best_cost = cost;
+        }
+      }
+      createRoad(best_route, true);
+    }
+  }
+
   buildEmptyGameData();
   colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
@@ -187,31 +230,34 @@ Crafty.scene('Game', function() {
   addTrees(Game.location);
   addGrass();
   buildTerrainData();
-  addRoads(Game.location);
+  addSupplyRoads(1);
+  addRoadsBetweenVillages();
+  addSupplyRoads(1, 1);
 
   function totalCost(result) {
     total_cost = 0;
-    for (i = 0; i < result.length; i++) {
+    for (var i = 0; i < result.length; i++) {
       cost = result[i].getCost();
       total_cost += cost;
     }
     return total_cost;
   }
 
-  function createRoad(result) {
-    console.log(result);
-    for (i = 0; i < result.length - 1; i++) {
+  // Creates a road on the map given a shortest-path solution.
+  function createRoad(result, including_end) {
+    end = result.length - 1;
+    if (including_end) end = result.length;
+    for (var i = 0; i < end; i++) {
       x = result[i].x;
       y = result[i].y;
-      if (Game.terrain[x][y].has("Village")) {
-      } else if (Game.terrain[x][y].has("Water")) {
+      if (Game.terrain[x][y].has("Village")) continue;
+      if (Game.terrain[x][y].has("Water")) {
         Game.terrain[x][y].destroy();
-        road = Crafty.e('Bridge').at(result[i].x, result[i].y);
+        Game.terrain[x][y] = Crafty.e('Bridge').at(result[i].x, result[i].y);
       } else {
         Game.terrain[x][y].destroy();
-        road = Crafty.e('Road').at(result[i].x, result[i].y);
+        Game.terrain[x][y] = Crafty.e('Road').at(result[i].x, result[i].y);
       }
-      Game.terrain[x][y] = road;
     }
   }
 

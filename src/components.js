@@ -159,7 +159,7 @@ Crafty.c('Bridge', {
   init: function() {
     this.requires('Color, Terrain, Passable')
       .color('rgb(192, 192, 192)')
-      .attr({ terrain: 0.5, build_over: 20 })
+      .attr({ terrain: 0.5, build_over: 0.02 })
       ;
   },
 });

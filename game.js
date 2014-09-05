@@ -15,6 +15,7 @@ Game = {
   graph_ftn: Graph,
   pathfind: astar,
   terrain: undefined,
+  terrain_build_graph: undefined,
   height_map: undefined,
   occupied: undefined,
   //grid_ftn: grid,
