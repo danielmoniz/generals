@@ -128,9 +128,20 @@ Crafty.c('Tree', {
 // Grass is just green, passable terrain
 Crafty.c('Grass', {
   init: function() {
-    this.requires('Color, Terrain, Passable')
+    //this.requires('Color, Terrain, Passable')
+    this.requires('Terrain, Passable')
+      //.color('rgb(87, 109, 20)')
+      .attr({ terrain: 1, build_over: 1, colour: { r: 87, g: 109, b: 20 } })
+      ;
+  },
+});
+
+// FakeGrass is just green colour (not terrain!)
+Crafty.c('FakeGrass', {
+  init: function() {
+    this.requires('Color, Actor')
       .color('rgb(87, 109, 20)')
-      .attr({ terrain: 1, build_over: 1 })
+      .attr({ colour: { r: 87, g: 109, b: 20 } })
       ;
   },
 });

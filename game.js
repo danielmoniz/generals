@@ -1,7 +1,7 @@
 var width = 50;
 
 Game = {
-  location: locations.northern_ontario,
+  location: locations.test,
 
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
@@ -15,6 +15,7 @@ Game = {
   graph_ftn: Graph,
   pathfind: astar,
   terrain: undefined,
+  height_map: undefined,
   //grid_ftn: grid,
   noise: noise,
   // The total width of the game screen. Since our grid takes up the entire
@@ -32,7 +33,7 @@ Game = {
     // start Crafty and set a background color so that we can see it's
     // working
     Crafty.init(Game.width(), Game.height());
-    Crafty.background('rgb(87, 109, 20)');
+    //Crafty.background('rgb(87, 109, 20)');
 
     // Simply start the "Loading" scene to get things going
     Crafty.scene('Loading');

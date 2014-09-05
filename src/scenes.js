@@ -27,19 +27,6 @@ Crafty.scene('Game', function() {
   }
   */
 
-  function generateLocationBasedEntities(location_map, occupied) {
-    water = location_map.water;
-    trees = location_map.trees;
-    generateEntities('Water', Game.noise[water.noise], water.size, water.freq, occupied, true);
-    generateEntities('Village', 'random', 5, undefined, occupied, true);
-    generateEntities('Tree', Game.noise[trees.noise], trees.size, trees.freq, occupied, true);
-
-  }
-
-  generateLocationBasedEntities(Game.location, this.occupied);
-  //generateEntities('Water', Game.noise.perlin2, 1/3, .55, this.occupied, true);
-  //generateEntities('Tree', Game.noise.simplex2, 100, .45, this.occupied, true);
-
   /*
    * entity_name: eg. 'Water' or 'Tree'
    * noise: the noise function object to be used. Eg. Game.noise.perlin2
@@ -47,12 +34,15 @@ Crafty.scene('Game', function() {
    * frequency: // relative, between 0 and 1; larger number means more lakes.
    * occupied: the array to update when entities are placed
    */
-  function generateEntities(entity_name, noise, size, frequency, occupied, update_occupied) {
+  function generateEntities(entity_name, noise, size, frequency, occupied, update_occupied, colour_height) {
     // Place entity randomly on the map using noise
     Game.noise.seed(Math.random());
+    height_map = [];
     for (var x = 0; x < Game.map_grid.width; x++) {
+      height_map[x] = [];
       for (var y = 0; y < Game.map_grid.height; y++) {
 
+        // Allows for somewhat hacky reuse of the function for pure randomness.
         if (noise == 'random') {
           num_tiles = Game.map_grid.width * Game.map_grid.height;
           frequency = size / num_tiles;
@@ -61,11 +51,18 @@ Crafty.scene('Game', function() {
           var value = noise(x / Game.map_grid.width / size, y / Game.map_grid.height / size);
           var noise_value = Math.abs(value);
           // Used for colour gradients; see below.
-          var color = Math.ceil(noise_value * 255);
         }
         
+        height_map[x][y] = noise_value;
         if (noise_value >= 1 - frequency && !occupied[x][y]) {
-          Crafty.e(entity_name).at(x, y)
+          if (colour_height && Game.height_map != undefined) {
+            var color = Math.ceil(Game.height_map[x][y] * 255);
+            Crafty.e(entity_name).at(x, y)
+              //.color('rgb(' + color + ', ' + color + ',' + color + ')')
+              ;
+          } else {
+            Crafty.e(entity_name).at(x, y)
+          }
           // The commented code below gives the entities color gradient, instead
           // of always being one colour. This is useful when wanting to better
           // understand the generated noise.
@@ -77,7 +74,41 @@ Crafty.scene('Game', function() {
         }
       }
     }
+    return height_map;
   }
+
+  function colourHeightMap(occupied) {
+    for (var x = 0; x < Game.map_grid.width; x++) {
+      for (var y = 0; y < Game.map_grid.height; y++) {
+        if (!occupied[x][y]) {
+          var height = Math.ceil(Game.height_map[x][y] * 255 / 3);
+          grass = Crafty.e('FakeGrass').at(x, y);
+          rand = Math.random() * 50;
+          r = Math.ceil(grass.colour.r - height);
+          g = Math.ceil(grass.colour.g - height);
+          b = Math.ceil(grass.colour.b - height);
+          color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+          grass.color('rgb(' + r + ', ' + g + ', ' + b + ')');
+          //grass.color('rgb(' + height + ', ' + height + ',' + height + ')')
+          ;
+        }
+      }
+    }
+  }
+
+  function generateLocationBasedEntities(location_map, occupied) {
+    water = location_map.water;
+    trees = location_map.trees;
+    Game.height_map  = generateEntities('Water', Game.noise[water.noise], water.size, water.freq, occupied, true);
+    colourHeightMap(occupied);
+    generateEntities('Village', 'random', 5, undefined, occupied, true);
+    generateEntities('Tree', Game.noise[trees.noise], trees.size, trees.freq, occupied, true, true);
+
+  }
+
+  generateLocationBasedEntities(Game.location, this.occupied);
+  //generateEntities('Water', Game.noise.perlin2, 1/3, .55, this.occupied, true);
+  //generateEntities('Tree', Game.noise.simplex2, 100, .45, this.occupied, true);
 
   // Generate up to five villages on the map in random locations
   var max_villages = 5;
@@ -97,7 +128,16 @@ Crafty.scene('Game', function() {
   for (var x = 0; x < Game.map_grid.width; x++) {
     for (var y = 0; y < Game.map_grid.height; y++) {
       if (!this.occupied[x][y]) {
-        Crafty.e('Grass').at(x, y);
+        var height = Math.ceil(Game.height_map[x][y] * 255 / 4);
+        grass = Crafty.e('Grass').at(x, y);
+        rand = Math.random() * 50;
+        r = Math.ceil(grass.colour.r - height);
+        g = Math.ceil(grass.colour.g - height);
+        b = Math.ceil(grass.colour.b - height);
+        color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        //grass.color('rgb(' + r + ', ' + g + ', ' + b + ')');
+        //grass.color('rgb(' + height + ', ' + height + ',' + height + ')')
+        ;
       }
     }
   }
@@ -151,10 +191,8 @@ Crafty.scene('Game', function() {
     }
   }
 
-  function createShortestPath(graph, start, end) {
-    result = Game.pathfind.search(Game.terrain_build_graph, start, end);
-    total_cost = totalCost(result);
-    return result, total_cost;
+  function getShortestPath(graph, start, end) {
+    return Game.pathfind.search(Game.terrain_build_graph, start, end);
   }
 
   // Test roads with path finding
