@@ -132,12 +132,21 @@ Crafty.c('Clickable', {
         if (e.mouseButton == Crafty.mouseButtons.LEFT) {
           //console.log('Selected something Clickable!');
           if (!Game.selected || Game.selected != this) {
-            Game.selected = this;
+            Game.select(this);
           } else {
-            delete Game.selected;
+            Game.deselect();
           }
         }
       })
+    ;
+  },
+});
+
+// A Selected item should display that it is selected.
+Crafty.c('Selected', {
+  init: function() {
+    this.requires('Clickable, Color')
+      //.color('red')
     ;
   },
 });
@@ -164,7 +173,7 @@ Crafty.c('Receivable', {
           } else {
             Game.selected.at(this.at().x, this.at().y);
             Game.selected.moved();
-            delete Game.selected;
+            Game.deselect();
           }
         }
       })
@@ -198,7 +207,7 @@ Crafty.c('Impassable', {
         console.log(this.at());
       } else if (e.mouseButton == Crafty.mouseButtons.LEFT) {
         console.log("Unselecting.");
-        delete Game.selected;
+        Game.deselect();
       }
     })
     ;

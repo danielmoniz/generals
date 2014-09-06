@@ -29,6 +29,17 @@ Game = {
   height: function() {
     return this.map_grid.height * this.map_grid.tile.height;
   },
+  select: function(clickable_object) {
+    this.deselect();
+    this.selected = clickable_object;
+    this.selected.addComponent("Selected");
+  },
+  deselect: function() {
+    if (this.selected) {
+      this.selected.removeComponent("Selected", false);
+      delete this.selected;
+    }
+  },
 
   // initialize and start our game
   start: function() {
