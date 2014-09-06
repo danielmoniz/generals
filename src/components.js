@@ -159,7 +159,7 @@ Crafty.c('Clickable', {
 // A Selected item should display that it is selected.
 Crafty.c('Selected', {
   init: function() {
-    this.requires('Clickable, Color')
+    this.requires('Clickable')
       //.color('red')
     ;
   },
