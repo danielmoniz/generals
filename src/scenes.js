@@ -202,8 +202,6 @@ Crafty.scene('Game', function() {
       for (var j=0; j < Game.map_grid.height; j+=2) {
         var end = grid[0][j];
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
-        console.log(end);
-        console.log(totalCost(path));
         /*
         console.log(start);
         */
@@ -220,11 +218,9 @@ Crafty.scene('Game', function() {
       var right_village = villages[i];
       if (right_village == undefined) continue;
       if (right_village.getX() == Game.map_grid.width - 1) continue;
-      console.log("test");
       var start = grid[right_village.getX()][right_village.getY()];
       var best_route = undefined;
       var best_cost = undefined;
-      console.log(start);
       for (var j=0; j < Game.map_grid.height; j+=2) {
         var end = grid[grid.length - 1][j];
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
@@ -243,7 +239,10 @@ Crafty.scene('Game', function() {
     // Player character, placed on the grid
     this.player = Crafty.e('PlayerCharacter').at(5, 5);
     for (var i=0; i<8; i++) {
-      Crafty.e('Cavalry').at(6, 5+i);
+      Crafty.e('Cavalry').at(6, 5+i)
+        .attr({ side: Math.round(Math.random()), })
+        .pick_side()
+        ;
     }
     //this.occupied[this.player.at().x][this.player.at().y] = true;
   }
@@ -374,7 +373,7 @@ Crafty.scene('Loading', function() {
     ;
 
   // Load our sprite map image
-  Crafty.load(['assets/16x16_forest_1.gif', 'assets/cavalry-white-16.png', 'assets/swords-16.gif'], function() {
+  Crafty.load(['assets/16x16_forest_1.gif', 'assets/cavalry-blue-16.png', 'assets/cavalry-white-16.png', 'assets/swords-16.gif'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -389,6 +388,9 @@ Crafty.scene('Loading', function() {
     });
     Crafty.sprite(16, 'assets/cavalry-white-16.png', {
       spr_cavalry: [0, 0],
+    });
+    Crafty.sprite(16, 'assets/cavalry-blue-16.png', {
+      spr_cavalry_blue: [0, 0],
     });
     Crafty.sprite(16, 'assets/swords-16.gif', {
       spr_battle: [0, 0],

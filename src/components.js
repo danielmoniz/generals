@@ -43,14 +43,15 @@ Crafty.c('Actor', {
 
 Crafty.c('Unit', {
   init: function() {
-    this.requires('Actor, Collision')
+    this.requires('Actor')
       .bind("MouseUp", function() {
         this.report();
       })
       ;
     this.bind("NextTurn", this.nextTurn);
-    this.attr({ battle: false, });
+    this.attr({ battle: false, side: 0, });
   },
+
   nextTurn: function() {
     console.log("New turn!");
     // test - will be more specific later
@@ -63,12 +64,13 @@ Crafty.c('Unit', {
   fight: function() {
     // May nlot need this
   },
+
   report: function() {
     var update = this.quantity;
     if (this.quantity <= 0) {
       update = 'dead!'
     }
-    console.log(this.name + ": " + update);
+    console.log("Player " + this.side + "'s " + this.name + ": " + update);
     if (this.quantity <= 0) {
       this.destroy();
       return false;
@@ -78,22 +80,37 @@ Crafty.c('Unit', {
   sufferAttrition: function() {
     this.quantity = Math.floor(this.quantity * 0.9);
   },
+  isEnemyPresent: function() {
+    var present_units = this.get_present_units();
+    if (present_units.length <= 1) return false;
+    for (var j=0; j<present_units.length; j++) {
+      if (present_units[j].side != this.side) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  isBattlePresent: function() {
+    var battles = Crafty('Battle').get();
+    for (var i=0; i < battles.length; i++) {
+      var battle = battles[i];
+      var battle_exists = false;
+      if (battles[i].together(this)) {
+        return true;
+      }
+    }
+  },
+
   moved: function() {
     // detect combat
-    present_units = this.get_present_units();
-    if (present_units.length >= 1) {
-      // need to search for battle present
-      var battles = Crafty('Battle').get();
-      for (var i=0; i < battles.length; i++) {
-        var battle = battles[i];
-        var battle_exists = false;
-        if (battles[i].together(this)) {
-          battle_exists = true;
-          this.join_battle();
-        }
-      }
-      if (!battle_exists) {
-        this.start_battle();
+    var present_units = this.get_present_units();
+    var enemy_present = this.isEnemyPresent();
+    if (enemy_present) {
+      if (this.isBattlePresent()) {
+        this.joinBattle();
+      } else {
+        this.startBattle();
       }
     }
   },
@@ -107,11 +124,11 @@ Crafty.c('Unit', {
     }
     return present_units;
   },
-  start_battle: function() {
+
+  startBattle: function() {
     var battle = Crafty.e('Battle').at(this.getX(), this.getY());
-    battle.start(this);
   },
-  join_battle: function() {
+  joinBattle: function() {
     this.battle = true;
   },
   notify_of_battle: function() {
@@ -218,9 +235,7 @@ Crafty.c('Impassable', {
       console.log('Clicked Impassable entity!');
       if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
         console.log('Terrain is impassable! Cannot move here.');
-        console.log(this.at());
       } else if (e.mouseButton == Crafty.mouseButtons.LEFT) {
-        console.log("Unselecting.");
         Game.deselect();
       }
     })
@@ -302,10 +317,23 @@ Crafty.c('Village', {
 
 Crafty.c('Cavalry', {
   init: function() {
-    this.requires('Unit, Collision, Targetable, spr_cavalry, Movable')
+    this.requires('Unit, Collision, Targetable, Movable')
       //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
-      .attr({ quantity: 3000 + 2000*Math.round(Math.random() * 2), name: 'Cavalry', })
+      .attr({
+        quantity: 3000 + 2000*Math.round(Math.random() * 2),
+        name: 'Cavalry',
+        //side: 1,
+      })
       ;
+      console.log(this.side);
+  },
+
+  pick_side: function() {
+    if (this.side == 0) {
+      this.addComponent('spr_cavalry_blue');
+    } else {
+      this.addComponent('spr_cavalry');
+    }
   },
 });
 
@@ -334,13 +362,29 @@ Crafty.c('Battle', {
   },
 
   resolve: function() {
+    console.log("New battle phase: -------------");
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
-    var defenders = this.attacker.get_present_units();
+    var units = this.attacker.get_present_units();
+    attackers = [this.attacker];
+    defenders = [];
+    for (var i=0; i < units.length; i++) {
+      if (units[i].side == this.attacker.side) {
+        attackers.push(units[i]);
+      } else {
+        defenders.push(units[i]);
+      }
+    }
     var units_in_combat = this.units_in_combat();
 
-    var attacker = this.attacker;
-    var attacker_quantity = this.attacker.quantity;
+    var attackers_quantity = 0;
+    for (var i=0; i<attackers.length; i++) {
+      attackers_quantity += attackers[i].quantity;
+    }
+    var attacker_ratios = [];
+    for (var i=0; i<attackers.length; i++) {
+      attacker_ratios[i] = attackers[i].quantity / attackers_quantity;
+    }
     var defenders_quantity = 0;
     for (var i=0; i<defenders.length; i++) {
       defenders_quantity += defenders[i].quantity;
@@ -366,20 +410,28 @@ Crafty.c('Battle', {
     var defender_random_factor = 1;
 
     var attacker_losses = attacker_random_factor * defenders_quantity * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
-    var defender_losses = defender_random_factor * attacker_quantity * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
+    var defender_losses = defender_random_factor * attackers_quantity * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
 
-    attacker.kill(Math.ceil(attacker_losses));
+    //attacker.kill(Math.ceil(attacker_losses));
+    for (var i=0; i<attackers.length; i++) {
+      attackers[i].kill(Math.ceil(attacker_losses * attacker_ratios[i]));
+    }
     for (var i=0; i<defenders.length; i++) {
       defenders[i].kill(Math.ceil(defender_losses * defender_ratios[i]));
     }
 
+    attackers_alive = false;
+    for (var i=0; i<attackers.length; i++) {
+      attackers_alive = attackers[i].report();
+      if (attackers_alive) break;
+    }
     defenders_alive = false;
     for (var i=0; i<defenders.length; i++) {
       defenders_alive = defenders[i].report();
       if (defenders_alive) break;
     }
-    //if (units_in_combat.length <= 1) {
-    if (!attacker.report() || !defenders_alive) {
+
+    if (!attackers_alive || !defenders_alive) {
       this.report();
       for (var i=0; i < units_in_combat.length; i++) {
         units_in_combat[i].battle_finished();
