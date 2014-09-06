@@ -185,7 +185,7 @@ Crafty.c('Selected', {
 
 Crafty.c('Movable', {
   init: function() {
-    this.requires('Clickable')
+    this.requires('Clickable, Unit')
       .bind('MouseUp', function(e) {
         if (Game.selected && e.mouseButton == Crafty.mouseButtons.RIGHT) {
           console.log('Right-clicked something Clickable!');

@@ -373,25 +373,33 @@ Crafty.scene('Loading', function() {
     ;
 
   // Load our sprite map image
-  Crafty.load(['assets/16x16_forest_1.gif', 'assets/cavalry-blue-16.png', 'assets/cavalry-white-16.png', 'assets/swords-16.gif'], function() {
+  
+  //Crafty.load(['assets/16x16_generals.png', 'assets/cavalry-blue-16.png', 'assets/cavalry-white-16.png', 'assets/swords-16.gif'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/cavalry-blue-32.png', 'assets/cavalry-white-32.png', 'assets/swords-16.gif'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
     // Each one (spr_tree, etc.) becomes a component.
     // These components names' are prefixed with "spr_" to remind us that they
     // simply cause the entity to be drawn with a certain sprite.
-    Crafty.sprite(16, 'assets/16x16_forest_1.gif', {
+    Crafty.sprite(16, 'assets/16x16_generals.png', {
       spr_tree: [0, 0],
       spr_bush: [1, 0],
       spr_village: [0, 1],
       spr_player: [1, 1],
+      /*
+      spr_cavalry_blue: [1, 2],
+      spr_cavalry: [2, 2],
+      */
     });
-    Crafty.sprite(16, 'assets/cavalry-white-16.png', {
+    Crafty.sprite(32, 'assets/cavalry-white-32.png', {
       spr_cavalry: [0, 0],
     });
-    Crafty.sprite(16, 'assets/cavalry-blue-16.png', {
+    Crafty.sprite(32, 'assets/cavalry-blue-32.png', {
       spr_cavalry_blue: [0, 0],
     });
+      /*
+      */
     Crafty.sprite(16, 'assets/swords-16.gif', {
       spr_battle: [0, 0],
     });
