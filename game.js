@@ -1,15 +1,16 @@
-var width = 30;
+var map_width = 30;
+var tile_size = 32;
 
 Game = {
   location: locations.test,
 
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
-    width: Math.ceil(width),
-    height: Math.ceil(width * 3 / 4),
+    width: Math.ceil(map_width),
+    height: Math.ceil(map_width * 3 / 4),
     tile: {
-      width: 32,
-      height: 32,
+      width: tile_size,
+      height: tile_size,
     }
   },
   graph_ftn: Graph,

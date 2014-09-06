@@ -374,8 +374,8 @@ Crafty.scene('Loading', function() {
 
   // Load our sprite map image
   
-  //Crafty.load(['assets/16x16_generals.png', 'assets/cavalry-blue-16.png', 'assets/cavalry-white-16.png', 'assets/swords-16.gif'], function() {
-  Crafty.load(['assets/16x16_generals.png', 'assets/cavalry-blue-32.png', 'assets/cavalry-white-32.png', 'assets/swords-16.gif'], function() {
+  var tile_width = Game.map_grid.tile.width;
+  Crafty.load(['assets/16x16_generals.png', 'assets/cavalry-blue-' + tile_width + '.png', 'assets/cavalry-white-' + tile_width + '.png', 'assets/swords-16.gif'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -392,10 +392,10 @@ Crafty.scene('Loading', function() {
       spr_cavalry: [2, 2],
       */
     });
-    Crafty.sprite(32, 'assets/cavalry-white-32.png', {
+    Crafty.sprite(tile_width, 'assets/cavalry-white-' + tile_width + '.png', {
       spr_cavalry: [0, 0],
     });
-    Crafty.sprite(32, 'assets/cavalry-blue-32.png', {
+    Crafty.sprite(tile_width, 'assets/cavalry-blue-' + tile_width + '.png', {
       spr_cavalry_blue: [0, 0],
     });
       /*
