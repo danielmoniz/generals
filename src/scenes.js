@@ -151,8 +151,13 @@ Crafty.scene('Game', function() {
     // test!
     //if (Game.terrain_build_graph) return false;
     Game.terrain_build_graph = new Game.graph_ftn(terrain_build_difficulty);
+    /*
+    console.log(terrain);
+    console.log(terrain_build_difficulty);
+    console.log(Game.terrain_build_graph);
+    console.log("-----------------");
+    */
 
-    //console.log(60*45);
     //console.log(Game.terrain_build_graph);
   }
 
@@ -192,7 +197,6 @@ Crafty.scene('Game', function() {
     var villages = Crafty('Village').get();
 
     for (var i = 0 + offset; i < max_roads; i++) {
-      console.log("=======================");
       var left_village = villages[i];
       if (left_village == undefined) continue;
       if (left_village.getX() == 0) continue;
@@ -237,12 +241,13 @@ Crafty.scene('Game', function() {
 
   function addPlayers() {
     // Player character, placed on the grid
-    this.player = Crafty.e('PlayerCharacter').at(5, 5);
-    for (var i=0; i<8; i++) {
-      Crafty.e('Cavalry').at(6, 5+i)
+    this.player = Crafty.e('PlayerCharacter').at(0, 0);
+    for (var i=0; i<2; i++) {
+      Crafty.e('Cavalry').at(1, 0+i)
         .attr({ side: Math.round(Math.random()), })
         .pick_side()
         ;
+      //cavalry.z = 10
     }
     //this.occupied[this.player.at().x][this.player.at().y] = true;
   }
@@ -263,15 +268,6 @@ Crafty.scene('Game', function() {
   buildTerrainData();
   //addSupplyRoads(1, 1);
   addPlayers();
-
-  function totalCost(result) {
-    var total_cost = 0;
-    for (var i = 0; i < result.length; i++) {
-      var cost = result[i].getCost();
-      total_cost += cost;
-    }
-    return total_cost;
-  }
 
   // Creates a road on the map given a shortest-path solution.
   function createRoad(result, including_end) {

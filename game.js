@@ -7,6 +7,7 @@ Game = {
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
     width: Math.ceil(map_width),
+    //height: Math.ceil(map_width),
     height: Math.ceil(map_width * 3 / 4),
     tile: {
       width: tile_size,
@@ -16,6 +17,7 @@ Game = {
   graph_ftn: Graph,
   pathfind: astar,
   terrain: undefined,
+  terrain_graph: undefined,
   terrain_build_graph: undefined,
   height_map: undefined,
   occupied: undefined,

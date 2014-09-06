@@ -17,9 +17,12 @@ Crafty.c('Grid', {
       return this;
     }
   },
-  together: function(grid_object) {
-    if (grid_object.getX() == this.getX() && grid_object.getY() == this.getY() && grid_object !== this) {
-      return true;
+  together: function(grid_object, ignore_self) {
+    if (ignore_self === undefined) ignore_self = true;
+    if (grid_object.getX() == this.getX() && grid_object.getY() == this.getY()) {
+      if (grid_object !== this) {
+        return true;
+      }
     }
     return false;
   },
@@ -43,13 +46,18 @@ Crafty.c('Actor', {
 
 Crafty.c('Unit', {
   init: function() {
-    this.requires('Actor')
+    this.requires('Actor, Targetable')
       .bind("MouseUp", function() {
         this.report();
       })
       ;
+    this.z = 10;
     this.bind("NextTurn", this.nextTurn);
-    this.attr({ battle: false, side: 0, });
+    this.attr({ 
+      battle: false, 
+      side: 0, 
+      movement: 8, 
+    });
   },
 
   nextTurn: function() {
@@ -70,7 +78,7 @@ Crafty.c('Unit', {
     if (this.quantity <= 0) {
       update = 'dead!'
     }
-    console.log("Player " + this.side + "'s " + this.name + ": " + update);
+    console.log("Player " + this.side + "'s " + this.type + ": " + update);
     if (this.quantity <= 0) {
       this.destroy();
       return false;
@@ -102,6 +110,32 @@ Crafty.c('Unit', {
     }
   },
 
+  prepareMove: function(target_x, target_y) {
+    console.log("Moving!");
+    start = Game.terrain_graph.grid[this.getX()][this.getY()];
+    end = Game.terrain_graph.grid[target_x][target_y];
+    var path = Game.pathfind.search(Game.terrain_graph, start, end);
+    console.log("path:");
+    console.log(path);
+    for (var i=0; i<path.length; i++) {
+      Crafty.e('MovementPath').at(path[i].x, path[i].y);
+    }
+    var total_cost = totalCost(path);
+    console.log(total_cost);
+    partial_path = getPartialPath(path, this.movement);
+    if (!partial_path) console.log("Cannot move to first square! Movement value too low.");
+    for (var i=0; i<partial_path.length; i++) {
+      Crafty.e('MovementPath').at(path[i].x, path[i].y).color('yellow');
+    }
+    turn_move_result = partial_path[partial_path.length - 1];
+    console.log(partial_path);
+    console.log(partial_path[partial_path.length - 1]);
+
+    this.at(turn_move_result.x, turn_move_result.y);
+
+    this.moved();
+  },
+
   moved: function() {
     // detect combat
     var present_units = this.get_present_units();
@@ -114,6 +148,7 @@ Crafty.c('Unit', {
       }
     }
   },
+
   get_present_units: function() {
     present_units = [];
     units = Crafty('Unit').get();
@@ -153,6 +188,7 @@ Crafty.c('Unit', {
 Crafty.c('Terrain', {
   init: function() {
     this.requires('Actor');
+    this.z = 5;
   },
 });
 
@@ -185,7 +221,7 @@ Crafty.c('Selected', {
 
 Crafty.c('Movable', {
   init: function() {
-    this.requires('Clickable, Unit')
+    this.requires('Clickable')
       .bind('MouseUp', function(e) {
         if (Game.selected && e.mouseButton == Crafty.mouseButtons.RIGHT) {
           console.log('Right-clicked something Clickable!');
@@ -203,9 +239,11 @@ Crafty.c('Receivable', {
           if (Game.selected.together(this)) {
             console.log("Already there!");
           } else {
-            Game.selected.at(this.at().x, this.at().y);
-            Game.selected.moved();
-            Game.deselect();
+            console.log("Not already there!");
+            Game.selected.prepareMove(this.at().x, this.at().y);
+            //Game.selected.at(this.at().x, this.at().y);
+            //Game.selected.moved();
+            //Game.deselect();
           }
         }
       })
@@ -248,7 +286,7 @@ Crafty.c('Impassable', {
 Crafty.c('Tree', {
   init: function() {
     this.requires('spr_tree, Terrain, Passable')
-      .attr({ terrain: 2, build_over: 3 })
+      .attr({ type: "Tree", terrain: 2, build_over: 3 })
       //.attr({ terrain: 1, "laser": "test" })
       ;
   },
@@ -258,7 +296,7 @@ Crafty.c('Tree', {
 Crafty.c('Grass', {
   init: function() {
     this.requires('Terrain, Passable')
-      .attr({ terrain: 1, build_over: 1 })
+      .attr({ type: "Grass", terrain: 1, build_over: 1 })
       ;
   },
 });
@@ -268,7 +306,7 @@ Crafty.c('FakeGrass', {
   init: function() {
     this.requires('Color, Actor')
       .color('rgb(87, 109, 20)')
-      .attr({ colour: { r: 87, g: 109, b: 20 } })
+      .attr({ type: "FakeGrass", colour: { r: 87, g: 109, b: 20 } })
       ;
   },
 });
@@ -278,7 +316,8 @@ Crafty.c('Road', {
   init: function() {
     this.requires('Color, Terrain, Passable')
       .color('rgb(128, 128, 128)')
-      .attr({ terrain: 0.5, build_over: 0.01 })
+      //.attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
+      .attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
       ;
   },
 });
@@ -288,7 +327,7 @@ Crafty.c('Bridge', {
   init: function() {
     this.requires('Color, Terrain, Passable')
       .color('rgb(192, 192, 192)')
-      .attr({ terrain: 0.5, build_over: 0.02 })
+      .attr({ type: "Bridge", terrain: 0.5, build_over: 0.02 })
       ;
   },
 });
@@ -296,7 +335,7 @@ Crafty.c('Water', {
   init: function() {
     this.requires('Color, Terrain, Impassable')
       .color('#0080FF')
-      .attr({ terrain: 0, build_over: 8 })
+      .attr({ type: "Water", terrain: 0, build_over: 8 })
       ;
   }
 });
@@ -306,7 +345,7 @@ Crafty.c('Water', {
 Crafty.c('Village', {
   init: function() {
     this.requires('spr_village, Terrain, Passable')
-      .attr({ terrain: 2, build_over: 0.01 })
+      .attr({ type: "Water", terrain: 2, build_over: 0.01 })
       ;
   },
 
@@ -322,11 +361,10 @@ Crafty.c('Cavalry', {
       //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
       .attr({
         quantity: 3000 + 2000*Math.round(Math.random() * 2),
-        name: 'Cavalry',
+        type: 'Cavalry',
         //side: 1,
       })
       ;
-      console.log(this.side);
   },
 
   pick_side: function() {
@@ -342,6 +380,7 @@ Crafty.c('Battle', {
   init: function() {
     this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
       .bind("NextTurn", this.resolve)
+      .attr({ type: "Battle" })
       ;
   },
   units_in_combat: function() {
@@ -446,6 +485,16 @@ Crafty.c('Battle', {
   },
 });
 
+Crafty.c('MovementPath', {
+  init: function() {
+    this.requires('Actor, Color')
+      .color('red')
+      .bind("NextTurn", this.destroy)
+      ;
+    this.z = 8;
+  },
+});
+
 Crafty.c('PlayerCharacter', {
   init: function() {
     this.requires('Actor, Fourway, Collision, spr_player, Movable')
@@ -460,6 +509,7 @@ Crafty.c('PlayerCharacter', {
         }
       })
       ;
+    this.z = 100;
   },
 
   // Registers a stop-movement function to be called when this entity hits an
