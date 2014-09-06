@@ -82,7 +82,7 @@ Crafty.c('Unit', {
   },
   isEnemyPresent: function() {
     var present_units = this.get_present_units();
-    if (present_units.length <= 1) return false;
+    if (present_units.length < 1) return false;
     for (var j=0; j<present_units.length; j++) {
       if (present_units[j].side != this.side) {
         return true;
@@ -127,6 +127,7 @@ Crafty.c('Unit', {
 
   startBattle: function() {
     var battle = Crafty.e('Battle').at(this.getX(), this.getY());
+    battle.start(this);
   },
   joinBattle: function() {
     this.battle = true;
@@ -354,6 +355,7 @@ Crafty.c('Battle', {
   start: function(attacker) {
     this.attacker = attacker;
     console.log("Battle: -------------");
+    console.log("Attacker: " + attacker);
     var units_in_combat = this.units_in_combat();
     for (var i=0; i < units_in_combat.length; i++) {
       var unit = units_in_combat[i];

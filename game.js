@@ -1,4 +1,4 @@
-var width = 60;
+var width = 30;
 
 Game = {
   location: locations.test,
@@ -8,8 +8,8 @@ Game = {
     width: Math.ceil(width),
     height: Math.ceil(width * 3 / 4),
     tile: {
-      width: 16,
-      height: 16,
+      width: 32,
+      height: 32,
     }
   },
   graph_ftn: Graph,
