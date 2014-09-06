@@ -98,7 +98,7 @@ Crafty.c('Unit', {
   start_battle: function() {
     //console.log('Fighting!');
     var battle = Crafty.e('Battle').at(this.getX(), this.getY());
-    battle.start();
+    battle.start(this);
   },
   notify_of_battle: function() {
     this.battle = true;
@@ -280,7 +280,8 @@ Crafty.c('Village', {
 Crafty.c('Cavalry', {
   init: function() {
     this.requires('Unit, Collision, Targetable, spr_cavalry, Movable')
-      .attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
+      //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
+      .attr({ quantity: 3000 + 2000*Math.round(Math.random()), name: 'Cavalry', })
       ;
   },
 });
@@ -299,7 +300,8 @@ Crafty.c('Battle', {
     }
     return units_in_combat;
   },
-  start: function() {
+  start: function(attacker) {
+    this.attacker = attacker;
     console.log("Battle: -------------");
     var units_in_combat = this.units_in_combat();
     for (var i=0; i < units_in_combat.length; i++) {
@@ -309,19 +311,38 @@ Crafty.c('Battle', {
   },
 
   resolve: function() {
-    console.log(this.units_in_combat().length);
     var units = Crafty('Unit').get();
+    // assume for now that all units other than attacker are the defenders
+    // also assume 2 units for the time being
+    var defender = this.attacker.get_present_units()[0];
     var units_in_combat = this.units_in_combat();
-      // assume 2 units for the time being
-    var unit0 = units_in_combat[0];
-    var unit1 = units_in_combat[1];
-    var unit0_units_to_die = unit1.quantity;
-    var unit1_units_to_die = unit0.quantity;
-    unit0.kill(unit0_units_to_die);
-    unit1.kill(unit1_units_to_die);
+
+    var attacker = this.attacker;
+    var attacker_quantity = this.attacker.quantity;
+    var defender_quantity = defender.quantity;
+    var TROOP_LOSS = 0.1;
+    var MORALE_FACTOR = 0.75;
+    var terrain_mod = 2;
+    var attacker_morale = 0;
+    var defender_morale = 0;
+
+    var attacker_morale_factor = Math.pow(MORALE_FACTOR, attacker_morale);
+    var defender_morale_factor = Math.pow(MORALE_FACTOR, defender_morale);
+    /*
+    var attacker_random_factor = Math.random() * 0.2 + 0.9;
+    var defender_random_factor = Math.random() * 0.2 + 0.9;
+    */
+    var attacker_random_factor = 1;
+    var defender_random_factor = 1;
+
+    var attacker_losses = attacker_random_factor * defender_quantity * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
+    var defender_losses = defender_random_factor * attacker_quantity * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
+
+    attacker.kill(Math.ceil(attacker_losses));
+    defender.kill(Math.ceil(defender_losses));
 
     //if (units_in_combat.length <= 1) {
-    if (!unit0.report() || !unit1.report()) {
+    if (!attacker.report() || !defender.report()) {
       this.report();
       for (var i=0; i < units_in_combat.length; i++) {
         units_in_combat[i].battle_finished();
