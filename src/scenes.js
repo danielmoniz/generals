@@ -27,15 +27,13 @@ Crafty.scene('Game', function() {
   }
   */
 
-  // ------------------------
-
   function buildEmptyGameData() {
     Game.height_map = generateHeightMap(Game.location);
     Game.occupied = buildOccupied();
   }
 
   function buildOccupied() {
-    occupied = [];
+    var occupied = [];
     for (var x = 0; x < Game.map_grid.width; x++) {
       occupied[x] = [];
       for (var y = 0; y < Game.map_grid.height; y++) {
@@ -46,10 +44,10 @@ Crafty.scene('Game', function() {
   }
 
   function generateHeightMap(location_map) {
-    size = location_map.height_map.size;
+    var size = location_map.height_map.size;
     Game.noise.seed(Math.random());
-    noise = Game.noise[location_map.height_map.noise]
-    height_map = [];
+    var noise = Game.noise[location_map.height_map.noise]
+    var height_map = [];
     for (var x = 0; x < Game.map_grid.width; x++) {
       height_map[x] = [];
       for (var y = 0; y < Game.map_grid.height; y++) {
@@ -61,15 +59,15 @@ Crafty.scene('Game', function() {
   }
 
   function colourHeightMap(location_map) {
-    colour_scale_factor = 1/3;
+    var colour_scale_factor = 1/3;
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Math.ceil(Game.height_map[x][y] * 255 * colour_scale_factor);
-        ground = Crafty.e('FakeGrass').at(x, y);
-        r = Math.ceil(location_map.ground.r - height);
-        g = Math.ceil(location_map.ground.g - height);
-        b = Math.ceil(location_map.ground.b - height);
-        color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        var ground = Crafty.e('FakeGrass').at(x, y);
+        var r = Math.ceil(location_map.ground.r - height);
+        var g = Math.ceil(location_map.ground.g - height);
+        var b = Math.ceil(location_map.ground.b - height);
+        var color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
         ground.color('rgb(' + r + ', ' + g + ', ' + b + ')');
         // Use below for grey-scale heightmap
         //ground.color('rgb(' + height + ', ' + height + ',' + height + ')')
@@ -79,7 +77,7 @@ Crafty.scene('Game', function() {
   }
 
   function addWater(location_map) {
-    water_level = location_map.water.water_level;
+    var water_level = location_map.water.water_level;
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Game.height_map[x][y];
@@ -97,9 +95,9 @@ Crafty.scene('Game', function() {
     // Place entity randomly on the map using noise
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
-        num_tiles = Game.map_grid.width * Game.map_grid.height;
-        probability = estimated_villages / num_tiles;
-        value = Math.random();
+        var num_tiles = Game.map_grid.width * Game.map_grid.height;
+        var probability = estimated_villages / num_tiles;
+        var value = Math.random();
         
         if (value >= 1 - probability && !Game.occupied[x][y]) {
           var color = Math.ceil(Game.height_map[x][y] * 255);
@@ -112,14 +110,14 @@ Crafty.scene('Game', function() {
   }
 
   function addTrees(location_map) {
-    trees = location_map.trees;
+    var trees = location_map.trees;
     generateRandomEntities('Tree', Game.noise[trees.noise], trees.size, trees.freq, true);
   }
   function addGrass() {
     // MUST GO LAST - fill everything else with grass
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
-        if (!this.occupied[x][y]) {
+        if (!Game.occupied[x][y]) {
           Crafty.e('Grass').at(x, y);
           ;
         }
@@ -129,10 +127,10 @@ Crafty.scene('Game', function() {
 
   function buildTerrainData() {
     // build Game.terrain Graph for pathfinding purposes
-    terrain_list = Crafty("Terrain").get();
-    terrain = [];
-    terrain_difficulty = [];
-    terrain_build_difficulty = [];
+    var terrain_list = Crafty("Terrain").get();
+    var terrain = [];
+    var terrain_difficulty = [];
+    var terrain_build_difficulty = [];
     for (var x = 0; x < Game.map_grid.width; x++) {
       terrain[x] = [];
       terrain_difficulty[x] = [];
@@ -144,29 +142,35 @@ Crafty.scene('Game', function() {
       terrain_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].terrain;
       terrain_build_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].build_over;
     }
+
     Game.terrain = terrain;
     Game.terrain_difficulty = terrain_difficulty;
     Game.terrain_build_difficulty = terrain_build_difficulty;
 
     Game.terrain_graph = new Game.graph_ftn(terrain_difficulty);
+    // test!
+    //if (Game.terrain_build_graph) return false;
     Game.terrain_build_graph = new Game.graph_ftn(terrain_build_difficulty);
+
+    //console.log(60*45);
+    //console.log(Game.terrain_build_graph);
   }
 
 
   function addRoadsBetweenVillages() {
-    villages = Crafty("Village").get();
+    var villages = Crafty("Village").get();
     if (villages.length >= 2) {
       for (a = 0; a < villages.length; a++) {
-        start_village = villages[a];
-        closest = undefined;
-        least_cost = undefined;
+        var start_village = villages[a];
+        var closest = undefined;
+        var least_cost = undefined;
         for (b = a; b < villages.length; b++) {
           if (a == b) continue;
-          end_village = villages[b];
-          start = Game.terrain_build_graph.grid[start_village.getX()][start_village.getY()];
-          end = Game.terrain_build_graph.grid[end_village.getX()][end_village.getY()];
-          result = Game.pathfind.search(Game.terrain_build_graph, start, end);
-          total_cost = totalCost(result);
+          var end_village = villages[b];
+          var start = Game.terrain_build_graph.grid[start_village.getX()][start_village.getY()];
+          var end = Game.terrain_build_graph.grid[end_village.getX()][end_village.getY()];
+          var result = Game.pathfind.search(Game.terrain_build_graph, start, end);
+          var total_cost = totalCost(result);
           if (least_cost === undefined || total_cost < least_cost) {
             closest = result;
             least_cost = total_cost;
@@ -186,8 +190,11 @@ Crafty.scene('Game', function() {
     max_roads += offset;
     var grid = Game.terrain_build_graph.grid;
     var villages = Crafty('Village').get();
+
     for (var i = 0 + offset; i < max_roads; i++) {
+      console.log("=======================");
       var left_village = villages[i];
+      if (left_village == undefined) continue;
       if (left_village.getX() == 0) continue;
       var start = grid[left_village.getX()][left_village.getY()];
       var best_route = undefined;
@@ -195,6 +202,11 @@ Crafty.scene('Game', function() {
       for (var j=0; j < Game.map_grid.height; j+=2) {
         var end = grid[0][j];
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
+        console.log(end);
+        console.log(totalCost(path));
+        /*
+        console.log(start);
+        */
         var cost = totalCost(path);
         if (best_route === undefined || cost < best_cost) {
           best_route = path;
@@ -203,15 +215,20 @@ Crafty.scene('Game', function() {
       }
       createRoad(best_route, true);
     }
+
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
       var right_village = villages[i];
+      if (right_village == undefined) continue;
       if (right_village.getX() == Game.map_grid.width - 1) continue;
+      console.log("test");
       var start = grid[right_village.getX()][right_village.getY()];
       var best_route = undefined;
       var best_cost = undefined;
+      console.log(start);
       for (var j=0; j < Game.map_grid.height; j+=2) {
         var end = grid[grid.length - 1][j];
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
+        //console.log(Game.pathfind.search);
         var cost = totalCost(path);
         if (best_route === undefined || cost < best_cost) {
           best_route = path;
@@ -234,19 +251,24 @@ Crafty.scene('Game', function() {
   buildEmptyGameData();
   colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
-  estimated_villages = 10;
+  estimated_villages = 7;
   addVillages(estimated_villages, this.occupied);
   addTrees(Game.location);
   addGrass();
   buildTerrainData();
   addSupplyRoads(1);
+  // buildTerrainData not working on second run. Why not?
+  // It also seems to act differently if run from createRoad().
+  buildTerrainData();
   addRoadsBetweenVillages();
-  addSupplyRoads(1, 1);
+  buildTerrainData();
+  //addSupplyRoads(1, 1);
   addPlayers();
+
   function totalCost(result) {
-    total_cost = 0;
+    var total_cost = 0;
     for (var i = 0; i < result.length; i++) {
-      cost = result[i].getCost();
+      var cost = result[i].getCost();
       total_cost += cost;
     }
     return total_cost;
@@ -254,11 +276,11 @@ Crafty.scene('Game', function() {
 
   // Creates a road on the map given a shortest-path solution.
   function createRoad(result, including_end) {
-    end = result.length - 1;
+    var end = result.length - 1;
     if (including_end) end = result.length;
     for (var i = 0; i < end; i++) {
-      x = result[i].x;
-      y = result[i].y;
+      var x = result[i].x;
+      var y = result[i].y;
       if (Game.terrain[x][y].has("Village")) continue;
       if (Game.terrain[x][y].has("Water")) {
         Game.terrain[x][y].destroy();
@@ -268,6 +290,7 @@ Crafty.scene('Game', function() {
         Game.terrain[x][y] = Crafty.e('Road').at(result[i].x, result[i].y);
       }
     }
+    //buildTerrainData();
   }
 
   function getShortestPath(graph, start, end) {
@@ -299,7 +322,7 @@ Crafty.scene('Game', function() {
         if (noise_value >= 1 - frequency && !Game.occupied[x][y]) {
           Crafty.e(entity_name).at(x, y);
           if (update_occupied) {
-            occupied[x][y] = true;
+            Game.occupied[x][y] = true;
           }
         }
       }
