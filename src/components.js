@@ -82,7 +82,19 @@ Crafty.c('Unit', {
     // detect combat
     present_units = this.get_present_units();
     if (present_units.length >= 1) {
-      this.start_battle();
+      // need to search for battle present
+      var battles = Crafty('Battle').get();
+      for (var i=0; i < battles.length; i++) {
+        var battle = battles[i];
+        var battle_exists = false;
+        if (battles[i].together(this)) {
+          battle_exists = true;
+          this.join_battle();
+        }
+      }
+      if (!battle_exists) {
+        this.start_battle();
+      }
     }
   },
   get_present_units: function() {
@@ -96,9 +108,11 @@ Crafty.c('Unit', {
     return present_units;
   },
   start_battle: function() {
-    //console.log('Fighting!');
     var battle = Crafty.e('Battle').at(this.getX(), this.getY());
     battle.start(this);
+  },
+  join_battle: function() {
+    this.battle = true;
   },
   notify_of_battle: function() {
     this.battle = true;
@@ -290,7 +304,7 @@ Crafty.c('Cavalry', {
   init: function() {
     this.requires('Unit, Collision, Targetable, spr_cavalry, Movable')
       //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
-      .attr({ quantity: 3000 + 2000*Math.round(Math.random()), name: 'Cavalry', })
+      .attr({ quantity: 3000 + 2000*Math.round(Math.random() * 2), name: 'Cavalry', })
       ;
   },
 });
@@ -322,16 +336,23 @@ Crafty.c('Battle', {
   resolve: function() {
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
-    // also assume 2 units for the time being
-    var defender = this.attacker.get_present_units()[0];
+    var defenders = this.attacker.get_present_units();
     var units_in_combat = this.units_in_combat();
 
     var attacker = this.attacker;
     var attacker_quantity = this.attacker.quantity;
-    var defender_quantity = defender.quantity;
+    var defenders_quantity = 0;
+    for (var i=0; i<defenders.length; i++) {
+      defenders_quantity += defenders[i].quantity;
+    }
+    var defender_ratios = [];
+    for (var i=0; i<defenders.length; i++) {
+      defender_ratios[i] = defenders[i].quantity / defenders_quantity;
+    }
+
     var TROOP_LOSS = 0.1;
     var MORALE_FACTOR = 0.75;
-    var terrain_mod = 2;
+    var terrain_mod = 1;
     var attacker_morale = 0;
     var defender_morale = 0;
 
@@ -344,14 +365,21 @@ Crafty.c('Battle', {
     var attacker_random_factor = 1;
     var defender_random_factor = 1;
 
-    var attacker_losses = attacker_random_factor * defender_quantity * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
+    var attacker_losses = attacker_random_factor * defenders_quantity * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
     var defender_losses = defender_random_factor * attacker_quantity * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
 
     attacker.kill(Math.ceil(attacker_losses));
-    defender.kill(Math.ceil(defender_losses));
+    for (var i=0; i<defenders.length; i++) {
+      defenders[i].kill(Math.ceil(defender_losses * defender_ratios[i]));
+    }
 
+    defenders_alive = false;
+    for (var i=0; i<defenders.length; i++) {
+      defenders_alive = defenders[i].report();
+      if (defenders_alive) break;
+    }
     //if (units_in_combat.length <= 1) {
-    if (!attacker.report() || !defender.report()) {
+    if (!attacker.report() || !defenders_alive) {
       this.report();
       for (var i=0; i < units_in_combat.length; i++) {
         units_in_combat[i].battle_finished();

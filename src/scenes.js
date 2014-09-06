@@ -225,7 +225,7 @@ Crafty.scene('Game', function() {
   function addPlayers() {
     // Player character, placed on the grid
     this.player = Crafty.e('PlayerCharacter').at(5, 5);
-    for (var i=0; i<5; i++) {
+    for (var i=0; i<8; i++) {
       Crafty.e('Cavalry').at(6, 5+i);
     }
     //this.occupied[this.player.at().x][this.player.at().y] = true;
