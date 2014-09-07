@@ -242,7 +242,7 @@ Crafty.scene('Game', function() {
   function addPlayers() {
     // Player character, placed on the grid
     this.player = Crafty.e('PlayerCharacter').at(0, 0);
-    for (var i=0; i<2; i++) {
+    for (var i=0; i<8; i++) {
       Crafty.e('Cavalry').at(1, 0+i)
         .attr({ side: Math.round(Math.random()), })
         .pick_side()

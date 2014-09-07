@@ -115,17 +115,41 @@ Crafty.c('Unit', {
     start = Game.terrain_graph.grid[this.getX()][this.getY()];
     end = Game.terrain_graph.grid[target_x][target_y];
     var path = Game.pathfind.search(Game.terrain_graph, start, end);
+    if (!path) {
+      console.log("Target impossible to reach!");
+      return false;
+    }
     console.log("path:");
     console.log(path);
-    for (var i=0; i<path.length; i++) {
-      Crafty.e('MovementPath').at(path[i].x, path[i].y);
-    }
     var total_cost = totalCost(path);
     console.log(total_cost);
     partial_path = getPartialPath(path, this.movement);
-    if (!partial_path) console.log("Cannot move to first square! Movement value too low.");
-    for (var i=0; i<partial_path.length; i++) {
-      Crafty.e('MovementPath').at(path[i].x, path[i].y).color('yellow');
+    if (!partial_path) {
+      console.log("Cannot move to first square! Movement value too low.");
+      return false;
+    }
+    function makeMovementPath(x, y, remaining) {
+      var turn_colours = ['yellow', 'green', 'orange', 'red'];
+      remaining = remaining % turn_colours.length;
+      var movement_path = Crafty.e('MovementPath');
+      movement_path.at(x, y)
+      movement_path.color(turn_colours[remaining - 1])
+      movement_path.remaining(remaining);
+    }
+    makeMovementPath(this.getX(), this.getY(), 1);
+    var turns_required = 1;
+    var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
+    console.log("path_remaining.length");
+    console.log(path_remaining.length);
+    while (path_remaining.length > 0) {
+      var next_partial_path = getPartialPath(path_remaining, this.movement);
+      for (var i=0; i<next_partial_path.length; i++) {
+        makeMovementPath(path_remaining[i].x, path_remaining[i].y, turns_required);
+      }
+      turns_required += 1;
+      path_remaining = path_remaining.slice(next_partial_path.length, path_remaining.length - 1);
+      console.log("path_remaining.length");
+      console.log(path_remaining.length);
     }
     turn_move_result = partial_path[partial_path.length - 1];
     console.log(partial_path);
@@ -486,12 +510,21 @@ Crafty.c('Battle', {
 });
 
 Crafty.c('MovementPath', {
-  init: function() {
+  init: function(turns_left) {
     this.requires('Actor, Color')
       .color('red')
-      .bind("NextTurn", this.destroy)
+      .bind("NextTurn", this.nextTurn)
       ;
     this.z = 8;
+    this.turns_left = 1;
+    return this;
+  },
+  remaining: function(turns_left) {
+    this.turns_left = turns_left;
+  },
+  nextTurn: function() {
+    this.turns_left -= 1;
+    if (this.turns_left <= 0) this.destroy();
   },
 });
 
