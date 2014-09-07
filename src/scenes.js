@@ -63,7 +63,8 @@ Crafty.scene('Game', function() {
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Math.ceil(Game.height_map[x][y] * 255 * colour_scale_factor);
-        var ground = Crafty.e('FakeGrass').at(x, y);
+        var ground = Crafty.e('FakeGrass');
+        ground.at(x, y);
         var r = Math.ceil(location_map.ground.r - height);
         var g = Math.ceil(location_map.ground.g - height);
         var b = Math.ceil(location_map.ground.b - height);
@@ -241,9 +242,10 @@ Crafty.scene('Game', function() {
 
   function addPlayers() {
     // Player character, placed on the grid
-    this.player = Crafty.e('PlayerCharacter').at(0, 0);
+    this.player = Crafty.e('PlayerCharacter')
+    this.player.at(0, 0);
     for (var i=0; i<8; i++) {
-      Crafty.e('Cavalry').at(1, 0+i)
+      Crafty.e('Cavalry').at(0, 0+i)
         .attr({ side: Math.round(Math.random()), })
         .pick_side()
         ;
@@ -279,10 +281,14 @@ Crafty.scene('Game', function() {
       if (Game.terrain[x][y].has("Village")) continue;
       if (Game.terrain[x][y].has("Water")) {
         Game.terrain[x][y].destroy();
-        Game.terrain[x][y] = Crafty.e('Bridge').at(result[i].x, result[i].y);
+        bridge = Crafty.e('Bridge');
+        bridge.at(result[i].x, result[i].y);
+        Game.terrain[x][y] = bridge;
       } else {
         Game.terrain[x][y].destroy();
-        Game.terrain[x][y] = Crafty.e('Road').at(result[i].x, result[i].y);
+        road = Crafty.e('Road');
+        road.at(result[i].x, result[i].y);
+        Game.terrain[x][y] = road;
       }
     }
     //buildTerrainData();
@@ -371,7 +377,7 @@ Crafty.scene('Loading', function() {
   // Load our sprite map image
   
   var tile_width = Game.map_grid.tile.width;
-  Crafty.load(['assets/16x16_generals.png', 'assets/cavalry-blue-' + tile_width + '.png', 'assets/cavalry-white-' + tile_width + '.png', 'assets/swords-16.gif'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/cavalry-blue-' + tile_width + '.png', 'assets/cavalry-white-' + tile_width + '.png', 'assets/swords-16.gif', 'assets/road-32.png'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -398,6 +404,9 @@ Crafty.scene('Loading', function() {
       */
     Crafty.sprite(16, 'assets/swords-16.gif', {
       spr_battle: [0, 0],
+    });
+    Crafty.sprite(32, 'assets/road-32.png', {
+      spr_road: [0, 0],
     });
 
     // Now that are sprites are ready to draw, start the game.

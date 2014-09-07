@@ -51,7 +51,7 @@ Crafty.c('Unit', {
         this.report();
       })
       ;
-    this.z = 10;
+    this.z = 100;
     this.bind("NextTurn", this.nextTurn);
     this.attr({ 
       battle: false, 
@@ -119,10 +119,7 @@ Crafty.c('Unit', {
       console.log("Target impossible to reach!");
       return false;
     }
-    console.log("path:");
-    console.log(path);
     var total_cost = totalCost(path);
-    console.log(total_cost);
     partial_path = getPartialPath(path, this.movement);
     if (!partial_path) {
       console.log("Cannot move to first square! Movement value too low.");
@@ -130,30 +127,36 @@ Crafty.c('Unit', {
     }
     function makeMovementPath(x, y, remaining) {
       var turn_colours = ['yellow', 'green', 'orange', 'red'];
-      remaining = remaining % turn_colours.length;
+      remaining_color = remaining % turn_colours.length;
       var movement_path = Crafty.e('MovementPath');
       movement_path.at(x, y)
-      movement_path.color(turn_colours[remaining - 1])
+      movement_path.color(turn_colours[remaining_color - 1])
       movement_path.remaining(remaining);
     }
+
     makeMovementPath(this.getX(), this.getY(), 1);
     var turns_required = 1;
     var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
-    console.log("path_remaining.length");
+    console.log("Path remaining at start:");
+    console.log("start: " + path_remaining[0].x + ", " +  path_remaining[0].y);
+    console.log("end: " + path_remaining[path_remaining.length - 1].x + ", " +  path_remaining[path_remaining.length - 1].y);
     console.log(path_remaining.length);
-    while (path_remaining.length > 0) {
+    var test_var = 1;
+    while (path_remaining.length > 0 || test_var > 20) {
       var next_partial_path = getPartialPath(path_remaining, this.movement);
+      console.log("Next partial path:");
+      console.log(next_partial_path.length);
+      console.log(next_partial_path[0].x, next_partial_path[0].y);
       for (var i=0; i<next_partial_path.length; i++) {
-        makeMovementPath(path_remaining[i].x, path_remaining[i].y, turns_required);
+        makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
       }
       turns_required += 1;
-      path_remaining = path_remaining.slice(next_partial_path.length, path_remaining.length - 1);
-      console.log("path_remaining.length");
+      path_remaining = path_remaining.slice(next_partial_path.length, path_remaining.length);
+      console.log("Path remaining:");
       console.log(path_remaining.length);
+      //test_var += 1;
     }
     turn_move_result = partial_path[partial_path.length - 1];
-    console.log(partial_path);
-    console.log(partial_path[partial_path.length - 1]);
 
     this.at(turn_move_result.x, turn_move_result.y);
 
@@ -212,7 +215,7 @@ Crafty.c('Unit', {
 Crafty.c('Terrain', {
   init: function() {
     this.requires('Actor');
-    this.z = 5;
+    this.z = 80;
   },
 });
 
@@ -338,8 +341,9 @@ Crafty.c('FakeGrass', {
 // Grass is just green, passable terrain
 Crafty.c('Road', {
   init: function() {
-    this.requires('Color, Terrain, Passable')
-      .color('rgb(128, 128, 128)')
+    //this.requires('Color, Terrain, Passable')
+    this.requires('spr_road, Terrain, Passable')
+      //.color('rgb(128, 128, 128)')
       //.attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
       .attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
       ;
@@ -515,7 +519,7 @@ Crafty.c('MovementPath', {
       .color('red')
       .bind("NextTurn", this.nextTurn)
       ;
-    this.z = 8;
+    this.z = 50;
     this.turns_left = 1;
     return this;
   },
@@ -542,7 +546,7 @@ Crafty.c('PlayerCharacter', {
         }
       })
       ;
-    this.z = 100;
+    this.z = 1000;
   },
 
   // Registers a stop-movement function to be called when this entity hits an
