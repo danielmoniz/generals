@@ -71,6 +71,7 @@ Crafty.c('Unit', {
     if (!this.battle && this.move_target_path) {
       this.move_toward_target();
     }
+    if (this.move_target_path) colourMovementPath(this.move_target_path, this.movement);
   },
   move_toward_target: function() {
     var partial_path = getPartialPath(this.move_target_path, this.movement);
@@ -157,9 +158,6 @@ Crafty.c('Unit', {
         this.startBattle();
       }
     }
-
-    // draw new movement paths
-    if (this.move_target_path) colourMovementPath(this.move_target_path, this.movement);
   },
 
   get_present_units: function() {
@@ -463,7 +461,7 @@ Crafty.c('Water', {
 Crafty.c('Village', {
   init: function() {
     this.requires('spr_village, Terrain, Passable')
-      .attr({ type: "Water", terrain: 2, build_over: 0.01 })
+      .attr({ type: "Water", terrain: 1.5, build_over: 0.01 })
       ;
   },
 
