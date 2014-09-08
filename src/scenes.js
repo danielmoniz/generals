@@ -277,8 +277,6 @@ Crafty.scene('Game', function() {
         road.at(path[i].x, path[i].y);
         if (is_supply || (is_supply_road && i == end - 1)) {
           road.is_supply = true;
-        } else if (i == end - 1) {
-          console.log("LAST TILE IN ROAD");
         }
         Game.terrain[x][y] = road;
       }

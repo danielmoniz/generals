@@ -318,7 +318,6 @@ Crafty.c('Movable', {
     this.requires('Clickable')
       .bind('MouseUp', function(e) {
         if (Game.selected && e.mouseButton == Crafty.mouseButtons.RIGHT) {
-          console.log('Right-clicked something Clickable!');
         }
       })
     ;
@@ -333,8 +332,8 @@ Crafty.c('Receivable', {
           if (Game.turn == Game.selected.side) {
             if (Game.selected.together(this)) {
               console.log("Already there!");
+              Game.selected.prepareMove(this.at().x, this.at().y);
             } else {
-              console.log("Not already there!");
               Game.selected.prepareMove(this.at().x, this.at().y);
               //Game.selected.at(this.at().x, this.at().y);
               //Game.selected.moved();
