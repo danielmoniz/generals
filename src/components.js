@@ -384,8 +384,27 @@ Crafty.c('Road', {
       return key;
     }
     var directions = [getUp, getRight, getDown, getLeft];
+    var num_connections = 0;
     for (var i=0; i<directions.length; i++) {
-      this.sprite_key += booleanToKey(directions[i](this));
+      var connection = directions[i](this);
+      this.sprite_key += booleanToKey(connection);
+      if (connection) num_connections++;
+    }
+
+    // Ensure that roads on the edge of the mat are not dead ends
+    if (num_connections == 1) {
+      if (this.getX() == 0) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 3, 'T');
+      } else if (this.getX() == Game.map_grid.width - 1) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 1, 'T');
+      } else if (this.getY() == 0) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 0, 'T');
+      } else if (this.getY() == Game.map_grid.height - 1) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 2, 'T');
+      }
+    }
+    function modifyStringIndex(string, index, new_str) {
+      return string.substr(0, index) + new_str + string.substr(index + new_str.length);
     }
   },
 
