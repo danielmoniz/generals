@@ -1,4 +1,4 @@
-var map_width = 30;
+var map_width = 24;
 var tile_size = 32;
 
 Game = {

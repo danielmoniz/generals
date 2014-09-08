@@ -86,7 +86,6 @@ Crafty.scene('Game', function() {
           Crafty.e('Water').at(x, y);
           Game.occupied[x][y] = true;
         }
-        ;
       }
     }
   }
@@ -96,6 +95,8 @@ Crafty.scene('Game', function() {
     // Place entity randomly on the map using noise
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
+        var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
+        if (at_edge) continue;
         var num_tiles = Game.map_grid.width * Game.map_grid.height;
         var probability = estimated_villages / num_tiles;
         var value = Math.random();
@@ -194,31 +195,60 @@ Crafty.scene('Game', function() {
     if (max_roads === undefined) max_roads = 1;
     if (offset === undefined) offset = 0;
     max_roads += offset;
-    var grid = Game.terrain_build_graph.grid;
+    console.log(max_roads);
     var villages = Crafty('Village').get();
 
-    for (var i = 0 + offset; i < max_roads; i++) {
-      var left_village = villages[i];
-      if (left_village == undefined) continue;
-      if (left_village.getX() == 0) continue;
-      var start = grid[left_village.getX()][left_village.getY()];
+    function addSupplyRoad(villages, left_or_right) {
+      var grid = Game.terrain_build_graph.grid;
+      if (left_or_right === undefined) return false;
+      var start_village = villages[i];
+      if (start_village == undefined) return false;;
+      if (start_village.getX() == 0) return false;;
+      var start = grid[start_village.getX()][start_village.getY()];
       var best_route = undefined;
       var best_cost = undefined;
       for (var j=0; j < Game.map_grid.height; j+=2) {
-        var end = grid[0][j];
+        if (left_or_right == 'left') {
+          var end = grid[0][j];
+        } else {
+          var end = grid[Game.map_grid.width - 1][j];
+        }
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
         /*
         console.log(start);
         */
         var cost = totalCost(path);
+        console.log(end);
+        console.log(cost);
         if (best_route === undefined || cost < best_cost) {
+          // @test
+          //if (best_route === undefined) console.log("UNDEFINED ROUTE");
+          //if (best_route === undefined) console.log(path);
           best_route = path;
           best_cost = cost;
         }
       }
+
+      // @test
+      //if (best_route === undefined) console.log("UNDEFINED ROUTE");
+      
+      console.log("Creating supply road...");
+      console.log(best_route);
+      console.log(start);
+      console.log(best_route[best_route.length-1]);
       createRoad(best_route, true, true);
     }
 
+    console.log("Starting left supply roads ============");
+    for (var i = 0 + offset; i < max_roads; i++) {
+      addSupplyRoad(villages, 'left');
+    }
+    console.log("Starting right supply roads ============");
+    for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
+      addSupplyRoad(villages, 'right');
+    }
+
+    /*
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
       var right_village = villages[i];
       if (right_village == undefined) continue;
@@ -236,8 +266,9 @@ Crafty.scene('Game', function() {
           best_cost = cost;
         }
       }
-      createRoad(best_route, true);
+      createRoad(best_route, true, true);
     }
+    */
   }
 
   function addPlayers() {
@@ -279,27 +310,32 @@ Crafty.scene('Game', function() {
   buildTerrainData();
   addRoadsBetweenVillages();
   buildTerrainData();
-  //addSupplyRoads(1, 1);
+  addSupplyRoads(1, 1);
   addRoadGraphics();
   addPlayers();
 
   // Creates a road on the map given a shortest-path solution.
-  function createRoad(result, including_end, is_supply_road) {
-    var end = result.length - 1;
-    if (including_end) end = result.length;
+  function createRoad(path, including_end, is_supply_road) {
+    var end = path.length - 1;
+    if (is_supply_road) {
+      console.log("creating road. path:");
+      console.log(path);
+    }
+    //console.log("creating road. end: " + path[path.length-1].x + ", " + path[path.length-1].y);
+    if (including_end) end = path.length;
     for (var i = 0; i < end; i++) {
-      var x = result[i].x;
-      var y = result[i].y;
+      var x = path[i].x;
+      var y = path[i].y;
       if (Game.terrain[x][y].has("Village")) continue;
       if (Game.terrain[x][y].has("Water")) {
         Game.terrain[x][y].destroy();
-        bridge = Crafty.e('Bridge');
-        bridge.at(result[i].x, result[i].y);
+        var bridge = Crafty.e('Bridge');
+        bridge.at(path[i].x, path[i].y);
         Game.terrain[x][y] = bridge;
       } else {
         Game.terrain[x][y].destroy();
-        road = Crafty.e('Road');
-        road.at(result[i].x, result[i].y);
+        var road = Crafty.e('Road');
+        road.at(path[i].x, path[i].y);
         if (is_supply_road && i == end - 1) road.is_supply = true;
         Game.terrain[x][y] = road;
       }
