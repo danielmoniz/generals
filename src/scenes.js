@@ -158,7 +158,6 @@ Crafty.scene('Game', function() {
     if (max_roads === undefined) max_roads = 1;
     if (offset === undefined) offset = 0;
     max_roads += offset;
-    console.log(max_roads);
     var villages = Crafty('Village').get();
 
     function addSupplyRoad(villages, left_or_right) {

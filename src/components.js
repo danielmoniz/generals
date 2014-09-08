@@ -63,18 +63,22 @@ Crafty.c('Unit', {
   },
 
   nextTurn: function() {
-    console.log("New turn!");
+    if (Game.turn == this.side) {
+      this.handleAttrition();
 
-    this.handleAttrition();
-
-    if (this.battle) {
-      this.fight();
-      this.report();
+      if (this.battle) {
+        this.fight();
+        this.report();
+      }
     }
-    if (!this.battle && this.move_target_path) {
-      this.move_toward_target();
+    if (Game.turn != this.side) {
+      if (!this.battle && this.move_target_path) {
+        this.move_toward_target();
+      }
     }
-    if (this.move_target_path) colourMovementPath(this.move_target_path, this.movement);
+    if (Game.turn == this.side) {
+      if (this.move_target_path) colourMovementPath(this.move_target_path, this.movement, this.at());
+    }
   },
   move_toward_target: function() {
     var partial_path = getPartialPath(this.move_target_path, this.movement);
@@ -130,9 +134,6 @@ Crafty.c('Unit', {
       buildTerrainData();
       var start = Game.terrain_supply_graph.grid[this.getX()][this.getY()];
       var end = Game.terrain_supply_graph.grid[target.getX()][target.getY()];
-      console.log("Target: " + target.getX() + ", " + target.getY());
-      console.log(start);
-      console.log(end);
 
       // detect enemies on path
       var units = Crafty('Unit').get();
@@ -141,8 +142,6 @@ Crafty.c('Unit', {
       for (var i=0; i<units.length; i++) {
         if (units[i].side != this.side) enemy_units.push(units[i]);
       }
-      console.log('enemy_units');
-      console.log(enemy_units);
       var supply_blocks = Crafty('SupplyBlock').get();
       for (var i=0; i<supply_blocks.length; i++) {
         block = supply_blocks[i];
@@ -151,8 +150,6 @@ Crafty.c('Unit', {
       for (var i=0; i<enemy_units.length; i++) {
         // add enemy units to Game supply graph
         var unit = enemy_units[i];
-        console.log("Enemy units at:");
-        console.log(unit.getX() + ", " + unit.getY());
         weight = Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight;
         if (weight != 0) {
           Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight = 0;
@@ -217,9 +214,7 @@ Crafty.c('Unit', {
     }
 
     var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
-    colourMovementPath(path_remaining, this.movement);
-
-    makeMovementPath(this.getX(), this.getY(), 1);
+    colourMovementPath(path_remaining, this.movement, this.at());
 
     this.move_target_path = path;
   },
@@ -335,14 +330,18 @@ Crafty.c('Receivable', {
     this.requires('Clickable')
       .bind('MouseUp', function(e) {
         if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
-          if (Game.selected.together(this)) {
-            console.log("Already there!");
+          if (Game.turn == Game.selected.side) {
+            if (Game.selected.together(this)) {
+              console.log("Already there!");
+            } else {
+              console.log("Not already there!");
+              Game.selected.prepareMove(this.at().x, this.at().y);
+              //Game.selected.at(this.at().x, this.at().y);
+              //Game.selected.moved();
+              //Game.deselect();
+            }
           } else {
-            console.log("Not already there!");
-            Game.selected.prepareMove(this.at().x, this.at().y);
-            //Game.selected.at(this.at().x, this.at().y);
-            //Game.selected.moved();
-            //Game.deselect();
+            console.log("Not your turn!");
           }
         }
       })
@@ -758,7 +757,7 @@ Crafty.c('PlayerCharacter', {
       // this.
       .bind('KeyDown', function(e) {
         if (e.key == Crafty.keys.SPACE) {
-          Crafty.trigger("NextTurn");
+          Game.nextTurn();
         }
       })
       ;
@@ -786,7 +785,6 @@ Crafty.c('PlayerCharacter', {
   visitVillage: function(data) {
     village = data[0].obj;
     village.collect();
-    Crafty.trigger('NextTurn');
   },
 });
 

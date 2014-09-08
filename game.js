@@ -48,6 +48,16 @@ Game = {
     }
   },
 
+  turn: 0,
+  turn_count: 0,
+  nextTurn: function() {
+    this.turn += 1;
+    this.turn = this.turn % 2;
+    console.log("NEXT TURN: Player " + this.turn + "--------------------");
+    Crafty.trigger("NextTurn");
+    this.turn_count += 1;
+  },
+
   // initialize and start our game
   start: function() {
     // start Crafty and set a background color so that we can see it's
