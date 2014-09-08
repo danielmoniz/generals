@@ -300,13 +300,11 @@ Crafty.scene('Game', function() {
         Game.terrain[x][y].destroy();
         road = Crafty.e('Road');
         road.at(result[i].x, result[i].y);
-        if (i == end - 1) {
-          road.is_supply = true;
-        }
+        if (is_supply_road && i == end - 1) road.is_supply = true;
         Game.terrain[x][y] = road;
       }
     }
-    //buildTerrainData();
+    buildTerrainData();
   }
 
   function getShortestPath(graph, start, end) {
