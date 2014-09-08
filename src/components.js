@@ -64,6 +64,7 @@ Crafty.c('Unit', {
 
   nextTurn: function() {
     if (Game.turn == this.side) {
+      this.selectFirstUnit();
       this.handleAttrition();
 
       if (this.battle) {
@@ -83,6 +84,13 @@ Crafty.c('Unit', {
       }
     }
   },
+
+  selectFirstUnit: function() {
+    if (!Game.selected) {
+      Game.select(this);
+    }
+  },
+
   move_toward_target: function() {
     var partial_path = getPartialPath(this.move_target_path, this.movement);
     // check for enemies that will be bumped into
