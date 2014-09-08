@@ -75,12 +75,17 @@ Crafty.c('Unit', {
   },
   move_toward_target: function() {
     var partial_path = getPartialPath(this.move_target_path, this.movement);
-    var turn_move_result = partial_path[partial_path.length - 1];
-    this.at(turn_move_result.x, turn_move_result.y);
-    new_path = this.move_target_path.slice(partial_path.length, this.move_target_path.length);
-    this.move_target_path = new_path;
-    if (new_path.length == 0) this.move_target_path = undefined;
-    this.moved();
+    // check for enemies that will be bumped into
+    for (var i=0; i<partial_path.length; i++) {
+      if (this.battle || this.stop) break;
+      var next_move = partial_path[i];
+      this.at(next_move.x, next_move.y);
+      new_path = this.move_target_path.slice(1, this.move_target_path.length);
+      this.move_target_path = new_path;
+      if (new_path.length == 0) this.move_target_path = undefined;
+      this.moved();
+    }
+
   },
   fight: function() {
     // May not need this

@@ -227,18 +227,14 @@ Crafty.scene('Game', function() {
         }
       }
 
-      console.log("Creating supply road...");
-      console.log(best_route);
-      console.log(start);
-      console.log(best_route[best_route.length-1]);
       createRoad(best_route, true, true);
     }
 
-    console.log("Starting left supply roads ============");
+    //console.log("Starting left supply roads ============");
     for (var i = 0 + offset; i < max_roads; i++) {
       addSupplyRoad(villages, 'left');
     }
-    console.log("Starting right supply roads ============");
+    //console.log("Starting right supply roads ============");
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
       addSupplyRoad(villages, 'right');
     }
@@ -291,10 +287,6 @@ Crafty.scene('Game', function() {
   // Creates a road on the map given a shortest-path solution.
   function createRoad(path, including_end, is_supply_road) {
     var end = path.length - 1;
-    if (is_supply_road) {
-      console.log("creating supply road. path:");
-      console.log(path);
-    }
     //console.log("creating road. end: " + path[path.length-1].x + ", " + path[path.length-1].y);
     if (including_end) end = path.length;
     for (var i = 0; i < end; i++) {
