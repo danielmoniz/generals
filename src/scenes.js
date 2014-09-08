@@ -254,10 +254,17 @@ Crafty.scene('Game', function() {
     //this.occupied[this.player.at().x][this.player.at().y] = true;
   }
 
+  function addRoadGraphics() {
+    roads = Crafty('Road').get();
+    for (var i=0; i<roads.length; i++) {
+      roads[i].set_sprite();
+    }
+  }
+
   buildEmptyGameData();
   colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
-  estimated_villages = 7;
+  estimated_villages = 15;
   addVillages(estimated_villages, this.occupied);
   addTrees(Game.location);
   addGrass();
@@ -269,6 +276,7 @@ Crafty.scene('Game', function() {
   addRoadsBetweenVillages();
   buildTerrainData();
   //addSupplyRoads(1, 1);
+  addRoadGraphics();
   addPlayers();
 
   // Creates a road on the map given a shortest-path solution.
@@ -406,7 +414,18 @@ Crafty.scene('Loading', function() {
       spr_battle: [0, 0],
     });
     Crafty.sprite(32, 'assets/road-32.png', {
-      spr_road: [0, 0],
+      spr_road: [0, 1],
+      spr_road_horizontal: [0, 0],
+      spr_road_vertical: [1, 0],
+      spr_road_top_left: [2, 0],
+      spr_road_top_right: [3, 0],
+      spr_road_bottom_right: [4, 0],
+      spr_road_bottom_left: [5, 0],
+      spr_road_no_top: [0, 1],
+      spr_road_no_right: [1, 1],
+      spr_road_no_bottom: [2, 1],
+      spr_road_no_left: [3, 1],
+      spr_road_all: [0, 2],
     });
 
     // Now that are sprites are ready to draw, start the game.

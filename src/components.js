@@ -111,7 +111,6 @@ Crafty.c('Unit', {
   },
 
   prepareMove: function(target_x, target_y) {
-    console.log("Moving!");
     start = Game.terrain_graph.grid[this.getX()][this.getY()];
     end = Game.terrain_graph.grid[target_x][target_y];
     var path = Game.pathfind.search(Game.terrain_graph, start, end);
@@ -341,12 +340,80 @@ Crafty.c('FakeGrass', {
 // Grass is just green, passable terrain
 Crafty.c('Road', {
   init: function() {
-    //this.requires('Color, Terrain, Passable')
-    this.requires('spr_road, Terrain, Passable')
+    //this.requires('spr_road, Terrain, Passable')
+    this.requires('Terrain, Passable')
       //.color('rgb(128, 128, 128)')
       //.attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
       .attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
       ;
+  },
+
+  detect_type: function() {
+    // look at adjacent road spaces and determine which component should be
+    // added (ie. which sprite is required).
+    function hasRoadConnection(tile) {
+      var road_connections = ['Road', 'Bridge', 'Village'];
+      for (var i=0; i<road_connections.length; i++) {
+        if (tile.has(road_connections[i])) return true;
+      }
+      return false;
+    }
+    function getLeft(road) {
+      if (road.getX() == 0) return false;
+      var tile = Game.terrain[road.getX() - 1][road.getY()];
+      return hasRoadConnection(tile);
+    }
+    function getRight(road) {
+      if (road.getX() == Game.map_grid.width - 1) return false;
+      var tile = Game.terrain[road.getX() + 1][road.getY()];
+      return hasRoadConnection(tile);
+    }
+    function getUp(road) {
+      if (road.getY() == 0) return false;
+      var tile = Game.terrain[road.getX()][road.getY() - 1];
+      return hasRoadConnection(tile);
+    }
+    function getDown(road) {
+      if (road.getY() == Game.map_grid.height - 1) return false;
+      var tile = Game.terrain[road.getX()][road.getY() + 1];
+      return hasRoadConnection(tile);
+    }
+    this.sprite_key = "";
+    function booleanToKey(bool_val) {
+      var key = bool_val ? 'T' : 'F';
+      return key;
+    }
+    var directions = [getUp, getRight, getDown, getLeft];
+    for (var i=0; i<directions.length; i++) {
+      this.sprite_key += booleanToKey(directions[i](this));
+    }
+  },
+
+  set_sprite: function() {
+    var road_sprite_map = {
+      "TFFF": "spr_road_vertical",
+      "TFTF": "spr_road_vertical",
+      "FFTF": "spr_road_vertical",
+      "FTFF": "spr_road_horizontal",
+      "FFFT": "spr_road_horizontal",
+      "FTFT": "spr_road_horizontal",
+      "TTFF": "spr_road_top_right",
+      "FTTF": "spr_road_bottom_right",
+      "FFTT": "spr_road_bottom_left",
+      "TFFT": "spr_road_top_left",
+      // 3-way and 4-way pieces - not made yet!
+      "FTTT": "spr_road_no_top",
+      "TFTT": "spr_road_no_right",
+      "TTFT": "spr_road_no_bottom",
+      "TTTF": "spr_road_no_left",
+      "TTTT": "spr_road_all",
+    }
+    this.detect_type();
+    console.log("this.sprite_key:");
+    console.log(this.sprite_key);
+    var component = road_sprite_map[this.sprite_key];
+    console.log(component);
+    this.addComponent(component);
   },
 });
 
