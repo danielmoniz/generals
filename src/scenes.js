@@ -207,7 +207,7 @@ Crafty.scene('Game', function() {
       var start = grid[start_village.getX()][start_village.getY()];
       var best_route = undefined;
       var best_cost = undefined;
-      for (var j=0; j < Game.map_grid.height; j+=2) {
+      for (var j=0; j < Game.map_grid.height; j+=1) {
         if (left_or_right == 'left') {
           var end = grid[0][j];
         } else {
@@ -218,8 +218,6 @@ Crafty.scene('Game', function() {
         console.log(start);
         */
         var cost = totalCost(path);
-        console.log(end);
-        console.log(cost);
         if (best_route === undefined || cost < best_cost) {
           // @test
           //if (best_route === undefined) console.log("UNDEFINED ROUTE");
@@ -229,9 +227,6 @@ Crafty.scene('Game', function() {
         }
       }
 
-      // @test
-      //if (best_route === undefined) console.log("UNDEFINED ROUTE");
-      
       console.log("Creating supply road...");
       console.log(best_route);
       console.log(start);
@@ -247,28 +242,6 @@ Crafty.scene('Game', function() {
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
       addSupplyRoad(villages, 'right');
     }
-
-    /*
-    for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
-      var right_village = villages[i];
-      if (right_village == undefined) continue;
-      if (right_village.getX() == Game.map_grid.width - 1) continue;
-      var start = grid[right_village.getX()][right_village.getY()];
-      var best_route = undefined;
-      var best_cost = undefined;
-      for (var j=0; j < Game.map_grid.height; j+=2) {
-        var end = grid[grid.length - 1][j];
-        var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
-        //console.log(Game.pathfind.search);
-        var cost = totalCost(path);
-        if (best_route === undefined || cost < best_cost) {
-          best_route = path;
-          best_cost = cost;
-        }
-      }
-      createRoad(best_route, true, true);
-    }
-    */
   }
 
   function addPlayers() {
@@ -280,9 +253,7 @@ Crafty.scene('Game', function() {
         .attr({ side: Math.round(Math.random()), })
         .pick_side()
         ;
-      //cavalry.z = 10
     }
-    //this.occupied[this.player.at().x][this.player.at().y] = true;
   }
 
   function addRoadGraphics() {
@@ -307,10 +278,10 @@ Crafty.scene('Game', function() {
   addSupplyRoads(1);
   // buildTerrainData not working on second run. Why not?
   // It also seems to act differently if run from createRoad().
-  buildTerrainData();
+  //buildTerrainData();
   addRoadsBetweenVillages();
-  buildTerrainData();
-  addSupplyRoads(1, 1);
+  //buildTerrainData();
+  //addSupplyRoads(1, 1);
   addRoadGraphics();
   addPlayers();
 
@@ -318,7 +289,7 @@ Crafty.scene('Game', function() {
   function createRoad(path, including_end, is_supply_road) {
     var end = path.length - 1;
     if (is_supply_road) {
-      console.log("creating road. path:");
+      console.log("creating supply road. path:");
       console.log(path);
     }
     //console.log("creating road. end: " + path[path.length-1].x + ", " + path[path.length-1].y);
@@ -336,7 +307,11 @@ Crafty.scene('Game', function() {
         Game.terrain[x][y].destroy();
         var road = Crafty.e('Road');
         road.at(path[i].x, path[i].y);
-        if (is_supply_road && i == end - 1) road.is_supply = true;
+        if (is_supply_road && i == end - 1) {
+          road.is_supply = true;
+        } else if (i == end - 1) {
+          console.log("LAST TILE IN ROAD");
+        }
         Game.terrain[x][y] = road;
       }
     }

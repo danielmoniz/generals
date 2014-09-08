@@ -140,7 +140,6 @@ Crafty.c('Unit', {
     //console.log("start: " + path_remaining[0].x + ", " +  path_remaining[0].y);
     //console.log("end: " + path_remaining[path_remaining.length - 1].x + ", " +  path_remaining[path_remaining.length - 1].y);
     //console.log(path_remaining.length);
-    var test_var = 1;
     while (path_remaining.length > 0 || test_var > 20) {
       var next_partial_path = getPartialPath(path_remaining, this.movement);
       //console.log("Next partial path:");
@@ -153,7 +152,6 @@ Crafty.c('Unit', {
       path_remaining = path_remaining.slice(next_partial_path.length, path_remaining.length);
       //console.log("Path remaining:");
       //console.log(path_remaining.length);
-      //test_var += 1;
     }
     turn_move_result = partial_path[partial_path.length - 1];
 
@@ -398,8 +396,6 @@ Crafty.c('Road', {
 
     // Ensure that supply roads properly lead off the map
     if (this.is_supply) {
-      console.log("SUPPLY ROAD AT " + this.getX() + ", " + this.getY());
-      console.log();
       if (this.getX() == 0) {
         this.sprite_key = modifyStringIndex(this.sprite_key, 3, 'T');
       } else if (this.getX() == Game.map_grid.width - 1) {
@@ -450,10 +446,7 @@ Crafty.c('Road', {
       "TTTT": "spr_road_all",
     }
     this.detect_type();
-    //console.log("this.sprite_key:");
-    //console.log(this.sprite_key);
     var component = road_sprite_map[this.sprite_key];
-    //console.log(component);
     this.addComponent(component);
   },
 });
