@@ -68,9 +68,21 @@ Crafty.c('Unit', {
       this.fight();
       this.report();
     }
+    if (this.move_target_path) {
+      this.move_toward_target();
+    }
+  },
+  move_toward_target: function() {
+    var partial_path = getPartialPath(this.move_target_path, this.movement);
+    var turn_move_result = partial_path[partial_path.length - 1];
+    this.at(turn_move_result.x, turn_move_result.y);
+    this.moved();
+    new_path = this.move_target_path.slice(partial_path.length, this.move_target_path.length);
+    this.move_target_path = new_path;
+    if (new_path.length == 0) this.move_target_path = undefined;
   },
   fight: function() {
-    // May nlot need this
+    // May not need this
   },
 
   report: function() {
@@ -118,7 +130,6 @@ Crafty.c('Unit', {
       console.log("Target impossible to reach!");
       return false;
     }
-    var total_cost = totalCost(path);
     partial_path = getPartialPath(path, this.movement);
     if (!partial_path) {
       console.log("Cannot move to first square! Movement value too low.");
@@ -140,7 +151,7 @@ Crafty.c('Unit', {
     //console.log("start: " + path_remaining[0].x + ", " +  path_remaining[0].y);
     //console.log("end: " + path_remaining[path_remaining.length - 1].x + ", " +  path_remaining[path_remaining.length - 1].y);
     //console.log(path_remaining.length);
-    while (path_remaining.length > 0 || test_var > 20) {
+    while (path_remaining.length > 0) {
       var next_partial_path = getPartialPath(path_remaining, this.movement);
       //console.log("Next partial path:");
       //console.log(next_partial_path.length);
@@ -153,12 +164,16 @@ Crafty.c('Unit', {
       //console.log("Path remaining:");
       //console.log(path_remaining.length);
     }
+
+    this.move_target_path = path;
+    /*
     turn_move_result = partial_path[partial_path.length - 1];
-
     this.at(turn_move_result.x, turn_move_result.y);
-
     this.moved();
+    */
   },
+
+  
 
   moved: function() {
     // detect combat
