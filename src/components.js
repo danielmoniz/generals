@@ -279,7 +279,7 @@ Crafty.c('Terrain', {
 
 Crafty.c('Clickable', {
   init: function() {
-    this.requires('Mouse')
+    this.requires('Mouse, Actor')
       // NOTE: 'Click' does not work with right clicking!
       .bind('MouseUp', function(e) { 
         if (e.mouseButton == Crafty.mouseButtons.LEFT) {
@@ -298,9 +298,10 @@ Crafty.c('Clickable', {
 // A Selected item should display that it is selected.
 Crafty.c('Selected', {
   init: function() {
-    this.requires('Clickable')
-      //.color('red')
+    this.requires('Clickable, Color')
+      .color('purple')
     ;
+    this.z = 55;
   },
 });
 

@@ -39,12 +39,16 @@ Game = {
   select: function(clickable_object) {
     this.deselect();
     this.selected = clickable_object;
-    this.selected.addComponent("Selected");
+    this.select_highlight = Crafty.e('Selected');
+    var spot = this.selected.at();
+    this.select_highlight.at(spot.x, spot.y);
+    console.log(this.selected.type);
   },
   deselect: function() {
     if (this.selected) {
-      this.selected.removeComponent("Selected", false);
       delete this.selected;
+      this.select_highlight.destroy();
+      //delete this.select_highlight;
     }
   },
 
@@ -54,6 +58,7 @@ Game = {
     this.turn += 1;
     this.turn = this.turn % 2;
     console.log("NEXT TURN: Player " + this.turn + "--------------------");
+    this.deselect();
     Crafty.trigger("NextTurn");
     this.turn_count += 1;
   },
