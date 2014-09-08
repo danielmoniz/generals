@@ -265,6 +265,9 @@ Crafty.scene('Game', function() {
     // @TODO beautify roads - look for loops and remove useless pieces
     // Use the following to find string instances (in this example, 'is'):
     // count = (str.match(/is/g) || []).length;
+    function isPartOfLoop(road) {
+
+    }
   }
 
   buildEmptyGameData();
