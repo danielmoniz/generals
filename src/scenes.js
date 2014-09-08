@@ -216,7 +216,7 @@ Crafty.scene('Game', function() {
           best_cost = cost;
         }
       }
-      createRoad(best_route, true);
+      createRoad(best_route, true, true);
     }
 
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
@@ -259,6 +259,10 @@ Crafty.scene('Game', function() {
     for (var i=0; i<roads.length; i++) {
       roads[i].set_sprite();
     }
+
+    // @TODO beautify roads - look for loops and remove useless pieces
+    // Use the following to find string instances (in this example, 'is'):
+    // count = (str.match(/is/g) || []).length;
   }
 
   buildEmptyGameData();
@@ -280,7 +284,7 @@ Crafty.scene('Game', function() {
   addPlayers();
 
   // Creates a road on the map given a shortest-path solution.
-  function createRoad(result, including_end) {
+  function createRoad(result, including_end, is_supply_road) {
     var end = result.length - 1;
     if (including_end) end = result.length;
     for (var i = 0; i < end; i++) {
@@ -296,6 +300,9 @@ Crafty.scene('Game', function() {
         Game.terrain[x][y].destroy();
         road = Crafty.e('Road');
         road.at(result[i].x, result[i].y);
+        if (i == end - 1) {
+          road.is_supply = true;
+        }
         Game.terrain[x][y] = road;
       }
     }

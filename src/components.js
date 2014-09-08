@@ -344,7 +344,12 @@ Crafty.c('Road', {
     this.requires('Terrain, Passable')
       //.color('rgb(128, 128, 128)')
       //.attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
-      .attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
+      .attr({
+        type: "Road",
+        terrain: 0.5,
+        build_over: 0.01,
+        is_supply: false,
+      })
       ;
   },
 
@@ -391,6 +396,21 @@ Crafty.c('Road', {
       if (connection) num_connections++;
     }
 
+    // Ensure that supply roads properly lead off the map
+    if (this.is_supply) {
+      console.log("SUPPLY ROAD");
+      if (this.getX() == 0) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 3, 'T');
+      } else if (this.getX() == Game.map_grid.width - 1) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 1, 'T');
+      } else if (this.getY() == 0) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 0, 'T');
+      } else if (this.getY() == Game.map_grid.height - 1) {
+        this.sprite_key = modifyStringIndex(this.sprite_key, 2, 'T');
+      }
+    }
+
+    /*
     // Ensure that roads on the edge of the mat are not dead ends
     if (num_connections == 1) {
       if (this.getX() == 0) {
@@ -403,6 +423,7 @@ Crafty.c('Road', {
         this.sprite_key = modifyStringIndex(this.sprite_key, 2, 'T');
       }
     }
+    */
     function modifyStringIndex(string, index, new_str) {
       return string.substr(0, index) + new_str + string.substr(index + new_str.length);
     }
