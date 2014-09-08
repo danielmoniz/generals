@@ -53,17 +53,20 @@ Crafty.c('Unit', {
       ;
     this.z = 100;
     this.bind("NextTurn", this.nextTurn);
+    this.max_supply = 3;
     this.attr({ 
       battle: false, 
       side: 0, 
       movement: 8, 
+      supply_remaining: this.max_supply,
     });
   },
 
   nextTurn: function() {
     console.log("New turn!");
-    // test - will be more specific later
-    //this.sufferAttrition();
+
+    this.handleAttrition();
+
     if (this.battle) {
       this.fight();
       this.report();
@@ -97,14 +100,77 @@ Crafty.c('Unit', {
       update = 'dead!'
     }
     console.log("Player " + this.side + "'s " + this.type + ": " + update);
+    console.log("Supply remaining: " + this.supply_remaining);
     if (this.quantity <= 0) {
       this.destroy();
       return false;
     }
     return true;
   },
+
+  handleAttrition: function() {
+    if (this.detectAttrition()) {
+      this.sufferAttrition();
+      this.report();
+    } else {
+      this.resupply();
+    }
+  },
+  resupply: function() {
+    this.supply_remaining = this.max_supply;
+  },
+  detectAttrition: function() {
+    // detect possible lack of supply
+    var terrain = Crafty('Terrain').get();
+    var supply_end_points = terrain.filter(function(terrain) { return terrain.is_supply; });
+    // for now, assume only two supply end points
+    // @TODO: Allow for more than two supply endpoints
+    var target = supply_end_points[this.side];
+    if (!this.together(target)) {
+      buildTerrainData();
+      var start = Game.terrain_supply_graph.grid[this.getX()][this.getY()];
+      var end = Game.terrain_supply_graph.grid[target.getX()][target.getY()];
+      console.log("Target: " + target.getX() + ", " + target.getY());
+      console.log(start);
+      console.log(end);
+
+      // detect enemies on path
+      var units = Crafty('Unit').get();
+      var enemy_units = [];
+      // could use filter() here, but failed on first attempt
+      for (var i=0; i<units.length; i++) {
+        if (units[i].side != this.side) enemy_units.push(units[i]);
+      }
+      console.log('enemy_units');
+      console.log(enemy_units);
+      for (var i=0; i<enemy_units.length; i++) {
+        // add enemy units to Game supply graph
+        var unit = enemy_units[i];
+        console.log("Enemy units at:");
+        console.log(unit.getX() + ", " + unit.getY());
+        weight = Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight;
+        if (weight != 0) {
+          Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight = 0;
+          Crafty.e('SupplyBlock').at(unit.getX(), unit.getY());
+        }
+      }
+      
+      var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
+      //console.log(supply_route);
+      if (supply_route.length == 0) return true;
+    } else {
+      console.log("Supplied because unit is on supply route end point!");
+    }
+    return false;
+  },
+
   sufferAttrition: function() {
-    this.quantity = Math.floor(this.quantity * 0.9);
+    this.supply_remaining -= 1;
+    if (this.supply_remaining < 0) {
+      var to_kill = Math.floor(this.quantity * 0.1);
+      this.kill(to_kill);
+      console.log("Attrition losses: " + to_kill);
+    }
   },
   isEnemyPresent: function() {
     var present_units = this.get_present_units();
@@ -339,6 +405,7 @@ Crafty.c('Road', {
         terrain: 0.5,
         build_over: 0.01,
         is_supply: false,
+        supply: 1,
       })
       ;
   },
@@ -448,7 +515,12 @@ Crafty.c('Bridge', {
   init: function() {
     this.requires('Color, Terrain, Passable')
       .color('rgb(192, 192, 192)')
-      .attr({ type: "Bridge", terrain: 0.5, build_over: 0.02 })
+      .attr({ 
+        type: "Bridge",
+        terrain: 0.5, 
+        build_over: 0.02 ,
+        supply: 1,
+      })
       ;
   },
 });
@@ -466,7 +538,12 @@ Crafty.c('Water', {
 Crafty.c('Village', {
   init: function() {
     this.requires('spr_village, Terrain, Passable')
-      .attr({ type: "Water", terrain: 1.5, build_over: 0.01 })
+      .attr({ 
+        type: "Water", 
+        terrain: 1.5, 
+        build_over: 0.01,
+        supply: 1,
+      })
       ;
   },
 
@@ -488,7 +565,8 @@ Crafty.c('Cavalry', {
       ;
   },
 
-  pick_side: function() {
+  pick_side: function(side) {
+    if (side !== undefined) this.side = side;
     if (this.side == 0) {
       this.addComponent('spr_cavalry_blue');
     } else {
@@ -609,7 +687,6 @@ Crafty.c('Battle', {
 Crafty.c('MovementPath', {
   init: function(turns_left) {
     this.requires('Actor, Color')
-      .color('red')
       .bind("NextTurn", this.nextTurn)
       ;
     this.z = 50;
@@ -624,6 +701,24 @@ Crafty.c('MovementPath', {
     this.turns_left -= 1;
     if (this.turns_left <= 0) this.destroy();
     */
+   this.destroy();
+  },
+});
+
+Crafty.c('SupplyBlock', {
+  init: function(turns_left) {
+    this.requires('Actor, Color')
+      .color('black')
+      .bind("NextTurn", this.nextTurn)
+      ;
+    this.z = 60;
+    this.turns_left = 1;
+    return this;
+  },
+  remaining: function(turns_left) {
+    this.turns_left = turns_left;
+  },
+  nextTurn: function() {
    this.destroy();
   },
 });

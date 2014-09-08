@@ -127,43 +127,6 @@ Crafty.scene('Game', function() {
     }
   }
 
-  function buildTerrainData() {
-    // build Game.terrain Graph for pathfinding purposes
-    var terrain_list = Crafty("Terrain").get();
-    var terrain = [];
-    var terrain_difficulty = [];
-    var terrain_build_difficulty = [];
-    for (var x = 0; x < Game.map_grid.width; x++) {
-      terrain[x] = [];
-      terrain_difficulty[x] = [];
-      terrain_build_difficulty[x] = [];
-    }
-
-    for (var i = 0; i < terrain_list.length; i++) {
-      terrain[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i];
-      terrain_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].terrain;
-      terrain_build_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].build_over;
-    }
-
-    Game.terrain = terrain;
-    Game.terrain_difficulty = terrain_difficulty;
-    Game.terrain_build_difficulty = terrain_build_difficulty;
-
-    Game.terrain_graph = new Game.graph_ftn(terrain_difficulty);
-    // test!
-    //if (Game.terrain_build_graph) return false;
-    Game.terrain_build_graph = new Game.graph_ftn(terrain_build_difficulty);
-    /*
-    console.log(terrain);
-    console.log(terrain_build_difficulty);
-    console.log(Game.terrain_build_graph);
-    console.log("-----------------");
-    */
-
-    //console.log(Game.terrain_build_graph);
-  }
-
-
   function addRoadsBetweenVillages() {
     var villages = Crafty("Village").get();
     if (villages.length >= 2) {
@@ -244,10 +207,16 @@ Crafty.scene('Game', function() {
     // Player character, placed on the grid
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    for (var i=0; i<8; i++) {
+    for (var i=0; i<1; i++) {
       Crafty.e('Cavalry').at(0, 0+i)
-        .attr({ side: Math.round(Math.random()), })
-        .pick_side()
+        .pick_side(0)
+        //.pick_side(Math.round(Math.random()))
+        ;
+    }
+    for (var i=0; i<1; i++) {
+      Crafty.e('Cavalry').at(Game.map_grid.width - 1, 0+i)
+        .pick_side(1)
+        //.pick_side(Math.round(Math.random()))
         ;
     }
   }
@@ -299,10 +268,15 @@ Crafty.scene('Game', function() {
         bridge.at(path[i].x, path[i].y);
         Game.terrain[x][y] = bridge;
       } else {
+        var terrain = Game.terrain[x][y];
+        var is_supply = false;
+        if (terrain.has('Road') && terrain.is_supply) {
+          var is_supply = true;
+        }
         Game.terrain[x][y].destroy();
         var road = Crafty.e('Road');
         road.at(path[i].x, path[i].y);
-        if (is_supply_road && i == end - 1) {
+        if (is_supply || (is_supply_road && i == end - 1)) {
           road.is_supply = true;
         } else if (i == end - 1) {
           console.log("LAST TILE IN ROAD");

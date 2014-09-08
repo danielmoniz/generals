@@ -14,11 +14,15 @@ Game = {
       height: tile_size,
     }
   },
+  
   graph_ftn: Graph,
   pathfind: astar,
   terrain: undefined,
+  terrain_supply: undefined,
+  terrain_build_difficulty: undefined,
   terrain_graph: undefined,
   terrain_build_graph: undefined,
+  terrain_supply_graph: undefined,
   height_map: undefined,
   occupied: undefined,
   //grid_ftn: grid,
