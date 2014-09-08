@@ -143,6 +143,11 @@ Crafty.c('Unit', {
       }
       console.log('enemy_units');
       console.log(enemy_units);
+      var supply_blocks = Crafty('SupplyBlock').get();
+      for (var i=0; i<supply_blocks.length; i++) {
+        block = supply_blocks[i];
+        Game.terrain_supply_graph.grid[block.getX()][block.getY()].weight = 0;
+      }
       for (var i=0; i<enemy_units.length; i++) {
         // add enemy units to Game supply graph
         var unit = enemy_units[i];
@@ -151,6 +156,9 @@ Crafty.c('Unit', {
         weight = Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight;
         if (weight != 0) {
           Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight = 0;
+        }
+        local_terrain = Game.terrain[unit.getX()][unit.getY()];
+        if (local_terrain.has('Transportation')) {
           Crafty.e('SupplyBlock').at(unit.getX(), unit.getY());
         }
       }
@@ -301,6 +309,15 @@ Crafty.c('Selected', {
   },
 });
 
+// A Transportation object is one meant to carry people/items, eg. a road,
+// bridge, etc.
+Crafty.c('Transportation', {
+  init: function() {
+    this.requires('Terrain')
+    ;
+  },
+});
+
 Crafty.c('Movable', {
   init: function() {
     this.requires('Clickable')
@@ -397,7 +414,7 @@ Crafty.c('FakeGrass', {
 Crafty.c('Road', {
   init: function() {
     //this.requires('spr_road, Terrain, Passable')
-    this.requires('Terrain, Passable')
+    this.requires('Terrain, Passable, Transportation')
       //.color('rgb(128, 128, 128)')
       //.attr({ type: "Road", terrain: 0.5, build_over: 0.01 })
       .attr({
@@ -513,7 +530,7 @@ Crafty.c('Road', {
 // Grass is just green, passable terrain
 Crafty.c('Bridge', {
   init: function() {
-    this.requires('Color, Terrain, Passable')
+    this.requires('Color, Terrain, Passable, Transportation')
       .color('rgb(192, 192, 192)')
       .attr({ 
         type: "Bridge",
@@ -709,17 +726,25 @@ Crafty.c('SupplyBlock', {
   init: function(turns_left) {
     this.requires('Actor, Color')
       .color('black')
-      .bind("NextTurn", this.nextTurn)
+      .bind("NextTurn", this.destroy)
+      .attr({
+        supply: 0,
+      })
       ;
     this.z = 60;
     this.turns_left = 1;
     return this;
   },
+  //removeSupplyFromRoad
   remaining: function(turns_left) {
     this.turns_left = turns_left;
   },
   nextTurn: function() {
-   this.destroy();
+   this.turns_left -= 1;
+   if (this.turns_left <= 0) this.clear();
+  },
+  clear: function() {
+    this.destroy();
   },
 });
 
