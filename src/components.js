@@ -77,7 +77,10 @@ Crafty.c('Unit', {
       }
     }
     if (Game.turn == this.side) {
-      if (this.move_target_path) colourMovementPath(this.move_target_path, this.movement, this.at());
+      if (this.move_target_path) {
+        if (this.movement_path) destroyMovementPath(this.movement_path);
+        this.movement_path = colourMovementPath(this.move_target_path, this.movement, this.at());
+      }
     }
   },
   move_toward_target: function() {
@@ -214,7 +217,8 @@ Crafty.c('Unit', {
     }
 
     var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
-    colourMovementPath(path_remaining, this.movement, this.at());
+    if (this.movement_path) destroyMovementPath(this.movement_path);
+    this.movement_path = colourMovementPath(path_remaining, this.movement, this.at());
 
     this.move_target_path = path;
   },
