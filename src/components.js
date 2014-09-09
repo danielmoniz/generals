@@ -167,7 +167,8 @@ Crafty.c('Unit', {
         }
         local_terrain = Game.terrain[unit.getX()][unit.getY()];
         if (local_terrain.has('Transportation')) {
-          Crafty.e('SupplyBlock').at(unit.getX(), unit.getY());
+          // @TODO Re-add supply blocking as a decision later on
+          //Crafty.e('SupplyBlock').at(unit.getX(), unit.getY());
         }
       }
       

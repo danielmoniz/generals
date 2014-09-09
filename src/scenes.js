@@ -206,17 +206,23 @@ Crafty.scene('Game', function() {
     // Player character, placed on the grid
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    for (var i=0; i<1; i++) {
-      Crafty.e('Cavalry').at(0, 0+i)
-        .pick_side(0)
-        //.pick_side(Math.round(Math.random()))
-        ;
+    for (var i=0; i<5; i++) {
+      spot = {x: 0, y: 0+i};
+      if (!Game.terrain[spot.x][spot.y].has('Water')) {
+        Crafty.e('Cavalry').at(spot.x, spot.y)
+          .pick_side(0)
+          //.pick_side(Math.round(Math.random()))
+          ;
+      }
     }
-    for (var i=0; i<1; i++) {
-      Crafty.e('Cavalry').at(Game.map_grid.width - 1, 0+i)
-        .pick_side(1)
-        //.pick_side(Math.round(Math.random()))
-        ;
+    for (var i=0; i<5; i++) {
+      spot = {x: Game.map_grid.width - 1, y: 0+i};
+      if (!Game.terrain[spot.x][spot.y].has('Water')) {
+        Crafty.e('Cavalry').at(Game.map_grid.width - 1, 0+i)
+          .pick_side(1)
+          //.pick_side(Math.round(Math.random()))
+          ;
+      }
     }
   }
 
