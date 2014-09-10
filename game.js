@@ -44,8 +44,13 @@ Game = {
     this.select_highlight = Crafty.e('Selected');
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);
+    if (this.selected.select) {
+      this.selected.select();
+    } else {
+      throw "NotImplementedError: select() for {0}".format(this.selected.type);
+    }
     console.log(this.selected);
-    Output.printEntity(this.selected, true);
+    //Output.printEntity(this.selected, true);
   },
   deselect: function() {
     Output.clear();

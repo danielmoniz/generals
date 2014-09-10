@@ -267,6 +267,8 @@ Crafty.scene('Game', function() {
   addVillages(estimated_villages, this.occupied);
   addTrees(Game.location);
   addGrass();
+  console.log("buildTerrainData()");
+  console.log(buildTerrainData());
   buildTerrainData();
   addSupplyRoads(1);
   // buildTerrainData not working on second run. Why not?

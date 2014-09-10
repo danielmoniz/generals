@@ -94,6 +94,10 @@ Crafty.c('Unit', {
     }
   },
 
+  select: function() {
+    this.report();
+  },
+
   selectFirstUnit: function() {
     if (!Game.selected) {
       Game.select(this);
@@ -119,8 +123,9 @@ Crafty.c('Unit', {
   },
 
   report: function() {
-    var status = this.getStatus();
-    Output.add(status).print();
+    Output.printUnit(this);
+    //var status = this.getStatus();
+    //Output.add(this.getStatus()).print();
   },
   updateStatus: function() {
     if (this.quantity <= 0) {
@@ -140,7 +145,6 @@ Crafty.c('Unit', {
       update = 'Dead!'
     }
     var info = [];
-    var general_info = "Player " + this.side + "'s " + this.type + ": " + update;
     var general_info = "{0} (Player {1})".format(this.type, this.side);
     var num_units = "Quantity: " + update;
     var supply_remaining = "Supply remaining: " + this.supply_remaining;
@@ -269,8 +273,6 @@ Crafty.c('Unit', {
     this.move_target_path = path;
   },
 
-  
-
   moved: function() {
     // detect combat
     var present_units = this.get_present_units();
@@ -312,7 +314,7 @@ Crafty.c('Unit', {
   },
   kill: function(casualties) {
     this.quantity -= casualties;
-    this.report();
+    //this.report();
     this.updateStatus();
     if (!this.isAlive()) {
       this.destroy();
@@ -325,6 +327,16 @@ Crafty.c('Terrain', {
   init: function() {
     this.requires('Actor, Clickable');
     this.z = 80;
+  },
+  select: function() {
+    this.report();
+  },
+  report: function() {
+    Output.printTerrain(this);
+    /*
+    var status = this.type;
+    Output.push(status).print();
+    */
   },
 });
 
@@ -457,6 +469,7 @@ Crafty.c('FakeGrass', {
       .color('rgb(87, 109, 20)')
       .attr({ type: "FakeGrass", colour: { r: 87, g: 109, b: 20 } })
       ;
+    this.z = 1;
   },
 });
 
@@ -601,7 +614,7 @@ Crafty.c('Water', {
         terrain: 0, 
         build_over: 8,
       })
-      .attr({ type: "FakeGrass", colour: { r: 0, g: 128, b: 255 } })
+      .attr({ type: "Water", colour: { r: 0, g: 128, b: 255 } })
       ;
     this.z = 52;
   }
@@ -658,6 +671,7 @@ Crafty.c('Battle', {
       this.z = 200;
       this.num_turns = 0;
   },
+
   units_in_combat: function() {
     units_in_combat = [];
     for (var i=0; i<units.length; i++) {
@@ -666,6 +680,7 @@ Crafty.c('Battle', {
     }
     return units_in_combat;
   },
+
   start: function(attacker) {
     this.attacker = attacker;
     var output = [];
@@ -687,8 +702,6 @@ Crafty.c('Battle', {
 
   resolve: function() {
     this.num_turns += 1;
-    var new_battle_phase = "New battle phase (turn" + this.num_turns + "): -------------";
-    Output.push(new_battle_phase);
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
     var units = this.attacker.get_present_units();
@@ -750,18 +763,18 @@ Crafty.c('Battle', {
     for (var i=0; i<attackers.length; i++) {
       var attackers_alive = attackers[i].isAlive();
       var attacker_status = attackers[i].getStatus();
-      Output.add(attacker_status);
+      //Output.add(attacker_status);
     }
     defenders_alive = false;
     for (var i=0; i<defenders.length; i++) {
       var defenders_alive = defenders[i].isAlive();
       var defender_status = defenders[i].getStatus();
-      Output.add(defenders_alive);
+      //Output.add(defenders_alive);
     }
-    Output.reportBattle(this);
+    Output.printBattle(this);
 
     if (!attackers_alive || !defenders_alive) {
-      this.report();
+      //this.report();
       for (var i=0; i < units_in_combat.length; i++) {
         units_in_combat[i].battle_finished();
       }
@@ -772,7 +785,7 @@ Crafty.c('Battle', {
   report: function() {
     //var output = this.getStatus();
     //Output.push(output).print();
-    Output.reportBattle(this);
+    Output.printBattle(this);
   },
   getStatus: function() {
     var output = [];

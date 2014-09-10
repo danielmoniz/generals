@@ -27,6 +27,7 @@ Output = {
     this.buffer = [];
     return this;
   },
+
   report: function(info, is_unit) {
     console.log(is_unit);
     var info_panel = $(this.element_id);
@@ -50,47 +51,102 @@ Output = {
     return this;
   },
 
-  reportBattle: function(battle) {
+  printBattle: function(battle) {
     var info_panel = $(this.element_id);
-    var report = $('<div class="report"></div>')
+
+    var report = this.createDiv("report")
       .css("padding-bottom", "7px")
     ;
     info_panel.append(report);
-    units = battle.attacker.get_present_units(false);
-    for (var i=1; i<units.length; i++) {
-      var item = $('<div class="report-item"></div>')
-        .addClass("report-item")
-        .addClass("unit")
-        .append(units[i].getStatus())
+    var new_battle_phase = $('<div/>', {
+      class: "test",
+      text: "New battle phase (turn " + battle.num_turns + "): -------------",
+    });
+    report.append(new_battle_phase);
+
+    units = battle.units_in_combat();
+    for (var i=0; i<units.length; i++) {
+      console.log(i);
+      var unit = units[i];
+      var general_info = "{0} (Player {1})".format(unit.type, unit.side);
+      var update = this.Unit.status(unit.quantity);
+      var num_units = "Quantity: " + update;
+      var supply_remaining = this.Unit.supply(unit.supply_remaining);
+      var unit_div = this.createDiv("unit report")
         .click(function() {
           console.log("Unit clicked!");
+        })
         ;
-      report.append(item);
-      });
+      unit_div.append(this.createDiv("unit-item", general_info));
+      unit_div.append(this.createDiv("unit-item", num_units));
+      unit_div.append(this.createDiv("unit-item", supply_remaining));
+      report.append(unit_div);
     }
+    var end_battle_phase = "END OF BATTLE PHASE -------------";
+    report.append(end_battle_phase);
     return this;
+  },
+
+  createDiv: function(classes, text) {
+    if (!classes) classes = "";
+    if (!text) text = "";
+    var div = $('<div/>', {
+      class: classes,
+      text: text,
+    });
+    return div;
   },
 
   clear: function() {
     $(this.element_id).empty();
     return this;
   },
-  printEntity: function(entity, is_unit) {
-    console.log("entity.report:");
-    console.log(entity.getStatus);
-    if (entity.getStatus) {
-      Output.add(entity.getStatus());
-    } else {
-      if (entity.type) Output.push(entity.type);
-    }
-    if (entity.has('Impassable')) Output.push("(Impassable)");
-    Output.print(is_unit);
-  },
+
   reportAttrition: function(unit, units_lost) {
     this.push(unit.report());
     this.push("Not supplied!");
     if (units_lost) this.pushLast(" {0} units lost.".format(units_lost));
     this.print(true);
+  },
+
+  printTerrain: function(terrain) {
+    Output.push(terrain.type);
+    if (terrain.has('Impassable')) Output.push("(Impassable)");
+    Output.print();
+  },
+
+  printUnit: function(unit) {
+    var info = [];
+    var general_info = "{0} (Player {1})".format(unit.type, unit.side);
+    var update = unit.quantity;
+    if (unit.quantity <= 0) {
+      update = 'Dead!'
+    }
+    var num_units = "Quantity: " + update;
+    var supply_remaining = "Supply remaining: " + unit.supply_remaining;
+    this.push(general_info);
+    this.push(num_units);
+    this.push(supply_remaining);
+    this.print(true);
+  },
+
+  reportAttrition: function(unit, units_lost) {
+    this.push(unit.report());
+    this.push("Not supplied!");
+    if (units_lost) this.pushLast(" {0} units lost.".format(units_lost));
+    this.print(true);
+  },
+  Unit: {
+    supply: function(supply_remaining) {
+      return "Supply: {0}".format(supply_remaining);
+    },
+    status: function() {
+      if (unit.quantity <= 0) {
+        update = 'Dead!'
+        return update;
+      }
+      return unit.quantity;
+    },
   }
 }
 
