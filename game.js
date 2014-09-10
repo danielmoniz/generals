@@ -41,7 +41,6 @@ Game = {
   player_selected: [],
   selected: undefined,
   select: function(clickable_object) {
-    console.log("clickable_object: " + clickable_object.type);
     this.deselect();
     this.selected = clickable_object;
     this.player_selected[this.turn] = clickable_object;
