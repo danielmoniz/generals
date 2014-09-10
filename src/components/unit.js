@@ -278,3 +278,25 @@ Crafty.c('Unit', {
   },
 });
 
+Crafty.c('Cavalry', {
+  init: function() {
+    this.requires('Unit, Collision, Targetable, Movable')
+      //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
+      .attr({
+        quantity: 3000 + 2000*Math.round(Math.random() * 2),
+        type: 'Cavalry',
+        //side: 1,
+      })
+      ;
+  },
+
+  pick_side: function(side) {
+    if (side !== undefined) this.side = side;
+    if (this.side == 0) {
+      this.addComponent('spr_cavalry_blue');
+    } else {
+      this.addComponent('spr_cavalry');
+    }
+  },
+});
+
