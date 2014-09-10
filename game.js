@@ -37,10 +37,14 @@ Game = {
   height: function() {
     return this.map_grid.height * this.map_grid.tile.height;
   },
+
+  player_selected: [],
+  selected: undefined,
   select: function(clickable_object) {
     console.log("clickable_object: " + clickable_object.type);
     this.deselect();
     this.selected = clickable_object;
+    this.player_selected[this.turn] = clickable_object;
     this.select_highlight = Crafty.e('Selected');
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);

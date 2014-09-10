@@ -73,7 +73,11 @@ Crafty.c('Unit', {
 
   nextTurn: function() {
     if (Game.turn == this.side) {
-      this.selectFirstUnit();
+      if (!Game.player_selected[Game.turn]) {
+        this.selectFirstUnit();
+      } else {
+        Game.select(Game.player_selected[Game.turn]);
+      }
       this.handleAttrition();
       if (this.battle) {
         this.fight();
