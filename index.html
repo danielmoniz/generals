@@ -4,6 +4,8 @@
     <div id="game"></div>
     <script type="text/javascript" src="lib/noisejs/perlin.js"></script>
     <script type="text/javascript" src="lib/javascript-astar/astar.js"></script>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <script type="text/javascript" src="locations.json"></script>
 
@@ -11,16 +13,20 @@
     <script type="text/javascript" src="game.js"></script>
     <script type="text/javascript" src="src/pathing.js"></script>
     <script type="text/javascript" src="src/terrain.js"></script>
+    <script type="text/javascript" src="src/output.js"></script>
     <script type="text/javascript" src="src/components.js"></script>
     <script type="text/javascript" src="src/scenes.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
 
     <script>
       window.addEventListener('load', Game.start);
     </script>
-    <style type="text/css" media="screen">
-      body { background: black; }
-    </style>
   </head>
   <body>
+    <div id="stage">
+    </div>
+    <div id="info-panel">
+    </div>
   </body>
 </html>

@@ -1,4 +1,4 @@
-var map_width = 24;
+var map_width = 33;
 var tile_size = 32;
 
 Game = {
@@ -9,6 +9,7 @@ Game = {
     width: Math.ceil(map_width),
     //height: Math.ceil(map_width),
     height: Math.ceil(map_width * 3 / 4),
+    //height: Math.ceil(map_width * 0.5625),
     tile: {
       width: tile_size,
       height: tile_size,
@@ -37,14 +38,16 @@ Game = {
     return this.map_grid.height * this.map_grid.tile.height;
   },
   select: function(clickable_object) {
+    console.log("clickable_object: " + clickable_object.type);
     this.deselect();
     this.selected = clickable_object;
     this.select_highlight = Crafty.e('Selected');
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);
-    console.log(this.selected.type);
+    Output.printEntity(this.selected, true);
   },
   deselect: function() {
+    Output.clear();
     if (this.selected) {
       delete this.selected;
       this.select_highlight.destroy();
@@ -67,11 +70,12 @@ Game = {
   start: function() {
     // start Crafty and set a background color so that we can see it's
     // working
-    Crafty.init(Game.width(), Game.height());
+    Crafty.init(Game.width(), Game.height(), "stage");
     //Crafty.background('rgb(87, 109, 20)');
 
     // Simply start the "Loading" scene to get things going
     Crafty.scene('Loading');
+    //document.getElementById('info-panel').innerHTML += '<div id="info-panel"></div>';
   },
 }
 

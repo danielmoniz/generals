@@ -48,8 +48,16 @@ Crafty.c('Unit', {
   init: function() {
     this.requires('Actor, Targetable')
       .bind("MouseUp", function() {
-        this.report();
+        //this.report();
       })
+      /*
+      .bind("MouseOver", function() {
+        document.getElementById("info-panel").innerHTML='<object type="text/html" data="src/info.html"></object>';
+      })
+      .bind("MouseOut", function() {
+        document.getElementById("info-panel").innerHTML='';
+      })
+      */
       ;
     this.z = 100;
     this.bind("NextTurn", this.nextTurn);
@@ -69,7 +77,7 @@ Crafty.c('Unit', {
 
       if (this.battle) {
         this.fight();
-        this.report();
+        //this.report();
       }
     }
     if (Game.turn != this.side) {
@@ -112,21 +120,32 @@ Crafty.c('Unit', {
   report: function() {
     var update = this.quantity;
     if (this.quantity <= 0) {
-      update = 'dead!'
+      update = 'Dead!'
     }
-    console.log("Player " + this.side + "'s " + this.type + ": " + update);
-    console.log("Supply remaining: " + this.supply_remaining);
+    var info = [];
+    var general_info = "Player " + this.side + "'s " + this.type + ": " + update;
+    //var general_info = this.type"Player " + this.side + "'s " + this.type + ": " + update;
+    var general_info = "{0} (Player {1})".format(this.type, this.side);
+    var num_units = "Quantity: " + update;
+    var supply_remaining = "Supply remaining: " + this.supply_remaining;
+    info.push(general_info);
+    info.push(num_units);
+    info.push(supply_remaining);
+    //Output.report(info);
+
     if (this.quantity <= 0) {
       this.destroy();
       return false;
     }
-    return true;
+    return info;
   },
 
   handleAttrition: function() {
     if (this.detectAttrition()) {
-      this.sufferAttrition();
-      this.report();
+      var units_lost = this.sufferAttrition();
+      if (!this.battle) {
+        Output.reportAttrition(this, units_lost);
+      }
     } else {
       this.resupply();
     }
@@ -134,15 +153,15 @@ Crafty.c('Unit', {
   resupply: function() {
     this.supply_remaining = this.max_supply;
   },
+
   detectAttrition: function() {
     // detect possible lack of supply
     var terrain = Crafty('Terrain').get();
     var supply_end_points = terrain.filter(function(terrain) { return terrain.is_supply; });
-    // for now, assume only two supply end points
     // @TODO: Allow for more than two supply endpoints
     var target = supply_end_points[this.side];
     if (!this.together(target)) {
-      buildTerrainData();
+      buildTerrainData(); // reset supply graph to remove old supply block info
       var start = Game.terrain_supply_graph.grid[this.getX()][this.getY()];
       var end = Game.terrain_supply_graph.grid[target.getX()][target.getY()];
 
@@ -187,8 +206,11 @@ Crafty.c('Unit', {
       var to_kill = Math.floor(this.quantity * 0.1);
       this.kill(to_kill);
       console.log("Attrition losses: " + to_kill);
+      return to_kill;
     }
+    return 0;
   },
+
   isEnemyPresent: function() {
     var present_units = this.get_present_units();
     if (present_units.length < 1) return false;
@@ -285,7 +307,7 @@ Crafty.c('Unit', {
 // Terrain is an entity that will be drawn on the map and will affect movement
 Crafty.c('Terrain', {
   init: function() {
-    this.requires('Actor');
+    this.requires('Actor, Clickable');
     this.z = 80;
   },
 });
@@ -381,12 +403,12 @@ Crafty.c('Passable', {
 Crafty.c('Impassable', {
   init: function() {
     this.requires('Grid, Mouse, Solid, Terrain')
-      .bind('MouseDown', function(e) {
+      .bind('MouseUp', function(e) {
       console.log('Clicked Impassable entity!');
       if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
         console.log('Terrain is impassable! Cannot move here.');
       } else if (e.mouseButton == Crafty.mouseButtons.LEFT) {
-        Game.deselect();
+        //Game.select(this);
       }
     })
     ;
@@ -556,9 +578,16 @@ Crafty.c('Bridge', {
 Crafty.c('Water', {
   init: function() {
     this.requires('Color, Terrain, Impassable')
-      .color('#0080FF')
-      .attr({ type: "Water", terrain: 0, build_over: 8 })
+      //.color('#0080FF')
+      .color('rgb(0, 128, 255)')
+      .attr({ 
+        type: "Water", 
+        terrain: 0, 
+        build_over: 8,
+      })
+      .attr({ type: "FakeGrass", colour: { r: 0, g: 128, b: 255 } })
       ;
+    this.z = 52;
   }
 });
 
@@ -568,7 +597,7 @@ Crafty.c('Village', {
   init: function() {
     this.requires('spr_village, Terrain, Passable')
       .attr({ 
-        type: "Water", 
+        type: "Town", 
         terrain: 1.5, 
         build_over: 0.01,
         supply: 1,
@@ -610,6 +639,8 @@ Crafty.c('Battle', {
       .bind("NextTurn", this.resolve)
       .attr({ type: "Battle" })
       ;
+      this.z = 200;
+      this.num_turns = 0;
   },
   units_in_combat: function() {
     units_in_combat = [];
@@ -621,17 +652,27 @@ Crafty.c('Battle', {
   },
   start: function(attacker) {
     this.attacker = attacker;
-    console.log("Battle: -------------");
+    var output = [];
+    var battle_start = "NEW BATTLE";
+    output.push(battle_start);
+    var battle_header = "Battle: -------------";
+    output.push(battle_header);
+    console.log(battle_header);
     console.log("Attacker: " + attacker);
+    var attacker_info = "Attacker: Player " + attacker.side + "'s " + attacker.type + " with " + attacker.quantity;
+    output.push(attacker_info);
     var units_in_combat = this.units_in_combat();
     for (var i=0; i < units_in_combat.length; i++) {
       var unit = units_in_combat[i];
       unit.notify_of_battle();
     }
+    Output.report(output);
   },
 
   resolve: function() {
-    console.log("New battle phase: -------------");
+    this.num_turns += 1;
+    var new_battle_phase = "New battle phase (turn" + this.num_turns + "): -------------";
+    Output.push(new_battle_phase);
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
     var units = this.attacker.get_present_units();
@@ -691,14 +732,15 @@ Crafty.c('Battle', {
 
     attackers_alive = false;
     for (var i=0; i<attackers.length; i++) {
-      attackers_alive = attackers[i].report();
-      if (attackers_alive) break;
+      var attackers_alive = attackers[i].report();
+      Output.push(attackers_alive);
     }
     defenders_alive = false;
     for (var i=0; i<defenders.length; i++) {
-      defenders_alive = defenders[i].report();
-      if (defenders_alive) break;
+      var defenders_alive = defenders[i].report();
+      Output.push(defenders_alive);
     }
+    Output.print();
 
     if (!attackers_alive || !defenders_alive) {
       this.report();
@@ -709,7 +751,11 @@ Crafty.c('Battle', {
     }
   },
   report: function() {
-    console.log("Battle report: finished!");
+    var output = [];
+    var finished = "Battle report: finished!";
+    console.log(finished);
+    output.push(finished);
+    Output.report(output);
   },
 });
 
