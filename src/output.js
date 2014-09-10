@@ -9,8 +9,6 @@ Output = {
     return this;
   },
   add: function(text_array) {
-    //this.buffer += text_array;
-    //for (
     for (var i=0; i<text_array.length; i++) {
       this.push(text_array[i]);
     }
@@ -22,6 +20,7 @@ Output = {
   },
 
   print: function(is_unit) {
+    console.log('called');
     //this.clear();
     this.report(this.buffer, is_unit);
     this.buffer = [];
@@ -29,7 +28,6 @@ Output = {
   },
 
   report: function(info, is_unit) {
-    console.log(is_unit);
     var info_panel = $(this.element_id);
     var report = $('<div class="report"></div>')
       .css("padding-bottom", "7px")
@@ -65,10 +63,7 @@ Output = {
     report.append(new_battle_phase);
 
     var units = battle.units_in_combat();
-    console.log("units");
-    console.log(units);
     for (var i=0; i<units.length; i++) {
-      console.log(i);
       var unit = units[i];
       var general_info = "{0} (Player {1})".format(unit.type, unit.side);
       var update = this.Unit.status(unit.quantity);

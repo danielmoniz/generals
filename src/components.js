@@ -79,7 +79,7 @@ Crafty.c('Unit', {
         this.fight();
       }
     }
-    if (Game.turn != this.side) {
+    if (Game.turn == (this.side + 0.5) % 2) {
       if (!this.battle && this.move_target_path) {
         this.move_toward_target();
       }
@@ -297,7 +297,6 @@ Crafty.c('Unit', {
 
   startBattle: function() {
     var battle = Crafty.e('Battle').at(this.getX(), this.getY());
-    console.log(" starting battle");
     battle.start(this);
   },
   joinBattle: function() {
@@ -345,7 +344,6 @@ Crafty.c('Clickable', {
       // NOTE: 'Click' does not work with right clicking!
       .bind('MouseUp', function(e) { 
         if (e.mouseButton == Crafty.mouseButtons.LEFT) {
-          //console.log('Selected something Clickable!');
           if (!Game.selected || Game.selected != this) {
             Game.select(this);
           } else {
@@ -431,7 +429,6 @@ Crafty.c('Impassable', {
   init: function() {
     this.requires('Grid, Mouse, Solid, Terrain')
       .bind('MouseUp', function(e) {
-      console.log('Clicked Impassable entity!');
       if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected) {
         console.log('Terrain is impassable! Cannot move here.');
       } else if (e.mouseButton == Crafty.mouseButtons.LEFT) {
@@ -664,11 +661,15 @@ Crafty.c('Cavalry', {
 Crafty.c('Battle', {
   init: function() {
     this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
-      .bind("NextTurn", this.resolve)
+      .bind("NextTurn", this.nextTurn)
       .attr({ type: "Battle" })
       ;
       this.z = 200;
       this.num_turns = 0;
+  },
+
+  nextTurn: function() {
+    if (Game.turn % 1 == 0) this.resolve();
   },
 
   units_in_combat: function() {
@@ -684,19 +685,18 @@ Crafty.c('Battle', {
     this.attacker = attacker;
     var output = [];
     var battle_start = "NEW BATTLE";
-    output.push(battle_start);
+    Output.push(battle_start);
     var battle_header = "Battle: -------------";
-    output.push(battle_header);
-    console.log(battle_header);
-    console.log("Attacker: " + attacker);
+    Output.push(battle_header);
     var attacker_info = "Attacker: Player " + attacker.side + "'s " + attacker.type + " with " + attacker.quantity;
-    output.push(attacker_info);
+    Output.push(attacker_info);
     var units_in_combat = this.units_in_combat();
     for (var i=0; i < units_in_combat.length; i++) {
       var unit = units_in_combat[i];
       unit.notify_of_battle();
     }
-    Output.report(output);
+    console.log(Output.buffer);
+    Output.print();
   },
 
   resolve: function() {
