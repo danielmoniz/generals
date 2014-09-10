@@ -2,3 +2,5 @@
 *.jpeg
 
 test.*
+
+resources/*
