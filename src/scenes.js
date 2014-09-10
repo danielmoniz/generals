@@ -223,28 +223,23 @@ Crafty.scene('Game', function() {
 
   function addPlayers() {
     // Player character, placed on the grid
+    function addUnits(side, quantity, x_value) {
+      for (var i=0; i<quantity; i++) {
+        var supply_road = Game.player_supply_roads[side][0];
+        var y = supply_road[supply_road.length - 1].at().y;
+        spot = {x: x_value, y: Math.max(y - Math.floor(quantity/2), 0) + i};
+        if (!Game.terrain[spot.x][spot.y].has('Water')) {
+          Crafty.e('Cavalry').at(spot.x, spot.y)
+            .pick_side(side)
+            ;
+        }
+      }
+    }
+
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    for (var i=0; i<3; i++) {
-      var supply_road = Game.player_supply_roads[0][0];
-      var y = supply_road[supply_road.length - 1].at().y;
-      spot = {x: 0, y: y-1+i};
-      if (!Game.terrain[spot.x][spot.y].has('Water')) {
-        Crafty.e('Cavalry').at(spot.x, spot.y)
-          .pick_side(0)
-          ;
-      }
-    }
-    for (var i=0; i<3; i++) {
-      var supply_road = Game.player_supply_roads[1][0];
-      var y = supply_road[supply_road.length - 1].at().y;
-      spot = {x: Game.map_grid.width - 1, y: y-1+i};
-      if (!Game.terrain[spot.x][spot.y].has('Water')) {
-        Crafty.e('Cavalry').at(spot.x, spot.y)
-          .pick_side(1)
-          ;
-      }
-    }
+    addUnits(0, 5, 0);
+    addUnits(1, 5, Game.map_grid.width - 1);
   }
 
   function addRoadGraphics() {
