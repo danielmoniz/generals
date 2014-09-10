@@ -684,9 +684,7 @@ Crafty.c('Battle', {
   start: function(attacker) {
     this.attacker = attacker;
     var output = [];
-    var battle_start = "NEW BATTLE";
-    Output.push(battle_start);
-    var battle_header = "Battle: -------------";
+    var battle_header = "New Battle: -------------";
     Output.push(battle_header);
     var attacker_info = "Attacker: Player " + attacker.side + "'s " + attacker.type + " with " + attacker.quantity;
     Output.push(attacker_info);
