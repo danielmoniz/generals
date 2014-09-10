@@ -64,7 +64,9 @@ Output = {
     });
     report.append(new_battle_phase);
 
-    units = battle.units_in_combat();
+    var units = battle.units_in_combat();
+    console.log("units");
+    console.log(units);
     for (var i=0; i<units.length; i++) {
       console.log(i);
       var unit = units[i];
@@ -83,7 +85,8 @@ Output = {
       report.append(unit_div);
     }
     var end_battle_phase = "END OF BATTLE PHASE -------------";
-    report.append(end_battle_phase);
+    report.append(this.createDiv(false, end_battle_phase));
+    if (battle.finished) report.append(this.createDiv(false, "Battle finished!"));
     return this;
   },
 
@@ -140,12 +143,12 @@ Output = {
     supply: function(supply_remaining) {
       return "Supply: {0}".format(supply_remaining);
     },
-    status: function() {
-      if (unit.quantity <= 0) {
+    status: function(quantity) {
+      if (quantity <= 0) {
         update = 'Dead!'
         return update;
       }
-      return unit.quantity;
+      return quantity;
     },
   }
 }

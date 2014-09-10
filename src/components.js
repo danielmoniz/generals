@@ -75,10 +75,8 @@ Crafty.c('Unit', {
     if (Game.turn == this.side) {
       this.selectFirstUnit();
       this.handleAttrition();
-
       if (this.battle) {
         this.fight();
-        //this.report();
       }
     }
     if (Game.turn != this.side) {
@@ -299,6 +297,7 @@ Crafty.c('Unit', {
 
   startBattle: function() {
     var battle = Crafty.e('Battle').at(this.getX(), this.getY());
+    console.log(" starting battle");
     battle.start(this);
   },
   joinBattle: function() {
@@ -673,9 +672,9 @@ Crafty.c('Battle', {
   },
 
   units_in_combat: function() {
-    units_in_combat = [];
+    var units_in_combat = [];
     for (var i=0; i<units.length; i++) {
-      unit = units[i];
+      var unit = units[i];
       if (unit.together(this)) units_in_combat.push(unit);
     }
     return units_in_combat;
@@ -705,8 +704,8 @@ Crafty.c('Battle', {
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
     var units = this.attacker.get_present_units();
-    attackers = [this.attacker];
-    defenders = [];
+    var attackers = [this.attacker];
+    var defenders = [];
     for (var i=0; i < units.length; i++) {
       if (units[i].side == this.attacker.side) {
         attackers.push(units[i]);
@@ -771,15 +770,16 @@ Crafty.c('Battle', {
       var defender_status = defenders[i].getStatus();
       //Output.add(defenders_alive);
     }
-    Output.printBattle(this);
 
     if (!attackers_alive || !defenders_alive) {
       //this.report();
       for (var i=0; i < units_in_combat.length; i++) {
         units_in_combat[i].battle_finished();
       }
+      this.finished = true;
       this.destroy();
     }
+    Output.printBattle(this);
   },
 
   report: function() {
@@ -788,15 +788,17 @@ Crafty.c('Battle', {
     Output.printBattle(this);
   },
   getStatus: function() {
+    /*
     var output = [];
     var units_in_combat = this.units_in_combat();
     for (var i=0; i<units_in_combat.length; i++) {
       var unit = units_in_combat[i];
       output.push(unit.getStatus());
     }
-    //var finished = "Battle report: finished!";
+    var finished = "Battle report: finished!";
     if (this.finished) output.push(finished);
     return output;
+    */
   },
 });
 
