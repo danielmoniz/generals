@@ -20,6 +20,7 @@ Output = {
     this.buffer[this.buffer.length - 1] += text;
     return this;
   },
+
   print: function(is_unit) {
     //this.clear();
     this.report(this.buffer, is_unit);
@@ -48,13 +49,37 @@ Output = {
     }
     return this;
   },
+
+  reportBattle: function(battle) {
+    var info_panel = $(this.element_id);
+    var report = $('<div class="report"></div>')
+      .css("padding-bottom", "7px")
+    ;
+    info_panel.append(report);
+    units = battle.attacker.get_present_units(false);
+    for (var i=1; i<units.length; i++) {
+      var item = $('<div class="report-item"></div>')
+        .addClass("report-item")
+        .addClass("unit")
+        .append(units[i].getStatus())
+        .click(function() {
+          console.log("Unit clicked!");
+        ;
+      report.append(item);
+      });
+    }
+    return this;
+  },
+
   clear: function() {
     $(this.element_id).empty();
     return this;
   },
   printEntity: function(entity, is_unit) {
-    if (entity.report) {
-      Output.add(entity.report());
+    console.log("entity.report:");
+    console.log(entity.getStatus);
+    if (entity.getStatus) {
+      Output.add(entity.getStatus());
     } else {
       if (entity.type) Output.push(entity.type);
     }

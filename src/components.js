@@ -67,6 +67,7 @@ Crafty.c('Unit', {
       side: 0, 
       movement: 8, 
       supply_remaining: this.max_supply,
+      alive: true,
     });
   },
 
@@ -118,24 +119,38 @@ Crafty.c('Unit', {
   },
 
   report: function() {
+    var status = this.getStatus();
+    Output.add(status).print();
+  },
+  updateStatus: function() {
+    if (this.quantity <= 0) {
+      this.alive = false;
+      //this.destroy();
+    }
+  },
+  isAlive: function() {
+    this.updateStatus();
+    return this.alive;
+  },
+
+  getStatus: function() {
+    this.updateStatus();
     var update = this.quantity;
     if (this.quantity <= 0) {
       update = 'Dead!'
     }
     var info = [];
     var general_info = "Player " + this.side + "'s " + this.type + ": " + update;
-    //var general_info = this.type"Player " + this.side + "'s " + this.type + ": " + update;
     var general_info = "{0} (Player {1})".format(this.type, this.side);
     var num_units = "Quantity: " + update;
     var supply_remaining = "Supply remaining: " + this.supply_remaining;
     info.push(general_info);
     info.push(num_units);
     info.push(supply_remaining);
-    //Output.report(info);
 
     if (this.quantity <= 0) {
       this.destroy();
-      return false;
+      //return false;
     }
     return info;
   },
@@ -269,11 +284,11 @@ Crafty.c('Unit', {
     }
   },
 
-  get_present_units: function() {
+  get_present_units: function(ignore_self) {
     present_units = [];
     units = Crafty('Unit').get();
     for (var i=0; i < units.length; i++) {
-      if (units[i].together(this)) {
+      if (units[i].together(this, ignore_self)) {
         present_units.push(units[i]);
       }
     }
@@ -289,7 +304,7 @@ Crafty.c('Unit', {
   },
   notify_of_battle: function() {
     this.battle = true;
-    this.report();
+    return this.getStatus();
   },
   battle_finished: function() {
     this.battle = false;
@@ -298,7 +313,8 @@ Crafty.c('Unit', {
   kill: function(casualties) {
     this.quantity -= casualties;
     this.report();
-    if (this.quantity <= 0) {
+    this.updateStatus();
+    if (!this.isAlive()) {
       this.destroy();
     }
   },
@@ -732,15 +748,17 @@ Crafty.c('Battle', {
 
     attackers_alive = false;
     for (var i=0; i<attackers.length; i++) {
-      var attackers_alive = attackers[i].report();
-      Output.push(attackers_alive);
+      var attackers_alive = attackers[i].isAlive();
+      var attacker_status = attackers[i].getStatus();
+      Output.add(attacker_status);
     }
     defenders_alive = false;
     for (var i=0; i<defenders.length; i++) {
-      var defenders_alive = defenders[i].report();
-      Output.push(defenders_alive);
+      var defenders_alive = defenders[i].isAlive();
+      var defender_status = defenders[i].getStatus();
+      Output.add(defenders_alive);
     }
-    Output.print();
+    Output.reportBattle(this);
 
     if (!attackers_alive || !defenders_alive) {
       this.report();
@@ -750,12 +768,22 @@ Crafty.c('Battle', {
       this.destroy();
     }
   },
+
   report: function() {
+    //var output = this.getStatus();
+    //Output.push(output).print();
+    Output.reportBattle(this);
+  },
+  getStatus: function() {
     var output = [];
-    var finished = "Battle report: finished!";
-    console.log(finished);
-    output.push(finished);
-    Output.report(output);
+    var units_in_combat = this.units_in_combat();
+    for (var i=0; i<units_in_combat.length; i++) {
+      var unit = units_in_combat[i];
+      output.push(unit.getStatus());
+    }
+    //var finished = "Battle report: finished!";
+    if (this.finished) output.push(finished);
+    return output;
   },
 });
 

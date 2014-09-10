@@ -225,7 +225,7 @@ Crafty.scene('Game', function() {
     // Player character, placed on the grid
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    for (var i=0; i<5; i++) {
+    for (var i=0; i<2; i++) {
       spot = {x: 0, y: 0+i};
       if (!Game.terrain[spot.x][spot.y].has('Water')) {
         Crafty.e('Cavalry').at(spot.x, spot.y)
@@ -234,7 +234,7 @@ Crafty.scene('Game', function() {
           ;
       }
     }
-    for (var i=0; i<5; i++) {
+    for (var i=0; i<2; i++) {
       spot = {x: Game.map_grid.width - 1, y: 0+i};
       if (!Game.terrain[spot.x][spot.y].has('Water')) {
         Crafty.e('Cavalry').at(Game.map_grid.width - 1, 0+i)
@@ -277,6 +277,7 @@ Crafty.scene('Game', function() {
   //addSupplyRoads(1, 1);
   addRoadGraphics();
   addPlayers();
+  Game.select(Crafty('Unit').get(0));
 
   // Creates a road on the map given a shortest-path solution.
   function createRoad(path, including_end, is_supply_road) {

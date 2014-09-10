@@ -8,8 +8,8 @@ Game = {
   map_grid: {
     width: Math.ceil(map_width),
     //height: Math.ceil(map_width),
-    height: Math.ceil(map_width * 3 / 4),
-    //height: Math.ceil(map_width * 0.5625),
+    //height: Math.ceil(map_width * 3 / 4),
+    height: Math.ceil(map_width * 0.5625),
     tile: {
       width: tile_size,
       height: tile_size,
@@ -44,6 +44,7 @@ Game = {
     this.select_highlight = Crafty.e('Selected');
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);
+    console.log(this.selected);
     Output.printEntity(this.selected, true);
   },
   deselect: function() {
