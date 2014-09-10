@@ -58,6 +58,25 @@ Crafty.scene('Game', function() {
     return height_map;
   }
 
+  function colourWater(colour_scale_factor) {
+    if (colour_scale_factor === undefined) var colour_scale_factor = 1/3;
+    var water = Crafty('Water').get();
+    for (var i = 0; i < water.length; i++) {
+      var x = water[i].at().x;
+      var y = water[i].at().y;
+      var entity = water[i];
+      var height = Math.ceil(Game.height_map[x][y] * 255 * colour_scale_factor);
+      var r = Math.ceil(entity.colour.r - height);
+      var g = Math.ceil(entity.colour.g - height);
+      var b = Math.ceil(entity.colour.b - height);
+      var color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+      entity.color('rgb(' + r + ', ' + g + ', ' + b + ')');
+      // Use below for grey-scale heightmap
+      //ground.color('rgb(' + height + ', ' + height + ',' + height + ')')
+      ;
+    }
+  }
+
   function colourHeightMap(location_map) {
     var colour_scale_factor = 1/3;
     for (var x = 0; x < Game.map_grid.width; x++) {
@@ -243,6 +262,7 @@ Crafty.scene('Game', function() {
   buildEmptyGameData();
   colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
+  colourWater();
   estimated_villages = 8;
   addVillages(estimated_villages, this.occupied);
   addTrees(Game.location);
