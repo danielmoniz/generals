@@ -208,16 +208,16 @@ Crafty.scene('Game', function() {
         }
       }
 
-      createRoad(best_route, true, true);
+      return createRoad(best_route, true, true);
     }
 
     //console.log("Starting left supply roads ============");
     for (var i = 0 + offset; i < max_roads; i++) {
-      addSupplyRoad(villages, 'left');
+      Game.player_supply_roads[0].push(addSupplyRoad(villages, 'left'));
     }
     //console.log("Starting right supply roads ============");
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
-      addSupplyRoad(villages, 'right');
+      Game.player_supply_roads[1].push(addSupplyRoad(villages, 'right'));
     }
   }
 
@@ -225,21 +225,23 @@ Crafty.scene('Game', function() {
     // Player character, placed on the grid
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    for (var i=0; i<2; i++) {
-      spot = {x: 0, y: 0+i};
+    for (var i=0; i<3; i++) {
+      var supply_road = Game.player_supply_roads[0][0];
+      var y = supply_road[supply_road.length - 1].at().y;
+      spot = {x: 0, y: y-1+i};
       if (!Game.terrain[spot.x][spot.y].has('Water')) {
         Crafty.e('Cavalry').at(spot.x, spot.y)
           .pick_side(0)
-          //.pick_side(Math.round(Math.random()))
           ;
       }
     }
-    for (var i=0; i<2; i++) {
-      spot = {x: Game.map_grid.width - 1, y: 0+i};
+    for (var i=0; i<3; i++) {
+      var supply_road = Game.player_supply_roads[1][0];
+      var y = supply_road[supply_road.length - 1].at().y;
+      spot = {x: Game.map_grid.width - 1, y: y-1+i};
       if (!Game.terrain[spot.x][spot.y].has('Water')) {
-        Crafty.e('Cavalry').at(Game.map_grid.width - 1, 0+i)
+        Crafty.e('Cavalry').at(spot.x, spot.y)
           .pick_side(1)
-          //.pick_side(Math.round(Math.random()))
           ;
       }
     }
@@ -283,34 +285,41 @@ Crafty.scene('Game', function() {
 
   // Creates a road on the map given a shortest-path solution.
   function createRoad(path, including_end, is_supply_road) {
+    var road = [];
     var end = path.length - 1;
     //console.log("creating road. end: " + path[path.length-1].x + ", " + path[path.length-1].y);
     if (including_end) end = path.length;
     for (var i = 0; i < end; i++) {
       var x = path[i].x;
       var y = path[i].y;
-      if (Game.terrain[x][y].has("Village")) continue;
-      if (Game.terrain[x][y].has("Water")) {
-        Game.terrain[x][y].destroy();
-        var bridge = Crafty.e('Bridge');
-        bridge.at(path[i].x, path[i].y);
-        Game.terrain[x][y] = bridge;
+      var terrain = Game.terrain[x][y];
+      if (terrain.has("Village")) {
+        road.push(terrain);
+        continue;
+      }
+      if (terrain.has("Water")) {
+        terrain.destroy();
+        var entity = Crafty.e('Bridge');
+        entity.at(path[i].x, path[i].y);
+        Game.terrain[x][y] = entity;
+        road.push(entity);
       } else {
-        var terrain = Game.terrain[x][y];
         var is_supply = false;
         if (terrain.has('Road') && terrain.is_supply) {
           var is_supply = true;
         }
-        Game.terrain[x][y].destroy();
-        var road = Crafty.e('Road');
-        road.at(path[i].x, path[i].y);
+        terrain.destroy();
+        var entity = Crafty.e('Road');
+        entity.at(path[i].x, path[i].y);
         if (is_supply || (is_supply_road && i == end - 1)) {
-          road.is_supply = true;
+          entity.is_supply = true;
         }
-        Game.terrain[x][y] = road;
+        Game.terrain[x][y] = entity;
+        road.push(entity);
       }
     }
     buildTerrainData();
+    return road;
   }
 
   function getShortestPath(graph, start, end) {

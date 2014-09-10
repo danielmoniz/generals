@@ -60,6 +60,8 @@ Game = {
     }
   },
 
+  player_supply_roads: [[], []],
+
   turn: 0,
   turn_count: 0,
 
@@ -67,7 +69,6 @@ Game = {
   after_first_player: 0.5,
   second_player: 1,
   after_second_player: 1.5,
-  //turn_order: [this.first_player, this.after_first_player, this.second_player, this.after_second_player],
 
   nextTurn: function() {
     this.turn += 0.5;
