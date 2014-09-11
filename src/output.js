@@ -1,5 +1,7 @@
 Output = {
-  element_id: "#info-panel",
+  main_element_id: "#info-panel",
+  turn_count_element_id: "#turn-count",
+  player_element_id: "#player",
   buffer: [],
   push: function(info) {
     //for (var i=0; i<info.length; i++) {
@@ -27,7 +29,7 @@ Output = {
   },
 
   report: function(info, is_unit, unit_id) {
-    var info_panel = $(this.element_id);
+    var info_panel = $(this.main_element_id);
     var report = $('<div class="report"></div>')
       .css("padding-bottom", "7px")
     ;
@@ -67,7 +69,7 @@ Output = {
   },
 
   printBattle: function(battle) {
-    var info_panel = $(this.element_id);
+    var info_panel = $(this.main_element_id);
     var report = this.createDiv("report")
       .css("padding-bottom", "7px")
     ;
@@ -100,7 +102,7 @@ Output = {
   },
 
   printBattleStart: function(battle) {
-    var info_panel = $(this.element_id);
+    var info_panel = $(this.main_element_id);
     var report = this.createDiv("report")
       .css("padding-bottom", "7px")
     ;
@@ -140,7 +142,7 @@ Output = {
   },
 
   clear: function() {
-    $(this.element_id).empty();
+    $(this.main_element_id).empty();
     return this;
   },
 
@@ -189,17 +191,32 @@ Output = {
       var unit_id = parseInt($(this).attr("unit_id"));
       Game.select(Crafty(unit_id));
     },
-  }
+  },
+
+  updateStatusBar: function() {
+    var turn_bar = $(this.turn_count_element_id);
+    var player_bar = $(this.player_element_id);
+    var turn_count = "Turn {0}".format(Game.turn_count);
+    var player = undefined;
+    var turn = Game.turn;
+    if (Game.turn % 1 != 0) turn = (Game.turn + 0.5) % 2;
+    var player_colour = Game.player_colour[turn];
+
+    if (Game.turn % 1 == 0) {
+      player = "Player {0} ({1})'s turn".format(turn, player_colour);
+    } else {
+      player = "Player {0} (up next)".format(turn);
+    }
+    turn_bar.text(turn_count);
+    player_bar.text(player);
+    console.log(" updating title!");
+    /*
+    var report = $('<div class="report"></div>')
+      .css("padding-bottom", "7px")
+    ;
+    info_panel.append(report);
+   */
+
+  },
 }
 
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-        ;
-    });
-  };
-}

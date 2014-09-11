@@ -67,6 +67,7 @@ Game = {
     delete this.player_selected[side];
   },
 
+  player_colour: { 0: "Blue", 1: "White" },
   player_supply_roads: [[], []],
 
   turn: 0,
@@ -79,11 +80,11 @@ Game = {
 
   nextTurn: function() {
     this.turn += 0.5;
+    this.turn_count += 0.5;
     this.turn = this.turn % 2;
-    console.log("NEXT TURN: Player " + this.turn + "--------------------");
+    Output.updateStatusBar();
     this.deselect();
     Crafty.trigger("NextTurn");
-    this.turn_count += 1;
   },
 
   // initialize and start our game
@@ -91,6 +92,7 @@ Game = {
     // start Crafty and set a background color so that we can see it's
     // working
     Crafty.init(Game.width(), Game.height(), "stage");
+    Output.updateStatusBar();
     //Crafty.background('rgb(87, 109, 20)');
 
     // Simply start the "Loading" scene to get things going

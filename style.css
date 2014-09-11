@@ -1,3 +1,7 @@
 body { background: black; }
 #info-panel { width:300px; height: 250px; color:white; }
+#title-container { padding: 2px; width: 100%; 24px; color:white; float:left; }
+#title { padding-right: 20px; 24px; float:left; }
+#turn-count { width:72px; float:left; }
+#player { width:200px; float:left; }
 .report { padding-bottom: 5px; }
