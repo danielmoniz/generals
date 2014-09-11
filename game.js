@@ -43,7 +43,7 @@ Game = {
   select: function(clickable_object) {
     this.deselect();
     this.selected = clickable_object;
-    this.player_selected[this.turn] = clickable_object;
+    if (this.selected.side == this.turn) this.player_selected[this.turn] = clickable_object;
     this.select_highlight = Crafty.e('Selected');
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);
@@ -61,7 +61,6 @@ Game = {
       this.select_highlight.destroy();
       //delete this.select_highlight;
     }
-    delete this.player_selected[this.turn];
   },
 
   player_supply_roads: [[], []],
