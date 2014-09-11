@@ -60,10 +60,12 @@ Crafty.c('Unit', {
   select: function() {
     this.report();
     var other_units_present = this.getPresentUnits(true);
-    Output.push("Other units present: --------------").print();
+    Output.push("Other units present: --------------");
     for (var i=0; i<other_units_present.length; i++) {
       other_units_present[i].report();
     }
+    Output.push("-----------------------------------");
+    Output.print();
   },
 
   selectFirstUnit: function() {
@@ -73,7 +75,7 @@ Crafty.c('Unit', {
   },
 
   retreat: function() {
-    console.log("REATREAT HAS BEEN CALLED");
+    console.log("RETREAT HAS BEEN CALLED");
     // awful things happen
     var battle = this.isBattlePresent();
     battle.retreat(this);
@@ -191,7 +193,7 @@ Crafty.c('Unit', {
       //console.log(supply_route);
       if (supply_route.length == 0) return true;
     } else {
-      console.log("Supplied because unit is on supply route end point!");
+      // Supplied because unit is on supply route end point
     }
     return false;
   },
@@ -343,5 +345,6 @@ Crafty.c('Cavalry', {
     if (this.battle_side == "attacker") return "defender";
     if (this.battle_side == "defender") return "attacker";
   },
+
 });
 

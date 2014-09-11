@@ -35,12 +35,7 @@ Output = {
     if (is_unit) {
       report.addClass("unit");
       report.attr("unit_id", unit_id);
-      report.click(function() {
-        console.log("Unit clicked!");
-        //var unit_id = $(this).attr("unit_id")
-        var unit = Crafty(unit_id);
-        Game.select(unit);
-      });
+      report.click(this.Unit.selectSelf);
     }
     for (var i=0; i<info.length; i++) {
       var item = $('<div class="report-item"></div>')
@@ -50,6 +45,25 @@ Output = {
       report.append(item);
     }
     return this;
+  },
+
+  printUnit: function(unit) {
+    var unit_id = unit.getId();
+    var info = [];
+    //var general_info = "{0} (Player {1})".format(unit.type, unit.side);
+    var general_info = this.Unit.generalInfo(unit);
+    var update = unit.quantity;
+    if (unit.quantity <= 0) {
+      update = 'Dead!'
+    }
+    var num_units = "Quantity: " + update;
+    var supply_remaining = this.Unit.supply(unit.supply_remaining);
+    var in_battle = "Supply remaining: " + unit.supply_remaining;
+    this.push(general_info);
+    this.push(num_units);
+    this.push(supply_remaining);
+    if (unit.battle) this.push("(In battle)");
+    this.print(true, unit_id);
   },
 
   printBattle: function(battle) {
@@ -66,15 +80,13 @@ Output = {
     var units = battle.units_in_combat();
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
-      var general_info = "{0} (Player {1})".format(unit.type, unit.side);
+      var general_info = this.Unit.generalInfo(unit);
       var update = this.Unit.status(unit.quantity);
       var num_units = "Quantity: " + update;
       var supply_remaining = this.Unit.supply(unit.supply_remaining);
       var unit_div = this.createDiv("unit report")
-        .click(function() {
-          console.log("Unit clicked!");
-          Game.select(unit);
-        })
+        .attr("unit_id", unit.getId())
+        .click(this.Unit.selectSelf)
         ;
       unit_div.append(this.createDiv("unit-item", general_info));
       unit_div.append(this.createDiv("unit-item", num_units));
@@ -106,11 +118,10 @@ Output = {
       side[battle.attacker.side] = "Attacker";
       side[(battle.attacker.side + 1) % 2] = "Defender";
       var general_info = "{0}: Player {1}'s {2} with {3}".format(side[unit.side], unit.side, unit.type, unit.quantity);
+      var general_info = this.Unit.generalInfoStartingBattle(unit);
       var unit_div = this.createDiv("unit report")
-        .click(function() {
-          console.log("Unit clicked!");
-          Game.select(unit);
-        })
+        .attr("unit_id", unit.getId())
+        .click(this.Unit.selectSelf)
         ;
       unit_div.append(this.createDiv("unit-item", general_info));
       report.append(unit_div);
@@ -146,24 +157,6 @@ Output = {
     Output.print();
   },
 
-  printUnit: function(unit) {
-    var unit_id = unit.getId();
-    var info = [];
-    var general_info = "{0} (Player {1})".format(unit.type, unit.side);
-    var update = unit.quantity;
-    if (unit.quantity <= 0) {
-      update = 'Dead!'
-    }
-    var num_units = "Quantity: " + update;
-    var supply_remaining = this.Unit.supply(unit.supply_remaining);
-    var in_battle = "Supply remaining: " + unit.supply_remaining;
-    this.push(general_info);
-    this.push(num_units);
-    this.push(supply_remaining);
-    if (unit.battle) this.push("(In battle)");
-    this.print(true, unit_id);
-  },
-
   reportAttrition: function(unit, units_lost) {
     this.push(unit.report());
     this.push("Not supplied!");
@@ -171,6 +164,16 @@ Output = {
     this.print(true);
   },
   Unit: {
+    generalInfo: function(unit) {
+      var general_info = "{0} (Player {1})".format(unit.type, unit.side);
+      return general_info;
+    },
+    generalInfoStartingBattle: function(unit) {
+      var general_info = "{0} (Player {1})".format(unit.type, unit.side);
+      battle_side = Utility.capitalizeFirstLetter(unit.battle_side);
+      var general_info = "{0}: Player {1}'s {2} with {3}".format(battle_side, unit.side, unit.type, unit.quantity);
+      return general_info;
+    },
     supply: function(supply_remaining) {
       return "Supply: {0}".format(supply_remaining);
     },
@@ -180,6 +183,11 @@ Output = {
         return update;
       }
       return quantity;
+    },
+    selectSelf: function() {
+      console.log("Unit clicked!");
+      var unit_id = parseInt($(this).attr("unit_id"));
+      Game.select(Crafty(unit_id));
     },
   }
 }
