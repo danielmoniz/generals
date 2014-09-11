@@ -62,6 +62,10 @@ Game = {
       //delete this.select_highlight;
     }
   },
+  clearPlayerSelected: function(side) {
+    if (side === undefined) side = this.turn;
+    delete this.player_selected[side];
+  },
 
   player_supply_roads: [[], []],
 

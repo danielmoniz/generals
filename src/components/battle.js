@@ -23,6 +23,7 @@ Crafty.c('Battle', {
 
   start: function(attacker) {
     this.attacker = attacker;
+    this.attacking_side = attacker.side;
     this.attackers = [attacker];
     var units_in_combat = this.units_in_combat();
     this.defenders = units_in_combat.filter(function(unit) {
@@ -49,17 +50,36 @@ Crafty.c('Battle', {
   },
 
   join: function(unit) {
-    if (unit.side == this.attacker.side) {
+    if (unit.side == this.attacking_side) {
+      var battle_side = undefined;
       this.attackers.push(unit);
+      battle_side = this.attacking_side;
     } else {
       this.defenders.push(unit);
-    }
-    if (unit.side == this.attacker.side) {
-      var battle_side = this.attacker.side;
-    } else {
-      var battle_side = unit.getOppositeBattleSide();
+      battle_side = unit.getOppositeBattleSide();
     }
     unit.notify_of_battle(battle_side);
+  },
+
+  unitDead: function(unit) {
+    if (unit.battle_side == "attacker") {
+      for (var i=0; i<this.attackers.length; i++) {
+        if (!this.attackers[i] || this.attackers[i].is(unit)) {
+          delete this.attackers[i];
+          break;
+        }
+      }
+      if (this.attacker.is(unit)) delete this.attacker;
+    } else if (unit.battle_side == "defender") {
+      for (var i=0; i<this.defenders.length; i++) {
+        if (!this.defenders[i] || this.defenders[i].is(unit)) {
+          delete this.defenders[i];
+          break;
+        }
+      }
+    } else {
+      throw "NoBattleSide: unit had battle_side {0}. Needs to be 'attacker' or 'defender'.".format(unit.battle_side);
+    }
   },
 
   retreat: function(unit) {
@@ -157,11 +177,11 @@ Crafty.c('Battle', {
     this.num_turns += 1;
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
-    var units = this.attacker.getPresentUnits();
+    var units = this.getPresentUnits();
     var attackers = [this.attacker];
     var defenders = [];
     for (var i=0; i < units.length; i++) {
-      if (units[i].side == this.attacker.side) {
+      if (units[i].side == this.attacking_side) {
         attackers.push(units[i]);
       } else {
         defenders.push(units[i]);
@@ -207,25 +227,23 @@ Crafty.c('Battle', {
     attackers_active = false;
     for (var i=0; i<this.attackers.length; i++) {
       var attacker = this.attackers[i];
+      if (!attacker) continue;
       var attackers_alive = this.attackers[i].isAlive();
-      var attacker_status = this.attackers[i].getStatus();
       if (attacker.battle) {
         attackers_active = true;
         break;
       }
-      //Output.add(attacker_status);
     }
     defenders_alive = false;
     defenders_active = false;
     for (var i=0; i<this.defenders.length; i++) {
       var defender = this.defenders[i];
+      if (!defender) continue;
       var defenders_alive = this.defenders[i].isAlive();
-      var defender_status = this.defenders[i].getStatus();
       if (defender.battle) {
         defenders_active = true;
         break;
       }
-      //Output.add(defenders_alive);
     }
 
     if (!defenders_active || !attackers_active ||  !attackers_alive || !defenders_alive) return false;
@@ -254,5 +272,17 @@ Crafty.c('Battle', {
     return output;
     */
   },
+
+  getPresentUnits: function() {
+    present_units = [];
+    units = Crafty('Unit').get();
+    for (var i=0; i < units.length; i++) {
+      if (units[i].together(this, true)) {
+        present_units.push(units[i]);
+      }
+    }
+    return present_units;
+  },
+
 });
 

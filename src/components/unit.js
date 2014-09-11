@@ -109,7 +109,6 @@ Crafty.c('Unit', {
   updateStatus: function() {
     if (this.quantity <= 0) {
       this.alive = false;
-      //this.destroy();
     }
   },
   isAlive: function() {
@@ -310,8 +309,22 @@ Crafty.c('Unit', {
     //this.report();
     this.updateStatus();
     if (!this.isAlive()) {
-      this.destroy();
+      this.die();
     }
+  },
+  die: function() {
+    this.updateStatus();
+    var selected = Game.player_selected[this.side];
+    if (selected && selected.getId && selected.getId() == this.getId()) {
+      Game.clearPlayerSelected(this.side);
+    }
+    var battle = this.isBattlePresent();
+    if (battle) battle.unitDead(this);
+    //this.alive = false;
+    this.destroy();
+  },
+  is: function(unit) {
+    return this.getId() == unit.getId();
   },
 });
 
