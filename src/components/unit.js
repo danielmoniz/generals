@@ -27,7 +27,12 @@ Crafty.c('Unit', {
 
   nextTurn: function() {
     if (Game.turn == this.side) {
-      if (!Game.player_selected[Game.turn]) {
+      var selected = Game.player_selected;
+      var item = selected[Game.turn];
+      //if (item && (!item.isAlive)) Game.deselect();
+      if (item && item.side !== undefined && item.side != this.side) Game.deselect();
+      var item = Game.player_selected[Game.turn];
+      if (!item) {
         this.selectFirstUnit();
       } else {
         Game.select(Game.player_selected[Game.turn]);
@@ -264,11 +269,14 @@ Crafty.c('Unit', {
   },
   notify_of_battle: function() {
     this.battle = true;
+    destroyMovementPath(this.movement_path);
+    delete this.movement_path;
+    delete this.move_target_path;
     return this.getStatus();
   },
   battle_finished: function() {
     this.battle = false;
-    this.report();
+    //this.report();
   },
   kill: function(casualties) {
     this.quantity -= casualties;

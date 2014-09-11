@@ -64,6 +64,7 @@ Game = {
       this.select_highlight.destroy();
       //delete this.select_highlight;
     }
+    delete this.player_selected[this.turn];
   },
 
   player_supply_roads: [[], []],
