@@ -226,6 +226,7 @@ Crafty.scene('Game', function() {
     function addUnits(side, quantity, x_value) {
       for (var i=0; i<quantity; i++) {
         var supply_road = Game.player_supply_roads[side][0];
+        if (supply_road[supply_road.length - 1] === undefined) continue;
         var y = supply_road[supply_road.length - 1].at().y;
         var min_y = Math.max(y - Math.floor(quantity/2), 0);
         var max_y = Math.min(min_y, Game.map_grid.height - quantity);
@@ -266,8 +267,6 @@ Crafty.scene('Game', function() {
   addVillages(estimated_villages, this.occupied);
   addTrees(Game.location);
   addGrass();
-  console.log("buildTerrainData()");
-  console.log(buildTerrainData());
   buildTerrainData();
   addSupplyRoads(1);
   // buildTerrainData not working on second run. Why not?
