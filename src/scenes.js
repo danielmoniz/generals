@@ -263,8 +263,7 @@ Crafty.scene('Game', function() {
   colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
   colourWater();
-  estimated_villages = 8;
-  addVillages(estimated_villages, this.occupied);
+  addVillages(12, this.occupied);
   addTrees(Game.location);
   addGrass();
   buildTerrainData();

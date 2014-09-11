@@ -196,27 +196,41 @@ Output = {
   updateStatusBar: function() {
     var turn_bar = $(this.turn_count_element_id);
     var player_bar = $(this.player_element_id);
-    var turn_count = "Turn {0}".format(Game.turn_count);
+    var turn_count = "Turn {0}".format(this.TurnCount.pretty());
     var player = undefined;
     var turn = Game.turn;
-    if (Game.turn % 1 != 0) turn = (Game.turn + 0.5) % 2;
-    var player_colour = Game.player_colour[turn];
+    var next_player_turn = this.Turn.nextPlayerTurn();
+    var player_colour = Game.player_colour[next_player_turn];
 
-    if (Game.turn % 1 == 0) {
-      player = "Player {0} ({1})'s turn".format(turn, player_colour);
+    if (this.Turn.isPlayerTurn()) {
+      player = "Player {0} ({1})'s turn".format(this.Turn.pretty(next_player_turn), player_colour);
     } else {
-      player = "Player {0} (up next)".format(turn);
+      player = "Player {0} (up next)".format(this.Turn.pretty(next_player_turn));
     }
     turn_bar.text(turn_count);
     player_bar.text(player);
-    console.log(" updating title!");
-    /*
-    var report = $('<div class="report"></div>')
-      .css("padding-bottom", "7px")
-    ;
-    info_panel.append(report);
-   */
+  },
 
+  Turn: {
+    pretty: function(turn) {
+      if (turn !== undefined) return turn + 1;
+      return Game.turn + 1;
+    },
+    nextPlayerTurn: function(turn) {
+      if (turn === undefined) turn = Game.turn;
+      if (!this.isPlayerTurn(turn)) return (turn + 0.5) % 2;
+      return turn;
+    },
+    isPlayerTurn: function(turn) {
+      if (turn === undefined) turn = Game.turn;
+      if (turn % 1 == 0) return true;
+      return false;
+    },
+  },
+  TurnCount: {
+    pretty: function(count) {
+      if (count) return count + 1;
+      return Game.turn_count + 1;
+    },
   },
 }
-
