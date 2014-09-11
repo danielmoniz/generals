@@ -227,7 +227,9 @@ Crafty.scene('Game', function() {
       for (var i=0; i<quantity; i++) {
         var supply_road = Game.player_supply_roads[side][0];
         var y = supply_road[supply_road.length - 1].at().y;
-        spot = {x: x_value, y: Math.max(y - Math.floor(quantity/2), 0) + i};
+        var min_y = Math.max(y - Math.floor(quantity/2), 0);
+        var max_y = Math.min(min_y, Game.map_grid.height - quantity);
+        spot = {x: x_value, y: max_y + i};
         if (!Game.terrain[spot.x][spot.y].has('Water')) {
           Crafty.e('Cavalry').at(spot.x, spot.y)
             .pick_side(side)

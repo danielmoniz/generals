@@ -19,24 +19,40 @@ Output = {
     return this;
   },
 
-  print: function(is_unit) {
+  print: function(is_unit, unit_id) {
+    if (is_unit && unit_id) {
+      console.log("Printing unit from id:");
+      console.log(Crafty(unit_id).at());
+    }
     console.log('called');
     //this.clear();
-    this.report(this.buffer, is_unit);
+    this.report(this.buffer, is_unit, unit_id);
     this.buffer = [];
     return this;
   },
 
-  report: function(info, is_unit) {
+  report: function(info, is_unit, unit_id) {
     var info_panel = $(this.element_id);
     var report = $('<div class="report"></div>')
       .css("padding-bottom", "7px")
     ;
     info_panel.append(report);
     if (is_unit) {
+      if (is_unit && unit_id) {
+        console.log("Printing unit from id:");
+        console.log(Crafty(unit_id).at());
+      }
       report.addClass("unit");
+      report.attr("unit_id", unit_id);
       report.click(function() {
         console.log("Unit clicked!");
+        //var unit_id = $(this).attr("unit_id")
+        console.log(unit_id);
+        console.log(Crafty(unit_id));
+        var unit = Crafty(unit_id);
+        console.log(unit);
+        console.log(unit);
+        Game.select(unit);
       });
     }
     for (var i=0; i<info.length; i++) {
@@ -51,13 +67,11 @@ Output = {
 
   printBattle: function(battle) {
     var info_panel = $(this.element_id);
-
     var report = this.createDiv("report")
       .css("padding-bottom", "7px")
     ;
     info_panel.append(report);
     var new_battle_phase = $('<div/>', {
-      class: "test",
       text: "New battle phase (turn " + battle.num_turns + "): -------------",
     });
     report.append(new_battle_phase);
@@ -72,6 +86,7 @@ Output = {
       var unit_div = this.createDiv("unit report")
         .click(function() {
           console.log("Unit clicked!");
+          Game.select(unit);
         })
         ;
       unit_div.append(this.createDiv("unit-item", general_info));
@@ -82,6 +97,37 @@ Output = {
     var end_battle_phase = "END OF BATTLE PHASE -------------";
     report.append(this.createDiv(false, end_battle_phase));
     if (battle.finished) report.append(this.createDiv(false, "Battle finished!"));
+    return this;
+  },
+
+  printBattleStart: function(battle) {
+    var info_panel = $(this.element_id);
+    var report = this.createDiv("report")
+      .css("padding-bottom", "7px")
+    ;
+    info_panel.append(report);
+    var new_battle = $('<div/>', {
+      text: "New battle: -------------",
+    });
+    report.append(new_battle);
+
+    
+    var units = battle.attackers.concat(battle.defenders);
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      var side = {};
+      side[battle.attacker.side] = "Attacker";
+      side[(battle.attacker.side + 1) % 2] = "Defender";
+      var general_info = "{0}: Player {1}'s {2} with {3}".format(side[unit.side], unit.side, unit.type, unit.quantity);
+      var unit_div = this.createDiv("unit report")
+        .click(function() {
+          console.log("Unit clicked!");
+          Game.select(unit);
+        })
+        ;
+      unit_div.append(this.createDiv("unit-item", general_info));
+      report.append(unit_div);
+    }
     return this;
   },
 
@@ -114,6 +160,10 @@ Output = {
   },
 
   printUnit: function(unit) {
+    console.log(unit.getId());
+    console.log("Printing unit from id:");
+    console.log(Crafty(unit.getId()).at());
+    var unit_id = unit.getId();
     var info = [];
     var general_info = "{0} (Player {1})".format(unit.type, unit.side);
     var update = unit.quantity;
@@ -121,11 +171,13 @@ Output = {
       update = 'Dead!'
     }
     var num_units = "Quantity: " + update;
-    var supply_remaining = "Supply remaining: " + unit.supply_remaining;
+    var supply_remaining = this.Unit.supply(unit.supply_remaining);
+    var in_battle = "Supply remaining: " + unit.supply_remaining;
     this.push(general_info);
     this.push(num_units);
     this.push(supply_remaining);
-    this.print(true);
+    if (unit.battle) this.push("(In battle)");
+    this.print(true, unit_id);
   },
 
   reportAttrition: function(unit, units_lost) {

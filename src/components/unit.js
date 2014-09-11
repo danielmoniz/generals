@@ -203,7 +203,7 @@ Crafty.c('Unit', {
       var battle = battles[i];
       var battle_exists = false;
       if (battles[i].together(this)) {
-        return true;
+        return battles[i];
       }
     }
   },
@@ -234,8 +234,9 @@ Crafty.c('Unit', {
     var present_units = this.get_present_units();
     var enemy_present = this.isEnemyPresent();
     if (enemy_present) {
-      if (this.isBattlePresent()) {
-        this.joinBattle();
+      battle = this.isBattlePresent();
+      if (battle) {
+        this.joinBattle(battle);
       } else {
         this.startBattle();
       }
@@ -257,8 +258,9 @@ Crafty.c('Unit', {
     var battle = Crafty.e('Battle').at(this.getX(), this.getY());
     battle.start(this);
   },
-  joinBattle: function() {
+  joinBattle: function(battle) {
     this.battle = true;
+    battle.join(this);
   },
   notify_of_battle: function() {
     this.battle = true;

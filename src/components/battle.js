@@ -23,17 +23,24 @@ Crafty.c('Battle', {
 
   start: function(attacker) {
     this.attacker = attacker;
-    var output = [];
-    var battle_header = "New Battle: -------------";
-    Output.push(battle_header);
-    var attacker_info = "Attacker: Player " + attacker.side + "'s " + attacker.type + " with " + attacker.quantity;
-    Output.push(attacker_info);
+    this.attackers = [attacker];
     var units_in_combat = this.units_in_combat();
+    this.defenders = units_in_combat.filter(function(unit) {
+      return unit.getId() !== attacker.getId();
+    });
     for (var i=0; i < units_in_combat.length; i++) {
       var unit = units_in_combat[i];
       unit.notify_of_battle();
     }
-    Output.print();
+    Output.printBattleStart(this);
+  },
+
+  join: function(unit) {
+    if (unit.side == this.attacker.side) {
+      this.attackers.push(unit);
+    } else {
+      this.defenders.push(unit);
+    }
   },
 
   resolve: function() {
@@ -117,6 +124,10 @@ Crafty.c('Battle', {
       this.destroy();
     }
     Output.printBattle(this);
+  },
+
+  select: function() {
+    this.report();
   },
 
   report: function() {
