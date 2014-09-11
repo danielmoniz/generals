@@ -79,7 +79,8 @@ Crafty.c('Unit', {
     console.log("RETREAT HAS BEEN CALLED");
     // awful things happen
     var battle = this.isBattlePresent();
-    battle.retreat(this);
+    var num_losses = battle.retreat(this);
+    Output.printRetreat(this, num_losses);
     this.battle = false;
     this.moveTowardTarget();
   },

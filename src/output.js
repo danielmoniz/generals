@@ -138,7 +138,7 @@ Output = {
     ;
     info_panel.append(report);
   
-    var general_info = "Unit retreated with X losses!";
+    var general_info = "Player {0}'s {1} retreated with {2} losses!".format(unit.side, unit.type, num_losses);
     var unit_div = this.createDiv("unit report")
       .attr("unit_id", unit.getId())
       .click(this.Unit.selectSelf)
