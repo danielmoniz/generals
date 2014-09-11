@@ -59,6 +59,11 @@ Crafty.c('Unit', {
 
   select: function() {
     this.report();
+    var other_units_present = this.getPresentUnits(true);
+    Output.push("Other units present: --------------").print();
+    for (var i=0; i<other_units_present.length; i++) {
+      other_units_present[i].report();
+    }
   },
 
   selectFirstUnit: function() {
@@ -203,7 +208,7 @@ Crafty.c('Unit', {
   },
 
   isEnemyPresent: function() {
-    var present_units = this.get_present_units();
+    var present_units = this.getPresentUnits();
     if (present_units.length < 1) return false;
     for (var j=0; j<present_units.length; j++) {
       if (present_units[j].side != this.side) {
@@ -247,7 +252,7 @@ Crafty.c('Unit', {
 
   moved: function() {
     // detect combat
-    var present_units = this.get_present_units();
+    var present_units = this.getPresentUnits();
     var enemy_present = this.isEnemyPresent();
     if (enemy_present) {
       battle = this.isBattlePresent();
@@ -259,7 +264,7 @@ Crafty.c('Unit', {
     }
   },
 
-  get_present_units: function(ignore_self) {
+  getPresentUnits: function(ignore_self) {
     present_units = [];
     units = Crafty('Unit').get();
     for (var i=0; i < units.length; i++) {

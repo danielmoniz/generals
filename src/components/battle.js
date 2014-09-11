@@ -157,7 +157,7 @@ Crafty.c('Battle', {
     this.num_turns += 1;
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
-    var units = this.attacker.get_present_units();
+    var units = this.attacker.getPresentUnits();
     var attackers = [this.attacker];
     var defenders = [];
     for (var i=0; i < units.length; i++) {
