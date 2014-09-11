@@ -112,7 +112,6 @@ Output = {
     });
     report.append(new_battle);
 
-    
     var units = battle.attackers.concat(battle.defenders);
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
@@ -128,6 +127,25 @@ Output = {
       unit_div.append(this.createDiv("unit-item", general_info));
       report.append(unit_div);
     }
+    return this;
+  },
+
+  printRetreat: function(unit, num_losses) {
+
+    var info_panel = $(this.main_element_id);
+    var report = this.createDiv("report")
+      .css("padding-bottom", "7px")
+    ;
+    info_panel.append(report);
+  
+    var general_info = "Unit retreated with X losses!";
+    var unit_div = this.createDiv("unit report")
+      .attr("unit_id", unit.getId())
+      .click(this.Unit.selectSelf)
+      ;
+    unit_div.append(this.createDiv("unit-item", general_info));
+    report.append(unit_div);
+
     return this;
   },
 

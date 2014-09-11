@@ -129,7 +129,8 @@ Crafty.c('Battle', {
         console.log(side[unit.battle_side].ratios);
         console.log(side[unit.battle_side].ratios[i]);
         console.log(unit.getId());
-        unit.kill(Math.ceil(losses[unit.battle_side] * side[unit.battle_side].ratios[i]));
+        var num_losses = Math.ceil(losses[unit.battle_side] * side[unit.battle_side].ratios[i]);
+        unit.kill(num_losses);
         break;
       }
     }
@@ -139,6 +140,7 @@ Crafty.c('Battle', {
       this.end();
       Output.printBattle(this);
     }
+    return num_losses;
   },
 
   calculateLosses: function(attackers, defenders) {
