@@ -20,11 +20,6 @@ Output = {
   },
 
   print: function(is_unit, unit_id) {
-    if (is_unit && unit_id) {
-      console.log("Printing unit from id:");
-      console.log(Crafty(unit_id).at());
-    }
-    console.log('called');
     //this.clear();
     this.report(this.buffer, is_unit, unit_id);
     this.buffer = [];
@@ -38,20 +33,12 @@ Output = {
     ;
     info_panel.append(report);
     if (is_unit) {
-      if (is_unit && unit_id) {
-        console.log("Printing unit from id:");
-        console.log(Crafty(unit_id).at());
-      }
       report.addClass("unit");
       report.attr("unit_id", unit_id);
       report.click(function() {
         console.log("Unit clicked!");
         //var unit_id = $(this).attr("unit_id")
-        console.log(unit_id);
-        console.log(Crafty(unit_id));
         var unit = Crafty(unit_id);
-        console.log(unit);
-        console.log(unit);
         Game.select(unit);
       });
     }
@@ -160,9 +147,6 @@ Output = {
   },
 
   printUnit: function(unit) {
-    console.log(unit.getId());
-    console.log("Printing unit from id:");
-    console.log(Crafty(unit.getId()).at());
     var unit_id = unit.getId();
     var info = [];
     var general_info = "{0} (Player {1})".format(unit.type, unit.side);

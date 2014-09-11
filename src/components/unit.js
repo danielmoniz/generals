@@ -43,8 +43,10 @@ Crafty.c('Unit', {
       }
     }
     if (Game.turn == (this.side + 0.5) % 2) {
-      if (!this.battle && this.move_target_path) {
-        this.move_toward_target();
+      if (this.battle && this.move_target_path) {
+        this.retreat();
+      } else if (!this.battle && this.move_target_path) {
+        this.moveTowardTarget();
       }
     }
     if (Game.turn == this.side) {
@@ -65,11 +67,20 @@ Crafty.c('Unit', {
     }
   },
 
-  move_toward_target: function() {
+  retreat: function() {
+    console.log("REATREAT HAS BEEN CALLED");
+    // awful things happen
+    var battle = this.isBattlePresent();
+    battle.retreat(this);
+    this.battle = false;
+    this.moveTowardTarget();
+  },
+
+  moveTowardTarget: function() {
     var partial_path = getPartialPath(this.move_target_path, this.movement);
     // check for enemies that will be bumped into
     for (var i=0; i<partial_path.length; i++) {
-      if (this.battle || this.stop) break;
+      if (this.battle) break;
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);
       new_path = this.move_target_path.slice(1, this.move_target_path.length);
@@ -259,23 +270,32 @@ Crafty.c('Unit', {
     return present_units;
   },
 
-  startBattle: function() {
-    var battle = Crafty.e('Battle').at(this.getX(), this.getY());
-    battle.start(this);
-  },
-  joinBattle: function(battle) {
-    this.battle = true;
-    battle.join(this);
-  },
-  notify_of_battle: function() {
-    this.battle = true;
+  stop_unit: function() {
     destroyMovementPath(this.movement_path);
     delete this.movement_path;
     delete this.move_target_path;
+  },
+  startBattle: function() {
+    this.battle = true;
+    this.stop_unit();
+    var battle = Crafty.e('Battle').at(this.getX(), this.getY());
+    battle.start(this);
+  },
+
+  joinBattle: function(battle) {
+    this.battle = true;
+    this.stop_unit();
+    battle.join(this);
+  },
+  notify_of_battle: function(battle_side) {
+    this.battle_side = battle_side;
+    this.battle = true;
+    this.stop_unit();
     return this.getStatus();
   },
   battle_finished: function() {
     this.battle = false;
+    delete this.battle_side;
     //this.report();
   },
   kill: function(casualties) {
@@ -307,6 +327,16 @@ Crafty.c('Cavalry', {
     } else {
       this.addComponent('spr_cavalry');
     }
+  },
+
+  getOppositeSide: function() {
+    return (this.side + 1) % 2;
+  },
+
+  getOppositeBattleSide: function() {
+    if (!this.battle_side) return false;
+    if (this.battle_side == "attacker") return "defender";
+    if (this.battle_side == "defender") return "attacker";
   },
 });
 

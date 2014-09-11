@@ -43,9 +43,6 @@ Game = {
   select: function(clickable_object) {
     this.deselect();
     this.selected = clickable_object;
-    console.log("Selected unit:");
-    console.log(this.selected);
-    console.log(this.selected.at());
     this.player_selected[this.turn] = clickable_object;
     this.select_highlight = Crafty.e('Selected');
     var spot = this.selected.at();

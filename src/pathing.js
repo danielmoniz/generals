@@ -63,6 +63,7 @@ function colourMovementPath(path, unit_movement, location) {
 }
 
 function destroyMovementPath(movement_path) {
+  if (movement_path === undefined) return;
   for (var i=0; i<movement_path.length; i++) {
     movement_path[i].destroy();
   }
