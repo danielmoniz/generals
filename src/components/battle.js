@@ -115,9 +115,6 @@ Crafty.c('Battle', {
       ratios: defender_ratios,
     }
     var units = side[unit.battle_side].units;
-    console.log("units:");
-    console.log(unit);
-    console.log(units);
 
     //unit.kill(losses["attackers"]);
     for (var i=0; i<units.length; i++) {
@@ -148,6 +145,8 @@ Crafty.c('Battle', {
     var TROOP_LOSS = 0.1;
     var MORALE_FACTOR = 0.75;
     var terrain_mod = Game.terrain_defense_bonus[this.at().x][this.at().y];
+    console.log("terrain_mod for battle:");
+    console.log(terrain_mod);
     var attacker_morale = 0;
     var defender_morale = 0;
 
@@ -180,15 +179,8 @@ Crafty.c('Battle', {
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
     var units = this.getPresentUnits();
-    var attackers = [this.attacker];
-    var defenders = [];
-    for (var i=0; i < units.length; i++) {
-      if (units[i].side == this.attacking_side) {
-        attackers.push(units[i]);
-      } else {
-        defenders.push(units[i]);
-      }
-    }
+    var attackers = this.attackers;
+    var defenders = this.defenders;
 
     var losses = this.calculateLosses(attackers, defenders);
 
