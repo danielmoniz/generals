@@ -30,9 +30,7 @@ Output = {
 
   report: function(info, is_unit, unit_id) {
     var info_panel = $(this.main_element_id);
-    var report = $('<div class="report"></div>')
-      .css("padding-bottom", "7px")
-    ;
+    var report = this.createDiv("report");
     info_panel.append(report);
     if (is_unit) {
       report.addClass("unit");
@@ -67,14 +65,30 @@ Output = {
     this.print(true, unit_id);
   },
 
-  printBattle: function(battle) {
+  makeReport: function(divs, title, conclusion) {
     var info_panel = $(this.main_element_id);
     var report = this.createDiv("report");
     info_panel.append(report);
-    var new_battle_phase = $('<div/>', {
-      text: "New battle phase (turn " + battle.num_turns + "): ----------------------------------------------------",
-    });
-    report.append(new_battle_phase);
+
+    if (title !== undefined) {
+      var title_div = this.createDiv('title', title);
+      report.append(title_div);
+    }
+
+    for (var i=0; i<divs.length; i++) {
+      report.append(divs[i]);
+    }
+
+    if (conclusion !== undefined) {
+      var conclusion_div = this.createDiv('conclusion', conclusion);
+      report.append(conclusion_div);
+    }
+    return this;
+  },
+
+  printBattle: function(battle) {
+    var title = "New battle phase (turn {0}): ---------------------------".format(battle.num_turns);
+    var divs = [];
 
     var units = battle.units_in_combat();
     for (var i=0; i<units.length; i++) {
@@ -90,19 +104,19 @@ Output = {
       unit_div.append(this.createDiv("unit-item", general_info));
       unit_div.append(this.createDiv("unit-item", num_units));
       unit_div.append(this.createDiv("unit-item", supply_remaining));
-      report.append(unit_div);
+      divs.push(unit_div);
     }
     //var end_battle_phase = "END OF BATTLE PHASE -------------";
-    report.append(this.createDiv(false, end_battle_phase));
-    if (battle.finished) report.append(this.createDiv(false, "Battle finished!"));
+    var conclusion = undefined;
+    if (battle.finished) conclusion = "Battle finished!";
+
+    this.makeReport(divs, title, conclusion);
     return this;
   },
 
   printBattleStart: function(battle) {
     var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report")
-      .css("padding-bottom", "7px")
-    ;
+    var report = this.createDiv("report");
     info_panel.append(report);
     var new_battle = $('<div/>', {
       text: "New battle: -------------",
@@ -128,9 +142,7 @@ Output = {
 
   printBattleJoin: function(battle, unit) {
     var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report")
-      .css("padding-bottom", "7px")
-    ;
+    var report = this.createDiv("report");
     info_panel.append(report);
 
     var side = {};
@@ -150,9 +162,7 @@ Output = {
   printRetreat: function(unit, num_losses) {
 
     var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report")
-      .css("padding-bottom", "7px")
-    ;
+    var report = this.createDiv("report");
     info_panel.append(report);
   
     var general_info = Pretty.Unit.retreatMessage(unit.side, unit.type, num_losses);

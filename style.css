@@ -4,5 +4,6 @@ body { background: black; }
 #title { padding-right: 20px; 24px; float:left; }
 #turn-count { width:72px; float:left; }
 #player { width:200px; float:left; }
-.unit { width: 200px; float:left; display:inline-block; }
+
+.unit { width: 200px; padding-bottom: 5px; float:left; }
 .report { display:block; padding-bottom: 5px; width: 100%; }
