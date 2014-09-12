@@ -31,13 +31,14 @@ Crafty.c('Unit', {
       var item = selected[Game.turn];
       var item = Game.player_selected[Game.turn];
 
-      if (item && item.side == this.side) {
+      if (item && item.side == this.side && Game.selected.getId() != item.getId()) {
         Game.select(item);
       } else {
         this.selectFirstUnit();
       }
 
-      if (Game.turn <= 2) this.handleAttrition();
+      //if (Game.turn_count >= 2) this.handleAttrition();
+      this.handleAttrition();
       if (this.battle) {
         this.fight();
       }

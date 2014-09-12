@@ -47,20 +47,6 @@ Output = {
     return this;
   },
 
-  printSingleUnit: function(unit) {
-    var general_info = Pretty.Unit.generalInfo(unit);
-    var status = Pretty.Unit.status(unit.quantity);
-    var quantity = "Quantity: " + status;
-    var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-    var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
-    unit_div.append(this.createDiv("unit-item", general_info));
-    unit_div.append(this.createDiv("unit-item", quantity));
-    unit_div.append(this.createDiv("unit-item", supply_remaining));
-    if (unit.battle) unit_div.append(this.createDiv("unit-item", "(In battle)"));
-
-    this.makeReport([unit_div]);
-  },
-
   makeReport: function(divs, title, conclusion) {
     var info_panel = $(this.main_element_id);
     var report = this.createDiv("report");
@@ -79,6 +65,39 @@ Output = {
       var conclusion_div = this.createDiv('conclusion', conclusion);
       report.append(conclusion_div);
     }
+    return this;
+  },
+
+  printSingleUnit: function(unit) {
+    var general_info = Pretty.Unit.generalInfo(unit);
+    var status = Pretty.Unit.status(unit.quantity);
+    var quantity = "Quantity: " + status;
+    var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
+    var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
+    unit_div.append(this.createDiv("unit-item", general_info));
+    unit_div.append(this.createDiv("unit-item", quantity));
+    unit_div.append(this.createDiv("unit-item", supply_remaining));
+    if (unit.battle) unit_div.append(this.createDiv("unit-item", "(In battle)"));
+
+    this.makeReport([unit_div]);
+  },
+
+  printBattleStart: function(battle) {
+    var title = "New battle: -------------";
+    var divs = [];
+
+    var units = battle.attackers.concat(battle.defenders);
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      var side = {};
+      side[battle.attacker.side] = "Attacker";
+      side[(battle.attacker.side + 1) % 2] = "Defender";
+      var general_info = Pretty.Unit.generalInfoStartingBattle(unit);
+      var unit_div = this.createUnitDiv(unit.getId());
+      unit_div.append(this.createDiv("unit-item", general_info));
+      divs.push(unit_div);
+    }
+    this.makeReport(divs, title);
     return this;
   },
 
@@ -104,25 +123,6 @@ Output = {
     if (battle.finished) conclusion = "Battle finished!";
 
     this.makeReport(divs, title, conclusion);
-    return this;
-  },
-
-  printBattleStart: function(battle) {
-    var title = "New battle: -------------";
-    var divs = [];
-
-    var units = battle.attackers.concat(battle.defenders);
-    for (var i=0; i<units.length; i++) {
-      var unit = units[i];
-      var side = {};
-      side[battle.attacker.side] = "Attacker";
-      side[(battle.attacker.side + 1) % 2] = "Defender";
-      var general_info = Pretty.Unit.generalInfoStartingBattle(unit);
-      var unit_div = this.createUnitDiv(unit.getId());
-      unit_div.append(this.createDiv("unit-item", general_info));
-      divs.push(unit_div);
-    }
-    this.makeReport(divs, title);
     return this;
   },
 
@@ -182,10 +182,27 @@ Output = {
   },
 
   reportAttrition: function(unit, units_lost) {
+    var unsupplied = Pretty.Unit.unsupplied(units_lost);
+    var general_info = Pretty.Unit.generalInfo(unit);
+    var status = Pretty.Unit.status(unit.quantity);
+    var quantity = "Quantity: " + status;
+    var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
+
+    var unit_div = this.createUnitDiv(unit.getId());
+    unit_div.append(this.createDiv("unit-item", general_info));
+    unit_div.append(this.createDiv("unit-item", quantity));
+    unit_div.append(this.createDiv("unit-item", supply_remaining));
+    unit_div.append(this.createDiv("unit-item", unsupplied));
+    this.makeReport([unit_div]);
+
+    return this;
+
+    /*
     this.push(unit.report());
     this.push("Not supplied!");
     if (units_lost) this.pushLast(" {0} units lost.".format(units_lost));
     this.print(true);
+    */
   },
 
   updateStatusBar: function() {

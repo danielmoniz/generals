@@ -63,6 +63,12 @@ Pretty = {
       return "Supply: {0}".format(supply_remaining);
     },
 
+    unsupplied: function(troops_lost) {
+      var unsupplied = "Not supplied!";
+      if (troops_lost) unsupplied += " {0} troops lost.".format(troops_lost);
+      return unsupplied;
+    },
+
     status: function(quantity) {
       if (quantity <= 0) {
         update = 'Dead!'
