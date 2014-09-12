@@ -7,3 +7,4 @@ body { background: black; }
 
 .unit { max-width: 250px; margin: 2px 30px 5px 0px; padding: 2px; float:left; border: 1px dotted white; }
 .report { display:block; padding-bottom: 5px; width: 100%; float:left;  }
+.icon { float: left; }

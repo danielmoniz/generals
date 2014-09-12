@@ -163,11 +163,21 @@ Output = {
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
-    unit_div.append(this.createDiv("unit-item", general_info));
+    var img = this.createIconImage(unit);
+    unit_div.append(img);
+    //unit_div.append(this.createDiv("unit-item", general_info));
     unit_div.append(this.createDiv("unit-item", num_units));
     unit_div.append(this.createDiv("unit-item", supply_remaining));
 
     return unit_div;
+  },
+
+  createIconImage: function(unit) {
+    var img = $('<img/>', {
+      src: unit.__image,
+      class: "icon",
+    });
+    return img;
   },
 
   clear: function() {
