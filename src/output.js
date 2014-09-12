@@ -52,7 +52,6 @@ Output = {
   printUnit: function(unit) {
     var unit_id = unit.getId();
     var info = [];
-    //var general_info = "{0} (Player {1})".format(unit.type, unit.side);
     var general_info = Pretty.Unit.generalInfo(unit);
     var update = unit.quantity;
     if (unit.quantity <= 0) {
@@ -139,7 +138,7 @@ Output = {
     var side = {};
     side[battle.atttacking_side] = "Attacker";
     side[(battle.attacking_side + 1) % 2] = "Defender";
-    var general_info = Pretty.Unit.generalInfoJoinBattle(unit.side, unit.type, unit.battle_side);
+    var general_info = Pretty.Unit.joinBattleMessage(unit.side, unit.type, unit.battle_side);
     var unit_div = this.createDiv("unit report")
       .attr("unit_id", unit.getId())
       .click(Pretty.Unit.selectSelf)
@@ -158,7 +157,7 @@ Output = {
     ;
     info_panel.append(report);
   
-    var general_info = "Player {0}'s {1} retreated with {2} losses!".format(unit.side, unit.type, num_losses);
+    var general_info = Pretty.Unit.retreatMessage(unit.side, unit.type, num_losses);
     var unit_div = this.createDiv("unit report")
       .attr("unit_id", unit.getId())
       .click(Pretty.Unit.selectSelf)
@@ -209,14 +208,15 @@ Output = {
     var player_bar = $(this.player_element_id);
     var turn_count = "Turn {0}".format(Pretty.TurnCount.pretty());
     var player = undefined;
-    var turn = Game.turn;
     var next_player_turn = Pretty.Turn.nextPlayerTurn();
-    var player_colour = Game.player_colour[next_player_turn];
+    //var turn = Game.turn;
+    //var player_colour = Game.player_colour[next_player_turn];
+    var player_name = Pretty.Player.name(next_player_turn);
 
     if (Pretty.Turn.isPlayerTurn()) {
-      player = "Player {0} ({1})'s turn".format(Pretty.Turn.pretty(next_player_turn), player_colour);
+      player = "{0}'s move".format(player_name);
     } else {
-      player = "Player {0} (up next)".format(Pretty.Turn.pretty(next_player_turn));
+      player = "{0} (up next)".format(player_name);
     }
     turn_bar.text(turn_count);
     player_bar.text(player);
