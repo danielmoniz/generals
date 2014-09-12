@@ -69,12 +69,10 @@ Output = {
 
   printBattle: function(battle) {
     var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report")
-      .css("padding-bottom", "7px")
-    ;
+    var report = this.createDiv("report");
     info_panel.append(report);
     var new_battle_phase = $('<div/>', {
-      text: "New battle phase (turn " + battle.num_turns + "): -------------",
+      text: "New battle phase (turn " + battle.num_turns + "): ----------------------------------------------------",
     });
     report.append(new_battle_phase);
 
@@ -85,7 +83,7 @@ Output = {
       var update = Pretty.Unit.status(unit.quantity);
       var num_units = "Quantity: " + update;
       var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-      var unit_div = this.createDiv("unit report")
+      var unit_div = this.createDiv("unit sub-report")
         .attr("unit_id", unit.getId())
         .click(Pretty.Unit.selectSelf)
         ;
@@ -94,7 +92,7 @@ Output = {
       unit_div.append(this.createDiv("unit-item", supply_remaining));
       report.append(unit_div);
     }
-    var end_battle_phase = "END OF BATTLE PHASE -------------";
+    //var end_battle_phase = "END OF BATTLE PHASE -------------";
     report.append(this.createDiv(false, end_battle_phase));
     if (battle.finished) report.append(this.createDiv(false, "Battle finished!"));
     return this;
