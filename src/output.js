@@ -247,8 +247,8 @@ Output = {
   },
   TurnCount: {
     pretty: function(count) {
-      if (count) return count + 1;
-      return Game.turn_count + 1;
+      if (count) return Math.floor((count) / 2 + 1);
+      return Math.floor((Game.turn_count) / 2 + 1);
     },
   },
 }

@@ -84,6 +84,8 @@ Game = {
     this.turn = this.turn % 2;
     Output.updateStatusBar();
     this.deselect();
+    var victory = Victory.checkVictoryConditions();
+    if (victory) Crafty.scene('Victory');
     Crafty.trigger("NextTurn");
   },
 
@@ -98,6 +100,15 @@ Game = {
     // Simply start the "Loading" scene to get things going
     Crafty.scene('Loading');
     //document.getElementById('info-panel').innerHTML += '<div id="info-panel"></div>';
+  },
+
+  reset: function() {
+    this.turn = 0;
+    this.turn_count = 0;
+    this.selected = undefined;
+    this.player_selected = [];
+    this.player_supply_roads = [[], []];
+    Output.updateStatusBar();
   },
 }
 

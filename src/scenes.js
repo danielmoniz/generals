@@ -3,6 +3,8 @@
 // Runs the core of the gameplay loop
 Crafty.scene('Game', function() {
 
+  Game.reset();
+
   // a 2D array to keep track of all occupied tiles
   this.occupied = new Array(Game.map_grid.width);
   for (var i = 0; i < Game.map_grid.width; i++) {
@@ -241,8 +243,8 @@ Crafty.scene('Game', function() {
 
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    addUnits(0, 5, 0);
-    addUnits(1, 5, Game.map_grid.width - 1);
+    addUnits(0, 1, 0);
+    addUnits(1, 1, Game.map_grid.width - 1);
   }
 
   function addRoadGraphics() {

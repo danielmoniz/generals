@@ -37,7 +37,7 @@ Crafty.c('Unit', {
         this.selectFirstUnit();
       }
 
-      this.handleAttrition();
+      if (Game.turn <= 2) this.handleAttrition();
       if (this.battle) {
         this.fight();
       }
