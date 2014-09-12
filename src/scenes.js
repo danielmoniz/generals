@@ -243,8 +243,8 @@ Crafty.scene('Game', function() {
 
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    addUnits(0, 1, 0);
-    addUnits(1, 1, Game.map_grid.width - 1);
+    addUnits(0, 5, 0);
+    addUnits(1, 5, Game.map_grid.width - 1);
   }
 
   function addRoadGraphics() {

@@ -1,7 +1,6 @@
 Victory = {
   checkVictoryConditions: function() {
     var units = Crafty('Unit').get();
-    console.log(units);
     var first_player_units = [];
     var second_player_units = [];
     for (var i=0; i<units.length; i++) {

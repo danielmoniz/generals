@@ -118,7 +118,6 @@ Output = {
       var side = {};
       side[battle.attacker.side] = "Attacker";
       side[(battle.attacker.side + 1) % 2] = "Defender";
-      var general_info = "{0}: Player {1}'s {2} with {3}".format(side[unit.side], unit.side, unit.type, unit.quantity);
       var general_info = this.Unit.generalInfoStartingBattle(unit);
       var unit_div = this.createDiv("unit report")
         .attr("unit_id", unit.getId())
@@ -127,6 +126,27 @@ Output = {
       unit_div.append(this.createDiv("unit-item", general_info));
       report.append(unit_div);
     }
+    return this;
+  },
+
+  printBattleJoin: function(battle, unit) {
+    var info_panel = $(this.main_element_id);
+    var report = this.createDiv("report")
+      .css("padding-bottom", "7px")
+    ;
+    info_panel.append(report);
+
+    var side = {};
+    side[battle.atttacking_side] = "Attacker";
+    side[(battle.attacking_side + 1) % 2] = "Defender";
+    var general_info = this.Unit.generalInfoJoinBattle(unit.side, unit.type, unit.battle_side);
+    var unit_div = this.createDiv("unit report")
+      .attr("unit_id", unit.getId())
+      .click(this.Unit.selectSelf)
+      ;
+    unit_div.append(this.createDiv("unit-item", general_info));
+    report.append(unit_div);
+
     return this;
   },
 
@@ -183,6 +203,7 @@ Output = {
     if (units_lost) this.pushLast(" {0} units lost.".format(units_lost));
     this.print(true);
   },
+
   Unit: {
     generalInfo: function(unit) {
       var general_info = "{0} (Player {1})".format(unit.type, unit.side);
@@ -194,6 +215,13 @@ Output = {
       var general_info = "{0}: Player {1}'s {2} with {3}".format(battle_side, unit.side, unit.type, unit.quantity);
       return general_info;
     },
+
+    generalInfoJoinBattle: function(side, type, battle_side) {
+      var battle_side = Utility.capitalizeFirstLetter(battle_side);
+      var general_info = "Player {0}'s {1} joined battle as {2}".format(side, type, battle_side);
+      return general_info;
+    },
+
     supply: function(supply_remaining) {
       return "Supply: {0}".format(supply_remaining);
     },
