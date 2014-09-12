@@ -196,13 +196,27 @@ Output = {
     this.makeReport([unit_div]);
 
     return this;
+  },
 
-    /*
-    this.push(unit.report());
-    this.push("Not supplied!");
-    if (units_lost) this.pushLast(" {0} units lost.".format(units_lost));
-    this.print(true);
-    */
+  printUnitsPresent: function(units) {
+    var title = Pretty.Unit.unitsPresentTitle();
+    var divs = [];
+
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      var general_info = Pretty.Unit.generalInfo(unit);
+      var update = Pretty.Unit.status(unit.quantity);
+      var num_units = "Quantity: " + update;
+      var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
+      var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
+      unit_div.append(this.createDiv("unit-item", general_info));
+      unit_div.append(this.createDiv("unit-item", num_units));
+      unit_div.append(this.createDiv("unit-item", supply_remaining));
+      divs.push(unit_div);
+    }
+
+    this.makeReport(divs, title);
+    return this;
   },
 
   updateStatusBar: function() {

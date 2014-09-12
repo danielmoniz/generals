@@ -62,12 +62,15 @@ Crafty.c('Unit', {
     this.report();
     var other_units_present = this.getPresentUnits(true);
     if (other_units_present.length == 0) return;
+    Output.printUnitsPresent(other_units_present);
+    /*
     Output.push("Other units present: --------------");
     for (var i=0; i<other_units_present.length; i++) {
       other_units_present[i].report();
     }
     Output.push("-----------------------------------");
     Output.print();
+    */
   },
 
   selectFirstUnit: function() {

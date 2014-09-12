@@ -69,6 +69,10 @@ Pretty = {
       return unsupplied;
     },
 
+    unitsPresentTitle: function() {
+      return "Other units present: --------------";
+    },
+
     status: function(quantity) {
       if (quantity <= 0) {
         update = 'Dead!'
