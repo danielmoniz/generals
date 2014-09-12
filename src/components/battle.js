@@ -1,3 +1,44 @@
+Battle = {
+  ATTACKER: "attacker",
+  DEFENDER: "defender",
+  getOppositeBattleSide: function(battle_side) {
+    if (!battle_side) return false;
+    if (battle_side == this.ATTACKER) return this.DEFENDER;
+    if (battle_side == this.DEFENDER) return this.ATTACKER;
+    throw "NoBattleSide: unit's battle_side should be {0} or {1}.".format(this.ATTACKER, this.DEFENDER);
+  },
+  
+  getQuantity: function(units) {
+    var quantity = 0;
+    for (var i=0; i<units.length; i++) {
+      quantity += units[i].quantity;
+    }
+    return quantity;
+  },
+
+  getRatiosOfTotal: function(units, total) {
+    var ratios = [];
+    for (var i=0; i<units.length; i++) {
+      ratios[i] = units[i].quantity / total;
+    }
+    return ratios;
+  },
+
+  getLossesFromRatios: function(total_loss, ratios) {
+    var losses = [];
+    for (var i=0; i<ratios.length; i++) {
+      losses[i] = Math.ceil(total_loss * ratios[i]);
+    }
+    return losses;
+  },
+
+  killUnits: function(units, losses) {
+    for (var i=0; i<units.length; i++) {
+      units[i].kill(losses[i]);
+    }
+  },
+
+}
 Crafty.c('Battle', {
   init: function() {
     this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
@@ -31,11 +72,11 @@ Crafty.c('Battle', {
     });
     for (var i=0; i < this.attackers.length; i++) {
       var unit = this.attackers[i];
-      unit.notify_of_battle("attacker");
+      unit.notify_of_battle(Battle.ATTACKER);
     }
     for (var i=0; i < this.defenders.length; i++) {
       var unit = this.defenders[i];
-      unit.notify_of_battle("defender");
+      unit.notify_of_battle(Battle.DEFENDER);
     }
     Output.printBattleStart(this);
   },
@@ -53,16 +94,16 @@ Crafty.c('Battle', {
     if (unit.side == this.attacking_side) {
       var battle_side = undefined;
       this.attackers.push(unit);
-      battle_side = this.attacking_side;
+      battle_side = Battle.ATTACKER;
     } else {
       this.defenders.push(unit);
-      battle_side = unit.getOppositeBattleSide();
+      battle_side = Battle.DEFENDER;
     }
     unit.notify_of_battle(battle_side);
   },
 
   unitDead: function(unit) {
-    if (unit.battle_side == "attacker") {
+    if (unit.battle_side == battle.ATTACKER) {
       for (var i=0; i<this.attackers.length; i++) {
         if (!this.attackers[i] || this.attackers[i].is(unit)) {
           delete this.attackers[i];
@@ -70,7 +111,7 @@ Crafty.c('Battle', {
         }
       }
       if (this.attacker.is(unit)) delete this.attacker;
-    } else if (unit.battle_side == "defender") {
+    } else if (unit.battle_side == Battle.DEFENDER) {
       for (var i=0; i<this.defenders.length; i++) {
         if (!this.defenders[i] || this.defenders[i].is(unit)) {
           delete this.defenders[i];
@@ -80,6 +121,8 @@ Crafty.c('Battle', {
     } else {
       console.log(unit);
       console.log(unit.battle_side);
+      console.log(Battle.ATTACKER);
+      console.log(Battle.DEFENDER);
       throw "NoBattleSide: unit had battle_side {0}. Needs to be 'attacker' or 'defender'.".format(unit.battle_side);
     }
   },
@@ -90,44 +133,25 @@ Crafty.c('Battle', {
     var defenders = this.defenders;
     var losses = this.calculateLosses(attackers, defenders);
 
-    var attackers_quantity = 0;
-    for (var i=0; i<attackers.length; i++) {
-      attackers_quantity += attackers[i].quantity;
-    }
-    var attacker_ratios = [];
-    for (var i=0; i<attackers.length; i++) {
-      attacker_ratios[i] = attackers[i].quantity / attackers_quantity;
-    }
-    var defenders_quantity = 0;
-    for (var i=0; i<defenders.length; i++) {
-      defenders_quantity += defenders[i].quantity;
-    }
-    var defender_ratios = [];
-    for (var i=0; i<defenders.length; i++) {
-      defender_ratios[i] = defenders[i].quantity / defenders_quantity;
-    }
+    var attackers_quantity = Battle.getQuantity(attackers);
+    var defenders_quantity = Battle.getQuantity(defenders);
+
+    var attacker_ratios = Battle.getRatiosOfTotal(attackers, attackers_quantity);
+    var defender_ratios = Battle.getRatiosOfTotal(defenders, defenders_quantity);
 
     var side = {};
-    side["attacker"] = { 
+    side[Battle.ATTACKER] = { 
       units: attackers,
       ratios: attacker_ratios,
     }
-    side["defender"] = { 
+    side[Battle.DEFENDER] = { 
       units: defenders,
       ratios: defender_ratios,
     }
     var units = side[unit.battle_side].units;
 
-    //unit.kill(losses["attackers"]);
     for (var i=0; i<units.length; i++) {
       if (units[i].getId() == unit.getId()) {
-        // @TODO Use the correct ratio here (attacker versus defender)
-        console.log("Retreat losses info:");
-        console.log(losses);
-        console.log(losses[unit.battle_side]);
-        console.log(side[unit.battle_side].ratios);
-        console.log(side[unit.battle_side].ratios[i]);
-        console.log(unit.getId());
         var num_losses = Math.ceil(losses[unit.battle_side] * side[unit.battle_side].ratios[i]);
         unit.kill(num_losses);
         break;
@@ -161,55 +185,40 @@ Crafty.c('Battle', {
     var attacker_random_factor = 1;
     var defender_random_factor = 1;
 
-    var attackers_quantity = 0;
-    for (var i=0; i<attackers.length; i++) {
-      attackers_quantity += attackers[i].quantity;
-    }
-    var defenders_quantity = 0;
-    for (var i=0; i<defenders.length; i++) {
-      defenders_quantity += defenders[i].quantity;
-    }
+    var attackers_quantity = Battle.getQuantity(attackers);
+    var defenders_quantity = Battle.getQuantity(defenders);
 
     var attacker_losses = attacker_random_factor * defenders_quantity * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
     var defender_losses = defender_random_factor * attackers_quantity * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
 
-    return { "attacker": attacker_losses, "defender": defender_losses }
+    var losses = {};
+    losses[Battle.ATTACKER] = attacker_losses;
+    losses[Battle.DEFENDER] = defender_losses;
+    return losses;
   },
 
   resolve: function() {
     this.num_turns += 1;
     var units = Crafty('Unit').get();
     // assume for now that all units other than attacker are the defenders
-    var units = this.getPresentUnits();
     var attackers = this.attackers;
     var defenders = this.defenders;
 
-    var losses = this.calculateLosses(attackers, defenders);
+    var total_losses = this.calculateLosses(attackers, defenders);
 
-    var attackers_quantity = 0;
-    for (var i=0; i<attackers.length; i++) {
-      attackers_quantity += attackers[i].quantity;
-    }
-    var attacker_ratios = [];
-    for (var i=0; i<attackers.length; i++) {
-      attacker_ratios[i] = attackers[i].quantity / attackers_quantity;
-    }
-    var defenders_quantity = 0;
-    for (var i=0; i<defenders.length; i++) {
-      defenders_quantity += defenders[i].quantity;
-    }
-    var defender_ratios = [];
-    for (var i=0; i<defenders.length; i++) {
-      defender_ratios[i] = defenders[i].quantity / defenders_quantity;
-    }
+    var attackers_quantity = Battle.getQuantity(attackers);
+    var defenders_quantity = Battle.getQuantity(defenders);
 
-    //attacker.kill(Math.ceil(attacker_losses));
-    for (var i=0; i<attackers.length; i++) {
-      attackers[i].kill(Math.ceil(losses["attacker"] * attacker_ratios[i]));
-    }
-    for (var i=0; i<defenders.length; i++) {
-      defenders[i].kill(Math.ceil(losses["defender"] * defender_ratios[i]));
-    }
+    var attacker_ratios = Battle.getRatiosOfTotal(attackers, attackers_quantity);
+    var defender_ratios = Battle.getRatiosOfTotal(defenders, defenders_quantity);
+
+    var attacker_losses = Battle.getLossesFromRatios(total_losses[Battle.ATTACKER], attacker_ratios);
+    var defender_losses = Battle.getLossesFromRatios(total_losses[Battle.DEFENDER], defender_ratios);
+
+    var units = attackers.concat(defenders);
+    var losses = attacker_losses.concat(defender_losses);
+
+    Battle.killUnits(units, losses);
 
     if (!this.isBattleActive()) {
       this.end();

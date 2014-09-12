@@ -314,6 +314,7 @@ Crafty.c('Unit', {
       this.die();
     }
   },
+
   die: function() {
     this.updateStatus();
     var selected = Game.player_selected[this.side];
@@ -328,6 +329,7 @@ Crafty.c('Unit', {
   is: function(unit) {
     return this.getId() == unit.getId();
   },
+
 });
 
 Crafty.c('Cavalry', {
@@ -353,12 +355,6 @@ Crafty.c('Cavalry', {
 
   getOppositeSide: function() {
     return (this.side + 1) % 2;
-  },
-
-  getOppositeBattleSide: function() {
-    if (!this.battle_side) return false;
-    if (this.battle_side == "attacker") return "defender";
-    if (this.battle_side == "defender") return "attacker";
   },
 
 });
