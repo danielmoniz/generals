@@ -78,6 +78,8 @@ Crafty.c('Battle', {
         }
       }
     } else {
+      console.log(unit);
+      console.log(unit.battle_side);
       throw "NoBattleSide: unit had battle_side {0}. Needs to be 'attacker' or 'defender'.".format(unit.battle_side);
     }
   },
