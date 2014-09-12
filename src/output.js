@@ -52,13 +52,11 @@ Output = {
     var status = Pretty.Unit.status(unit.quantity);
     var quantity = "Quantity: " + status;
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-    var unit_div = this.createDiv("unit sub-report")
-      .attr("unit_id", unit.getId())
-      .click(Pretty.Unit.selectSelf)
-      ;
+    var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
     unit_div.append(this.createDiv("unit-item", general_info));
     unit_div.append(this.createDiv("unit-item", quantity));
     unit_div.append(this.createDiv("unit-item", supply_remaining));
+    if (unit.battle) unit_div.append(this.createDiv("unit-item", "(In battle)"));
 
     this.makeReport([unit_div]);
   },
@@ -95,10 +93,7 @@ Output = {
       var update = Pretty.Unit.status(unit.quantity);
       var num_units = "Quantity: " + update;
       var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-      var unit_div = this.createDiv("unit sub-report")
-        .attr("unit_id", unit.getId())
-        .click(Pretty.Unit.selectSelf)
-        ;
+      var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
       unit_div.append(this.createDiv("unit-item", general_info));
       unit_div.append(this.createDiv("unit-item", num_units));
       unit_div.append(this.createDiv("unit-item", supply_remaining));
@@ -123,10 +118,7 @@ Output = {
       side[battle.attacker.side] = "Attacker";
       side[(battle.attacker.side + 1) % 2] = "Defender";
       var general_info = Pretty.Unit.generalInfoStartingBattle(unit);
-      var unit_div = this.createDiv("unit")
-        .attr("unit_id", unit.getId())
-        .click(Pretty.Unit.selectSelf)
-        ;
+      var unit_div = this.createUnitDiv(unit.getId());
       unit_div.append(this.createDiv("unit-item", general_info));
       divs.push(unit_div);
     }
@@ -139,10 +131,7 @@ Output = {
     side[battle.atttacking_side] = "Attacker";
     side[(battle.attacking_side + 1) % 2] = "Defender";
     var general_info = Pretty.Unit.joinBattleMessage(unit.side, unit.type, unit.battle_side);
-    var unit_div = this.createDiv("unit report")
-      .attr("unit_id", unit.getId())
-      .click(Pretty.Unit.selectSelf)
-      ;
+    var unit_div = this.createUnitDiv(unit.getId(), "report");
     unit_div.append(this.createDiv("unit-item", general_info));
     this.makeReport([unit_div]);
 
@@ -151,10 +140,7 @@ Output = {
 
   printRetreat: function(unit, num_losses) {
     var general_info = Pretty.Unit.retreatMessage(unit.side, unit.type, num_losses);
-    var unit_div = this.createDiv("unit report")
-      .attr("unit_id", unit.getId())
-      .click(Pretty.Unit.selectSelf)
-      ;
+    var unit_div = this.createUnitDiv(unit.getId(), "report");
     unit_div.append(this.createDiv("unit-item", general_info));
     this.makeReport([unit_div]);
 
@@ -169,6 +155,19 @@ Output = {
       text: text,
     });
     return div;
+  },
+
+  createUnitDiv: function(unit_id, classes) {
+    if (classes) {
+      classes = "unit {0}".format(classes);
+    } else {
+      classes = "unit";
+    }
+    var unit_div = this.createDiv(classes)
+      .attr("unit_id", unit_id)
+      .click(Pretty.Unit.selectSelf)
+      ;
+    return unit_div;
   },
 
   clear: function() {
