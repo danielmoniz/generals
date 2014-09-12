@@ -47,22 +47,20 @@ Output = {
     return this;
   },
 
-  printUnit: function(unit) {
-    var unit_id = unit.getId();
-    var info = [];
+  printSingleUnit: function(unit) {
     var general_info = Pretty.Unit.generalInfo(unit);
-    var update = unit.quantity;
-    if (unit.quantity <= 0) {
-      update = 'Dead!'
-    }
-    var num_units = "Quantity: " + update;
+    var status = Pretty.Unit.status(unit.quantity);
+    var quantity = "Quantity: " + status;
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-    var in_battle = "Supply remaining: " + unit.supply_remaining;
-    this.push(general_info);
-    this.push(num_units);
-    this.push(supply_remaining);
-    if (unit.battle) this.push("(In battle)");
-    this.print(true, unit_id);
+    var unit_div = this.createDiv("unit sub-report")
+      .attr("unit_id", unit.getId())
+      .click(Pretty.Unit.selectSelf)
+      ;
+    unit_div.append(this.createDiv("unit-item", general_info));
+    unit_div.append(this.createDiv("unit-item", quantity));
+    unit_div.append(this.createDiv("unit-item", supply_remaining));
+
+    this.makeReport([unit_div]);
   },
 
   makeReport: function(divs, title, conclusion) {
@@ -115,13 +113,8 @@ Output = {
   },
 
   printBattleStart: function(battle) {
-    var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report");
-    info_panel.append(report);
-    var new_battle = $('<div/>', {
-      text: "New battle: -------------",
-    });
-    report.append(new_battle);
+    var title = "New battle: -------------";
+    var divs = [];
 
     var units = battle.attackers.concat(battle.defenders);
     for (var i=0; i<units.length; i++) {
@@ -130,21 +123,18 @@ Output = {
       side[battle.attacker.side] = "Attacker";
       side[(battle.attacker.side + 1) % 2] = "Defender";
       var general_info = Pretty.Unit.generalInfoStartingBattle(unit);
-      var unit_div = this.createDiv("unit report")
+      var unit_div = this.createDiv("unit")
         .attr("unit_id", unit.getId())
         .click(Pretty.Unit.selectSelf)
         ;
       unit_div.append(this.createDiv("unit-item", general_info));
-      report.append(unit_div);
+      divs.push(unit_div);
     }
+    this.makeReport(divs, title);
     return this;
   },
 
   printBattleJoin: function(battle, unit) {
-    var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report");
-    info_panel.append(report);
-
     var side = {};
     side[battle.atttacking_side] = "Attacker";
     side[(battle.attacking_side + 1) % 2] = "Defender";
@@ -154,24 +144,19 @@ Output = {
       .click(Pretty.Unit.selectSelf)
       ;
     unit_div.append(this.createDiv("unit-item", general_info));
-    report.append(unit_div);
+    this.makeReport([unit_div]);
 
     return this;
   },
 
   printRetreat: function(unit, num_losses) {
-
-    var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report");
-    info_panel.append(report);
-  
     var general_info = Pretty.Unit.retreatMessage(unit.side, unit.type, num_losses);
     var unit_div = this.createDiv("unit report")
       .attr("unit_id", unit.getId())
       .click(Pretty.Unit.selectSelf)
       ;
     unit_div.append(this.createDiv("unit-item", general_info));
-    report.append(unit_div);
+    this.makeReport([unit_div]);
 
     return this;
   },
@@ -189,13 +174,6 @@ Output = {
   clear: function() {
     $(this.main_element_id).empty();
     return this;
-  },
-
-  reportAttrition: function(unit, units_lost) {
-    this.push(unit.report());
-    this.push("Not supplied!");
-    if (units_lost) this.pushLast(" {0} units lost.".format(units_lost));
-    this.print(true);
   },
 
   printTerrain: function(terrain) {

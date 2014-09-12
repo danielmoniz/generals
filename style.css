@@ -1,9 +1,9 @@
 body { background: black; }
-#info-panel { width:70%; color:white; }
+#info-panel { width:100%; color:white; }
 #title-container { padding: 2px; width: 100%; 24px; color:white; float:left; }
 #title { padding-right: 20px; 24px; float:left; }
 #turn-count { width:72px; float:left; }
 #player { width:200px; float:left; }
 
-.unit { width: 200px; padding-bottom: 5px; float:left; }
-.report { display:block; padding-bottom: 5px; width: 100%; }
+.unit { max-width: 250px; margin: 2px 30px 5px 0px; padding: 2px; float:left; border: 1px dotted white; }
+.report { display:block; padding-bottom: 5px; width: 100%; float:left;  }

@@ -104,7 +104,7 @@ Crafty.c('Unit', {
   },
 
   report: function() {
-    Output.printUnit(this);
+    Output.printSingleUnit(this);
     //var status = this.getStatus();
     //Output.add(this.getStatus()).print();
   },
