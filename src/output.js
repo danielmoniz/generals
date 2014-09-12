@@ -69,14 +69,7 @@ Output = {
   },
 
   printSingleUnit: function(unit) {
-    var general_info = Pretty.Unit.generalInfo(unit);
-    var status = Pretty.Unit.status(unit.quantity);
-    var quantity = "Quantity: " + status;
-    var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-    var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
-    unit_div.append(this.createDiv("unit-item", general_info));
-    unit_div.append(this.createDiv("unit-item", quantity));
-    unit_div.append(this.createDiv("unit-item", supply_remaining));
+    var unit_div = this.createStandardUnitDiv(unit, "sub-report");
     if (unit.battle) unit_div.append(this.createDiv("unit-item", "(In battle)"));
 
     this.makeReport([unit_div]);
@@ -108,14 +101,7 @@ Output = {
     var units = battle.units_in_combat();
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
-      var general_info = Pretty.Unit.generalInfo(unit);
-      var update = Pretty.Unit.status(unit.quantity);
-      var num_units = "Quantity: " + update;
-      var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-      var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
-      unit_div.append(this.createDiv("unit-item", general_info));
-      unit_div.append(this.createDiv("unit-item", num_units));
-      unit_div.append(this.createDiv("unit-item", supply_remaining));
+      var unit_div = this.createStandardUnitDiv(unit, "sub-report");
       divs.push(unit_div);
     }
     //var end_battle_phase = "END OF BATTLE PHASE -------------";
@@ -170,6 +156,20 @@ Output = {
     return unit_div;
   },
 
+  createStandardUnitDiv: function(unit, classes) {
+    var general_info = Pretty.Unit.generalInfo(unit);
+    var update = Pretty.Unit.status(unit.quantity);
+    var num_units = "Quantity: " + update;
+    var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
+
+    var unit_div = this.createUnitDiv(unit.getId(), classes);
+    unit_div.append(this.createDiv("unit-item", general_info));
+    unit_div.append(this.createDiv("unit-item", num_units));
+    unit_div.append(this.createDiv("unit-item", supply_remaining));
+
+    return unit_div;
+  },
+
   clear: function() {
     $(this.main_element_id).empty();
     return this;
@@ -183,15 +183,7 @@ Output = {
 
   reportAttrition: function(unit, units_lost) {
     var unsupplied = Pretty.Unit.unsupplied(units_lost);
-    var general_info = Pretty.Unit.generalInfo(unit);
-    var status = Pretty.Unit.status(unit.quantity);
-    var quantity = "Quantity: " + status;
-    var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-
-    var unit_div = this.createUnitDiv(unit.getId());
-    unit_div.append(this.createDiv("unit-item", general_info));
-    unit_div.append(this.createDiv("unit-item", quantity));
-    unit_div.append(this.createDiv("unit-item", supply_remaining));
+    var unit_div = this.createStandardUnitDiv(unit);
     unit_div.append(this.createDiv("unit-item", unsupplied));
     this.makeReport([unit_div]);
 
@@ -204,14 +196,7 @@ Output = {
 
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
-      var general_info = Pretty.Unit.generalInfo(unit);
-      var update = Pretty.Unit.status(unit.quantity);
-      var num_units = "Quantity: " + update;
-      var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-      var unit_div = this.createUnitDiv(unit.getId(), "sub-report");
-      unit_div.append(this.createDiv("unit-item", general_info));
-      unit_div.append(this.createDiv("unit-item", num_units));
-      unit_div.append(this.createDiv("unit-item", supply_remaining));
+      var unit_div = this.createStandardUnitDiv(unit, "sub-report");
       divs.push(unit_div);
     }
 
