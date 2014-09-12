@@ -31,7 +31,7 @@ Crafty.c('Unit', {
       var item = selected[Game.turn];
       var item = Game.player_selected[Game.turn];
 
-      if (item && item.side == this.side && Game.selected.getId() != item.getId()) {
+      if (item && item.side == this.side && Game.selected && Game.selected.getId() != item.getId()) {
         Game.select(item);
       } else {
         this.selectFirstUnit();
@@ -205,7 +205,6 @@ Crafty.c('Unit', {
     if (this.supply_remaining < 0) {
       var to_kill = Math.floor(this.quantity * 0.1);
       this.kill(to_kill);
-      console.log("Attrition losses: " + to_kill);
       return to_kill;
     }
     return 0;
