@@ -58,7 +58,7 @@ Output = {
     if (is_unit) {
       report.addClass("unit");
       report.attr("unit_id", unit_id);
-      report.click(Pretty.Unit.selectSelf);
+      report.click(this.selectSelf());
     }
     for (var i=0; i<info.length; i++) {
       var item = $('<div class="report-item"></div>')
@@ -94,7 +94,10 @@ Output = {
 
   printSingleUnit: function(unit) {
     var unit_div = this.createStandardUnitDiv(unit, "sub-report");
-    if (unit.battle) unit_div.append(this.createDiv("unit-item", Pretty.Unit.inBattle()));
+    if (unit.battle) {
+      var battle = unit.isBattlePresent();
+      unit_div.append(this.createBattleDiv(battle.getId(), Pretty.Unit.inBattle()));
+    }
 
     this.makeReport([unit_div]);
   },
@@ -174,7 +177,7 @@ Output = {
     }
     var unit_div = this.createDiv(classes)
       .attr("unit_id", unit_id)
-      .click(Pretty.Unit.selectSelf)
+      .click(this.selectSelf())
       ;
     return unit_div;
   },
@@ -194,6 +197,30 @@ Output = {
     unit_div.append(this.createDiv("unit-item", supply_remaining));
 
     return unit_div;
+  },
+
+  createBattleDiv: function(battle_id, text, classes) {
+    if (classes) {
+      classes = "battle {0}".format(classes);
+    } else {
+      classes = "battle";
+    }
+    var battle_div = this.createDiv(classes, text)
+      .attr("battle_id", battle_id)
+      .click(this.selectSelf("battle"))
+      ;
+    return battle_div;
+  },
+
+  selectSelf: function(type) {
+    if (!type) type = "unit";
+    var type_id = "{0}_id".format(type);
+    var func = function() {
+      console.log("{0} clicked!".format(Utility.capitalizeFirstLetter(type)));
+      var entity_id = parseInt($(this).attr(type_id));
+      Game.select(Crafty(entity_id));
+    }
+    return func;
   },
 
   createIconImage: function(unit) {
@@ -233,7 +260,10 @@ Output = {
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
       var unit_div = this.createStandardUnitDiv(unit, "sub-report");
-      if (unit.battle) unit_div.append(this.createDiv("unit-item", Pretty.Unit.inBattle()));
+      if (unit.battle) {
+        var battle = unit.isBattlePresent();
+        unit_div.append(this.createBattleDiv(battle.getId(), Pretty.Unit.inBattle()));
+      }
       divs.push(unit_div);
     }
 

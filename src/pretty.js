@@ -89,11 +89,5 @@ Pretty = {
       return quantity;
     },
 
-    selectSelf: function() {
-      console.log("Unit clicked!");
-      var unit_id = parseInt($(this).attr("unit_id"));
-      Game.select(Crafty(unit_id));
-    },
-
   },
 }
