@@ -225,30 +225,52 @@ Crafty.scene('Game', function() {
 
   function addPlayers() {
     // Player character, placed on the grid
-    function addUnits(side, quantity, x_value) {
+    function getStartY(side, max_units_per_column) {
+      var supply_road = Game.player_supply_roads[side][0];
+      var y = supply_road[supply_road.length - 1].at().y;
+      var min_y = Math.max(y - Math.floor(max_units_per_column/2), 0);
+      var max_y = Math.min(min_y, Game.map_grid.height - max_units_per_column);
+      return max_y;
+    }
+
+    function createUnit(faction, side, location, index) {
+      var unit = Crafty.e(faction[index].unit);
+      unit.at(location.x, location.y)
+        .pick_side(side)
+        ;
+      unit.name = faction[index].name;
+      unit.quantity = faction[index].quantity;
+      return unit;
+    }
+    function addUnits(side, x_value) {
       var faction = Game.factions[side];
-      for (var i=0; i<faction.length; i++) {
-        var supply_road = Game.player_supply_roads[side][0];
-        if (supply_road[supply_road.length - 1] === undefined) continue;
-        var y = supply_road[supply_road.length - 1].at().y;
-        var min_y = Math.max(y - Math.floor(quantity/2), 0);
-        var max_y = Math.min(min_y, Game.map_grid.height - quantity);
-        spot = {x: x_value, y: max_y + i};
-        if (!Game.terrain[spot.x][spot.y].has('Water')) {
-          var unit = Crafty.e(faction[i].unit);
-          unit.at(spot.x, spot.y)
-            .pick_side(side)
-            ;
-          unit.name = faction[i].name;
-          unit.quantity = faction[i].quantity;
+      var units_left = faction.length;
+      var current_index = 0;
+      var column = 0;
+      while (units_left > 0) {
+        var max_units_per_column = 3;
+        for (var i = 0; i<max_units_per_column; i++) {
+          var y = getStartY(side, max_units_per_column);
+          var spot = {x: x_value + column, y: y + i};
+          if (!Game.terrain[spot.x][spot.y].has('Water')) {
+            createUnit(faction, side, spot, current_index);
+            units_left -= 1;
+            current_index += 1;
+            if (!units_left) break;
+          }
+        }
+        if (x_value == 0) {
+          column += 1;
+        } else {
+          column -= 1;
         }
       }
     }
 
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
-    addUnits(0, 5, 0);
-    addUnits(1, 5, Game.map_grid.width - 1);
+    addUnits(Game.FIRST_PLAYER, 0);
+    addUnits(Game.SECOND_PLAYER, Game.map_grid.width - 1);
   }
 
   function addRoadGraphics() {

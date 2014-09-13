@@ -74,10 +74,10 @@ Game = {
   turn: 0,
   turn_count: 0,
 
-  first_player: 0,
-  after_first_player: 0.5,
-  second_player: 1,
-  after_second_player: 1.5,
+  FIRST_PLAYER: 0,
+  AFTER_FIRST_PLAYER: 0.5,
+  SECOND_PLAYER: 1,
+  AFTER_SECOND_PLAYER: 1.5,
 
   nextTurn: function() {
     this.turn += 0.5;
