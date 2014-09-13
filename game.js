@@ -3,6 +3,7 @@ var tile_size = 32;
 
 Game = {
   location: locations.test,
+  factions: [factions.mongols, factions.romans],
 
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
