@@ -190,7 +190,6 @@ Crafty.c('Unit', {
       }
       
       var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
-      //console.log(supply_route);
       if (supply_route.length == 0) return true;
     } else {
       // Supplied because unit is on supply route end point
