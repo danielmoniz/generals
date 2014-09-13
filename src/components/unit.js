@@ -56,18 +56,9 @@ Crafty.c('Unit', {
     var item = selected[Game.turn];
     var item = Game.player_selected[Game.turn];
 
-    console.log("------------------");
-    console.log(item);
-    if (item) console.log(item.side == this.side);
-    console.log(Game.selected);
-    if (Game.selected) console.log(Game.selected.getId());
-    if (item) console.log(item.getId());
-
     if (item && item.side == this.side) {
       Game.select(item);
     } else if (!Game.selected) {
-      console.log("Selecting first unit.");
-      if (item) console.log(Game.player_selected[this.side].name);
       Game.select(this);
     }
   },
@@ -108,8 +99,6 @@ Crafty.c('Unit', {
 
   report: function() {
     Output.printSingleUnit(this);
-    //var status = this.getStatus();
-    //Output.add(this.getStatus()).print();
   },
   updateStatus: function() {
     if (this.quantity <= 0) {
@@ -124,27 +113,6 @@ Crafty.c('Unit', {
   isActive: function() {
     this.updateStatus();
     return this.active;
-  },
-
-  getStatus: function() {
-    this.updateStatus();
-    var update = this.quantity;
-    if (this.quantity <= 0) {
-      update = 'Dead!'
-    }
-    var info = [];
-    var general_info = "{0} (Player {1})".format(this.type, this.side);
-    var num_units = "Quantity: " + update;
-    var supply_remaining = "Supply remaining: " + this.supply_remaining;
-    info.push(general_info);
-    info.push(num_units);
-    info.push(supply_remaining);
-
-    if (this.quantity <= 0) {
-      this.destroy();
-      //return false;
-    }
-    return info;
   },
 
   injuryAttrition: function() {
@@ -165,7 +133,6 @@ Crafty.c('Unit', {
       if (!this.battle) {
         Output.usePanel("alerts");
         Output.reportAttrition(this, units_lost);
-        console.log("reported attrition");
       }
     } else {
       this.resupply();
@@ -331,7 +298,6 @@ Crafty.c('Unit', {
     this.battle_side = battle_side;
     this.battle = true;
     this.stop_unit();
-    return this.getStatus();
   },
   battle_finished: function() {
     this.battle = false;

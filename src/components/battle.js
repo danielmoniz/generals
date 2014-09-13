@@ -11,7 +11,7 @@ Battle = {
   getQuantity: function(units) {
     var quantity = 0;
     for (var i=0; i<units.length; i++) {
-      quantity += units[i].quantity;
+      quantity += units[i].getActive();
     }
     return quantity;
   },
@@ -19,7 +19,7 @@ Battle = {
   getRatiosOfTotal: function(units, total) {
     var ratios = [];
     for (var i=0; i<units.length; i++) {
-      ratios[i] = units[i].quantity / total;
+      ratios[i] = units[i].getActive() / total;
     }
     return ratios;
   },
@@ -268,22 +268,7 @@ Crafty.c('Battle', {
   },
 
   report: function() {
-    //var output = this.getStatus();
-    //Output.push(output).print();
     Output.printBattle(this);
-  },
-  getStatus: function() {
-    /*
-    var output = [];
-    var units_in_combat = this.units_in_combat();
-    for (var i=0; i<units_in_combat.length; i++) {
-      var unit = units_in_combat[i];
-      output.push(unit.getStatus());
-    }
-    var finished = "Battle report: finished!";
-    if (this.finished) output.push(finished);
-    return output;
-    */
   },
 
   getPresentUnits: function() {
