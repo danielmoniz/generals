@@ -2,6 +2,8 @@ Output = {
   main_element_id: "#info-panel",
   turn_count_element_id: "#turn-count",
   player_element_id: "#player",
+  alerts_element_id: "#alerts-panel",
+  alerts_container_element_id: "#alerts-container",
   buffer: [],
   push: function(info) {
     //for (var i=0; i<info.length; i++) {
@@ -10,6 +12,26 @@ Output = {
     //}
     return this;
   },
+  reset: function() {
+    this.element_id = this.main_element_id;
+  },
+
+  usePanel: function(panel) {
+    var panels = {
+      main: "#info-panel",
+      alerts: "#alerts-panel",
+      turn_count: "#turn-count",
+      player: "#player",
+    };
+    if (panels[panel] === undefined) {
+      throw "BadPanelName: Panel name did not correspond to an existing panel.";
+      return false;
+    }
+    this.element_id = panels[panel];
+    $(this.element_id).show();
+    if (panel == "alerts") $(this.alerts_container_element_id).show();
+  },
+
   add: function(text_array) {
     for (var i=0; i<text_array.length; i++) {
       this.push(text_array[i]);
@@ -48,7 +70,7 @@ Output = {
   },
 
   makeReport: function(divs, title, conclusion) {
-    var info_panel = $(this.main_element_id);
+    var info_panel = $(this.element_id);
     var report = this.createDiv("report");
     info_panel.append(report);
 
@@ -65,6 +87,7 @@ Output = {
       var conclusion_div = this.createDiv('conclusion', conclusion);
       report.append(conclusion_div);
     }
+    this.reset();
     return this;
   },
 
@@ -180,8 +203,10 @@ Output = {
     return img;
   },
 
-  clear: function() {
+  clearAll: function() {
     $(this.main_element_id).empty();
+    $(this.alerts_element_id).empty();
+    $(this.alerts_container_element_id).hide();
     return this;
   },
 

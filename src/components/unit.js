@@ -37,8 +37,7 @@ Crafty.c('Unit', {
         this.selectFirstUnit();
       }
 
-      //if (Game.turn_count >= 2) this.handleAttrition();
-      this.handleAttrition();
+      if (Game.turn_count >= 2) this.handleAttrition();
       if (this.battle) {
         this.fight();
       }
@@ -60,17 +59,11 @@ Crafty.c('Unit', {
 
   select: function() {
     this.report();
-    var other_units_present = this.getPresentUnits(true);
-    if (other_units_present.length == 0) return;
-    Output.printUnitsPresent(other_units_present);
-    /*
-    Output.push("Other units present: --------------");
-    for (var i=0; i<other_units_present.length; i++) {
-      other_units_present[i].report();
+    if (!this.battle) {
+      var other_units_present = this.getPresentUnits(true);
+      if (other_units_present.length == 0) return;
+      Output.printUnitsPresent(other_units_present);
     }
-    Output.push("-----------------------------------");
-    Output.print();
-    */
   },
 
   selectFirstUnit: function() {
@@ -147,6 +140,7 @@ Crafty.c('Unit', {
     if (this.detectAttrition()) {
       var units_lost = this.sufferAttrition();
       if (!this.battle) {
+        Output.usePanel("alerts");
         Output.reportAttrition(this, units_lost);
       }
     } else {

@@ -55,7 +55,7 @@ Game = {
     //Output.printEntity(this.selected, true);
   },
   deselect: function() {
-    Output.clear();
+    Output.clearAll();
     if (this.selected) {
       delete this.selected;
       this.select_highlight.destroy();
