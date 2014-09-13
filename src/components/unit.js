@@ -333,7 +333,7 @@ Crafty.c('Cavalry', {
     this.requires('Unit, Collision, Targetable, Movable')
       //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
       .attr({
-        quantity: 3000 + 2000*Math.round(Math.random() * 2),
+        quantity: 0,
         type: 'Cavalry',
         //side: 1,
       })

@@ -226,9 +226,8 @@ Crafty.scene('Game', function() {
   function addPlayers() {
     // Player character, placed on the grid
     function addUnits(side, quantity, x_value) {
-      for (var i=0; i<quantity; i++) {
-        var faction = Game.factions[side];
-        var name = faction.names[i];
+      var faction = Game.factions[side];
+      for (var i=0; i<faction.length; i++) {
         var supply_road = Game.player_supply_roads[side][0];
         if (supply_road[supply_road.length - 1] === undefined) continue;
         var y = supply_road[supply_road.length - 1].at().y;
@@ -236,11 +235,12 @@ Crafty.scene('Game', function() {
         var max_y = Math.min(min_y, Game.map_grid.height - quantity);
         spot = {x: x_value, y: max_y + i};
         if (!Game.terrain[spot.x][spot.y].has('Water')) {
-          var unit = Crafty.e('Cavalry');
+          var unit = Crafty.e(faction[i].unit);
           unit.at(spot.x, spot.y)
             .pick_side(side)
             ;
-          unit.name = name;
+          unit.name = faction[i].name;
+          unit.quantity = faction[i].quantity;
         }
       }
     }
