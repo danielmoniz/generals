@@ -48,7 +48,6 @@ Crafty.c('Unit', {
       this.injuryAttrition();
 
       this.determineSelection();
-
     }
   },
 
@@ -57,9 +56,18 @@ Crafty.c('Unit', {
     var item = selected[Game.turn];
     var item = Game.player_selected[Game.turn];
 
-    if (item && item.side == this.side && Game.selected && Game.selected.getId() != item.getId()) {
+    console.log("------------------");
+    console.log(item);
+    if (item) console.log(item.side == this.side);
+    console.log(Game.selected);
+    if (Game.selected) console.log(Game.selected.getId());
+    if (item) console.log(item.getId());
+
+    if (item && item.side == this.side) {
       Game.select(item);
     } else if (!Game.selected) {
+      console.log("Selecting first unit.");
+      if (item) console.log(Game.player_selected[this.side].name);
       Game.select(this);
     }
   },
