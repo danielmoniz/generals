@@ -73,6 +73,10 @@ Pretty = {
       return "Other units present: --------------";
     },
 
+    inBattle: function() {
+      return "(In battle)";
+    },
+
     status: function(quantity) {
       if (quantity <= 0) {
         update = 'Dead!'

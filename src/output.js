@@ -70,7 +70,7 @@ Output = {
 
   printSingleUnit: function(unit) {
     var unit_div = this.createStandardUnitDiv(unit, "sub-report");
-    if (unit.battle) unit_div.append(this.createDiv("unit-item", "(In battle)"));
+    if (unit.battle) unit_div.append(this.createDiv("unit-item", Pretty.Unit.inBattle()));
 
     this.makeReport([unit_div]);
   },
@@ -207,6 +207,7 @@ Output = {
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
       var unit_div = this.createStandardUnitDiv(unit, "sub-report");
+      if (unit.battle) unit_div.append(this.createDiv("unit-item", Pretty.Unit.inBattle()));
       divs.push(unit_div);
     }
 
