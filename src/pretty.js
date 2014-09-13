@@ -39,6 +39,10 @@ Pretty = {
       return general_info;
     },
 
+    name: function(unit) {
+      return unit.name;
+    },
+
     generalInfoStartingBattle: function(unit) {
       var battle_side = Utility.capitalizeFirstLetter(unit.battle_side);
       var player = Pretty.Player.name(unit.side);

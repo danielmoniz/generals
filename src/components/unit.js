@@ -58,6 +58,7 @@ Crafty.c('Unit', {
   },
 
   select: function() {
+    console.log("unit reporting");
     this.report();
     if (!this.battle) {
       var other_units_present = this.getPresentUnits(true);

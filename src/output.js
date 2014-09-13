@@ -72,6 +72,7 @@ Output = {
   makeReport: function(divs, title, conclusion) {
     var info_panel = $(this.element_id);
     var report = this.createDiv("report");
+    console.log("making report");
     info_panel.append(report);
 
     if (title !== undefined) {
@@ -80,13 +81,16 @@ Output = {
     }
 
     for (var i=0; i<divs.length; i++) {
+      console.log("adding div to report");
       report.append(divs[i]);
+      console.log(divs[i]);
     }
 
     if (conclusion !== undefined) {
       var conclusion_div = this.createDiv('conclusion', conclusion);
       report.append(conclusion_div);
     }
+    console.log(report);
     this.reset();
     return this;
   },
@@ -181,15 +185,16 @@ Output = {
 
   createStandardUnitDiv: function(unit, classes) {
     var general_info = Pretty.Unit.generalInfo(unit);
-    var update = Pretty.Unit.status(unit.quantity);
-    var num_units = "Quantity: " + update;
+    var name = Pretty.Unit.name(unit);
+    var status = Pretty.Unit.status(unit.quantity);
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
     var img = this.createIconImage(unit);
     unit_div.append(img);
     //unit_div.append(this.createDiv("unit-item", general_info));
-    unit_div.append(this.createDiv("unit-item", num_units));
+    unit_div.append(this.createDiv("unit-item", name));
+    unit_div.append(this.createDiv("unit-item", status));
     unit_div.append(this.createDiv("unit-item", supply_remaining));
 
     return unit_div;
@@ -204,6 +209,7 @@ Output = {
   },
 
   clearAll: function() {
+    console.log("clearing all");
     $(this.main_element_id).empty();
     $(this.alerts_element_id).empty();
     $(this.alerts_container_element_id).hide();

@@ -48,6 +48,7 @@ Game = {
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);
     if (this.selected.select) {
+      console.log("selecting unit");
       this.selected.select();
     } else {
       throw "NotImplementedError: select() for {0}".format(this.selected.type);
@@ -55,6 +56,7 @@ Game = {
     //Output.printEntity(this.selected, true);
   },
   deselect: function() {
+    console.log("deselecting");
     Output.clearAll();
     if (this.selected) {
       delete this.selected;
