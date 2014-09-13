@@ -34,7 +34,7 @@ Battle = {
 
   killUnits: function(units, losses) {
     for (var i=0; i<units.length; i++) {
-      units[i].kill(losses[i]);
+      units[i].sufferCasualties(losses[i]);
     }
   },
 
@@ -157,7 +157,7 @@ Crafty.c('Battle', {
     for (var i=0; i<units.length; i++) {
       if (units[i].getId() == unit.getId()) {
         var num_losses = Math.ceil(losses[unit.battle_side] * side[unit.battle_side].ratios[i]);
-        unit.kill(num_losses);
+        unit.sufferCasualties(num_losses);
         break;
       }
     }
@@ -233,29 +233,33 @@ Crafty.c('Battle', {
 
   isBattleActive: function() {
     attackers_alive = false;
+    attackers_remaining = false;
     attackers_active = false;
     for (var i=0; i<this.attackers.length; i++) {
       var attacker = this.attackers[i];
       if (!attacker) continue;
       var attackers_alive = this.attackers[i].isAlive();
+      var attackers_remaining = this.attackers[i].getActive();
       if (attacker.battle) {
         attackers_active = true;
         break;
       }
     }
     defenders_alive = false;
+    defenders_remaining = false;
     defenders_active = false;
     for (var i=0; i<this.defenders.length; i++) {
       var defender = this.defenders[i];
       if (!defender) continue;
       var defenders_alive = this.defenders[i].isAlive();
+      var defenders_remaining = this.defenders[i].getActive();
       if (defender.battle) {
         defenders_active = true;
         break;
       }
     }
 
-    if (!defenders_active || !attackers_active ||  !attackers_alive || !defenders_alive) return false;
+    if (!defenders_active || !attackers_active ||  !attackers_alive || !defenders_alive || !attackers_remaining || !defenders_remaining) return false;
     return true;
   },
 

@@ -81,12 +81,18 @@ Pretty = {
       return "(In battle)";
     },
 
-    status: function(quantity) {
-      if (quantity <= 0) {
+    status: function(active, injured) {
+      if (active <= 0) {
+        update = "Disbanded!";
+        return update;
+      }
+      if (active <= 0 && injured <= 0) {
         update = 'Dead!'
         return update;
       }
-      return quantity;
+      var status = active;
+      if (injured && injured > 0) status += "/{0}".format(active + injured);
+      return status;
     },
 
   },

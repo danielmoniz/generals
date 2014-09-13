@@ -185,7 +185,7 @@ Output = {
   createStandardUnitDiv: function(unit, classes) {
     var general_info = Pretty.Unit.generalInfo(unit);
     var name = Pretty.Unit.name(unit);
-    var status = Pretty.Unit.status(unit.quantity);
+    var status = Pretty.Unit.status(unit.getActive(), unit.injured);
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
@@ -229,6 +229,11 @@ Output = {
       class: "icon",
     });
     return img;
+  },
+
+  clearMain: function() {
+    $(this.main_element_id).empty();
+    return this;
   },
 
   clearAll: function() {
@@ -291,4 +296,5 @@ Output = {
   },
 
 }
+
 

@@ -42,7 +42,7 @@ Game = {
   player_selected: [],
   selected: undefined,
   select: function(clickable_object) {
-    this.deselect();
+    if (this.selected) this.deselect();
     this.selected = clickable_object;
     if (this.selected.side == this.turn) this.player_selected[this.turn] = clickable_object;
     this.select_highlight = Crafty.e('Selected');
@@ -53,14 +53,12 @@ Game = {
     } else {
       throw "NotImplementedError: select() for {0}".format(this.selected.type);
     }
-    //Output.printEntity(this.selected, true);
   },
   deselect: function() {
-    Output.clearAll();
+    Output.clearMain();
     if (this.selected) {
       delete this.selected;
       this.select_highlight.destroy();
-      //delete this.select_highlight;
     }
   },
   clearPlayerSelected: function(side) {
@@ -79,7 +77,13 @@ Game = {
   SECOND_PLAYER: 1,
   AFTER_SECOND_PLAYER: 1.5,
 
+  battle_death_rate: 1/5,
+  attrition_rate: 1/10,
+  attrition_death_rate: 1/3,
+  village_healing_rate: 15/100,
+
   nextTurn: function() {
+    Output.clearAll();
     this.turn += 0.5;
     this.turn_count += 0.5;
     this.turn = this.turn % 2;

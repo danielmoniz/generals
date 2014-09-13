@@ -22,26 +22,12 @@ Crafty.c('Unit', {
       movement: 8, 
       supply_remaining: this.max_supply,
       alive: true,
+      injured: 0,
+      active: true,
     });
   },
 
   nextTurn: function() {
-    if (Game.turn == this.side) {
-      var selected = Game.player_selected;
-      var item = selected[Game.turn];
-      var item = Game.player_selected[Game.turn];
-
-      if (item && item.side == this.side && Game.selected && Game.selected.getId() != item.getId()) {
-        Game.select(item);
-      } else {
-        this.selectFirstUnit();
-      }
-
-      if (Game.turn_count >= 2) this.handleAttrition();
-      if (this.battle) {
-        this.fight();
-      }
-    }
     if (Game.turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
         this.retreat();
@@ -49,11 +35,32 @@ Crafty.c('Unit', {
         this.moveTowardTarget();
       }
     }
+
     if (Game.turn == this.side) {
       if (this.move_target_path) {
         if (this.movement_path) destroyMovementPath(this.movement_path);
         this.movement_path = colourMovementPath(this.move_target_path, this.movement, this.at());
       }
+    }
+
+    if (Game.turn == this.side) {
+      if (Game.turn_count >= 2) this.handleAttrition();
+      this.injuryAttrition();
+
+      this.determineSelection();
+
+    }
+  },
+
+  determineSelection: function() {
+    var selected = Game.player_selected;
+    var item = selected[Game.turn];
+    var item = Game.player_selected[Game.turn];
+
+    if (item && item.side == this.side && Game.selected && Game.selected.getId() != item.getId()) {
+      Game.select(item);
+    } else if (!Game.selected) {
+      Game.select(this);
     }
   },
 
@@ -63,12 +70,6 @@ Crafty.c('Unit', {
       var other_units_present = this.getPresentUnits(true);
       if (other_units_present.length == 0) return;
       Output.printUnitsPresent(other_units_present);
-    }
-  },
-
-  selectFirstUnit: function() {
-    if (!Game.selected) {
-      Game.select(this);
     }
   },
 
@@ -96,9 +97,6 @@ Crafty.c('Unit', {
     }
 
   },
-  fight: function() {
-    // May not need this
-  },
 
   report: function() {
     Output.printSingleUnit(this);
@@ -109,10 +107,15 @@ Crafty.c('Unit', {
     if (this.quantity <= 0) {
       this.alive = false;
     }
+    if (this.quantity - this.injured <= 0) this.active = false;
   },
   isAlive: function() {
     this.updateStatus();
     return this.alive;
+  },
+  isActive: function() {
+    this.updateStatus();
+    return this.active;
   },
 
   getStatus: function() {
@@ -136,17 +139,31 @@ Crafty.c('Unit', {
     return info;
   },
 
+  injuryAttrition: function() {
+    var succumb_rate = 1/20;
+    var num_to_kill = this.injured * succumb_rate;
+    this.kill(num_to_kill, true);
+
+    var village = this.isVillagePresent();
+    if (village) {
+      var num_to_heal = Game.village_healing_rate * this.injured;
+      this.heal(num_to_heal);
+    }
+  },
+
   handleAttrition: function() {
     if (this.detectAttrition()) {
       var units_lost = this.sufferAttrition();
       if (!this.battle) {
         Output.usePanel("alerts");
         Output.reportAttrition(this, units_lost);
+        console.log("reported attrition");
       }
     } else {
       this.resupply();
     }
   },
+
   resupply: function() {
     this.supply_remaining = this.max_supply;
   },
@@ -199,8 +216,11 @@ Crafty.c('Unit', {
   sufferAttrition: function() {
     this.supply_remaining -= 1;
     if (this.supply_remaining < 0) {
-      var to_kill = Math.floor(this.quantity * 0.1);
+      var attrition_casualties = this.quantity * Game.attrition_rate;
+      var to_kill = Math.floor(attrition_casualties * Game.attrition_death_rate);
+      var to_injure = Math.floor(attrition_casualties * (1 - Game.attrition_death_rate));
       this.kill(to_kill);
+      this.injure(to_injure);
       return to_kill;
     }
     return 0;
@@ -217,15 +237,23 @@ Crafty.c('Unit', {
     return false;
   },
 
-  isBattlePresent: function() {
-    var battles = Crafty('Battle').get();
-    for (var i=0; i < battles.length; i++) {
-      var battle = battles[i];
-      var battle_exists = false;
-      if (battles[i].together(this)) {
-        return battles[i];
+  isEntityPresent: function(entity) {
+    var entities = Crafty(Utility.capitalizeFirstLetter(entity)).get();
+    for (var i=0; i < entities.length; i++) {
+      var entity = entities[i];
+      var entity_exists = false;
+      if (entities[i].together(this)) {
+        return entities[i];
       }
     }
+  },
+
+  isBattlePresent: function() {
+    return this.isEntityPresent('Battle');
+  },
+
+  isVillagePresent: function() {
+    return this.isEntityPresent('Village');
   },
 
   prepareMove: function(target_x, target_y) {
@@ -302,13 +330,36 @@ Crafty.c('Unit', {
     delete this.battle_side;
     //this.report();
   },
-  kill: function(casualties) {
-    this.quantity -= casualties;
-    //this.report();
+
+  sufferCasualties: function(casualties) {
+    var deaths = Math.round(casualties * Game.battle_death_rate);
+    var injuries = Math.round(casualties * (1 - Game.battle_death_rate));
+    this.kill(deaths);
+    this.injure(injuries);
     this.updateStatus();
-    if (!this.isAlive()) {
-      this.die();
-    }
+
+    if (!this.isAlive()) this.die();
+    if (this.getActive() <= 0) this.disband();
+  },
+
+  kill: function(num_troops, injured) {
+    if (injured === undefined) injured = false;
+    var num_killed = Math.ceil(Math.min(this.quantity, num_troops));
+    this.quantity -= num_killed;
+    if (injured) this.injured -= num_killed;
+  },
+
+  injure: function(num_troops) {
+    this.injured += Math.ceil(Math.min(this.quantity, num_troops));
+  },
+
+  heal: function(num_to_heal) {
+    this.injure(-1 * num_to_heal);
+  },
+
+  getActive: function() {
+    this.updateStatus();
+    return this.quantity - this.injured;
   },
 
   die: function() {
@@ -322,6 +373,12 @@ Crafty.c('Unit', {
     //this.alive = false;
     this.destroy();
   },
+
+  disband: function() {
+    console.log("{0} disbanded!".format(this.name));
+    this.die();
+  },
+
   is: function(unit) {
     return this.getId() == unit.getId();
   },
