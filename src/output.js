@@ -5,6 +5,7 @@ Output = {
   player_element_id: "#player",
   alerts_element_id: "#alerts-panel",
   alerts_container_element_id: "#alerts-container",
+  will_element_id: "#will",
   buffer: [],
   push: function(info) {
     //for (var i=0; i<info.length; i++) {
@@ -142,7 +143,7 @@ Output = {
     var side = {};
     side[battle.atttacking_side] = "Attacker";
     side[(battle.attacking_side + 1) % 2] = "Defender";
-    var general_info = Pretty.Unit.joinBattleMessage(unit.side, unit.type, unit.battle_side);
+    var general_info = Pretty.Unit.joinBattleMessage(unit.side, unit.type, unit.battle_side, unit.getActive());
     var unit_div = this.createUnitDiv(unit.getId(), "report");
     unit_div.append(this.createDiv("unit-item", general_info));
     this.makeReport([unit_div]);
@@ -279,6 +280,7 @@ Output = {
   updateStatusBar: function() {
     var turn_bar = $(this.turn_count_element_id);
     var player_bar = $(this.player_element_id);
+
     var turn_count = "Turn {0}".format(Pretty.TurnCount.pretty());
     var player = undefined;
     var next_player_turn = Pretty.Turn.nextPlayerTurn();
@@ -293,6 +295,18 @@ Output = {
     }
     turn_bar.text(turn_count);
     player_bar.text(player);
+  },
+
+  updateVictoryBar: function() {
+    var will_bar = $(this.will_element_id);
+    if (Victory.will_to_fight) {
+      var p0_will = Victory.will_to_fight[0].toFixed(0);
+      var p1_will = Victory.will_to_fight[1].toFixed(0);
+      var will = "{0}% - {1}%".format(p0_will, p1_will);
+      will_bar.text(will);
+    } else {
+      will_bar.text("100% - 100%");
+    }
   },
 
 }

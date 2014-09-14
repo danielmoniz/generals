@@ -226,6 +226,7 @@ Crafty.c('Battle', {
 
     if (!this.isBattleActive()) {
       this.end();
+      Victory.updateWillToFight();
     }
 
     Output.printBattle(this);

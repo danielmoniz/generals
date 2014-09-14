@@ -50,10 +50,10 @@ Pretty = {
       return general_info;
     },
 
-    joinBattleMessage: function(side, type, battle_side) {
+    joinBattleMessage: function(side, type, battle_side, active_troops) {
       var battle_side = Utility.capitalizeFirstLetter(battle_side);
       var player = Pretty.Player.name(side);
-      var general_info = "{0}'s {1} joined battle as {2}".format(player, type, battle_side);
+      var general_info = "{0}'s {1} joined battle as {2} with {3}".format(player, type, battle_side, active_troops);
       return general_info;
     },
 

@@ -16,7 +16,7 @@ Game = {
       height: tile_size,
     }
   },
-  
+
   graph_ftn: Graph,
   pathfind: astar,
   terrain: undefined,
@@ -46,6 +46,7 @@ Game = {
     this.selected = clickable_object;
     if (this.selected.side == this.turn) this.player_selected[this.turn] = clickable_object;
     this.select_highlight = Crafty.e('Selected');
+    if (!this.selected.at) return;
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);
     if (this.selected.select) {
@@ -90,6 +91,7 @@ Game = {
     Output.updateStatusBar();
     this.deselect();
     var victory = Victory.checkVictoryConditions();
+    Output.updateVictoryBar();
     if (victory) Crafty.scene('Victory');
     Crafty.trigger("NextTurn");
   },
@@ -99,11 +101,12 @@ Game = {
     // start Crafty and set a background color so that we can see it's
     // working
     Crafty.init(Game.width(), Game.height(), "stage");
-    Output.updateStatusBar();
     //Crafty.background('rgb(87, 109, 20)');
 
     // Simply start the "Loading" scene to get things going
     Crafty.scene('Loading');
+    Output.updateStatusBar();
+    Output.updateVictoryBar();
     //document.getElementById('info-panel').innerHTML += '<div id="info-panel"></div>';
   },
 
@@ -114,6 +117,7 @@ Game = {
     this.player_selected = [];
     this.player_supply_roads = [[], []];
     Output.updateStatusBar();
+    Output.updateVictoryBar();
   },
 }
 

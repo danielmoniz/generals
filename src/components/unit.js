@@ -72,6 +72,10 @@ Crafty.c('Unit', {
     }
   },
 
+  getValue: function() {
+    return this.quantity;
+  },
+
   retreat: function() {
     console.log("RETREAT HAS BEEN CALLED");
     // awful things happen
@@ -121,7 +125,7 @@ Crafty.c('Unit', {
     this.kill(num_to_kill, true);
 
     var village = this.isVillagePresent();
-    if (village) {
+    if (village && !this.battle) {
       var num_to_heal = Game.village_healing_rate * this.injured;
       this.heal(num_to_heal);
     }
@@ -349,7 +353,7 @@ Crafty.c('Unit', {
   },
 
   disband: function() {
-    console.log("{0} disbanded!".format(this.name));
+    console.log("{0}'s army disbanded!".format(this.name));
     this.die();
   },
 

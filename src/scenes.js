@@ -304,6 +304,7 @@ Crafty.scene('Game', function() {
   //addSupplyRoads(1, 1);
   addRoadGraphics();
   addPlayers();
+  Victory.reset();
   Game.select(Crafty('Unit').get(0));
 
   // Creates a road on the map given a shortest-path solution.
@@ -399,7 +400,7 @@ Crafty.scene('Victory', function() {
   Crafty.e('2D, DOM, Text')
     .attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
     .css($text_css)
-    .text('Victory! Press any key to start again.')
+    .text(Victory.victory_text)
     ;
 
   // Watch for the player to press a key, then restart the game when a key is
