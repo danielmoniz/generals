@@ -108,9 +108,11 @@ Crafty.c('Battle', {
 
   unitDead: function(unit) {
     if (unit.battle_side == Battle.ATTACKER) {
-      if (this.attacker.is(unit)) delete this.attacker;
+      if (this.attacker && this.attacker.is && this.attacker.is(unit)) delete this.attacker;
+      var dead_index = undefined;
       for (var i=0; i<this.attackers.length; i++) {
         if (!this.attackers[i] || this.attackers[i].is(unit)) {
+          dead_index = i;
           delete this.attackers[i];
           break;
         }

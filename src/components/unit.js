@@ -362,7 +362,7 @@ Crafty.c('Unit', {
     }
     var battle = this.isBattlePresent();
     if (battle) battle.unitDead(this);
-    //this.alive = false;
+    this.alive = false;
     this.destroy();
   },
 
@@ -385,7 +385,7 @@ Crafty.c('Cavalry', {
         quantity: 0,
         type: 'Cavalry',
         //side: 1,
-        movement: 2, 
+        movement: 100, 
       })
       ;
   },

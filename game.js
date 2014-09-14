@@ -106,7 +106,7 @@ Game = {
     // Simply start the "Loading" scene to get things going
     Crafty.scene('Loading');
     Output.updateStatusBar();
-    Output.updateVictoryBar();
+    Output.updateVictoryBar(true);
     //document.getElementById('info-panel').innerHTML += '<div id="info-panel"></div>';
   },
 
@@ -117,7 +117,7 @@ Game = {
     this.player_selected = [];
     this.player_supply_roads = [[], []];
     Output.updateStatusBar();
-    Output.updateVictoryBar();
+    Output.updateVictoryBar(true);
   },
 }
 

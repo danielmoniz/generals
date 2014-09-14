@@ -297,20 +297,31 @@ Output = {
     }
     turn_bar.text(turn_count);
     player_bar.text(player);
+    return this;
   },
 
-  updateVictoryBar: function() {
+  updateVictoryBar: function(hard_reset) {
     var will_bar = $(this.will_element_id);
+    if (hard_reset) {
+      return this.resetVictoryBar();
+    }
     if (Victory.will_to_fight) {
       var p0_will = Victory.will_to_fight[0].toFixed(0);
       var p1_will = Victory.will_to_fight[1].toFixed(0);
       var will = "{0}% - {1}%".format(p0_will, p1_will);
       will_bar.text(will);
     } else {
-      var will = "100% - 100%";
-      will_bar.text("100% - 100%");
+      return this.resetVictoryBar();
     }
     will_bar.text("(Blue) {0} (White)".format(will));
+  },
+
+  resetVictoryBar: function() {
+    var will_bar = $(this.will_element_id);
+    var will = "100% - 100%";
+    will_bar.text("100% - 100%");
+    will_bar.text("(Blue) {0} (White)".format(will));
+    return this;
   },
 
 }
