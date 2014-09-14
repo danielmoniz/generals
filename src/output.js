@@ -305,8 +305,10 @@ Output = {
       var will = "{0}% - {1}%".format(p0_will, p1_will);
       will_bar.text(will);
     } else {
+      var will = "100% - 100%";
       will_bar.text("100% - 100%");
     }
+    will_bar.text("(Blue) {0} (White)".format(will));
   },
 
 }

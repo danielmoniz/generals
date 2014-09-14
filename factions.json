@@ -1,0 +1,56 @@
+factions = {
+  mongols: [
+    {
+      name: "Subutai",
+      unit: "Cavalry",
+      quantity: 5000,
+    },
+    {
+      name: "Genghis Khan",
+      unit: "Cavalry",
+      quantity: 4000,
+    },
+    {
+      name: "Kublai Khan",
+      unit: "Cavalry",
+      quantity: 3000,
+    },
+    {
+      name: "Batu Khan",
+      unit: "Cavalry",
+      quantity: 2000,
+    },
+    {
+      name: "Mandhuhai",
+      unit: "Cavalry",
+      quantity: 1000,
+    },
+  ],
+  romans: [
+    {
+      name: "Scipio",
+      unit: "Cavalry",
+      quantity: 5000,
+    },
+    {
+      name: "Agrippa",
+      unit: "Cavalry",
+      quantity: 4000,
+    },
+    {
+      name: "Rufus",
+      unit: "Cavalry",
+      quantity: 3000,
+    },
+    {
+      name: "Flavius",
+      unit: "Cavalry",
+      quantity: 2000,
+    },
+    {
+      name: "Marc Antony",
+      unit: "Cavalry",
+      quantity: 1000,
+    },
+  ],
+}
