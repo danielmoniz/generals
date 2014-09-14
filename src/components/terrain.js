@@ -113,7 +113,7 @@ Crafty.c('Village', {
     this.requires('spr_village, Terrain, Passable')
       .attr({ 
         type: "Town", 
-        move_difficulty: 1.2, 
+        move_difficulty: 0.8, 
         build_over: 0.01,
         defense_bonus: 1.25,
         supply: 1,

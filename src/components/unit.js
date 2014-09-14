@@ -19,7 +19,6 @@ Crafty.c('Unit', {
     this.attr({ 
       battle: false, 
       side: 0, 
-      movement: 8, 
       supply_remaining: this.max_supply,
       alive: true,
       injured: 0,
@@ -84,21 +83,6 @@ Crafty.c('Unit', {
     Output.printRetreat(this, num_losses);
     this.battle = false;
     this.moveTowardTarget();
-  },
-
-  moveTowardTarget: function() {
-    var partial_path = getPartialPath(this.move_target_path, this.movement);
-    // check for enemies that will be bumped into
-    for (var i=0; i<partial_path.length; i++) {
-      if (this.battle) break;
-      var next_move = partial_path[i];
-      this.at(next_move.x, next_move.y);
-      new_path = this.move_target_path.slice(1, this.move_target_path.length);
-      this.move_target_path = new_path;
-      if (new_path.length == 0) this.move_target_path = undefined;
-      this.moved();
-    }
-
   },
 
   report: function() {
@@ -249,12 +233,42 @@ Crafty.c('Unit', {
       return false;
     }
 
-    var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
+    // provide +1 movement for retreating in order to escape
+    var movement = this.movement;
+    if (this.battle) movement += 1;
+    //var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
     if (this.movement_path) destroyMovementPath(this.movement_path);
-    this.movement_path = colourMovementPath(path_remaining, this.movement, this.at());
+    this.movement_path = colourMovementPath(path, movement, this.at());
 
     this.move_target_path = path;
   },
+
+  retreat: function() {
+    console.log("RETREAT HAS BEEN CALLED");
+    var battle = this.isBattlePresent();
+    var num_losses = battle.retreat(this);
+    Output.printRetreat(this, num_losses);
+    this.battle = false;
+    this.moveTowardTarget(true);
+  },
+
+  moveTowardTarget: function(is_retreat) {
+    if (is_retreat === undefined) is_retreat = false;
+    var movement = this.movement;
+    if (is_retreat) movement += 1;
+    var partial_path = getPartialPath(this.move_target_path, movement);
+    // check for enemies that will be bumped into
+    for (var i=0; i<partial_path.length; i++) {
+      if (this.battle) break;
+      var next_move = partial_path[i];
+      this.at(next_move.x, next_move.y);
+      new_path = this.move_target_path.slice(1, this.move_target_path.length);
+      this.move_target_path = new_path;
+      if (new_path.length == 0) this.move_target_path = undefined;
+      this.moved();
+    }
+  },
+
 
   moved: function() {
     // detect combat
@@ -371,6 +385,7 @@ Crafty.c('Cavalry', {
         quantity: 0,
         type: 'Cavalry',
         //side: 1,
+        movement: 2, 
       })
       ;
   },

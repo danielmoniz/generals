@@ -108,13 +108,13 @@ Crafty.c('Battle', {
 
   unitDead: function(unit) {
     if (unit.battle_side == Battle.ATTACKER) {
+      if (this.attacker.is(unit)) delete this.attacker;
       for (var i=0; i<this.attackers.length; i++) {
         if (!this.attackers[i] || this.attackers[i].is(unit)) {
           delete this.attackers[i];
           break;
         }
       }
-      if (this.attacker.is(unit)) delete this.attacker;
     } else if (unit.battle_side == Battle.DEFENDER) {
       for (var i=0; i<this.defenders.length; i++) {
         if (!this.defenders[i] || this.defenders[i].is(unit)) {

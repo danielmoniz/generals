@@ -219,7 +219,9 @@ Output = {
     var func = function() {
       console.log("{0} clicked!".format(Utility.capitalizeFirstLetter(type)));
       var entity_id = parseInt($(this).attr(type_id));
-      Game.select(Crafty(entity_id));
+      var unit = Crafty(entity_id);
+      console.log("Unit battle value: {0}".format(unit.battle));
+      Game.select(unit);
     }
     return func;
   },
