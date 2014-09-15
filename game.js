@@ -126,8 +126,8 @@ Game = {
   start: function() {
     if (Game.turn == undefined) Game.turn = 0;
     if (Game.turn_count == undefined) Game.turn_count = 0;
-    Game.type = Game.types['EMAIL'];
-    //Game.type = Game.types['HOTSEAT'];
+    //Game.type = Game.types['EMAIL'];
+    Game.type = Game.types['HOTSEAT'];
     var load_world = Game.load_world;
     Game.load_world = load_world;
     // start Crafty and set a background color so that we can see it's

@@ -177,15 +177,6 @@ Crafty.c('PlayerCharacter', {
       .fourway(4)
       .stopOnSolids()
       .onHit('Village', this.visitVillage)
-      // @TODO TEMPORARY: This moves the turns forward. Need a better place to put
-      // this.
-      .bind('KeyDown', function(e) {
-        if (e.key == Crafty.keys.SPACE) {
-          Game.nextTurn();
-        } else {
-          //console.log(e);
-        }
-      })
       ;
     this.z = 1000;
   },

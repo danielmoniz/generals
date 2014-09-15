@@ -1,7 +1,16 @@
+function nextTurn(e) {
+  if (e.key == Crafty.keys.SPACE) {
+    Game.nextTurn();
+  } else {
+    //console.log(e);
+  }
+}
 // Game scene
 // ----------
 // Runs the core of the gameplay loop
 Crafty.scene('Game', function() {
+  this.unbind("KeyDown", nextTurn);
+  this.bind('KeyDown', nextTurn);
 
   Game.resetStatusVisuals();
 
