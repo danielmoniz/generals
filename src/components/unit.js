@@ -219,7 +219,7 @@ Crafty.c('Unit', {
     return this.isEntityPresent('Village');
   },
 
-  prepareMove: function(target_x, target_y) {
+  prepareMove: function(target_x, target_y, ignore_viuals) {
     this.move_target = { x: target_x, y: target_y };
 
     start = Game.terrain_graph.grid[this.getX()][this.getY()];
@@ -240,7 +240,9 @@ Crafty.c('Unit', {
     if (this.battle) movement += 1;
     //var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
     if (this.movement_path) destroyMovementPath(this.movement_path);
-    this.movement_path = colourMovementPath(path, movement, this.at());
+    if (!ignore_viuals) {
+      this.movement_path = colourMovementPath(path, movement, this.at());
+    }
 
     this.move_target_path = path;
   },
@@ -298,9 +300,11 @@ Crafty.c('Unit', {
   },
 
   stop_unit: function() {
+    console.log("Calling stop_unit()");
     destroyMovementPath(this.movement_path);
     delete this.movement_path;
     delete this.move_target_path;
+    delete this.move_target;
   },
   startBattle: function() {
     this.battle = true;
@@ -389,7 +393,7 @@ Crafty.c('Cavalry', {
         name: "NAME ME",
         type: 'Cavalry',
         //side: 1,
-        movement: 100, 
+        movement: 8, 
       })
       ;
   },

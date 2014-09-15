@@ -37,27 +37,17 @@ function makeMovementPath(x, y, remaining) {
 
 function colourMovementPath(path, unit_movement, location) {
   var turns_required = 1;
-  //console.log("Path remaining at start:");
-  //console.log("start: " + path_remaining[0].x + ", " +  path_remaining[0].y);
-  //console.log("end: " + path_remaining[path_remaining.length - 1].x + ", " +  path_remaining[path_remaining.length - 1].y);
-  //console.log(path_remaining.length);
-
   var movement_path = [];
 
   movement_path.push(makeMovementPath(location.x, location.y, 1));
   while (path.length > 0) {
     var next_partial_path = getPartialPath(path, unit_movement);
-    //console.log("Next partial path:");
-    //console.log(next_partial_path.length);
-    //console.log(next_partial_path[0].x, next_partial_path[0].y);
     for (var i=0; i<next_partial_path.length; i++) {
       var movement_spot = makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
       movement_path.push(movement_spot);
     }
     turns_required += 1;
     path = path.slice(next_partial_path.length, path.length);
-    //console.log("Path remaining:");
-    //console.log(path.length);
   }
   return movement_path;
 }

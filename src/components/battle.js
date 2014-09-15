@@ -62,16 +62,14 @@ Crafty.c('Battle', {
     return units_in_combat;
   },
 
-  start: function(attacker) {
-    this.attacker = attacker;
-    this.attacking_side = attacker.side;
-    //this.attackers = [attacker];
+  prepareBattle: function() {
     var units_in_combat = this.units_in_combat();
+    var attacking_side = this.attacking_side;
     this.attackers = units_in_combat.filter(function(unit) {
-      return unit.getId() === attacker.getId();
+      return unit.side == attacking_side;
     });
     this.defenders = units_in_combat.filter(function(unit) {
-      return unit.getId() !== attacker.getId();
+      return unit.side != attacking_side;
     });
     for (var i=0; i < this.attackers.length; i++) {
       var unit = this.attackers[i];
@@ -81,6 +79,13 @@ Crafty.c('Battle', {
       var unit = this.defenders[i];
       unit.notify_of_battle(Battle.DEFENDER);
     }
+  },
+
+  start: function(attacker) {
+    this.attacker = attacker;
+    this.attacking_side = attacker.side;
+    //this.attackers = [attacker];
+    this.prepareBattle();
     Output.printBattleStart(this);
   },
 

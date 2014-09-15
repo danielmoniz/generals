@@ -5,6 +5,12 @@ Game = {
   location: locations.test,
   factions: [factions.mongols, factions.romans],
 
+  types: {
+    HOTSEAT: "hotseat",
+    EMAIL: "play by email",
+    ONLINE: "online",
+  },
+
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
     width: Math.ceil(map_width),
@@ -81,8 +87,11 @@ Game = {
 
   supply_route: [],
 
+  /*
   turn: 0,
   turn_count: 0,
+  */
+  turns_played_locally: 0.5,
 
   FIRST_PLAYER: 0,
   AFTER_FIRST_PLAYER: 0.5,
@@ -95,10 +104,16 @@ Game = {
   village_healing_rate: 15/100,
 
   nextTurn: function() {
+    if (Game.type == Game.types.EMAIL) {
+      if (Game.turns_played_locally >= 1) {
+        return;
+      }
+    }
     Output.clearAll();
     this.turn += 0.5;
-    this.turn_count += 0.5;
     this.turn = this.turn % 2;
+    this.turn_count += 0.5;
+    this.turns_played_locally += 0.5;
     Output.updateStatusBar();
     this.deselect();
     var victory = Victory.checkVictoryConditions();
@@ -109,6 +124,9 @@ Game = {
 
   // initialize and start our game
   start: function() {
+    if (Game.turn == undefined) Game.turn = 0;
+    if (Game.turn_count == undefined) Game.turn_count = 0;
+    Game.type = Game.types['EMAIL'];
     var load_world = Game.load_world;
     Game.load_world = load_world;
     // start Crafty and set a background color so that we can see it's
@@ -130,8 +148,13 @@ Game = {
     this.selected = undefined;
     this.player_selected = [];
     this.player_supply_roads = [[], []];
+
+    this.resetVisuals(true);
+  },
+
+  resetVisuals: function(hard_reset) {
     Output.updateStatusBar();
-    Output.updateVictoryBar(true);
+    Output.updateVictoryBar(hard_reset);
   },
 
   /*
@@ -152,7 +175,7 @@ Game = {
       occupied: this.occupied,
 
       player_name_selected: [],
-      selected_name: this.selected.name,
+      //selected_name: this.selected.name,
 
       player_colour: this.player_colour,
 
@@ -173,6 +196,7 @@ Game = {
 
       //units: [[], []],
       units: [],
+      battles: [],
     };
 
     // build more items into saved_game
@@ -207,6 +231,18 @@ Game = {
       saved_game.units.push(new_unit);
     }
 
+    var battles = Crafty('Battle').get();
+    for (var i=0; i<battles.length; i++) {
+      var battle = battles[i];
+      var new_battle = {};
+      new_battle.num_turns = battle.num_turns;
+      new_battle.location = battle.at();
+      new_battle.attacker_name = battle.attacker.name;
+      new_battle.attacking_side = battle.attacking_side;
+
+      saved_game.battles.push(new_battle);
+    }
+
     json_output = JSON.stringify(saved_game);
     //$("#save-output").text(json_output);
     $("textarea#load-input").text(json_output);
@@ -217,7 +253,10 @@ Game = {
 
   loadMap: function(map_data) {
     var map_data = JSON.parse(map_data);
-    Game.reset();
+    delete this.selected;
+
+    this.resetVisuals();
+    this.turns_played_locally = 0;
 
     this.location = map_data.location;
     this.factions = map_data.factions;
@@ -227,7 +266,6 @@ Game = {
     this.occupied = map_data.occupied;
 
     this.player_name_selected = map_data.player_name_selected;
-    //this.selected.name = map_data.selected_name;
 
     this.player_colour = map_data.player_colour;
 
@@ -247,10 +285,12 @@ Game = {
     this.village_healing_rate = map_data.village_healing_rate;
 
     this.units = map_data.units;
+    this.battles = map_data.battles;
 
-    Game.load_world = true;
-    this.start();
-    // find selected unit by name
+    this.load_world = true;
+    Crafty.scene('Loading');
+    Output.updateStatusBar();
+    Output.updateVictoryBar(true);
   },
 }
 

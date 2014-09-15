@@ -186,6 +186,8 @@ Crafty.c('PlayerCharacter', {
           Game.save();
         } else if ((e.key == 76)) {
           Game.loadMap($("textarea#load-input").val());
+        } else if ((e.key == 77)) {
+          Game.loadMap($("textarea#load-input").val());
         } else {
           //console.log(e);
         }

@@ -3,7 +3,7 @@
 // Runs the core of the gameplay loop
 Crafty.scene('Game', function() {
 
-  Game.reset();
+  Game.resetVisuals();
 
   function buildEmptyGameData() {
     Game.height_map = generateHeightMap(Game.location);
@@ -308,11 +308,49 @@ Crafty.scene('Game', function() {
       new_unit.move_target = unit.move_target;
 
       if (new_unit.move_target) {
-        new_unit.prepareMove(new_unit.move_target.x, new_unit.move_target.y);
-        //new_unit.movement_path = colourMovementPath(new_unit.move_target_path, new_unit.movement, new_unit.at());
+        new_unit.prepareMove(new_unit.move_target.x, new_unit.move_target.y, true);
+        if (Game.turn == new_unit.side) {
+          //new_unit.prepareMove(new_unit.move_target.x, new_unit.move_target.y);
+        }
       }
+    }
+  }
 
-      //console.log(new_unit.at());
+  function addBattlesFromLoad() {
+    var battles = Game.battles;
+    var units = Crafty('Unit').get();
+    for (var i=0; i<battles.length; i++) {
+      var battle = battles[i];
+      var new_battle = Crafty.e('Battle');
+      new_battle.attacking_side = battle.attacking_side;
+      new_battle.at(battle.location.x, battle.location.y);
+      if (battle.attacker_name) {
+        var attacker = undefined;
+        for (var j=0; j<units.length; j++) {
+          if (units[j].name == battle.attacker_name) {
+            new_battle.attacker = units[j];
+            break;
+          }
+        }
+      }
+      new_battle.prepareBattle();
+      console.log("new_battle.attacking_side");
+      console.log(new_battle.attacking_side);
+      console.log("new_battle.attacker");
+      console.log(new_battle.attacker);
+    }
+  }
+
+  function determinePlayerSelections() {
+    var units = Crafty('Unit').get();
+    this.player_selected = [];
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      if (unit.name == Game.player_name_selected[0]) {
+        Game.player_selected[0] = unit;
+      } else if (unit.name == Game.player_name_selected[1]) {
+        Game.player_selected[1] = unit;
+      }
     }
   }
 
@@ -330,9 +368,11 @@ Crafty.scene('Game', function() {
     colourWater();
 
     addUnitsFromLoad();
+    addBattlesFromLoad();
+    determinePlayerSelections();
 
     Victory.reset();
-    Game.select(Crafty('Unit').get(0));
+    //Game.select(Crafty('Unit').get(0));
   } else {
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
@@ -357,7 +397,6 @@ Crafty.scene('Game', function() {
   function createRoad(path, including_end, is_supply_road) {
     var road = [];
     var end = path.length - 1;
-    //console.log("creating road. end: " + path[path.length-1].x + ", " + path[path.length-1].y);
     if (including_end) end = path.length;
     for (var i = 0; i < end; i++) {
       var x = path[i].x;
