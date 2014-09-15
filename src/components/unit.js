@@ -220,6 +220,8 @@ Crafty.c('Unit', {
   },
 
   prepareMove: function(target_x, target_y) {
+    this.move_target = { x: target_x, y: target_y };
+
     start = Game.terrain_graph.grid[this.getX()][this.getY()];
     end = Game.terrain_graph.grid[target_x][target_y];
     var path = Game.pathfind.search(Game.terrain_graph, start, end);
@@ -383,6 +385,8 @@ Crafty.c('Cavalry', {
       //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
       .attr({
         quantity: 0,
+        injured: 0,
+        name: "NAME ME",
         type: 'Cavalry',
         //side: 1,
         movement: 100, 

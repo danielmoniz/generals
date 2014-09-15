@@ -138,8 +138,6 @@ Game = {
    * For now, output JSON as text so that it can be loaded manually.
    */
   save: function() {
-    console.log(typeof this.terrain);
-    console.log(this.terrain);
     var saved_game = {
       location: this.location,
       factions: this.factions,
@@ -172,6 +170,9 @@ Game = {
       attrition_rate: this.attrition_rate,
       attrition_death_rate: this.attrition_death_rate,
       village_healing_rate: this.village_healing_rate,
+
+      //units: [[], []],
+      units: [],
     };
 
     // build more items into saved_game
@@ -184,8 +185,27 @@ Game = {
       saved_game.player_name_selected[1] = this.player_selected[1].name;
     }
 
-    console.log("player supply roads");
-    console.log(saved_game.supply_route[0]);
+    // save units
+    var units = Crafty('Unit').get();
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      var new_unit = {};
+      new_unit.type = unit.type;
+      new_unit.side = unit.side;
+      new_unit.name = unit.name;
+      new_unit.quantity = unit.quantity;
+      new_unit.injured = unit.injured;
+      new_unit.location = unit.at();
+      new_unit.battle = unit.battle;
+      new_unit.injured = unit.injured;
+      new_unit.alive = unit.alive;
+      new_unit.active = unit.active;
+      new_unit.supply_remaining = unit.supply_remaining;
+      new_unit.battle_side = unit.battle_side;
+      new_unit.move_target = unit.move_target;
+
+      saved_game.units.push(new_unit);
+    }
 
     json_output = JSON.stringify(saved_game);
     //$("#save-output").text(json_output);
@@ -203,11 +223,6 @@ Game = {
     this.factions = map_data.factions;
     this.map_grid = map_data.map_grid;
     this.terrain_type = map_data.terrain_type;
-    //terrain_supply: this.terrain_supply,
-    //terrain_build_difficulty: this.terrain_build_difficulty,
-    //terrain_graph: this.terrain_graph,
-    //terrain_build_graph: this.terrain_build_graph,
-    //terrain_supply_graph: this.terrain_supply_graph,
     this.height_map = map_data.height_map;
     this.occupied = map_data.occupied;
 
@@ -230,6 +245,8 @@ Game = {
     this.attrition_rate = map_data.attrition_rate;
     this.attrition_death_rate = map_data.attrition_death_rate;
     this.village_healing_rate = map_data.village_healing_rate;
+
+    this.units = map_data.units;
 
     Game.load_world = true;
     this.start();
