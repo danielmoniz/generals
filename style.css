@@ -7,6 +7,8 @@ body { background: black; }
 #player { width:200px; float:left; }
 #will { width:200px; float:left; }
 
+#save-output { color:white; }
+
 .unit { max-width: 350px; margin: 2px 30px 5px 0px; padding: 2px; float:left; border: 1px dotted white; cursor: pointer; }
 .battle { border: 1px dotted white; cursor: pointer; }
 .report { display:block; padding-bottom: 5px; width: 100%; float:left;  }

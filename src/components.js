@@ -182,6 +182,10 @@ Crafty.c('PlayerCharacter', {
       .bind('KeyDown', function(e) {
         if (e.key == Crafty.keys.SPACE) {
           Game.nextTurn();
+        } else if ((e.key == 83)) {
+          Game.save();
+        } else {
+          console.log(e);
         }
       })
       ;

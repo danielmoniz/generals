@@ -213,14 +213,18 @@ Crafty.scene('Game', function() {
       return createRoad(best_route, true, true);
     }
 
+    // @TODO Save the supply end point locations, but nothing else
     //console.log("Starting left supply roads ============");
     for (var i = 0 + offset; i < max_roads; i++) {
       Game.player_supply_roads[0].push(addSupplyRoad(villages, 'left'));
     }
+    Game.supply_route[0] = Game.player_supply_roads[0][0][Game.player_supply_roads[0][0].length - 1].at();
     //console.log("Starting right supply roads ============");
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
       Game.player_supply_roads[1].push(addSupplyRoad(villages, 'right'));
     }
+    Game.supply_route[1] = Game.player_supply_roads[1][0][Game.player_supply_roads[1][0].length - 1].at();
+    //Game.supply_route = Game.player_supply_roads[1][Game.player_supply_roads[1].length - 1].at();
   }
 
   function addPlayers() {
@@ -288,22 +292,20 @@ Crafty.scene('Game', function() {
   }
 
   buildEmptyGameData();
-  colourHeightMap(Game.location);
   addWater(Game.location, this.occupied);
-  colourWater();
   addVillages(12, this.occupied);
   addTrees(Game.location);
   addGrass();
   buildTerrainData();
   addSupplyRoads(1);
-  // buildTerrainData not working on second run. Why not?
-  // It also seems to act differently if run from createRoad().
-  //buildTerrainData();
   addRoadsBetweenVillages();
-  //buildTerrainData();
   //addSupplyRoads(1, 1);
   addRoadGraphics();
   addPlayers();
+
+  colourHeightMap(Game.location);
+  colourWater();
+
   Victory.reset();
   Game.select(Crafty('Unit').get(0));
 
