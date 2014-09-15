@@ -177,17 +177,11 @@ Crafty.c('PlayerCharacter', {
       .fourway(4)
       .stopOnSolids()
       .onHit('Village', this.visitVillage)
-      // TEMPORARY: This moves the turns forward. Need a better place to put
+      // @TODO TEMPORARY: This moves the turns forward. Need a better place to put
       // this.
       .bind('KeyDown', function(e) {
         if (e.key == Crafty.keys.SPACE) {
           Game.nextTurn();
-        } else if ((e.key == 83)) {
-          Game.save();
-        } else if ((e.key == 76)) {
-          Game.loadMap($("textarea#load-input").val());
-        } else if ((e.key == 77)) {
-          Game.loadMap($("textarea#load-input").val());
         } else {
           //console.log(e);
         }

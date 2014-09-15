@@ -127,6 +127,7 @@ Game = {
     if (Game.turn == undefined) Game.turn = 0;
     if (Game.turn_count == undefined) Game.turn_count = 0;
     Game.type = Game.types['EMAIL'];
+    //Game.type = Game.types['HOTSEAT'];
     var load_world = Game.load_world;
     Game.load_world = load_world;
     // start Crafty and set a background color so that we can see it's
@@ -149,10 +150,10 @@ Game = {
     this.player_selected = [];
     this.player_supply_roads = [[], []];
 
-    this.resetVisuals(true);
+    this.resetStatusVisuals(true);
   },
 
-  resetVisuals: function(hard_reset) {
+  resetStatusVisuals: function(hard_reset) {
     Output.updateStatusBar();
     Output.updateVictoryBar(hard_reset);
   },
@@ -164,6 +165,8 @@ Game = {
     var saved_game = {
       location: this.location,
       factions: this.factions,
+      victory: Victory,
+
       map_grid: this.map_grid,
       terrain_type: this.terrain_type,
       //terrain_supply: this.terrain_supply,
@@ -244,19 +247,22 @@ Game = {
     }
 
     json_output = JSON.stringify(saved_game);
-    //$("#save-output").text(json_output);
-    $("textarea#load-input").text(json_output);
+    var textarea_id = "load-input";
+    document.getElementById(textarea_id).value = json_output;
     //Utility.copyToClipboard(json_output);
-
-    // save all unit positions and, individually, orders
   },
 
   loadMap: function(map_data) {
+
+    Output.clearAll();
+    this.resetStatusVisuals();
+
     var map_data = JSON.parse(map_data);
     delete this.selected;
+    delete this.player_selected;
 
-    this.resetVisuals();
     this.turns_played_locally = 0;
+    Victory.set(map_data.victory);
 
     this.location = map_data.location;
     this.factions = map_data.factions;
@@ -291,6 +297,10 @@ Game = {
     Crafty.scene('Loading');
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
+
+    var textarea_id = "load-input";
+    document.getElementById(textarea_id).value = "";
+    $("input#load-button").blur();
   },
 }
 

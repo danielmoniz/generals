@@ -5,6 +5,12 @@ Victory = {
     this.ratio_to_win = 3; // need X times higher will than opponent to win
     this.setWillToFight();
   },
+
+  set: function(victory_data) {
+    this.will_to_fight = victory_data.will_to_fight;
+    this.troop_values = victory_data.troop_values;
+    this.ratio_to_win = victory_data.ratio_to_win;
+  },
   
   checkVictoryConditions: function() {
     this.updateWillToFight();
@@ -59,4 +65,5 @@ Victory = {
       this.troop_values[i] = troop_value;
     }
   },
+
 }

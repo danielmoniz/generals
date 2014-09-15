@@ -3,7 +3,7 @@
 // Runs the core of the gameplay loop
 Crafty.scene('Game', function() {
 
-  Game.resetVisuals();
+  Game.resetStatusVisuals();
 
   function buildEmptyGameData() {
     Game.height_map = generateHeightMap(Game.location);
@@ -173,9 +173,6 @@ Crafty.scene('Game', function() {
           var end = grid[Game.map_grid.width - 1][j];
         }
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
-        /*
-        console.log(start);
-        */
         var cost = totalCost(path);
         if (best_route === undefined || cost < best_cost) {
           // @test
@@ -190,12 +187,10 @@ Crafty.scene('Game', function() {
     }
 
     // @TODO Save the supply end point locations, but nothing else
-    //console.log("Starting left supply roads ============");
     for (var i = 0 + offset; i < max_roads; i++) {
       Game.player_supply_roads[0].push(addSupplyRoad(villages, 'left'));
     }
     Game.supply_route[0] = Game.player_supply_roads[0][0][Game.player_supply_roads[0][0].length - 1].at();
-    //console.log("Starting right supply roads ============");
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
       Game.player_supply_roads[1].push(addSupplyRoad(villages, 'right'));
     }
@@ -334,16 +329,12 @@ Crafty.scene('Game', function() {
         }
       }
       new_battle.prepareBattle();
-      console.log("new_battle.attacking_side");
-      console.log(new_battle.attacking_side);
-      console.log("new_battle.attacker");
-      console.log(new_battle.attacker);
     }
   }
 
   function determinePlayerSelections() {
     var units = Crafty('Unit').get();
-    this.player_selected = [];
+    Game.player_selected = [];
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
       if (unit.name == Game.player_name_selected[0]) {
@@ -371,7 +362,7 @@ Crafty.scene('Game', function() {
     addBattlesFromLoad();
     determinePlayerSelections();
 
-    Victory.reset();
+    //Victory.reset();
     //Game.select(Crafty('Unit').get(0));
   } else {
     buildEmptyGameData();

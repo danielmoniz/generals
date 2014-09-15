@@ -52,13 +52,19 @@ Crafty.c('Unit', {
 
   determineSelection: function() {
     var selected = Game.player_selected;
+    if (!selected) {
+      Game.select(this);
+      return this;
+    }
     var item = selected[Game.turn];
     var item = Game.player_selected[Game.turn];
 
     if (item && item.side == this.side) {
       Game.select(item);
+      return item;
     } else if (!Game.selected) {
       Game.select(this);
+      return this;
     }
   },
 

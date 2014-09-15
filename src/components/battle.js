@@ -54,6 +54,7 @@ Crafty.c('Battle', {
   },
 
   units_in_combat: function() {
+    var units = Crafty('Unit').get();
     var units_in_combat = [];
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
