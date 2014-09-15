@@ -24,6 +24,7 @@ Game = {
 
   // @TODO generate on load()
   terrain: undefined,
+  terrain_type: undefined,
   terrain_supply: undefined,
   terrain_build_difficulty: undefined,
   terrain_graph: undefined,
@@ -108,6 +109,8 @@ Game = {
 
   // initialize and start our game
   start: function() {
+    var load_world = Game.load_world;
+    Game.load_world = load_world;
     // start Crafty and set a background color so that we can see it's
     // working
     Crafty.init(Game.width(), Game.height(), "stage");
@@ -121,6 +124,7 @@ Game = {
   },
 
   reset: function() {
+    this.load_map = false;
     this.turn = 0;
     this.turn_count = 0;
     this.selected = undefined;
@@ -154,7 +158,6 @@ Game = {
 
       player_colour: this.player_colour,
 
-      player_supply_roads_positions: [[], []],
       supply_route: this.supply_route,
 
       turn: this.turn,
@@ -185,16 +188,52 @@ Game = {
     console.log(saved_game.supply_route[0]);
 
     json_output = JSON.stringify(saved_game);
-    $("#save-output").text(json_output);
-    Utility.copyToClipboard(json_output);
-    // Save miscellaneous items such as location and factions
-
-    // save all Game arrays (terrain, etc.)
+    //$("#save-output").text(json_output);
+    $("textarea#load-input").text(json_output);
+    //Utility.copyToClipboard(json_output);
 
     // save all unit positions and, individually, orders
   },
 
-  loadMap: function() {
+  loadMap: function(map_data) {
+    var map_data = JSON.parse(map_data);
+    Game.reset();
+
+    this.location = map_data.location;
+    this.factions = map_data.factions;
+    this.map_grid = map_data.map_grid;
+    this.terrain_type = map_data.terrain_type;
+    //terrain_supply: this.terrain_supply,
+    //terrain_build_difficulty: this.terrain_build_difficulty,
+    //terrain_graph: this.terrain_graph,
+    //terrain_build_graph: this.terrain_build_graph,
+    //terrain_supply_graph: this.terrain_supply_graph,
+    this.height_map = map_data.height_map;
+    this.occupied = map_data.occupied;
+
+    this.player_name_selected = map_data.player_name_selected;
+    //this.selected.name = map_data.selected_name;
+
+    this.player_colour = map_data.player_colour;
+
+    this.supply_route = map_data.supply_route;
+
+    this.turn = map_data.turn;
+    this.turn_count = map_data.turn_count;
+
+    this.FIRST_PLAYER = map_data.FIRST_PLAYER;
+    this.AFTER_FIRST_PLAYER = map_data.AFTER_FIRST_PLAYER;
+    this.SECOND_PLAYER = map_data.SECOND_PLAYER;
+    this.AFTER_SECOND_PLAYER = map_data.AFTER_SECOND_PLAYER;
+
+    this.battle_death_rate = map_data.battle_death_rate;
+    this.attrition_rate = map_data.attrition_rate;
+    this.attrition_death_rate = map_data.attrition_death_rate;
+    this.village_healing_rate = map_data.village_healing_rate;
+
+    Game.load_world = true;
+    this.start();
+    // find selected unit by name
   },
 }
 

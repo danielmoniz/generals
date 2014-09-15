@@ -184,8 +184,10 @@ Crafty.c('PlayerCharacter', {
           Game.nextTurn();
         } else if ((e.key == 83)) {
           Game.save();
+        } else if ((e.key == 76)) {
+          Game.loadMap($("textarea#load-input").val());
         } else {
-          console.log(e);
+          //console.log(e);
         }
       })
       ;

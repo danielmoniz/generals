@@ -5,30 +5,6 @@ Crafty.scene('Game', function() {
 
   Game.reset();
 
-  // a 2D array to keep track of all occupied tiles
-  this.occupied = new Array(Game.map_grid.width);
-  for (var i = 0; i < Game.map_grid.width; i++) {
-    this.occupied[i] = new Array(Game.map_grid.height);
-    for (var y = 0; y < Game.map_grid.height; y++) {
-      this.occupied[i][y] = false;
-    }
-  }
-
-  /*
-  // Place a tree at every edge square on our grid of tiles
-  for (var x = 0; x < Game.map_grid.width; x++) {
-    for (var y = 0; y < Game.map_grid.height; y++) {
-      var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
-
-      if (at_edge) {
-        // Place tree entities aroubd the border of the map
-        Crafty.e('Tree').at(x, y);
-        this.occupied[x][y] = true;
-      } 
-    }
-  }
-  */
-
   function buildEmptyGameData() {
     Game.height_map = generateHeightMap(Game.location);
     Game.occupied = buildOccupied();
@@ -291,23 +267,52 @@ Crafty.scene('Game', function() {
     }
   }
 
-  buildEmptyGameData();
-  addWater(Game.location, this.occupied);
-  addVillages(12, this.occupied);
-  addTrees(Game.location);
-  addGrass();
-  buildTerrainData();
-  addSupplyRoads(1);
-  addRoadsBetweenVillages();
-  //addSupplyRoads(1, 1);
-  addRoadGraphics();
-  addPlayers();
+  function buildTerrainFromLoad() {
+    for (var x=0; x<Game.map_grid.width; x++) {
+      for (var y=0; y<Game.map_grid.height; y++) {
+        var terrain_type = Game.terrain_type[x][y];
+        var terrain = Crafty.e(terrain_type);
+        terrain.at(x, y);
+      }
+    }
+  }
 
-  colourHeightMap(Game.location);
-  colourWater();
+  if (Game.load_world) {
+    console.log("inside scenes - Game.load_world");
+    console.log(Game.load_world);
+    buildTerrainFromLoad();
+    buildTerrainData();
 
-  Victory.reset();
-  Game.select(Crafty('Unit').get(0));
+    addSupplyRoads(1);
+    addRoadsBetweenVillages();
+    //addSupplyRoads(1, 1);
+    addRoadGraphics();
+    addPlayers();
+
+    colourHeightMap(Game.location);
+    colourWater();
+
+    Victory.reset();
+    Game.select(Crafty('Unit').get(0));
+  } else {
+    buildEmptyGameData();
+    addWater(Game.location, this.occupied);
+    addVillages(12, this.occupied);
+    addTrees(Game.location);
+    addGrass();
+    buildTerrainData();
+    addSupplyRoads(1);
+    addRoadsBetweenVillages();
+    //addSupplyRoads(1, 1);
+    addRoadGraphics();
+    addPlayers();
+
+    colourHeightMap(Game.location);
+    colourWater();
+
+    Victory.reset();
+    Game.select(Crafty('Unit').get(0));
+  }
 
   // Creates a road on the map given a shortest-path solution.
   function createRoad(path, including_end, is_supply_road) {
