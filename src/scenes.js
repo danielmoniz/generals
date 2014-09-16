@@ -136,11 +136,11 @@ Crafty.scene('Game', function() {
   function addRoadsBetweenVillages() {
     var villages = Crafty("Village").get();
     if (villages.length >= 2) {
-      for (a = 0; a < villages.length; a++) {
+      for (var a = 0; a < villages.length; a++) {
         var start_village = villages[a];
         var closest = undefined;
         var least_cost = undefined;
-        for (b = a; b < villages.length; b++) {
+        for (var b = a; b < villages.length; b++) {
           if (a == b) continue;
           var end_village = villages[b];
           var start = Game.terrain_build_graph.grid[start_village.getX()][start_village.getY()];
@@ -218,9 +218,9 @@ Crafty.scene('Game', function() {
   }
 
   function createUnitFromFaction(faction, side, location, index) {
-    name = faction[index].name;
-    quantity = faction[index].quantity;
-    type = faction[index].unit;
+    var name = faction[index].name;
+    var quantity = faction[index].quantity;
+    var type = faction[index].unit;
     return createNewUnit(type, side, location, name, quantity);
   }
 
@@ -270,7 +270,7 @@ Crafty.scene('Game', function() {
   }
 
   function addRoadGraphics() {
-    roads = Crafty('Road').get();
+    var roads = Crafty('Road').get();
     for (var i=0; i<roads.length; i++) {
       roads[i].set_sprite();
     }

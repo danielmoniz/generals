@@ -28,11 +28,11 @@ Crafty.c('Grid', {
   },
 
   getX: function() {
-    at = this.at();
+    var at = this.at();
     return at.x;
   },
   getY: function() {
-    at = this.at();
+    var at = this.at();
     return at.y;
   },
 });
@@ -228,7 +228,7 @@ Crafty.c('PlayerCharacter', {
 
   // Respond to this player visiting a village
   visitVillage: function(data) {
-    village = data[0].obj;
+    var village = data[0].obj;
     village.collect();
   },
 });

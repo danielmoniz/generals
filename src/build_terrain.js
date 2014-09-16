@@ -23,7 +23,7 @@ function buildTerrainData() {
     terrain_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].move_difficulty;
     terrain_defense_bonus[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].defense_bonus;
     terrain_build_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].build_over;
-    supply_value = terrain_list[i].supply ? 1 : 0;
+    var supply_value = terrain_list[i].supply ? 1 : 0;
     terrain_supply[terrain_list[i].getX()][terrain_list[i].getY()] = supply_value;
   }
 
@@ -35,7 +35,7 @@ function buildTerrainData() {
   Game.terrain_supply = terrain_supply;
 
   // TEST
-  supply_objects = Crafty('Supply').get();
+  var supply_objects = Crafty('Supply').get();
   for (var i=0; i<supply_objects.length; i++) {
     supply_objects[i].destroy();
   }

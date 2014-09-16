@@ -3,7 +3,7 @@ Pretty = {
   Player: {
     name: function(player_side) {
       if (player_side === undefined) player_side = Game.turn;
-      names = { 0: "Blue", 1: "White", };
+      var names = { 0: "Blue", 1: "White", };
       return names[player_side];
     },
   },
@@ -83,11 +83,11 @@ Pretty = {
 
     status: function(active, injured) {
       if (active <= 0) {
-        update = "Disbanded!";
+        var update = "Disbanded!";
         return update;
       }
       if (active <= 0 && injured <= 0) {
-        update = 'Dead!'
+        var update = 'Dead!'
         return update;
       }
       var status = active;

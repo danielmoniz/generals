@@ -246,7 +246,7 @@ Game = {
       saved_game.battles.push(new_battle);
     }
 
-    json_output = JSON.stringify(saved_game);
+    var json_output = JSON.stringify(saved_game);
     var textarea_id = "load-input";
     document.getElementById(textarea_id).value = json_output;
     //Utility.copyToClipboard(json_output);
