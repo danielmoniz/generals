@@ -237,7 +237,7 @@ Crafty.c('Unit', {
   prepareMove: function(target_x, target_y, ignore_viuals, queue_move) {
     this.move_target = { x: target_x, y: target_y };
 
-    if (queue_move) {
+    if (queue_move && this.move_target_path) {
       var end_path = this.move_target_path[this.move_target_path.length - 1];
       var start = Game.terrain_graph.grid[end_path.x][end_path.y];
       var end = Game.terrain_graph.grid[target_x][target_y];
@@ -256,7 +256,7 @@ Crafty.c('Unit', {
       return false;
     }
 
-    if (queue_move) {
+    if (queue_move && this.move_target_path) {
       var path = this.move_target_path.concat(new_path);
     } else {
       var path = new_path;
