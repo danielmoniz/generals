@@ -145,8 +145,8 @@ Crafty.c('Unit', {
     var target = supply_end_points[this.side];
     if (!this.together(target)) {
       buildTerrainData(); // reset supply graph to remove old supply block info
-      var start = Game.terrain_supply_graph.grid[this.getX()][this.getY()];
-      var end = Game.terrain_supply_graph.grid[target.getX()][target.getY()];
+      var start = Game.terrain_supply_graph.grid[this.at().x][this.at().y];
+      var end = Game.terrain_supply_graph.grid[target.at().x][target.at().y];
 
       // detect enemies on path
       var units = Crafty('Unit').get();
@@ -163,8 +163,8 @@ Crafty.c('Unit', {
       // @TODO remove this or comment out! Not using supply blocks yet.
       var supply_blocks = Crafty('SupplyBlock').get();
       for (var i=0; i<supply_blocks.length; i++) {
-        block = supply_blocks[i];
-        Game.terrain_supply_graph.grid[block.getX()][block.getY()].weight = 0;
+        var block = supply_blocks[i];
+        Game.terrain_supply_graph.grid[block.at().x][block.at().y].weight = 0;
         Crafty.e('NoSupply').at(block.at().x, block.at().y);
         console.log("FOUND SUPPLY BLOCK! At {0}, {1}".format(block.at().x, block.at().y));
       }
@@ -172,15 +172,14 @@ Crafty.c('Unit', {
       for (var i=0; i<enemy_units.length; i++) {
         // add enemy units to Game supply graph
         var unit = enemy_units[i];
-        weight = Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight;
-        if (weight != 0) {
-          Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight = 0;
-          Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
-        }
-        local_terrain = Game.terrain[unit.getX()][unit.getY()];
+        var weight = Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight;
+        Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight = 0;
+        Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
+
+        var local_terrain = Game.terrain[unit.at().x][unit.at().y];
         if (local_terrain.has('Transportation')) {
           // @TODO Re-add supply blocking as a decision later on
-          //Crafty.e('SupplyBlock').at(unit.getX(), unit.getY());
+          //Crafty.e('SupplyBlock').at(unit.at().x, unit.at().y);
         }
       }
       
@@ -238,14 +237,14 @@ Crafty.c('Unit', {
   prepareMove: function(target_x, target_y, ignore_viuals) {
     this.move_target = { x: target_x, y: target_y };
 
-    start = Game.terrain_graph.grid[this.getX()][this.getY()];
-    end = Game.terrain_graph.grid[target_x][target_y];
+    var start = Game.terrain_graph.grid[this.at().x][this.at().y];
+    var end = Game.terrain_graph.grid[target_x][target_y];
     var path = Game.pathfind.search(Game.terrain_graph, start, end);
     if (!path) {
       console.log("Target impossible to reach!");
       return false;
     }
-    partial_path = getPartialPath(path, this.movement);
+    var partial_path = getPartialPath(path, this.movement);
     if (!partial_path) {
       console.log("Cannot move to first square! Movement value too low.");
       return false;
@@ -282,7 +281,7 @@ Crafty.c('Unit', {
       if (this.battle) break;
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);
-      new_path = this.move_target_path.slice(1, this.move_target_path.length);
+      var new_path = this.move_target_path.slice(1, this.move_target_path.length);
       this.move_target_path = new_path;
       if (new_path.length == 0) this.move_target_path = undefined;
       this.moved();
@@ -295,7 +294,7 @@ Crafty.c('Unit', {
     var present_units = this.getPresentUnits();
     var enemy_present = this.isEnemyPresent();
     if (enemy_present) {
-      battle = this.isBattlePresent();
+      var battle = this.isBattlePresent();
       if (battle) {
         this.joinBattle(battle);
       } else {
@@ -305,8 +304,8 @@ Crafty.c('Unit', {
   },
 
   getPresentUnits: function(ignore_self) {
-    present_units = [];
-    units = Crafty('Unit').get();
+    var present_units = [];
+    var units = Crafty('Unit').get();
     for (var i=0; i < units.length; i++) {
       if (units[i].together(this, ignore_self)) {
         present_units.push(units[i]);
@@ -325,7 +324,7 @@ Crafty.c('Unit', {
   startBattle: function() {
     this.battle = true;
     this.stop_unit();
-    var battle = Crafty.e('Battle').at(this.getX(), this.getY());
+    var battle = Crafty.e('Battle').at(this.at().x, this.at().y);
     battle.start(this);
   },
 
