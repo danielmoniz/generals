@@ -88,16 +88,21 @@ Crafty.c('Receivable', {
       .bind('MouseUp', function(e) {
         if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
           if (Game.turn == Game.selected.side) {
-            if (Game.selected.together(this)) {
-              console.log("Already there!");
-              Game.selected.prepareMove(this.at().x, this.at().y);
+            if (e.shiftKey) {
+              Game.selected.prepareMove(this.at().x, this.at().y, false, true);
             } else {
-              Game.selected.prepareMove(this.at().x, this.at().y);
-              //Game.selected.at(this.at().x, this.at().y);
-              //Game.selected.moved();
-              //Game.deselect();
+              if (Game.selected.together(this)) {
+                console.log("Already there!");
+                Game.selected.prepareMove(this.at().x, this.at().y);
+              } else {
+                Game.selected.prepareMove(this.at().x, this.at().y);
+                //Game.selected.at(this.at().x, this.at().y);
+                //Game.selected.moved();
+                //Game.deselect();
+              }
             }
           } else {
+            // @TODO Print out "not your turn" somewhere visible
             console.log("Not your turn!");
           }
         }

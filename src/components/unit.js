@@ -234,20 +234,32 @@ Crafty.c('Unit', {
     return this.isEntityPresent('Village');
   },
 
-  prepareMove: function(target_x, target_y, ignore_viuals) {
+  prepareMove: function(target_x, target_y, ignore_viuals, queue_move) {
     this.move_target = { x: target_x, y: target_y };
 
-    var start = Game.terrain_graph.grid[this.at().x][this.at().y];
-    var end = Game.terrain_graph.grid[target_x][target_y];
-    var path = Game.pathfind.search(Game.terrain_graph, start, end);
-    if (!path) {
+    if (queue_move) {
+      var end_path = this.move_target_path[this.move_target_path.length - 1];
+      var start = Game.terrain_graph.grid[end_path.x][end_path.y];
+      var end = Game.terrain_graph.grid[target_x][target_y];
+    } else {
+      var start = Game.terrain_graph.grid[this.at().x][this.at().y];
+      var end = Game.terrain_graph.grid[target_x][target_y];
+    }
+    var new_path = Game.pathfind.search(Game.terrain_graph, start, end);
+    if (!new_path) {
       console.log("Target impossible to reach!");
       return false;
     }
-    var partial_path = getPartialPath(path, this.movement);
+    var partial_path = getPartialPath(new_path, this.movement);
     if (!partial_path) {
       console.log("Cannot move to first square! Movement value too low.");
       return false;
+    }
+
+    if (queue_move) {
+      var path = this.move_target_path.concat(new_path);
+    } else {
+      var path = new_path;
     }
 
     // provide +1 movement for retreating in order to escape
@@ -255,6 +267,7 @@ Crafty.c('Unit', {
     if (this.battle) movement += 1;
     //var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
     if (this.movement_path) destroyMovementPath(this.movement_path);
+
     if (!ignore_viuals) {
       this.movement_path = colourMovementPath(path, movement, this.at());
     }
