@@ -23,12 +23,10 @@ Game = {
     }
   },
 
-  // @TODO generate on load()
   graph_ftn: Graph,
   pathfind: astar,
   noise: noise,
 
-  // @TODO generate on load()
   terrain: undefined,
   terrain_type: undefined,
   terrain_supply: undefined,
@@ -39,7 +37,6 @@ Game = {
 
   height_map: undefined,
   occupied: undefined,
-  //grid_ftn: grid,
   // The total width of the game screen. Since our grid takes up the entire
   // screen this is just the width of a tile times the width of the grid
   width: function() {
@@ -82,7 +79,7 @@ Game = {
 
   player_colour: { 0: "Blue", 1: "White" },
 
-  // @TODO generate on load()
+  // @TODO generate on load() - currently relying on pathfinding to replicate
   player_supply_roads: [[], []],
 
   supply_route: [],
@@ -128,18 +125,14 @@ Game = {
     if (Game.turn_count == undefined) Game.turn_count = 0;
     //Game.type = Game.types['EMAIL'];
     Game.type = Game.types['HOTSEAT'];
-    var load_world = Game.load_world;
-    Game.load_world = load_world;
-    // start Crafty and set a background color so that we can see it's
-    // working
+    var load_game = Game.load_game;
+    Game.load_game = load_game;
     Crafty.init(Game.width(), Game.height(), "stage");
     //Crafty.background('rgb(87, 109, 20)');
 
-    // Simply start the "Loading" scene to get things going
     Crafty.scene('Loading');
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
-    //document.getElementById('info-panel').innerHTML += '<div id="info-panel"></div>';
   },
 
   reset: function() {
@@ -169,11 +162,6 @@ Game = {
 
       map_grid: this.map_grid,
       terrain_type: this.terrain_type,
-      //terrain_supply: this.terrain_supply,
-      //terrain_build_difficulty: this.terrain_build_difficulty,
-      //terrain_graph: this.terrain_graph,
-      //terrain_build_graph: this.terrain_build_graph,
-      //terrain_supply_graph: this.terrain_supply_graph,
       height_map: this.height_map,
       occupied: this.occupied,
 
@@ -197,7 +185,6 @@ Game = {
       attrition_death_rate: this.attrition_death_rate,
       village_healing_rate: this.village_healing_rate,
 
-      //units: [[], []],
       units: [],
       battles: [],
     };
@@ -258,8 +245,32 @@ Game = {
     Game.reset();
 
     var map_data = JSON.parse(map_data);
-    delete this.selected;
-    delete this.player_selected;
+
+    this.turns_played_locally = 0;
+    Victory.reset();
+
+    this.location = map_data.location;
+    this.map_grid = map_data.map_grid;
+    this.terrain_type = map_data.terrain_type;
+    this.height_map = map_data.height_map;
+
+    this.supply_route = map_data.supply_route;
+
+    this.load_map = true;
+    this.load_game = false;
+    Crafty.scene('Loading');
+
+    var textarea_id = "load-input";
+    document.getElementById(textarea_id).value = "";
+    deselectButtons();
+  },
+
+  load: function(map_data) {
+
+    Output.clearAll();
+    Game.reset();
+
+    var map_data = JSON.parse(map_data);
 
     this.turns_played_locally = 0;
     Victory.set(map_data.victory);
@@ -280,25 +291,16 @@ Game = {
     this.turn = map_data.turn;
     this.turn_count = map_data.turn_count;
 
-    this.FIRST_PLAYER = map_data.FIRST_PLAYER;
-    this.AFTER_FIRST_PLAYER = map_data.AFTER_FIRST_PLAYER;
-    this.SECOND_PLAYER = map_data.SECOND_PLAYER;
-    this.AFTER_SECOND_PLAYER = map_data.AFTER_SECOND_PLAYER;
-
-    this.battle_death_rate = map_data.battle_death_rate;
-    this.attrition_rate = map_data.attrition_rate;
-    this.attrition_death_rate = map_data.attrition_death_rate;
-    this.village_healing_rate = map_data.village_healing_rate;
-
     this.units = map_data.units;
     this.battles = map_data.battles;
 
-    this.load_world = true;
+    this.load_game = true;
+    this.load_map = false;
     Crafty.scene('Loading');
 
     var textarea_id = "load-input";
     document.getElementById(textarea_id).value = "";
-    $("input#load-button").blur();
+    deselectButtons();
   },
 }
 

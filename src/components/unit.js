@@ -328,7 +328,6 @@ Crafty.c('Unit', {
   },
 
   stop_unit: function() {
-    console.log("Calling stop_unit()");
     destroyMovementPath(this.movement_path);
     delete this.movement_path;
     delete this.move_target_path;

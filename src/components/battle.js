@@ -184,8 +184,7 @@ Crafty.c('Battle', {
     var TROOP_LOSS = 0.1;
     var MORALE_FACTOR = 0.75;
     var terrain_mod = Game.terrain_defense_bonus[this.at().x][this.at().y];
-    console.log("terrain_mod for battle:");
-    console.log(terrain_mod);
+    console.log("terrain_mod for battle: {0}".format(terrain_mod));
     var attacker_morale = 0;
     var defender_morale = 0;
 

@@ -366,15 +366,13 @@ Crafty.scene('Game', function() {
     }
   }
 
-  if (Game.load_world) {
+  if (Game.load_game) {
     buildTerrainFromLoad();
     buildTerrainData();
 
     addSupplyRoads(1);
     addRoadsBetweenVillages();
-    //addSupplyRoads(1, 1);
     addRoadGraphics();
-    //Game.loadUnits();
 
     colourHeightMap(Game.location);
     colourWater();
@@ -383,8 +381,22 @@ Crafty.scene('Game', function() {
     addBattlesFromLoad();
     determinePlayerSelections();
 
-    //Victory.reset();
-    //Game.select(Crafty('Unit').get(0));
+  } else if (Game.load_map) {
+    buildTerrainFromLoad();
+    buildTerrainData();
+
+    addSupplyRoads(1);
+    addRoadsBetweenVillages();
+    addRoadGraphics();
+
+    colourHeightMap(Game.location);
+    colourWater();
+
+    addPlayers();
+
+    Victory.reset();
+    Game.select(Crafty('Unit').get(0));
+
   } else {
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
