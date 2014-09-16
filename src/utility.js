@@ -10,6 +10,12 @@ Utility = {
     window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
   },
 
+  getDistance: function(location1, location2) {
+    var x = location1.x - location2.x;
+    var y = location1.y - location2.y;
+    return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  },
+
 }
 
 if (!String.prototype.format) {
