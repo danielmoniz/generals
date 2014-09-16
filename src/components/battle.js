@@ -11,6 +11,7 @@ Battle = {
   getQuantity: function(units) {
     var quantity = 0;
     for (var i=0; i<units.length; i++) {
+      if (!units[i]) console.log(units[i]);
       quantity += units[i].getActive();
     }
     return quantity;

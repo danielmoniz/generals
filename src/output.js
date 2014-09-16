@@ -97,6 +97,8 @@ Output = {
 
   printSingleUnit: function(unit) {
     var unit_div = this.createStandardUnitDiv(unit, "sub-report");
+    var supply_div = this.createDiv("unit-item", Pretty.Unit.supply(unit.supply_remaining));
+    unit_div.append(supply_div);
     if (unit.battle) {
       var battle = unit.isBattlePresent();
       unit_div.append(this.createBattleDiv(battle.getId(), Pretty.Unit.inBattle()));
@@ -192,12 +194,18 @@ Output = {
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
+    var name_div = this.createDiv("unit-item");
     var img = this.createIconImage(unit);
-    unit_div.append(img);
+    var img_div = this.createDiv("unit-item column", name);
+    img_div.append(img);
+    name_div.append(img_div);
     //unit_div.append(this.createDiv("unit-item", general_info));
-    unit_div.append(this.createDiv("unit-item", name));
+    //name_div.append(this.createDiv("unit-item column", name));
+    unit_div.append(name_div);
     unit_div.append(this.createDiv("unit-item", status));
-    unit_div.append(this.createDiv("unit-item", supply_remaining));
+    if (unit.supply_remaining < unit.max_supply) {
+      unit_div.append(this.createDiv("unit-item", supply_remaining));
+    }
 
     return unit_div;
   },
