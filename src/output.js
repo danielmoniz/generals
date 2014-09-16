@@ -5,7 +5,9 @@ Output = {
   player_element_id: "#player",
   alerts_element_id: "#alerts-panel",
   alerts_container_element_id: "#alerts-container",
-  will_element_id: "#will",
+  will_element_id: "#will-text",
+  will_bar_element_id_blue: "div.will.bar.blue",
+  will_bar_element_id_white: "div.will.bar.white",
   buffer: [],
   push: function(info) {
     //for (var i=0; i<info.length; i++) {
@@ -314,6 +316,9 @@ Output = {
       return this.resetVictoryBar();
     }
     will_bar.text("(Blue) {0} (White)".format(will));
+
+    $(this.will_bar_element_id_blue).width("{0}%".format(p0_will));
+    $(this.will_bar_element_id_white).width("{0}%".format(p1_will));
   },
 
   resetVictoryBar: function() {

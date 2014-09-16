@@ -2,10 +2,36 @@ body { background: black; color:white; }
 #info-panel { width:75%; color:white; float:left; }
 #alerts-container { width:25%; color:white; float:right; }
 #title-container { padding: 2px; width: 100%; 24px; color:white; float:left; }
+#status-container { width: 45%; float:left; min-width: 510px; }
 #title { padding-right: 20px; 24px; float:left; }
 #turn-count { width:72px; float:left; }
-#player { width:200px; float:left; }
-#will { width:200px; float:left; }
+#player { width:125px; float:left; }
+#will-text {
+  width:200px;
+}
+#will-container { width: 50%; float:left; }
+.bar-container { width: 50%; float:left; }
+.will {
+  float: left;
+}
+.will.bar {
+  background-repeat:repeat;
+  width: 100%;
+  height: 10px;
+}
+.will.blue {
+  background-image:url("assets/colour_bar-blue.png");
+  float: right;
+}
+.will.white {
+  background-image:url("assets/colour_bar-white.png");
+  float: left;
+}
+
+#input-container { width:100%; float:left; }
+/*
+ * .input-item { float:left; }
+ * */
 
 #save-output { color:white; }
 
