@@ -120,11 +120,11 @@ Game = {
   },
 
   // initialize and start our game
-  start: function() {
+  start: function(game_type) {
+    Game.type = game_type;
     if (Game.turn == undefined) Game.turn = 0;
     if (Game.turn_count == undefined) Game.turn_count = 0;
     //Game.type = Game.types['EMAIL'];
-    Game.type = Game.types['HOTSEAT'];
     var load_game = Game.load_game;
     Game.load_game = load_game;
     Crafty.init(Game.width(), Game.height(), "stage");

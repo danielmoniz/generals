@@ -1,4 +1,6 @@
 body { background: black; color:white; }
+#front-page {}
+#game-container { display: none; }
 #info-panel { width:75%; color:white; float:left; }
 #alerts-container { width:25%; color:white; float:right; }
 #title-container { padding: 2px; width: 100%; 24px; color:white; float:left; }

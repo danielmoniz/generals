@@ -27,34 +27,36 @@
 
     <link rel="stylesheet" type="text/css" href="style.css" />
 
-    <script>
-      window.addEventListener('load', Game.start);
-    </script>
   </head>
   <body>
-    <div id="title-container">
-      <div id="status-container">
-	<div id="title">GENERALS</div>
-	<div id="turn-count"></div>
-	<div id="player"></div>
-	<div id="will-text" class="will"></div>
-      </div>
-      <div id="will-container">
-	<div class="bar-container blue">
-	  <div class="will blue bar"></div>
+    <div id="front-page">
+      <h1>Generals</h1>
+    </div>
+    <div id="game-container">
+      <div id="title-container">
+	<div id="status-container">
+	  <div id="title">GENERALS</div>
+	  <div id="turn-count"></div>
+	  <div id="player"></div>
+	  <div id="will-text" class="will"></div>
 	</div>
-	<div class="bar-container white">
-	  <div class="will white bar"></div>
+	<div id="will-container">
+	  <div class="bar-container blue">
+	    <div class="will blue bar"></div>
+	  </div>
+	  <div class="bar-container white">
+	    <div class="will white bar"></div>
+	  </div>
 	</div>
       </div>
-    </div>
-    <div id="stage">
-    </div>
-    <div id="info-panel">
-    </div>
-    <div id="alerts-container">
-      Alerts:<br />
-      <div id="alerts-panel">
+      <div id="stage">
+      </div>
+      <div id="info-panel">
+      </div>
+      <div id="alerts-container">
+	Alerts:<br />
+	<div id="alerts-panel">
+	</div>
       </div>
     </div>
     <div id="input-container">
@@ -66,6 +68,10 @@
 	value="Load game" />
       <input id="load-map-button" class="input-item" type="button"
 	value="Load map" />
+      <input id="start-email-button" class="input-item start" type="button"
+	value="Start email game" />
+      <input id="start-hotseat-button" class="input-item start" type="button"
+	value="Start local hotseat game" />
     </div>
   </body>
 </html>
