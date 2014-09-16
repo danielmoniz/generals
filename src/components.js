@@ -19,7 +19,7 @@ Crafty.c('Grid', {
   },
   together: function(grid_object, ignore_self) {
     if (ignore_self === undefined) ignore_self = true;
-    if (grid_object.getX() == this.getX() && grid_object.getY() == this.getY()) {
+    if (grid_object.at().x == this.at().x && grid_object.at().y == this.at().y) {
       if (grid_object !== this) {
         return true;
       }

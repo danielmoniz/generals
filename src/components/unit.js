@@ -139,10 +139,9 @@ Crafty.c('Unit', {
 
   detectAttrition: function() {
     // detect possible lack of supply
-    var terrain = Crafty('Terrain').get();
-    var supply_end_points = terrain.filter(function(terrain) { return terrain.is_supply; });
     // @TODO: Allow for more than two supply endpoints
-    var target = supply_end_points[this.side];
+    var target_location = Game.supply_route[this.side];
+    var target = Game.terrain[target_location.x][target_location.y];
     if (!this.together(target)) {
       buildTerrainData(); // reset supply graph to remove old supply block info
       var start = Game.terrain_supply_graph.grid[this.at().x][this.at().y];
@@ -165,16 +164,17 @@ Crafty.c('Unit', {
       for (var i=0; i<supply_blocks.length; i++) {
         var block = supply_blocks[i];
         Game.terrain_supply_graph.grid[block.at().x][block.at().y].weight = 0;
-        Crafty.e('NoSupply').at(block.at().x, block.at().y);
+        //Crafty.e('NoSupply').at(block.at().x, block.at().y);
         console.log("FOUND SUPPLY BLOCK! At {0}, {1}".format(block.at().x, block.at().y));
       }
 
       for (var i=0; i<enemy_units.length; i++) {
-        // add enemy units to Game supply graph
+        // add enemy units to Game supply graph as blockers of supply lines
         var unit = enemy_units[i];
         var weight = Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight;
         Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight = 0;
-        Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
+        // Uncomment below line for supply overlay
+        //Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
 
         var local_terrain = Game.terrain[unit.at().x][unit.at().y];
         if (local_terrain.has('Transportation')) {

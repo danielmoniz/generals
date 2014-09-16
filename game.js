@@ -255,7 +255,7 @@ Game = {
   loadMap: function(map_data) {
 
     Output.clearAll();
-    this.resetStatusVisuals();
+    Game.reset();
 
     var map_data = JSON.parse(map_data);
     delete this.selected;
@@ -295,8 +295,6 @@ Game = {
 
     this.load_world = true;
     Crafty.scene('Loading');
-    Output.updateStatusBar();
-    Output.updateVictoryBar(true);
 
     var textarea_id = "load-input";
     document.getElementById(textarea_id).value = "";

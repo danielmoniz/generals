@@ -169,10 +169,17 @@ Crafty.scene('Game', function() {
     function addSupplyRoad(villages, left_or_right) {
       var grid = Game.terrain_build_graph.grid;
       if (left_or_right === undefined) return false;
-      var start_village = villages[i];
-      if (start_village == undefined) return false;;
-      if (start_village.getX() == 0) return false;;
-      var start = grid[start_village.getX()][start_village.getY()];
+      if (left_or_right == "left") {
+        var start_village = villages[0];
+      } else {
+        var start_village = villages[villages.length - 1];
+      }
+      if (start_village == undefined) return false;
+      // cannot have supply village on end of map
+      if (start_village.at().x == 0) return false;
+      if (start_village.at().x == Game.map_grid.width - 1) return false;
+
+      var start = grid[start_village.at().x][start_village.at().y];
       var best_route = undefined;
       var best_cost = undefined;
       for (var j=0; j < Game.map_grid.height; j+=1) {
@@ -184,9 +191,6 @@ Crafty.scene('Game', function() {
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
         var cost = totalCost(path);
         if (best_route === undefined || cost < best_cost) {
-          // @test
-          //if (best_route === undefined) console.log("UNDEFINED ROUTE");
-          //if (best_route === undefined) console.log(path);
           best_route = path;
           best_cost = cost;
         }
@@ -197,14 +201,22 @@ Crafty.scene('Game', function() {
 
     // @TODO Save the supply end point locations, but nothing else
     for (var i = 0 + offset; i < max_roads; i++) {
-      Game.player_supply_roads[0].push(addSupplyRoad(villages, 'left'));
+      var new_supply_road = addSupplyRoad(villages, 'left');
+      Game.player_supply_roads[0].push(new_supply_road);
     }
-    Game.supply_route[0] = Game.player_supply_roads[0][0][Game.player_supply_roads[0][0].length - 1].at();
+    var left_supply_route = Game.player_supply_roads[0][0][Game.player_supply_roads[0][0].length - 1];
+    Game.supply_route[0] = left_supply_route.at();
+
     for (var i = villages.length - 1 - offset; i > villages.length - 1 - max_roads; i--) {
-      Game.player_supply_roads[1].push(addSupplyRoad(villages, 'right'));
+      var new_supply_road = addSupplyRoad(villages, 'right');
+      Game.player_supply_roads[1].push(new_supply_road);
     }
-    Game.supply_route[1] = Game.player_supply_roads[1][0][Game.player_supply_roads[1][0].length - 1].at();
-    //Game.supply_route = Game.player_supply_roads[1][Game.player_supply_roads[1].length - 1].at();
+    var right_supply_route = Game.player_supply_roads[1][0][Game.player_supply_roads[1][0].length - 1];
+    Game.supply_route[1] = right_supply_route.at();
+
+
+    var left = Game.supply_route[0];
+    var right = Game.supply_route[1];
   }
 
   function createNewUnit(type, side, location, name, quantity) {
