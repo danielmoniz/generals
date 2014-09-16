@@ -13,11 +13,8 @@ body { background: black; color:white; }
 }
 #will-container { width: 50%; float:left; }
 .bar-container { width: 49%; float:left; }
-.bar-container.blue {
+.bar-container {
   border: 1px solid white;
-}
-.bar-container.white {
-  border: 1px solid blue;
 }
 .will {
   float: left;
