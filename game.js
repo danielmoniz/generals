@@ -101,6 +101,11 @@ Game = {
   village_healing_rate: 15/100,
 
   nextTurn: function() {
+    //LineOfSight.applyToAll();
+    //LineOfSight.unapply();
+    //LineOfSight.enemyInvisible((this.turn + 0.5) % 2);
+    console.log("turn {0}".format((this.turn + 0.5) % 2));
+
     if (Game.type == Game.types.EMAIL) {
       if (Game.turns_played_locally >= 1) {
         return;

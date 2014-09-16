@@ -438,5 +438,13 @@ Crafty.c('Cavalry', {
     return (this.side + 1) % 2;
   },
 
+  toggleVisibility: function() {
+    if (this.visible == false) {
+      this.visible = true;
+    } else {
+      this.visible = false;
+    }
+  },
+
 });
 

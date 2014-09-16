@@ -76,6 +76,7 @@ Crafty.scene('Game', function() {
         var b = Math.ceil(location_map.ground.b - height);
         var color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
         ground.color('rgb(' + r + ', ' + g + ', ' + b + ')');
+        ground.setColour(r, g, b);
         // Use below for grey-scale heightmap
         //ground.color('rgb(' + height + ', ' + height + ',' + height + ')')
         ;

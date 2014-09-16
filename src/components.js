@@ -123,9 +123,41 @@ Crafty.c('FakeGrass', {
   init: function() {
     this.requires('Color, Actor')
       .color('rgb(87, 109, 20)')
-      .attr({ type: "FakeGrass", colour: { r: 87, g: 109, b: 20 } })
+      .attr({ 
+        type: "FakeGrass", 
+        colour: { r: 87, g: 109, b: 20 },
+        base_colour: { r: 87, g: 109, b: 20 },
+      })
       ;
     this.z = 1;
+  },
+  resetColour: function() {
+    this.color("rgb({0}, {1}, {2})".format(this.base_colour.r, this.base_colour.g, this.base_colour.b));
+    this.colour = $.extend({}, this.base_colour);
+  },
+
+  setColour: function(red, green, blue) {
+    this.base_colour = {r: red, g: green, b: blue, };
+    this.colour = {r: red, g: green, b: blue, };
+    this.color("rgb({0}, {1}, {2})".format(red, green, blue));
+  },
+
+  dimColour: function(red, green, blue) {
+    var new_red = Math.max(0, this.colour.r - red);
+    var new_green = Math.max(0, this.colour.g - green);
+    var new_blue = Math.max(0, this.colour.b - blue);
+    console.log("new_red");
+    console.log(new_red);
+    console.log("new_green");
+    console.log(new_green);
+    console.log("new_blue");
+    console.log(new_blue);
+    this.color("rgb({0}, {1}, {2})".format(new_red, new_green, new_blue));
+    this.colour = { r: new_red, g: new_green, b: new_blue, };
+  },
+
+  brightenColour: function(red, green, blue) {
+    this.dimColour(-red, -green, -blue);
   },
 });
 
