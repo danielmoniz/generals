@@ -171,6 +171,34 @@ Crafty.c('SupplyBlock', {
   },
 });
 
+// TEST - for debugging purposes only!
+Crafty.c('Supply', {
+  init: function() {
+    this.requires('Color, Actor')
+      .color('pink')
+      .attr({ 
+        type: "Supply",
+        //supply: 1,
+      })
+      ;
+      this.z = 48;
+  },
+});
+
+// TEST - for debugging purposes only!
+Crafty.c('NoSupply', {
+  init: function() {
+    this.requires('Color, Actor')
+      .color('brown')
+      .attr({ 
+        type: "NoSupply",
+        //supply: 1,
+      })
+      ;
+      this.z = 49;
+  },
+});
+
 Crafty.c('PlayerCharacter', {
   init: function() {
     this.requires('Actor, Fourway, Collision, spr_player, Movable')

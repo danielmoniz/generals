@@ -34,6 +34,21 @@ function buildTerrainData() {
   Game.terrain_build_difficulty = terrain_build_difficulty;
   Game.terrain_supply = terrain_supply;
 
+  // TEST
+  supply_objects = Crafty('Supply').get();
+  for (var i=0; i<supply_objects.length; i++) {
+    supply_objects[i].destroy();
+  }
+
+  for (var x=0; x<terrain_supply.length; x++) {
+    for (var y=0; y<terrain_supply[x].length; y++) {
+      if (terrain_supply[x][y]) {
+        Crafty.e("Supply").at(x, y);
+      }
+    }
+  }
+  // END OF TEST
+
   Game.terrain_graph = new Game.graph_ftn(terrain_difficulty);
   Game.terrain_defense_bonus_graph = new Game.graph_ftn(terrain_defense_bonus);
   // test!

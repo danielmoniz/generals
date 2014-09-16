@@ -155,17 +155,27 @@ Crafty.c('Unit', {
       for (var i=0; i<units.length; i++) {
         if (units[i].side != this.side) enemy_units.push(units[i]);
       }
+
+      var no_supply_objects = Crafty('NoSupply').get();
+      for (var i=0; i<no_supply_objects.length; i++) {
+        no_supply_objects[i].destroy();
+      }
+      // @TODO remove this or comment out! Not using supply blocks yet.
       var supply_blocks = Crafty('SupplyBlock').get();
       for (var i=0; i<supply_blocks.length; i++) {
         block = supply_blocks[i];
         Game.terrain_supply_graph.grid[block.getX()][block.getY()].weight = 0;
+        Crafty.e('NoSupply').at(block.at().x, block.at().y);
+        console.log("FOUND SUPPLY BLOCK! At {0}, {1}".format(block.at().x, block.at().y));
       }
+
       for (var i=0; i<enemy_units.length; i++) {
         // add enemy units to Game supply graph
         var unit = enemy_units[i];
         weight = Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight;
         if (weight != 0) {
           Game.terrain_supply_graph.grid[unit.getX()][unit.getY()].weight = 0;
+          Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
         }
         local_terrain = Game.terrain[unit.getX()][unit.getY()];
         if (local_terrain.has('Transportation')) {

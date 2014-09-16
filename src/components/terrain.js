@@ -95,7 +95,7 @@ Crafty.c('Bridge', {
   init: function() {
     this.requires('Color, Terrain, Passable, Transportation')
       .color('rgb(192, 192, 192)')
-      .attr({ 
+      .attr({
         type: "Bridge",
         move_difficulty: 0.5, 
         build_over: 0.02 ,
@@ -103,6 +103,7 @@ Crafty.c('Bridge', {
         supply: 1,
       })
       ;
+      this.z = 47;
   },
 });
 

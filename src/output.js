@@ -98,7 +98,9 @@ Output = {
   printSingleUnit: function(unit) {
     var unit_div = this.createStandardUnitDiv(unit, "sub-report");
     var supply_div = this.createDiv("unit-item", Pretty.Unit.supply(unit.supply_remaining));
-    unit_div.append(supply_div);
+    if (unit.supply_remaining >= unit.supply_max) {
+      unit_div.append(supply_div);
+    }
     if (unit.battle) {
       var battle = unit.isBattlePresent();
       unit_div.append(this.createBattleDiv(battle.getId(), Pretty.Unit.inBattle()));
