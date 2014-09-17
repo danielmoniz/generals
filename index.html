@@ -26,6 +26,14 @@
     <script type="text/javascript" src="src/components/terrain.js"></script>
     <script type="text/javascript" src="src/scenes.js"></script>
 
+    <script>
+/*
+      window.onload = function() {
+	Game.start();
+      };
+*/
+    </script>
+
     <link rel="stylesheet" type="text/css" href="style.css" />
 
   </head>
@@ -62,17 +70,21 @@
     </div>
     <div id="input-container">
       <div id="save-output"></div>
-      <textarea id="load-input" class="input-item"></textarea>
-      <input id="save-button" class="input-item" type="button"
-	value="Save game/map" />
-      <input id="load-button" class="input-item" type="button"
-	value="Load game" />
-      <input id="load-map-button" class="input-item" type="button"
-	value="Load map" />
-      <input id="start-email-button" class="input-item start" type="button"
-	value="Start email game" />
-      <input id="start-hotseat-button" class="input-item start" type="button"
-	value="Start local hotseat game" />
+      <input id="menu-toggle-button" class="input-item" type="button"
+	value="Menu" />
+      <div id="menu">
+	<textarea id="load-input" class="input-item"></textarea>
+	<input id="save-button" class="input-item" type="button"
+	  value="Save game/map" />
+	<input id="load-button" class="input-item" type="button"
+	  value="Load game" />
+	<input id="load-map-button" class="input-item" type="button"
+	  value="Load map" />
+	<input id="start-email-button" class="input-item start" type="button"
+	  value="Start email game" />
+	<input id="start-hotseat-button" class="input-item start" type="button"
+	  value="Start local hotseat game" />
+      </div>
     </div>
   </body>
 </html>

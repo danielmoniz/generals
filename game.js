@@ -137,6 +137,7 @@ Game = {
     Crafty.scene('Loading');
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
+    UI.startGame();
   },
 
   reset: function() {
@@ -266,7 +267,7 @@ Game = {
 
     var textarea_id = "load-input";
     document.getElementById(textarea_id).value = "";
-    deselectButtons();
+    UI.deselectButtons();
   },
 
   load: function(map_data) {
@@ -304,7 +305,8 @@ Game = {
 
     var textarea_id = "load-input";
     document.getElementById(textarea_id).value = "";
-    deselectButtons();
+    UI.startGame();
+    UI.deselectButtons();
   },
 }
 

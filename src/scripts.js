@@ -14,6 +14,9 @@ $(document).ready(function() {
   $("#start-email-button").click(function() {
     Game.start(Game.types.EMAIL);
   });
+  $("#menu-toggle-button").click(function() {
+    $("#menu").toggle();
+  });
   $("input.start").click(function() {
     $("#game-container").toggle();
     $("#front-page").toggle();
@@ -21,11 +24,19 @@ $(document).ready(function() {
   });
 
   // TEST ONLY
-  $("#start-hotseat-button").click();
+  //$("#start-hotseat-button").click();
   //$("#start-email-button").click();
 });
 
-function deselectButtons() {
-  $("input#load-button").blur();
-  $("input#load-map-button").blur();
+
+UI = {
+  startGame: function() {
+    $("#menu").hide();
+    $("#menu-toggle-button").show();
+  },
+
+  deselectButtons: function() {
+    $("input#load-button").blur();
+    $("input#load-map-button").blur();
+  }
 }
