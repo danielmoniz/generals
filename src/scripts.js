@@ -24,7 +24,7 @@ $(document).ready(function() {
   });
 
   // TEST ONLY
-  //$("#start-hotseat-button").click();
+  $("#start-hotseat-button").click();
   //$("#start-email-button").click();
 });
 

@@ -75,7 +75,10 @@ Output = {
 
   makeReport: function(divs, title, conclusion) {
     var info_panel = $(this.element_id);
-    var report = this.createDiv("report");
+    var classes = "report";
+    // ensure that alerts don't have the report class. Makes them horizontal.
+    if (this.element_id == this.alerts_element_id) classes = "alert";
+    var report = this.createDiv(classes);
     info_panel.append(report);
 
     if (title !== undefined) {
