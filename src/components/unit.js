@@ -1,3 +1,28 @@
+Unit = {
+  getUnitsBySide: function(side) {
+    var units = Crafty('Unit').get();
+    var friendly_units = [];
+    var enemy_units = [];
+    for (var i=0; i<units.length; i++) {
+      if (units[i].side == side) {
+        friendly_units.push(units[i]);
+      } else {
+        enemy_units.push(units[i]);
+      }
+    }
+    return { friendly: friendly_units, enemy: enemy_units, };
+  },
+
+  getFriendlyUnits: function(side) {
+    return this.getUnitsBySide(side).friendly;
+  },
+
+  getEnemyUnits: function(side) {
+    return this.getUnitsBySide(side).enemy;
+  },
+
+}
+
 Crafty.c('Unit', {
   init: function() {
     this.requires('Actor, Targetable')

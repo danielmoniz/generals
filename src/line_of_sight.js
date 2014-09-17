@@ -68,6 +68,12 @@ LineOfSight = {
     return this;
   },
 
+  handleLineOfSight: function(side) {
+    this.unitLineOfSight(side);
+    this.battleLineOfSight(side);
+    this.tileLineOfSight(side);
+  },
+
   unitLineOfSight: function(side) {
     this.allUnitsInvisible();
     var units_in_sight = this.getEnemyUnitsInSight(side);
@@ -77,7 +83,7 @@ LineOfSight = {
 
   tileLineOfSight: function(side) {
     this.allEntitiesVisible('Shadow');
-    var tiles_in_sight = this.getTilesInSight(side);
+    var tiles_in_sight = this.getEntitiesInSight('Shadow', side);
     this.makeInvisible(tiles_in_sight);
     return this;
   },
@@ -90,18 +96,11 @@ LineOfSight = {
   },
 
   getEnemyUnitsInSight: function(side) {
-    var units = Crafty('Unit').get();
-    var enemy_units = [];
-    var friendly_units = [];
-    var units_in_sight = [];
-    for (var i=0; i<units.length; i++) {
-      if (units[i].side == side) {
-        friendly_units.push(units[i]);
-      } else {
-        enemy_units.push(units[i]);
-      }
-    }
+    var units = Unit.getUnitsBySide(side);
+    var friendly_units = units.friendly;
+    var enemy_units = units.enemy;
 
+    var units_in_sight = [];
     for (var i=0; i<enemy_units.length; i++) {
       var in_sight = false;
       var enemy = enemy_units[i];
@@ -120,46 +119,11 @@ LineOfSight = {
     return units_in_sight.concat(friendly_units);
   },
 
-  getTilesInSight: function(side) {
-    var units = Crafty('Unit').get();
-    var friendly_units = [];
-    for (var i=0; i<units.length; i++) {
-      if (units[i].side == side) {
-        friendly_units.push(units[i]);
-      }
-    }
-    var tiles = Crafty('Shadow').get();
-    var tiles_in_sight = [];
-
-    for (var i=0; i<tiles.length; i++) {
-      var in_sight = false;
-      var tile = tiles[i];
-      for (var j=0; j<friendly_units.length; j++) {
-        var friend = friendly_units[j];
-        var distance = Utility.getDistance(friend.at(), tile.at());
-        if (distance < this.max_sight) {
-          in_sight = true;
-          break;
-        }
-      }
-      if (in_sight) {
-        tiles_in_sight.push(tile);
-      }
-    }
-    return tiles_in_sight;
-  },
-
   getBattlesInSight: function(side) {
-    var units = Crafty('Battle').get();
-    var friendly_units = [];
-    for (var i=0; i<units.length; i++) {
-      if (units[i].side == side) {
-        friendly_units.push(units[i]);
-      }
-    }
+    var friendly_units = Unit.getFriendlyUnits(side);
+
     var battles = Crafty('Battle').get();
     var battles_in_sight = [];
-
     for (var i=0; i<battles.length; i++) {
       var in_sight = false;
       var battle = battles[i];
@@ -179,6 +143,26 @@ LineOfSight = {
   },
 
   getEntitiesInSight: function(entity, side) {
+    var friendly_units = Unit.getFriendlyUnits(side);
+
+    var entities = Crafty(entity).get();
+    var entities_in_sight = [];
+    for (var i=0; i<entities.length; i++) {
+      var in_sight = false;
+      var entity = entities[i];
+      for (var j=0; j<friendly_units.length; j++) {
+        var friend = friendly_units[j];
+        var distance = Utility.getDistance(friend.at(), entity.at());
+        if (distance < this.max_sight) {
+          in_sight = true;
+          break;
+        }
+      }
+      if (in_sight) {
+        entities_in_sight.push(entity);
+      }
+    }
+    return entities_in_sight;
   },
 
 }

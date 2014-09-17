@@ -120,9 +120,7 @@ Game = {
     if (victory) Crafty.scene('Victory');
     Crafty.trigger("NextTurn");
 
-    LineOfSight.unitLineOfSight(this.turn);
-    LineOfSight.battleLineOfSight(this.turn);
-    LineOfSight.tileLineOfSight(this.turn);
+    LineOfSight.handleLineOfSight(this.turn);
   },
 
   // initialize and start our game
