@@ -88,7 +88,7 @@ Game = {
   turn: 0,
   turn_count: 0,
   */
-  turns_played_locally: 0.5,
+  turns_played_locally: 0,
 
   FIRST_PLAYER: 0,
   AFTER_FIRST_PLAYER: 0.5,

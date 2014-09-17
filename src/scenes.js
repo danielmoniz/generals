@@ -390,6 +390,7 @@ Crafty.scene('Game', function() {
 
     addUnitsFromLoad();
     addBattlesFromLoad();
+    LineOfSight.handleLineOfSight(Game.turn);
     determinePlayerSelections();
 
   } else if (Game.load_map) {
