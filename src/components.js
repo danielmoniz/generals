@@ -118,19 +118,11 @@ Crafty.c('Targetable', {
   },
 });
 
-// FakeGrass is just green colour (not terrain!)
-Crafty.c('FakeGrass', {
+Crafty.c('ChangeableColor', {
   init: function() {
-    this.requires('Color, Actor')
-      .color('rgb(87, 109, 20)')
-      .attr({ 
-        type: "FakeGrass", 
-        colour: { r: 87, g: 109, b: 20 },
-        base_colour: { r: 87, g: 109, b: 20 },
-      })
-      ;
-    this.z = 1;
+    this.requires('Color');
   },
+
   resetColour: function() {
     this.color("rgb({0}, {1}, {2})".format(this.base_colour.r, this.base_colour.g, this.base_colour.b));
     this.colour = $.extend({}, this.base_colour);
@@ -143,12 +135,37 @@ Crafty.c('FakeGrass', {
   },
 
   dimColour: function(red, green, blue) {
-    var new_red = Math.max(0, this.colour.r - red);
-    var new_green = Math.max(0, this.colour.g - green);
-    var new_blue = Math.max(0, this.colour.b - blue);
+    console.log("red");
+    console.log(red);
+    var new_red = Math.min(255, Math.max(0, this.colour.r - red));
+    var new_green = Math.min(255, Math.max(0, this.colour.g - green));
+    var new_blue = Math.min(255, Math.max(0, this.colour.b - blue));
     this.color("rgb({0}, {1}, {2})".format(new_red, new_green, new_blue));
     this.colour = { r: new_red, g: new_green, b: new_blue, };
   },
+
+  brightenColour: function(quantity) {
+    console.log("quantity");
+    console.log(quantity);
+    this.dimColour(-quantity, -quantity, -quantity);
+  },
+
+});
+
+// FakeGrass is just green colour (not terrain!)
+Crafty.c('FakeGrass', {
+  init: function() {
+    this.requires('ChangeableColor, Actor')
+      .color('rgb(87, 109, 20)')
+      .attr({ 
+        type: "FakeGrass", 
+        colour: { r: 87, g: 109, b: 20 },
+        base_colour: { r: 87, g: 109, b: 20 },
+      })
+      ;
+    this.z = 1;
+  },
+
 });
 
 Crafty.c("Shadow", {
@@ -162,7 +179,7 @@ Crafty.c("Shadow", {
 
 Crafty.c('MovementPath', {
   init: function(turns_left) {
-    this.requires('Actor, Color')
+    this.requires('Actor, ChangeableColor')
       .bind("NextTurn", this.nextTurn)
       ;
     this.z = 50;
@@ -178,6 +195,20 @@ Crafty.c('MovementPath', {
     if (this.turns_left <= 0) this.destroy();
     */
    this.destroy();
+  },
+});
+
+Crafty.c("HighlightedMovementPath", {
+  init: function() {
+    this.requires('MovementPath');
+    this.z = 51;
+    this.brightness = 45;
+    this.bind("DimPaths", this.dim)
+    //this.dimColour(this.dim_value, this.dim_value, this.dim_value);
+  },
+
+  dim: function() {
+    this.visible = false;
   },
 });
 

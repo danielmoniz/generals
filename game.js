@@ -66,6 +66,7 @@ Game = {
     }
   },
   deselect: function() {
+    Crafty.trigger("DimPaths");
     Output.clearMain();
     if (this.selected) {
       delete this.selected;

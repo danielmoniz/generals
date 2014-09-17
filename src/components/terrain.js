@@ -86,7 +86,7 @@ Crafty.c('Water', {
       })
       .attr({ type: "Water", colour: { r: 0, g: 128, b: 255 } })
       ;
-    this.z = 52;
+    //this.z = 75;
   }
 });
 
@@ -103,7 +103,7 @@ Crafty.c('Bridge', {
         supply: 1,
       })
       ;
-      this.z = 47;
+      this.z = 81;
   },
 });
 

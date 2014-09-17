@@ -16,6 +16,24 @@ Utility = {
     return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
   },
 
+  getColoursFromRgb: function(rgb) {
+    console.log("rgb");
+    console.log(rgb);
+    var start = rgb.indexOf('(') + 1;
+    var end = rgb.indexOf(',');
+    var red = rgb.slice(start, end);
+
+    var rgb = rgb.slice(end + 1);
+    var end = rgb.indexOf(',');
+    var green = rgb.slice(0, end);
+
+    var rgb = rgb.slice(end + 1);
+    var end = rgb.indexOf(')');
+    var blue = rgb.slice(0, end);
+
+    return { r: parseInt(red), g: parseInt(green), b: parseInt(blue), };
+  },
+
 }
 
 if (!String.prototype.format) {
