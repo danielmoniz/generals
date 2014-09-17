@@ -1,23 +1,4 @@
 LineOfSight = {
-  max_sight: 10,
-
-  applyToAll: function() {
-    console.log("applying line of sight to all tiles...");
-    var fake_grass = Crafty('FakeGrass').get();
-    for (var i=0; i<fake_grass.length; i++) {
-      var amount = 5;
-      //fake_grass[i].brightenColour(amount, amount, amount);
-      fake_grass[i].visible = false;
-    }
-  },
-
-  unapply: function() {
-    var fake_grass = Crafty('FakeGrass').get();
-    for (var i=0; i<fake_grass.length; i++) {
-      var amount = 1;
-      fake_grass[i].resetColour();
-    }
-  },
 
   makeVisible: function(entities) {
     for (var i=0; i<entities.length; i++) {
@@ -31,17 +12,6 @@ LineOfSight = {
       entities[i].visible = false;
     }
     return this;
-  },
-
-  enemyInvisible: function(side) {
-    var units = Crafty('Unit').get();
-    for (var i=0; i<units.length; i++) {
-      if (units[i].side != side) {
-        units[i].visible = false;
-      } else {
-        units[i].visible = true;
-      }
-    }
   },
 
   allUnitsVisible: function() {
@@ -70,82 +40,51 @@ LineOfSight = {
 
   handleLineOfSight: function(side) {
     this.unitLineOfSight(side);
-    this.battleLineOfSight(side);
     this.tileLineOfSight(side);
+    // Uncomment below if battles should be hidden from in-between turn views
+    //this.battleLineOfSight(side);
   },
 
   unitLineOfSight: function(side) {
     this.allUnitsInvisible();
-    var units_in_sight = this.getEnemyUnitsInSight(side);
+    var units_in_sight = this.getUnitsInSight(side);
     this.makeVisible(units_in_sight);
-    return this;
-  },
-
-  tileLineOfSight: function(side) {
-    this.allEntitiesVisible('Shadow');
-    var tiles_in_sight = this.getEntitiesInSight('Shadow', side);
-    this.makeInvisible(tiles_in_sight);
     return this;
   },
 
   battleLineOfSight: function(side) {
     this.allEntitiesInvisible('Battle');
-    var battles_in_sight = this.getBattlesInSight(side);
+    var battles_in_sight = this.getGenericEntitiesInSight('Battle', side);
     this.makeVisible(battles_in_sight);
     return this;
   },
 
-  getEnemyUnitsInSight: function(side) {
+  tileLineOfSight: function(side) {
+    this.allEntitiesVisible('Shadow');
+    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side);
+    this.makeInvisible(tiles_in_sight);
+    return this;
+  },
+
+  getUnitsInSight: function(side) {
     var units = Unit.getUnitsBySide(side);
     var friendly_units = units.friendly;
     var enemy_units = units.enemy;
-
-    var units_in_sight = [];
-    for (var i=0; i<enemy_units.length; i++) {
-      var in_sight = false;
-      var enemy = enemy_units[i];
-      for (var j=0; j<friendly_units.length; j++) {
-        var friend = friendly_units[j];
-        var distance = Utility.getDistance(friend.at(), enemy.at());
-        if (distance < this.max_sight) {
-          in_sight = true;
-          break;
-        }
-      }
-      if (in_sight) {
-        units_in_sight.push(enemy);
-      }
-    }
-    return units_in_sight.concat(friendly_units);
+    var enemies_in_sight = this.getEntitiesInSight(enemy_units, friendly_units);
+    return enemies_in_sight.concat(friendly_units);
   },
 
-  getBattlesInSight: function(side) {
+  getGenericEntitiesInSight: function(entity, side) {
     var friendly_units = Unit.getFriendlyUnits(side);
-
-    var battles = Crafty('Battle').get();
-    var battles_in_sight = [];
-    for (var i=0; i<battles.length; i++) {
-      var in_sight = false;
-      var battle = battles[i];
-      for (var j=0; j<friendly_units.length; j++) {
-        var friend = friendly_units[j];
-        var distance = Utility.getDistance(friend.at(), battle.at());
-        if (distance < this.max_sight) {
-          in_sight = true;
-          break;
-        }
-      }
-      if (in_sight) {
-        battles_in_sight.push(battle);
-      }
-    }
-    return battles_in_sight;
-  },
-
-  getEntitiesInSight: function(entity, side) {
-    var friendly_units = Unit.getFriendlyUnits(side);
-
     var entities = Crafty(entity).get();
+    return this.getEntitiesInSight(entities, friendly_units);
+  },
+
+  /*
+   * Filters param entities to only those that can be seen by the
+   * seeing_entities.
+   */
+  getEntitiesInSight: function(entities, friendly_units) {
     var entities_in_sight = [];
     for (var i=0; i<entities.length; i++) {
       var in_sight = false;
@@ -153,7 +92,7 @@ LineOfSight = {
       for (var j=0; j<friendly_units.length; j++) {
         var friend = friendly_units[j];
         var distance = Utility.getDistance(friend.at(), entity.at());
-        if (distance < this.max_sight) {
+        if (distance < friend.max_sight) {
           in_sight = true;
           break;
         }

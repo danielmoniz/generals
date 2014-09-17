@@ -149,10 +149,6 @@ Crafty.c('FakeGrass', {
     this.color("rgb({0}, {1}, {2})".format(new_red, new_green, new_blue));
     this.colour = { r: new_red, g: new_green, b: new_blue, };
   },
-
-  brightenColour: function(red, green, blue) {
-    this.dimColour(-red, -green, -blue);
-  },
 });
 
 Crafty.c("Shadow", {

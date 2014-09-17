@@ -446,6 +446,7 @@ Crafty.c('Cavalry', {
         type: 'Cavalry',
         //side: 1,
         movement: 8, 
+        max_sight: 10,
       })
       ;
   },
