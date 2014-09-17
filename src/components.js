@@ -146,18 +146,21 @@ Crafty.c('FakeGrass', {
     var new_red = Math.max(0, this.colour.r - red);
     var new_green = Math.max(0, this.colour.g - green);
     var new_blue = Math.max(0, this.colour.b - blue);
-    console.log("new_red");
-    console.log(new_red);
-    console.log("new_green");
-    console.log(new_green);
-    console.log("new_blue");
-    console.log(new_blue);
     this.color("rgb({0}, {1}, {2})".format(new_red, new_green, new_blue));
     this.colour = { r: new_red, g: new_green, b: new_blue, };
   },
 
   brightenColour: function(red, green, blue) {
     this.dimColour(-red, -green, -blue);
+  },
+});
+
+Crafty.c("Shadow", {
+  init: function() {
+    this.requires('FakeGrass');
+    this.z = 2;
+    this.dim_value = 25;
+    //this.dimColour(this.dim_value, this.dim_value, this.dim_value);
   },
 });
 

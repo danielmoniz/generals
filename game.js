@@ -101,10 +101,6 @@ Game = {
   village_healing_rate: 15/100,
 
   nextTurn: function() {
-    //LineOfSight.applyToAll();
-    //LineOfSight.unapply();
-    //LineOfSight.enemyInvisible((this.turn + 0.5) % 2);
-    console.log("turn {0}".format((this.turn + 0.5) % 2));
 
     if (Game.type == Game.types.EMAIL) {
       if (Game.turns_played_locally >= 1) {
@@ -117,18 +113,23 @@ Game = {
     this.turn_count += 0.5;
     this.turns_played_locally += 0.5;
     Output.updateStatusBar();
+
     this.deselect();
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
     if (victory) Crafty.scene('Victory');
     Crafty.trigger("NextTurn");
+
+    LineOfSight.unitLineOfSight(this.turn);
+    LineOfSight.battleLineOfSight(this.turn);
+    LineOfSight.tileLineOfSight(this.turn);
   },
 
   // initialize and start our game
   start: function(game_type) {
     Game.type = game_type;
-    if (Game.turn == undefined) Game.turn = 0;
-    if (Game.turn_count == undefined) Game.turn_count = 0;
+    if (Game.turn == undefined) Game.turn = 1.5;
+    if (Game.turn_count == undefined) Game.turn_count = -0.5;
     //Game.type = Game.types['EMAIL'];
     var load_game = Game.load_game;
     Game.load_game = load_game;

@@ -53,7 +53,7 @@ Crafty.c('Tree', {
         type: "Tree", 
         move_difficulty: 2, 
         build_over: 3,
-        defense_bonus: 1.15,
+        defense_bonus: 1.05,
       })
       ;
   },

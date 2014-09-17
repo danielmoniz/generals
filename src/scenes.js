@@ -64,12 +64,16 @@ Crafty.scene('Game', function() {
     }
   }
 
-  function colourHeightMap(location_map) {
+  function colourHeightMap(location_map, shadow) {
     var colour_scale_factor = 1/3;
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Math.ceil(Game.height_map[x][y] * 255 * colour_scale_factor);
-        var ground = Crafty.e('FakeGrass');
+        if (shadow) {
+          var ground = Crafty.e('Shadow');
+        } else {
+          var ground = Crafty.e('FakeGrass');
+        }
         ground.at(x, y);
         var r = Math.ceil(location_map.ground.r - height);
         var g = Math.ceil(location_map.ground.g - height);
@@ -77,11 +81,16 @@ Crafty.scene('Game', function() {
         var color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
         ground.color('rgb(' + r + ', ' + g + ', ' + b + ')');
         ground.setColour(r, g, b);
+        if (shadow) ground.dimColour(ground.dim_value, ground.dim_value, ground.dim_value);
         // Use below for grey-scale heightmap
         //ground.color('rgb(' + height + ', ' + height + ',' + height + ')')
         ;
       }
     }
+  }
+
+  function shadowHeightMap(location_map) {
+    colourHeightMap(location_map, true);
   }
 
   function addWater(location_map) {
@@ -376,6 +385,7 @@ Crafty.scene('Game', function() {
     addRoadGraphics();
 
     colourHeightMap(Game.location);
+    shadowHeightMap(Game.location);
     colourWater();
 
     addUnitsFromLoad();
@@ -391,6 +401,7 @@ Crafty.scene('Game', function() {
     addRoadGraphics();
 
     colourHeightMap(Game.location);
+    shadowHeightMap(Game.location);
     colourWater();
 
     addPlayers();
@@ -412,6 +423,7 @@ Crafty.scene('Game', function() {
     addPlayers();
 
     colourHeightMap(Game.location);
+    shadowHeightMap(Game.location);
     colourWater();
 
     Victory.reset();

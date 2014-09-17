@@ -8,7 +8,6 @@ function buildTerrainData() {
   var terrain_defense_bonus = [];
   var terrain_build_difficulty = [];
   var terrain_supply = [];
-  var line_of_sight = [];
   for (var x = 0; x < Game.map_grid.width; x++) {
     terrain[x] = [];
     terrain_type[x] = [];
@@ -16,7 +15,6 @@ function buildTerrainData() {
     terrain_difficulty[x] = [];
     terrain_build_difficulty[x] = [];
     terrain_supply[x] = [];
-    line_of_sight[x] = [];
   }
 
   for (var i = 0; i < terrain_list.length; i++) {
@@ -27,7 +25,6 @@ function buildTerrainData() {
     terrain_build_difficulty[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].build_over;
     var supply_value = terrain_list[i].supply ? 1 : 0;
     terrain_supply[terrain_list[i].getX()][terrain_list[i].getY()] = supply_value;
-    line_of_sight[x][y] = 1;
   }
 
   Game.terrain = terrain;
@@ -36,7 +33,6 @@ function buildTerrainData() {
   Game.terrain_defense_bonus = terrain_defense_bonus;
   Game.terrain_build_difficulty = terrain_build_difficulty;
   Game.terrain_supply = terrain_supply;
-  Game.line_of_sight = line_of_sight;
 
   // Uncomment below for Supply overlay
   /*
@@ -58,6 +54,5 @@ function buildTerrainData() {
   Game.terrain_defense_bonus_graph = new Game.graph_ftn(terrain_defense_bonus);
   Game.terrain_build_graph = new Game.graph_ftn(terrain_build_difficulty);
   Game.terrain_supply_graph = new Game.graph_ftn(terrain_supply);
-  Game.line_of_sight_graph = new Game.graph_ftn(line_of_sight);
 }
 
