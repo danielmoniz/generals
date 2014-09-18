@@ -11,6 +11,9 @@ Game = {
     ONLINE: "online",
   },
 
+  // test
+  y_offset: $("#title-container").height(),
+
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
     width: Math.ceil(map_width),

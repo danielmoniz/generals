@@ -11,9 +11,21 @@ Crafty.c('Grid', {
   // Locate this entity at the given position on the grid
   at: function(x, y) {
     if (x === undefined && y === undefined) {
+      return { x: this.x/Game.map_grid.tile.width, y: this.y/Game.map_grid.tile.height + Game.y_offset }
       return { x: this.x/Game.map_grid.tile.width, y: this.y/Game.map_grid.tile.height }
     } else {
-      this.attr({ x: x * Game.map_grid.tile.width, y: y * Game.map_grid.tile.height });
+      /*
+      console.log("-----");
+      console.log("Game.map_grid.tile.width");
+      console.log(Game.map_grid.tile.width);
+      */
+      var new_y = Math.max(0, y * Game.map_grid.tile.height) - Game.y_offset;
+      var new_y = y * Game.map_grid.tile.height;
+      /*
+      console.log("new_y");
+      console.log(new_y);
+      */
+      this.attr({ x: x * Game.map_grid.tile.width, y: new_y });
       return this;
     }
   },
@@ -135,8 +147,6 @@ Crafty.c('ChangeableColor', {
   },
 
   dimColour: function(red, green, blue) {
-    console.log("red");
-    console.log(red);
     var new_red = Math.min(255, Math.max(0, this.colour.r - red));
     var new_green = Math.min(255, Math.max(0, this.colour.g - green));
     var new_blue = Math.min(255, Math.max(0, this.colour.b - blue));
