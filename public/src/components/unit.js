@@ -66,8 +66,6 @@ Crafty.c('Unit', {
     if (Game.turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
-
-      this.determineSelection();
     }
   },
 
@@ -77,24 +75,6 @@ Crafty.c('Unit', {
         if (this.movement_path) destroyMovementPath(this.movement_path);
         this.movement_path = colourMovementPath(this.move_target_path, this.movement, this.at());
       }
-    }
-  },
-
-  determineSelection: function() {
-    var selected = Game.player_selected;
-    if (!selected) {
-      Game.select(this);
-      return this;
-    }
-    var item = selected[Game.turn];
-    var item = Game.player_selected[Game.turn];
-
-    if (item && item.side == this.side) {
-      Game.select(item);
-      return item;
-    } else if (!Game.selected) {
-      Game.select(this);
-      return this;
     }
   },
 

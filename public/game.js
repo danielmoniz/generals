@@ -123,12 +123,35 @@ Game = {
     Output.updateStatusBar();
 
     this.deselect();
+    this.determineSelection();
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
     if (victory) Crafty.scene('Victory');
     Crafty.trigger("NextTurn");
 
     LineOfSight.handleLineOfSight(this.turn);
+  },
+
+  determineSelection: function() {
+    if (this.turn % 1 != 0) {
+      return false;
+    }
+    var units = Unit.getFriendlyUnits(this.turn);
+    var selected = Game.player_selected;
+    if (!selected) {
+      this.select(units[0]);
+      return units[0];
+    }
+    var item = selected[this.turn];
+    var item = this.player_selected[this.turn];
+
+    if (item && item.side == this.turn) {
+      Game.select(item);
+      return item;
+    } else if (!this.selected) {
+      Game.select(units[0]);
+      return units[0];
+    }
   },
 
   // initialize and start our game

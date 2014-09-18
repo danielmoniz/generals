@@ -402,7 +402,7 @@ Crafty.scene('Game', function() {
     }
   }
 
-  function determinePlayerSelections() {
+  function loadPlayerSelections() {
     var units = Crafty('Unit').get();
     Game.player_selected = [];
     for (var i=0; i<units.length; i++) {
@@ -430,8 +430,10 @@ Crafty.scene('Game', function() {
     addUnitsFromLoad();
     addBattlesFromLoad();
     LineOfSight.handleLineOfSight(Game.turn);
-    determinePlayerSelections();
     Crafty.trigger("UpdateMovementPaths");
+
+    loadPlayerSelections();
+    Game.determineSelection();
 
   } else if (Game.load_map) {
     buildTerrainFromLoad();
