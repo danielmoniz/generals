@@ -16,6 +16,7 @@ Output = {
   },
   reset: function() {
     this.element_id = this.main_element_id;
+    return this;
   },
 
   usePanel: function(panel) {
@@ -32,6 +33,8 @@ Output = {
     this.element_id = panels[panel];
     $(this.element_id).show();
     if (panel == "alerts") $(this.alerts_container_element_id).show();
+
+    return this;
   },
 
   add: function(text_array) {
@@ -71,11 +74,12 @@ Output = {
     return this;
   },
 
-  makeReport: function(divs, title, conclusion) {
+  makeReport: function(divs, title, conclusion, inline) {
     var info_panel = $(this.element_id);
-    var classes = "report";
+    var classes = "";
+    if (!inline) classes = "report";
     // ensure that alerts don't have the report class. Makes them horizontal.
-    if (this.element_id == this.alerts_element_id) classes = "alert";
+    if (this.element_id == this.alerts_element_id) classes += " alert";
     var report = this.createDiv(classes);
     info_panel.append(report);
 
@@ -269,7 +273,7 @@ Output = {
     var unsupplied = Pretty.Unit.unsupplied(units_lost);
     var unit_div = this.createStandardUnitDiv(unit);
     unit_div.append(this.createDiv("unit-item", unsupplied));
-    this.makeReport([unit_div]);
+    this.makeReport([unit_div], false, false, "inline");
 
     return this;
   },

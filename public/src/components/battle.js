@@ -88,7 +88,7 @@ Crafty.c('Battle', {
     this.attacking_side = attacker.side;
     //this.attackers = [attacker];
     this.prepareBattle();
-    Output.printBattleStart(this);
+    Output.usePanel('alerts').printBattleStart(this);
   },
 
   end: function() {
@@ -110,7 +110,7 @@ Crafty.c('Battle', {
       battle_side = Battle.DEFENDER;
     }
     unit.notify_of_battle(battle_side);
-    Output.printBattleJoin(this, unit);
+    Output.usePanel('alerts').printBattleJoin(this, unit);
   },
 
   unitDead: function(unit) {
@@ -174,7 +174,7 @@ Crafty.c('Battle', {
     unit.battle_finished();
     if (!this.isBattleActive()) {
       this.end();
-      Output.printBattle(this);
+      Output.usePanel('alerts').printBattle(this);
     }
     return num_losses;
   },
@@ -237,7 +237,7 @@ Crafty.c('Battle', {
       Victory.updateWillToFight();
     }
 
-    Output.printBattle(this);
+    Output.usePanel('alerts').printBattle(this);
   },
 
   isBattleActive: function() {
@@ -277,7 +277,7 @@ Crafty.c('Battle', {
   },
 
   report: function() {
-    Output.printBattle(this);
+    Output.usePanel('alerts').printBattle(this);
   },
 
   getPresentUnits: function() {

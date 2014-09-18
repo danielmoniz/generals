@@ -123,12 +123,12 @@ Game = {
     Output.updateStatusBar();
 
     this.deselect();
-    this.determineSelection();
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
     if (victory) Crafty.scene('Victory');
     Crafty.trigger("NextTurn");
 
+    this.determineSelection();
     LineOfSight.handleLineOfSight(this.turn);
   },
 
