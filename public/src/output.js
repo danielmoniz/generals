@@ -1,14 +1,12 @@
 Output = {
   element_id: "#info-panel",
   main_element_id: "#info-panel",
-  turn_count_element_id: "#turn-count",
-  player_element_id: "#player",
   alerts_element_id: "#alerts-panel",
   alerts_container_element_id: "#alerts-container",
-  will_element_id: "#will-text",
   will_bar_element_id_blue: "div.will.bar.blue",
   will_bar_element_id_white: "div.will.bar.white",
   buffer: [],
+
   push: function(info) {
     //for (var i=0; i<info.length; i++) {
       //this.buffer.push(info[i]);
@@ -295,14 +293,9 @@ Output = {
   },
 
   updateStatusBar: function() {
-    var turn_bar = $(this.turn_count_element_id);
-    var player_bar = $(this.player_element_id);
-
     var turn_count = "Turn {0}".format(Pretty.TurnCount.pretty());
     var player = undefined;
     var next_player_turn = Pretty.Turn.nextPlayerTurn();
-    //var turn = Game.turn;
-    //var player_colour = Game.player_colour[next_player_turn];
     var player_name = Pretty.Player.name(next_player_turn);
 
     if (Pretty.Turn.isPlayerTurn()) {
@@ -310,8 +303,6 @@ Output = {
     } else {
       player = "{0} (up next)".format(player_name);
     }
-    turn_bar.text(turn_count);
-    player_bar.text(player);
 
     if (Game.title_bar) {
       Game.title_bar.turn_counter.text(turn_count);
@@ -334,7 +325,6 @@ Output = {
       return this.resetVictoryBar();
     }
     var will_text = "(Blue) {0} (White)".format(will);
-    will_bar.text(will_text);
 
     $(this.will_bar_element_id_blue).width("{0}%".format(p0_will));
     $(this.will_bar_element_id_white).width("{0}%".format(p1_will));
@@ -345,10 +335,10 @@ Output = {
   },
 
   resetVictoryBar: function() {
-    var will_bar = $(this.will_element_id);
-    var will = "100% - 100%";
-    will_bar.text("100% - 100%");
-    will_bar.text("(Blue) {0} (White)".format(will));
+    if (Game.title_bar) {
+      var will = "(Blue) 100% - 100% (White)";
+      Game.title_bar.willpower.text(will);
+    }
     return this;
   },
 
