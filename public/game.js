@@ -26,6 +26,10 @@ Game = {
     }
   },
 
+  board_title: {
+    height: 24,
+  },
+
   graph_ftn: Graph,
   pathfind: astar,
   noise: noise,

@@ -14,6 +14,31 @@ Crafty.scene('Game', function() {
 
   Game.resetStatusVisuals();
 
+  function addTitleBar() {
+    var title = Crafty.e("TitleBar");
+    title.at(0, 0)
+      .text("GENERALS");
+
+    var turn_counter = Crafty.e("TitleBar");
+      turn_counter.at(4, 0)
+        .text("Turn 0");
+
+    var turn_indicator = Crafty.e("TitleBar");
+      turn_indicator.at(6, 0)
+        .text("Blue (up next)");
+
+    var willpower = Crafty.e("TitleBar");
+      willpower.at(10, 0)
+        .text("(Blue) 100% - 100% (White)");
+
+    Game.title_bar = {
+      title: title,
+      turn_counter: turn_counter,
+      turn_indicator: turn_indicator,
+      willpower: willpower,
+    };
+  }
+
   function buildEmptyGameData() {
     Game.height_map = generateHeightMap(Game.location);
     Game.occupied = buildOccupied();
@@ -430,6 +455,9 @@ Crafty.scene('Game', function() {
     Victory.reset();
     Game.select(Crafty('Unit').get(0));
   }
+
+  addTitleBar();
+
 
   // Creates a road on the map given a shortest-path solution.
   function createRoad(path, including_end, is_supply_road) {
