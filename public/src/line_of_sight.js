@@ -2,14 +2,14 @@ LineOfSight = {
 
   makeVisible: function(entities) {
     for (var i=0; i<entities.length; i++) {
-      entities[i].visible = true;
+      entities[i].alpha = 1;
     }
     return this;
   },
 
   makeInvisible: function(entities) {
     for (var i=0; i<entities.length; i++) {
-      entities[i].visible = false;
+      entities[i].alpha = 0;
     }
     return this;
   },
@@ -25,7 +25,7 @@ LineOfSight = {
   allEntitiesVisible: function(entity) {
     var entities = Crafty(entity).get();
     for (var i=0; i<entities.length; i++) {
-      entities[i].visible = true;
+      entities[i].alpha = 1;
     }
     return this;
   },
@@ -33,7 +33,7 @@ LineOfSight = {
   allEntitiesInvisible: function(entity) {
     var entities = Crafty(entity).get();
     for (var i=0; i<entities.length; i++) {
-      entities[i].visible = false;
+      entities[i].alpha = 0;
     }
     return this;
   },

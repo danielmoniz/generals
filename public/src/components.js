@@ -217,7 +217,7 @@ Crafty.c("Shadow", {
     this.requires('FakeGrass');
     this.z = 2;
     this.dim_value = 25;
-    //this.dimColour(this.dim_value, this.dim_value, this.dim_value);
+    this.type = "Shadow";
   },
 });
 
@@ -256,6 +256,7 @@ Crafty.c("HighlightedMovementPath", {
   },
 });
 
+/*
 Crafty.c('SupplyBlock', {
   init: function(turns_left) {
     this.requires('Actor, Color')
@@ -281,6 +282,7 @@ Crafty.c('SupplyBlock', {
     this.destroy();
   },
 });
+*/
 
 // TEST - for debugging purposes only!
 Crafty.c('Supply', {

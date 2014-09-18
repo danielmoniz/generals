@@ -138,7 +138,9 @@ Crafty.scene('Game', function() {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Game.height_map[x][y];
         if (height >= 1 - water_level) {
-          Crafty.e('Water').at(x, y);
+          var water = Crafty.e('Water');
+          water.at(x, y);
+          water.setHeight();
           Game.occupied[x][y] = true;
         }
       }
@@ -158,7 +160,9 @@ Crafty.scene('Game', function() {
         
         if (value >= 1 - probability && !Game.occupied[x][y]) {
           var color = Math.ceil(Game.height_map[x][y] * 255);
-          Crafty.e('Village').at(x, y);
+          var village = Crafty.e('Village');
+          village.at(x, y);
+          village.setHeight();
           Game.occupied[x][y] = true;
         }
       }
@@ -175,8 +179,9 @@ Crafty.scene('Game', function() {
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
         if (!Game.occupied[x][y]) {
-          Crafty.e('Grass').at(x, y);
-          ;
+          var grass = Crafty.e('Grass');
+          grass.at(x, y);
+          grass.setHeight();
         }
       }
     }
@@ -541,7 +546,9 @@ Crafty.scene('Game', function() {
         }
         
         if (noise_value >= 1 - frequency && !Game.occupied[x][y]) {
-          Crafty.e(entity_name).at(x, y);
+          var entity = Crafty.e(entity_name);
+          entity.at(x, y);
+          entity.setHeight();
           if (update_occupied) {
             Game.occupied[x][y] = true;
           }

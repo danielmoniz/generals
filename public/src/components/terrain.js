@@ -5,11 +5,17 @@ Crafty.c('Terrain', {
     this.requires('Actor, Clickable');
     this.z = 80;
   },
+
   select: function() {
     this.report();
   },
+
   report: function() {
     Output.printTerrain(this);
+  },
+
+  setHeight: function() {
+    this.height = Game.height_map[this.at().x][this.at().y];
   },
 });
 

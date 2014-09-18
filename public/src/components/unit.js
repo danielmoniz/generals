@@ -80,14 +80,6 @@ Crafty.c('Unit', {
 
   select: function() {
     this.report();
-
-    // re-draw movement path
-    /*
-    if (this.movement_path) {
-      destroyMovementPath(this.movement_path);
-      this.movement_path = colourMovementPath(this.move_target_path, this.movement, this.at());
-    }
-    */
     if (this.movement_path) highlightPath(this.movement_path);
 
     if (!this.battle) {
@@ -254,7 +246,7 @@ Crafty.c('Unit', {
     return this.isEntityPresent('Village');
   },
 
-  prepareMove: function(target_x, target_y, ignore_viuals, queue_move) {
+  prepareMove: function(target_x, target_y, ignore_visuals, queue_move) {
     this.move_target = { x: target_x, y: target_y };
 
     if (queue_move && this.move_target_path) {
@@ -288,7 +280,7 @@ Crafty.c('Unit', {
     //var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
     if (this.movement_path) destroyMovementPath(this.movement_path);
 
-    if (!ignore_viuals) {
+    if (!ignore_visuals) {
       this.movement_path = colourMovementPath(path, movement, this.at());
     }
 
