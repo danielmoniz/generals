@@ -144,8 +144,6 @@ Game = {
 
     Crafty.scene('Loading');
     UI.startGame();
-    console.log("Game.title_bar");
-    console.log(Game.title_bar);
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
   },

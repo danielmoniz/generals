@@ -20,16 +20,26 @@ Crafty.scene('Game', function() {
       .text("GENERALS");
 
     var turn_counter = Crafty.e("TitleBar");
-      turn_counter.at(4, 0)
-        .text("Turn 0");
+      turn_counter.at(4, 0);
 
     var turn_indicator = Crafty.e("TitleBar");
-      turn_indicator.at(6, 0)
-        .text("Blue (up next)");
+      turn_indicator.at(6, 0);
 
     var willpower = Crafty.e("TitleBar");
-      willpower.at(10, 0)
-        .text("(Blue) 100% - 100% (White)");
+      willpower.at(10, 0);
+
+    var victory_bar = Crafty.e("VictoryBar");
+    victory_bar.at(18, 0);
+    var victory_html = '\
+	<div id="will-container">\
+	  <div class="bar-container blue">\
+	    <div class="will blue bar"></div>\
+	  </div>\
+	  <div class="bar-container white">\
+	    <div class="will white bar"></div>\
+	  </div>\
+	</div>';
+    victory_bar.replace(victory_html);
 
     Game.title_bar = {
       title: title,

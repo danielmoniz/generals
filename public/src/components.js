@@ -47,11 +47,7 @@ Crafty.c('Actor', {
 
 Crafty.c("TitleBar", {
   init: function() {
-    this.requires("2D, Canvas, Text, Mouse")
-      .bind("MouseUp", function(e) {
-        console.log('clicked!');
-      })
-    ;
+    this.requires("2D, Canvas, Text");
     this.attr({
       //w: 60,
       h: Game.board_title.height,
@@ -71,6 +67,30 @@ Crafty.c("TitleBar", {
     }
   },
 });
+
+Crafty.c("VictoryBar", {
+  init: function() {
+    this.requires("2D, Canvas, HTML");
+    this.attr({
+      //w: 60,
+      h: Game.board_title.height,
+    });
+    //this.textColor('#FFFFFF');
+    //this.textFont({size: '17px', });
+  },
+
+  at: function(x, y) {
+    if (x === undefined && y === undefined) {
+      return { x: this.x/Game.map_grid.tile.width, y: this.y/Game.map_grid.tile.height }
+    } else {
+      var new_y = Math.max(0, y * Game.map_grid.tile.height) - Game.y_offset;
+      var new_y = y * Game.map_grid.tile.height;
+      this.attr({ x: x * Game.map_grid.tile.width, y: new_y });
+      return this;
+    }
+  },
+});
+
 
 Crafty.c('Clickable', {
   init: function() {

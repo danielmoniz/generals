@@ -11,7 +11,7 @@ body { background: black; color:white; }
 #will-text {
   width:200px;
 }
-#will-container { width: 50%; float:left; }
+#will-container { width: 452px; float:left; }
 .bar-container { width: 49%; float:left; }
 .bar-container {
   border: 1px solid white;
