@@ -155,8 +155,6 @@ Crafty.c('ChangeableColor', {
   },
 
   brightenColour: function(quantity) {
-    console.log("quantity");
-    console.log(quantity);
     this.dimColour(-quantity, -quantity, -quantity);
   },
 

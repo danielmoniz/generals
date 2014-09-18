@@ -17,8 +17,6 @@ Utility = {
   },
 
   getColoursFromRgb: function(rgb) {
-    console.log("rgb");
-    console.log(rgb);
     var start = rgb.indexOf('(') + 1;
     var end = rgb.indexOf(',');
     var red = rgb.slice(start, end);
