@@ -37,6 +37,9 @@ Crafty.scene('Game', function() {
       turn_indicator: turn_indicator,
       willpower: willpower,
     };
+
+    Output.updateStatusBar();
+    Output.updateVictoryBar();
   }
 
   function buildEmptyGameData() {

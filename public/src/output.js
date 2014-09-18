@@ -312,6 +312,11 @@ Output = {
     }
     turn_bar.text(turn_count);
     player_bar.text(player);
+
+    if (Game.title_bar) {
+      Game.title_bar.turn_counter.text(turn_count);
+      Game.title_bar.turn_indicator.text(player);
+    }
     return this;
   },
 
@@ -328,10 +333,15 @@ Output = {
     } else {
       return this.resetVictoryBar();
     }
-    will_bar.text("(Blue) {0} (White)".format(will));
+    var will_text = "(Blue) {0} (White)".format(will);
+    will_bar.text(will_text);
 
     $(this.will_bar_element_id_blue).width("{0}%".format(p0_will));
     $(this.will_bar_element_id_white).width("{0}%".format(p1_will));
+
+    if (Game.title_bar) {
+      Game.title_bar.willpower.text(will_text);
+    }
   },
 
   resetVictoryBar: function() {

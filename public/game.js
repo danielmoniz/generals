@@ -143,9 +143,11 @@ Game = {
     //Crafty.background('rgb(87, 109, 20)');
 
     Crafty.scene('Loading');
+    UI.startGame();
+    console.log("Game.title_bar");
+    console.log(Game.title_bar);
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
-    UI.startGame();
   },
 
   reset: function() {
