@@ -431,6 +431,7 @@ Crafty.scene('Game', function() {
     addBattlesFromLoad();
     LineOfSight.handleLineOfSight(Game.turn);
     determinePlayerSelections();
+    Crafty.trigger("UpdateMovementPaths");
 
   } else if (Game.load_map) {
     buildTerrainFromLoad();

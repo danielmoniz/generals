@@ -29,6 +29,7 @@ Crafty.c('Unit', {
       .bind("MouseUp", function() {
         //this.report();
       })
+      .bind("UpdateMovementPaths", this.updateMovementPaths)
       /*
       .bind("MouseOver", function() {
         document.getElementById("info-panel").innerHTML='<object type="text/html" data="src/info.html"></object>';
@@ -60,18 +61,22 @@ Crafty.c('Unit', {
       }
     }
 
-    if (Game.turn == this.side) {
-      if (this.move_target_path) {
-        if (this.movement_path) destroyMovementPath(this.movement_path);
-        this.movement_path = colourMovementPath(this.move_target_path, this.movement, this.at());
-      }
-    }
+    this.updateMovementPaths();
 
     if (Game.turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
 
       this.determineSelection();
+    }
+  },
+
+  updateMovementPaths: function() {
+    if (Game.turn == this.side) {
+      if (this.move_target_path) {
+        if (this.movement_path) destroyMovementPath(this.movement_path);
+        this.movement_path = colourMovementPath(this.move_target_path, this.movement, this.at());
+      }
     }
   },
 
