@@ -66,7 +66,43 @@ Crafty.c('Unit', {
     if (Game.turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
+
+      this.action_choices = this.getActionChoices();
+      this.reset(); // should happen last!
     }
+  },
+
+  reset: function() {
+    this.turn_action = "move";
+  },
+
+  getActionChoices: function() {
+    var actions = [];
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    if (local_terrain.type == 'Farm')
+      actions.push("pillage");
+    return actions;
+  },
+
+  performAction: function(action) {
+    this.turn_action = action;
+    console.log("action: {0}".format(action));
+    if (action == "pillage") {
+      var local_terrain = Game.terrain[this.at().x][this.at().y];
+      local_terrain.addComponent("PillagedFarm");
+      var amount = local_terrain.provides_supply;
+      if (amount) {
+        var old_supply = this.supply_remaining;
+        this.addSupply(amount);
+        var amount_pillaged = this.supply_remaining - old_supply;
+        console.log("Pillaged {0} supply!".format(amount_pillaged));
+      }
+    }
+    Game.select(this);
+  },
+
+  addSupply: function(amount) {
+    this.supply_remaining = Math.min(this.max_supply, this.supply_remaining + amount);
   },
 
   updateMovementPaths: function() {

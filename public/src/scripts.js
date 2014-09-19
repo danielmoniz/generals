@@ -36,6 +36,7 @@ $(document).ready(function() {
   // TEST ONLY
   $("#start-hotseat-button").click();
   //$("#start-email-button").click();
+  //
 });
 
 UI = {

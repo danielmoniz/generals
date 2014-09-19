@@ -89,6 +89,7 @@ Crafty.c('Farm', {
         build_over: 1,
         defense_bonus: 1,
         alpha: 0.5,
+        provides_supply: 2,
       })
       .color('rgb(196, 196, 0)')
       ;
@@ -105,6 +106,7 @@ Crafty.c('PillagedFarm', {
         build_over: 1,
         defense_bonus: 1,
         alpha: 0.5,
+        //provides_supply: 0,
       })
       .color('brown')
       ;

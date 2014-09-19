@@ -111,6 +111,31 @@ Output = {
       unit_div.append(this.createBattleDiv(battle.getId(), Pretty.Unit.inBattle()));
     }
 
+    if (unit.action_choices) {
+      var actions_div = this.createDiv("actions unit-item");
+      for (i in unit.action_choices) {
+        var action = unit.action_choices[i];
+        var action_button = document.createElement('input');
+        action_button.type = "button";
+        action_button.value = Utility.capitalizeFirstLetter(action);
+        action_button = $(action_button);
+
+        var action_div = this.createDiv("action")
+        .val(action)
+        .click(function() {
+            // get unit_id from parent
+            var unit_id = parseInt($(this).closest(".unit").attr("unit_id"));
+            var unit = Crafty(unit_id);
+            var action = $(this).val();
+            unit.performAction(action);
+            return false;
+        });
+        action_div.append(action_button);
+        actions_div.append(action_div);
+      }
+      unit_div.append(actions_div);
+    }
+
     this.makeReport([unit_div]);
   },
 

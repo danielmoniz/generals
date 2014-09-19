@@ -192,8 +192,6 @@ Crafty.scene('Game', function() {
             farm.at(x, y);
             village.farms.push(farm);
             Game.occupied[x][y] = true;
-          } else if (!Game.occupied[x][y]) {
-            console.log(probability);
           }
         }
       }
