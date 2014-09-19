@@ -252,7 +252,7 @@ Crafty.c("HighlightedMovementPath", {
   },
 
   dim: function() {
-    this.visible = false;
+    this.alpha = 0;
   },
 });
 
