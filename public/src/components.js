@@ -41,7 +41,7 @@ Crafty.c('Grid', {
 // An "Actor" is an entity that is drawn in 2D on canvas
 Crafty.c('Actor', {
   init: function() {
-    this.requires('2D, Canvas, Grid');
+    this.requires('2D, DOM, Grid');
   },
 });
 
@@ -252,7 +252,7 @@ Crafty.c("HighlightedMovementPath", {
   },
 
   dim: function() {
-    this.alpha = 0;
+    this.visible = false;
   },
 });
 
