@@ -345,6 +345,9 @@ Game = {
 
     this.load_game = true;
     this.load_map = false;
+    if (!Crafty.stage) {
+      Crafty.init(Game.width(), Game.height(), "stage");
+    }
     Crafty.scene('Loading');
 
     var textarea_id = "load-input";

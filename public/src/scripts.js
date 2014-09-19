@@ -1,6 +1,9 @@
 $(document).ready(function() {
   $("#load-button").click(function() {
     Game.load($("textarea#load-input").val());
+    $("#game-container").show();
+    $("#options").hide();
+    $("#front-page").hide();
   });
   $("#load-map-button").click(function() {
     Game.loadMap($("textarea#load-input").val());
