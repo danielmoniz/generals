@@ -11,9 +11,6 @@ Game = {
     ONLINE: "online",
   },
 
-  // test
-  y_offset: $("#title-container").height(),
-
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
     width: Math.ceil(map_width),
@@ -169,7 +166,7 @@ Game = {
     //Game.type = Game.types['EMAIL'];
     var load_game = Game.load_game;
     Game.load_game = load_game;
-    Crafty.init(Game.width(), Game.height(), "stage");
+    this.initCrafty();
     //Crafty.background('rgb(87, 109, 20)');
 
     Crafty.scene('Loading');
@@ -187,6 +184,10 @@ Game = {
     this.player_supply_roads = [[], []];
 
     this.resetStatusVisuals(true);
+  },
+
+  initCrafty: function() {
+    Crafty.init(Game.width(), Game.height() + Game.board_title.height, "stage");
   },
 
   resetStatusVisuals: function(hard_reset) {
@@ -346,7 +347,7 @@ Game = {
     this.load_game = true;
     this.load_map = false;
     if (!Crafty.stage) {
-      Crafty.init(Game.width(), Game.height(), "stage");
+      this.initCrafty();
     }
     Crafty.scene('Loading');
 

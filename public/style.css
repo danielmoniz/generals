@@ -1,4 +1,4 @@
-body { background: black; color:white; }
+body { margin: 0; background: black; color:white; }
 #front-page {}
 #game-container { display: none; }
 #info-panel { width:35%; color:white; float:left; }
