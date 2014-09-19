@@ -129,7 +129,9 @@ Game = {
     Crafty.trigger("NextTurn");
 
     this.determineSelection();
-    LineOfSight.handleLineOfSight(this.turn);
+    if (Game.options && Game.options.fog_of_war) {
+      LineOfSight.handleLineOfSight(this.turn);
+    }
   },
 
   determineSelection: function() {
@@ -155,7 +157,12 @@ Game = {
   },
 
   // initialize and start our game
-  start: function(game_type) {
+  start: function(game_type, options) {
+    if (!Game.options) Game.options = {};
+    for (key in options) {
+      var value = options[key];
+      Game.options[key] = value;
+    }
     Game.type = game_type;
     if (Game.turn == undefined) Game.turn = 1.5;
     if (Game.turn_count == undefined) Game.turn_count = -0.5;
@@ -195,6 +202,8 @@ Game = {
       location: this.location,
       factions: this.factions,
       victory: Victory,
+
+      options: this.options,
 
       map_grid: this.map_grid,
       terrain_type: this.terrain_type,
@@ -285,6 +294,7 @@ Game = {
     this.turns_played_locally = 0;
     Victory.reset();
 
+    this.options = UI.getOptions();
     this.location = map_data.location;
     this.map_grid = map_data.map_grid;
     this.terrain_type = map_data.terrain_type;
@@ -313,13 +323,14 @@ Game = {
 
     this.location = map_data.location;
     this.factions = map_data.factions;
+    this.options =  map_data.options;
+
     this.map_grid = map_data.map_grid;
     this.terrain_type = map_data.terrain_type;
     this.height_map = map_data.height_map;
     this.occupied = map_data.occupied;
 
     this.player_name_selected = map_data.player_name_selected;
-
     this.player_colour = map_data.player_colour;
 
     this.supply_route = map_data.supply_route;

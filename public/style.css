@@ -36,6 +36,7 @@ body { background: black; color:white; }
 #input-container { width:100%; float:left; }
 .input-item { float:left; }
 
+#options { border: 1px dotted white; }
 #save-output { color:white; }
 #menu-toggle-button { display: none; }
 
