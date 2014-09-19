@@ -202,6 +202,7 @@ Game = {
       location: this.location,
       factions: this.factions,
       victory: Victory,
+      type: this.type,
 
       options: this.options,
 
@@ -324,6 +325,7 @@ Game = {
     this.location = map_data.location;
     this.factions = map_data.factions;
     this.options =  map_data.options;
+    this.type = map_data.type;
 
     this.map_grid = map_data.map_grid;
     this.terrain_type = map_data.terrain_type;
