@@ -68,6 +68,27 @@ Crafty.c("TitleBar", {
   },
 });
 
+
+Crafty.c("ToolBar", {
+  init: function() {
+    this.requires("2D, Canvas, HTML");
+    this.attr({
+      h: Game.board_tool_bar.height,
+    });
+  },
+
+  at: function(x, y) {
+    if (x === undefined && y === undefined) {
+      return { x: this.x/Game.map_grid.tile.width, y: this.y/Game.map_grid.tile.height }
+    } else {
+      var new_y = Math.max(0, y * Game.map_grid.tile.height) - Game.y_offset;
+      var new_y = y * Game.map_grid.tile.height;
+      this.attr({ x: x * Game.map_grid.tile.width, y: new_y });
+      return this;
+    }
+  },
+});
+
 Crafty.c("VictoryBar", {
   init: function() {
     this.requires("2D, Canvas, HTML");
@@ -75,8 +96,6 @@ Crafty.c("VictoryBar", {
       //w: 60,
       h: Game.board_title.height,
     });
-    //this.textColor('#FFFFFF');
-    //this.textFont({size: '17px', });
   },
 
   at: function(x, y) {
@@ -149,9 +168,18 @@ Crafty.c('Receivable', {
                 //Game.deselect();
               }
             }
+
           } else {
             // @TODO Print out "not your turn" somewhere visible
-            console.log("Not your turn!");
+            var next_player_turn = Pretty.Turn.nextPlayerTurn();
+            var player_name = Pretty.Player.name(next_player_turn);
+            var message = "";
+            if (Pretty.Turn.isPlayerTurn()) {
+              message = "{0}'s move!".format(player_name);
+            } else {
+              message = "{0}'s turn is next!".format(player_name);
+            }
+            Output.message(message);
           }
         }
       })

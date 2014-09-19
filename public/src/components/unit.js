@@ -67,7 +67,7 @@ Crafty.c('Unit', {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
 
-      this.action_choices = this.getActionChoices();
+      this.updateActionChoices();
       this.reset(); // should happen last!
     }
   },
@@ -84,21 +84,32 @@ Crafty.c('Unit', {
     return actions;
   },
 
+  updateActionChoices: function() {
+    this.action_choices = this.getActionChoices();
+  },
+
   performAction: function(action) {
     this.turn_action = action;
-    console.log("action: {0}".format(action));
     if (action == "pillage") {
-      var local_terrain = Game.terrain[this.at().x][this.at().y];
-      local_terrain.addComponent("PillagedFarm");
-      var amount = local_terrain.provides_supply;
-      if (amount) {
-        var old_supply = this.supply_remaining;
-        this.addSupply(amount);
-        var amount_pillaged = this.supply_remaining - old_supply;
-        console.log("Pillaged {0} supply!".format(amount_pillaged));
-      }
+      this.pillage();
     }
+    this.updateActionChoices();
     Game.select(this);
+  },
+
+  pillage: function() {
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    local_terrain.addComponent("PillagedFarm");
+    var amount = local_terrain.provides_supply;
+    if (amount) {
+      var old_supply = this.supply_remaining;
+      this.addSupply(amount);
+      var amount_pillaged = this.supply_remaining - old_supply;
+      var message = "Pillaged {0} supply!".format(amount_pillaged);
+      console.log(amount_pillaged);
+      console.log(message);
+      Output.message(message);
+    }
   },
 
   addSupply: function(amount) {
@@ -295,12 +306,12 @@ Crafty.c('Unit', {
     }
     var new_path = Game.pathfind.search(Game.terrain_graph, start, end);
     if (!new_path) {
-      console.log("Target impossible to reach!");
+      Output.message("Target impossible to reach!");
       return false;
     }
     var partial_path = getPartialPath(new_path, this.movement);
     if (!partial_path) {
-      console.log("Cannot move to first square! Movement value too low.");
+      Output.message("Cannot move to first square! Movement value too low.");
       return false;
     }
 

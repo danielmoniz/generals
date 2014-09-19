@@ -27,6 +27,10 @@ Game = {
     height: 24,
   },
 
+  board_tool_bar: {
+    height: 32,
+  },
+
   graph_ftn: Graph,
   pathfind: astar,
   noise: noise,
@@ -72,6 +76,7 @@ Game = {
   deselect: function() {
     Crafty.trigger("DimPaths");
     Output.clearMain();
+    //Output.clearMessage();
     if (this.selected) {
       delete this.selected;
       this.select_highlight.destroy();

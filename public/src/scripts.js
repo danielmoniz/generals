@@ -33,8 +33,15 @@ $(document).ready(function() {
     $("#options").toggle();
   });
 
+  $("#next-turn").click(function() {
+    Game.nextTurn();
+    return false;
+  });
+
+  $("#tool-bar").width("{0}px".format(Game.map_grid.width * Game.map_grid.tile.width));
+
   // TEST ONLY
-  $("#start-hotseat-button").click();
+  //$("#start-hotseat-button").click();
   //$("#start-email-button").click();
   //
 });
@@ -43,6 +50,8 @@ UI = {
   startGame: function() {
     $("#menu").hide();
     $("#menu-toggle-button").show();
+    // @TODO Fix below code! Want to dynamically set width of victory bar.
+    //$("#will-container").width(35 * Game.map_grid.tile.width);
   },
 
   deselectButtons: function() {
@@ -50,13 +59,22 @@ UI = {
     $("input#load-map-button").blur();
   },
 
-getOptions: function() {
-  var options = {};
-  var options_form = document.getElementById("options");
-  for (var i=0; i<options_form.elements.length; i++) {
-    var e = options_form.elements[i];
-    if (e.type == "checkbox") options[e.name] = e.checked;
-  }
-  return options;
-},
+  nextTurn: function(e) {
+    if (e.key == Crafty.keys.SPACE) {
+      $("#next-turn").click();
+    } else {
+      //console.log(e);
+    }
+    return false;
+  },
+
+  getOptions: function() {
+    var options = {};
+    var options_form = document.getElementById("options");
+    for (var i=0; i<options_form.elements.length; i++) {
+      var e = options_form.elements[i];
+      if (e.type == "checkbox") options[e.name] = e.checked;
+    }
+    return options;
+  },
 }

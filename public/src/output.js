@@ -1,6 +1,7 @@
 Output = {
   element_id: "#info-panel",
   main_element_id: "#info-panel",
+  message_element_id: "#message-bar",
   alerts_element_id: "#alerts-panel",
   alerts_container_element_id: "#alerts-container",
   will_bar_element_id_blue: "div.will.bar.blue",
@@ -21,10 +22,11 @@ Output = {
 
   usePanel: function(panel) {
     var panels = {
-      main: "#info-panel",
-      alerts: "#alerts-panel",
+      main: this.main_element_id,
+      alerts: this.alerts_element_id,
       turn_count: "#turn-count",
       player: "#player",
+      message: this.message_element_id,
     };
     if (panels[panel] === undefined) {
       throw "BadPanelName: Panel name did not correspond to an existing panel.";
@@ -285,6 +287,7 @@ Output = {
     $(this.main_element_id).empty();
     $(this.alerts_element_id).empty();
     $(this.alerts_container_element_id).hide();
+    $(this.message_element_id).empty();
     return this;
   },
 
@@ -370,6 +373,16 @@ Output = {
     }
     return this;
   },
+
+  message: function(message) {
+    $(this.message_element_id).text(message);
+    return this;
+  },
+
+  clearMessage: function() {
+    $(this.message_element_id).empty();
+    return this;
+  }
 
 }
 
