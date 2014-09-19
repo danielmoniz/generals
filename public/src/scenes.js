@@ -150,6 +150,7 @@ Crafty.scene('Game', function() {
   function addVillages(estimated_villages) {
     //generateRandomEntities('Village', 'random', 
     // Place entity randomly on the map using noise
+    var villages = [];
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
@@ -164,10 +165,39 @@ Crafty.scene('Game', function() {
           village.at(x, y);
           village.setHeight();
           Game.occupied[x][y] = true;
+          villages.push(village);
         }
       }
     }
+    return villages;
+  }
 
+  function addFarms(villages) {
+    for (i in villages) {
+      var village = villages[i];
+      var center = village.at();
+      // get first circle around village
+      var max_distance = 2;
+      var factor = 0.80;
+      for (var x = center.x - max_distance; x <= center.x + max_distance; x++) {
+        if (x < 0 || x > Game.map_grid.width - 1) continue;
+        for (var y = center.y - max_distance; y <= center.y + max_distance; y++) {
+          if (y < 0 || y > Game.map_grid.height - 1) continue;
+          if (x == center.x && y == center.y) continue;
+          var distance = Utility.getDistance(center, { x: x, y: y });
+          //var probability = Math.pow(factor, distance + 1);
+          var probability = Math.pow(factor, Math.pow(distance, distance));
+          if (!Game.occupied[x][y] && Math.random() < probability) {
+            var farm = Crafty.e('Farm');
+            farm.at(x, y);
+            village.farms.push(farm);
+            Game.occupied[x][y] = true;
+          } else if (!Game.occupied[x][y]) {
+            console.log(probability);
+          }
+        }
+      }
+    }
   }
 
   function addTrees(location_map) {
@@ -460,7 +490,8 @@ Crafty.scene('Game', function() {
   } else {
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
-    addVillages(12, this.occupied);
+    var villages = addVillages(9, this.occupied);
+    addFarms(villages);
     addTrees(Game.location);
     addGrass();
     buildTerrainData();
@@ -484,7 +515,7 @@ Crafty.scene('Game', function() {
 
 
   // Creates a road on the map given a shortest-path solution.
-  function createRoad(path, including_end, is_supply_road) {
+  function createRoad(path, including_end, is_supply_route_road) {
     var road = [];
     var end = path.length - 1;
     if (including_end) end = path.length;
@@ -503,15 +534,15 @@ Crafty.scene('Game', function() {
         Game.terrain[x][y] = entity;
         road.push(entity);
       } else {
-        var is_supply = false;
-        if (terrain.has('Road') && terrain.is_supply) {
-          var is_supply = true;
+        var is_supply_route = false;
+        if (terrain.has('Road') && terrain.is_supply_route) {
+          var is_supply_route = true;
         }
         terrain.destroy();
         var entity = Crafty.e('Road');
         entity.at(path[i].x, path[i].y);
-        if (is_supply || (is_supply_road && i == end - 1)) {
-          entity.is_supply = true;
+        if (is_supply_route || (is_supply_route_road && i == end - 1)) {
+          entity.is_supply_route = true;
         }
         Game.terrain[x][y] = entity;
         road.push(entity);

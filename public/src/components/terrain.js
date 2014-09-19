@@ -79,6 +79,38 @@ Crafty.c('Grass', {
   },
 });
 
+// Farmland is open terrain that provides supply
+Crafty.c('Farm', {
+  init: function() {
+    this.requires('Terrain, Passable, Color')
+      .attr({
+        type: "Farm",
+        move_difficulty: 1.2,
+        build_over: 1,
+        defense_bonus: 1,
+        alpha: 0.5,
+      })
+      .color('rgb(196, 196, 0)')
+      ;
+  },
+});
+
+// A pillaged farm provides no supply
+Crafty.c('PillagedFarm', {
+  init: function() {
+    this.requires('Farm')
+      .attr({
+        type: "Farm (Pillaged)",
+        move_difficulty: 1.2,
+        build_over: 1,
+        defense_bonus: 1,
+        alpha: 0.5,
+      })
+      .color('brown')
+      ;
+  },
+});
+
 Crafty.c('Water', {
   init: function() {
     this.requires('Color, Terrain, Impassable')
@@ -124,6 +156,7 @@ Crafty.c('Village', {
         build_over: 0.01,
         defense_bonus: 1.25,
         supply: 1,
+        farms: [],
       })
       ;
   },
@@ -144,7 +177,7 @@ Crafty.c('Road', {
         move_difficulty: 0.4,
         build_over: 0.01,
         defense_bonus: 1,
-        is_supply: false,
+        is_supply_route: false,
         supply: 1,
       })
       ;
@@ -194,7 +227,7 @@ Crafty.c('Road', {
     }
 
     // Ensure that supply roads properly lead off the map
-    if (this.is_supply) {
+    if (this.is_supply_route) {
       if (this.getX() == 0) {
         this.sprite_key = modifyStringIndex(this.sprite_key, 3, 'T');
       } else if (this.getX() == Game.map_grid.width - 1) {
