@@ -516,10 +516,12 @@ Crafty.scene('Game', function() {
     addTrees(Game.location);
     addGrass();
     buildTerrainData();
+
     addSupplyRoads(1);
     addRoadsBetweenVillages();
     //addSupplyRoads(1, 1);
     addRoadGraphics();
+
     addPlayers();
 
     colourHeightMap(Game.location);
