@@ -92,6 +92,8 @@ Crafty.c('Unit', {
     this.turn_action = action;
     if (action == "pillage") {
       this.pillage();
+      Victory.updateWillToFight();
+      Output.updateVictoryBar();
     }
     this.updateActionChoices();
     Game.select(this);

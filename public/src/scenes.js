@@ -4,6 +4,8 @@
 Crafty.scene('Game', function() {
   this.unbind("KeyDown", UI.nextTurn);
   this.bind('KeyDown', UI.nextTurn);
+  this.unbind('KeyDown', UI.pillage);
+  this.bind('KeyDown', UI.pillage);
 
   Game.resetStatusVisuals();
 
@@ -166,7 +168,19 @@ Crafty.scene('Game', function() {
   }
 
   function addFarms(villages) {
-    for (i in villages) {
+
+    function getSide(x) {
+      var map_third = Game.map_grid.width / 3;
+      if (x < map_third) {
+        return 0;
+      } else if (x < 2 * map_third) {
+        return undefined;
+      } else {
+        return 1;
+      }
+    }
+
+    for (var i in villages) {
       var village = villages[i];
       var center = village.at();
       // get first circle around village
@@ -183,6 +197,7 @@ Crafty.scene('Game', function() {
           if (!Game.occupied[x][y] && Math.random() < probability) {
             var farm = Crafty.e('Farm');
             farm.at(x, y);
+            farm.side = getSide(x);
             village.farms.push(farm);
             Game.occupied[x][y] = true;
           }
@@ -481,7 +496,7 @@ Crafty.scene('Game', function() {
   } else {
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
-    var villages = addVillages(9, this.occupied);
+    var villages = addVillages(14, this.occupied);
     addFarms(villages);
     addTrees(Game.location);
     addGrass();

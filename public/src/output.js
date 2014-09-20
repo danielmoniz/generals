@@ -115,7 +115,7 @@ Output = {
 
     if (unit.action_choices) {
       var actions_div = this.createDiv("actions unit-item");
-      for (i in unit.action_choices) {
+      for (var i in unit.action_choices) {
         var action = unit.action_choices[i];
         var action_button = document.createElement('input');
         action_button.type = "button";
@@ -124,6 +124,7 @@ Output = {
 
         var action_div = this.createDiv("action")
         .val(action)
+        .addClass(action)
         .click(function() {
             // get unit_id from parent
             var unit_id = parseInt($(this).closest(".unit").attr("unit_id"));

@@ -94,6 +94,7 @@ Crafty.c('Farm', {
       .color('rgb(196, 196, 0)')
       ;
   },
+
 });
 
 // A pillaged farm provides no supply
@@ -106,6 +107,7 @@ Crafty.c('PillagedFarm', {
         build_over: 1,
         defense_bonus: 1,
         alpha: 0.5,
+        pillaged: true,
         //provides_supply: 0,
       })
       .color('brown')

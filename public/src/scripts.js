@@ -41,9 +41,9 @@ $(document).ready(function() {
   $("#tool-bar").width("{0}px".format(Game.map_grid.width * Game.map_grid.tile.width));
 
   // TEST ONLY
-  //$("#start-hotseat-button").click();
+  $("#start-hotseat-button").click();
   //$("#start-email-button").click();
-  //
+
 });
 
 UI = {
@@ -64,6 +64,14 @@ UI = {
       $("#next-turn").click();
     } else {
       //console.log(e);
+    }
+    return false;
+  },
+
+  pillage: function(e) {
+    if (e.key == 80) {
+      $(".pillage").click();
+    } else {
     }
     return false;
   },

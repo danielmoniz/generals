@@ -2,6 +2,7 @@ Victory = {
   reset: function() {
     this.will_to_fight = [100, 100];
     this.troop_values = [undefined, undefined];
+    this.farm_values = [undefined, undefined];
     this.ratio_to_win = 3; // need X times higher will than opponent to win
     this.setWillToFight();
   },
@@ -35,7 +36,14 @@ Victory = {
   updateWillToFight: function() {
     for (var i=0; i<2; i++) {
       var total_troops = this.getTotalTroops(i);
-      this.will_to_fight[i] = total_troops * this.troop_values[i];
+      var troop_factor = total_troops * this.troop_values[i];
+
+      var farms = this.getFarms(i);
+      var total_farms = farms[i].length;
+      var total_unpillaged_farms = this.getUnpillagedFarms(i).length;
+      var farm_factor = total_unpillaged_farms * this.farm_values[i];
+
+      this.will_to_fight[i] = 100 * troop_factor * farm_factor;
     }
     Output.updateVictoryBar();
   },
@@ -57,13 +65,36 @@ Victory = {
     return total_troops;
   },
 
+  getFarms: function(side) {
+    var farms = Crafty('Farm').get();
+    var farms_in_sides = { 0: [], 1: [], undefined: [], };
+    for (var i in farms) {
+      farms_in_sides[farms[i].side].push(farms[i]);
+    }
+    return farms_in_sides[side];
+  },
+
+  getUnpillagedFarms: function(side) {
+    var farms = this.getFarms(side);
+    var unpillaged_farms = [];
+    for (var i in farms) {
+      if (!farms[i].pillaged) unpillaged_farms.push(farms[i]);
+    }
+    return unpillaged_farms;
+  },
+
   setWillToFight: function() {
     for (var i=0; i<2; i++) {
       var units = this.getUnits(i);
       var total_troops = this.getTotalTroops(i);
-      var troop_value = 100 / total_troops;
+      var troop_value = 1 / total_troops;
       this.troop_values[i] = troop_value;
+
+      var farms = this.getFarms(i);
+      var farm_value = 1 / farms.length;
+      this.farm_values[i] = farm_value;
     }
+
   },
 
 }
