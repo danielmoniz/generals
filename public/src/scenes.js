@@ -142,27 +142,42 @@ Crafty.scene('Game', function() {
     }
   }
 
+  function addVillagesToSection(estimated_villages, min_x, max_x) {
+    var villages = [];
+    while (villages.length < estimated_villages) {
+      for (var x = min_x; x < max_x; x++) {
+        for (var y = 0; y < Game.map_grid.height; y++) {
+          var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
+          if (at_edge) continue;
+          var num_tiles = Game.map_grid.width * Game.map_grid.height;
+          var probability = estimated_villages / num_tiles;
+          var value = Math.random();
+
+          if (value >= 1 - probability && !Game.occupied[x][y]) {
+            var color = Math.ceil(Game.height_map[x][y] * 255);
+            var village = Crafty.e('Village');
+            village.at(x, y);
+            village.setHeight();
+            Game.occupied[x][y] = true;
+            villages.push(village);
+
+            if (villages.length >= 1 + estimated_villages) return villages;
+          }
+        }
+      }
+    }
+    return villages;
+  }
+
   function addVillages(estimated_villages) {
     //generateRandomEntities('Village', 'random', 
     // Place entity randomly on the map using noise
     var villages = [];
-    for (var x = 0; x < Game.map_grid.width; x++) {
-      for (var y = 0; y < Game.map_grid.height; y++) {
-        var at_edge = x == 0 || x == Game.map_grid.width - 1 || y == 0 || y == Game.map_grid.height - 1;
-        if (at_edge) continue;
-        var num_tiles = Game.map_grid.width * Game.map_grid.height;
-        var probability = estimated_villages / num_tiles;
-        var value = Math.random();
-        
-        if (value >= 1 - probability && !Game.occupied[x][y]) {
-          var color = Math.ceil(Game.height_map[x][y] * 255);
-          var village = Crafty.e('Village');
-          village.at(x, y);
-          village.setHeight();
-          Game.occupied[x][y] = true;
-          villages.push(village);
-        }
-      }
+    for (var i=0; i<3; i++) {
+      var min_x = i * (Game.map_grid.width / 3);
+      var max_x = (i + 1) * (Game.map_grid.width / 3);
+      var new_villages = addVillagesToSection(estimated_villages / 3, min_x, max_x);
+      villages = villages.concat(new_villages);
     }
     return villages;
   }
@@ -496,7 +511,7 @@ Crafty.scene('Game', function() {
   } else {
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
-    var villages = addVillages(14, this.occupied);
+    var villages = addVillages(6, this.occupied);
     addFarms(villages);
     addTrees(Game.location);
     addGrass();

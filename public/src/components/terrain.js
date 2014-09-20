@@ -104,8 +104,6 @@ Crafty.c('PillagedFarm', {
       .attr({
         type: "Farm (Pillaged)",
         move_difficulty: 1.2,
-        build_over: 1,
-        defense_bonus: 1,
         alpha: 0.5,
         pillaged: true,
         //provides_supply: 0,
