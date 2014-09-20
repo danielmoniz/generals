@@ -249,6 +249,20 @@ Crafty.c("Shadow", {
   },
 });
 
+Crafty.c("VillageHighlight", {
+  init: function() {
+    this.requires('Actor, Color');
+    this.z = 5;
+    this.type = "VillageHighlight";
+    this.alpha = 60;
+  },
+
+  setColour: function(side) {
+    var side_to_colour = { 0: 'blue', 1: 'white', };
+    return side_to_colour[side];
+  },
+});
+
 Crafty.c('MovementPath', {
   init: function(turns_left) {
     this.requires('Actor, ChangeableColor')
