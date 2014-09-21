@@ -471,7 +471,9 @@ Crafty.scene('Game', function() {
     }
   }
 
-  if (Game.load_game) {
+  if (Game.type == Game.types.ONLINE) {
+    startNewGame();
+  } else if (Game.load_game) {
     buildTerrainFromLoad();
     buildTerrainData();
 
@@ -509,6 +511,10 @@ Crafty.scene('Game', function() {
     Game.select(Crafty('Unit').get(0));
 
   } else {
+    startNewGame();
+  }
+
+  function startNewGame() {
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
     var villages = addVillages(6, this.occupied);

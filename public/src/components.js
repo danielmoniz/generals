@@ -267,6 +267,7 @@ Crafty.c('MovementPath', {
   init: function(turns_left) {
     this.requires('Actor, ChangeableColor')
       .bind("NextTurn", this.nextTurn)
+      .bind("ResetVisuals", this.destroy)
       ;
     this.z = 50;
     this.turns_left = 1;

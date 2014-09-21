@@ -21,6 +21,15 @@ Unit = {
     return this.getUnitsBySide(side).enemy;
   },
 
+  getUnitByName: function(name, side) {
+    var units = this.getFriendlyUnits(side);
+    for (var i in units) {
+      if (units[i].name == name) {
+        return units[i];
+      }
+    }
+  },
+
 }
 
 Crafty.c('Unit', {
@@ -49,11 +58,13 @@ Crafty.c('Unit', {
       alive: true,
       injured: 0,
       active: true,
+      performed_actions: [],
     });
   },
 
-  nextTurn: function() {
-    if (Game.turn == (this.side + 0.5) % 2) {
+  nextTurn: function(turn) {
+    if (turn === undefined) turn = Game.turn;
+    if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
         this.retreat();
       } else if (!this.battle && this.move_target_path) {
@@ -63,7 +74,7 @@ Crafty.c('Unit', {
 
     this.updateMovementPaths();
 
-    if (Game.turn == this.side) {
+    if (turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
 
@@ -74,6 +85,7 @@ Crafty.c('Unit', {
 
   reset: function() {
     this.turn_action = "move";
+    this.performed_actions = [];
   },
 
   getActionChoices: function() {
@@ -90,11 +102,14 @@ Crafty.c('Unit', {
 
   performAction: function(action) {
     this.turn_action = action;
-    if (action == "pillage") {
-      this.pillage();
-      Victory.updateWillToFight();
-      Output.updateVictoryBar();
+    if (!Game.type == Game.types.ONLINE) {
+      if (action == "pillage") {
+        this.pillage();
+        Victory.updateWillToFight();
+        Output.updateVictoryBar();
+      }
     }
+    this.performed_actions.push(action);
     this.updateActionChoices();
     Game.select(this);
   },
@@ -333,6 +348,9 @@ Crafty.c('Unit', {
       this.movement_path = colourMovementPath(path, movement, this.at());
     }
 
+    console.log('setting move_target_path');
+    console.log("path");
+    console.log(path);
     this.move_target_path = path;
   },
 

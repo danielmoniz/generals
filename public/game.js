@@ -7,7 +7,7 @@ Game = {
 
   types: {
     HOTSEAT: "hotseat",
-    EMAIL: "play by email",
+    EMAIL: "email",
     ONLINE: "online",
   },
 
@@ -136,6 +136,33 @@ Game = {
     }
   },
 
+  /*
+   * Enacted when a player ends their turn.
+   * Saves the actions taken by a player, increments the turn, and then loads
+   * the actions for the next player.
+   * When used for online play, will save a player's actions, then hide the
+   * board (?? necessary?), and then send the saved data to the server.
+   */
+  nextTurnOnline: function() {
+    var save = this.saveOnline();
+
+    // in online play, would use nextTurn() here for player who just played
+
+    Output.clearAll();
+    this.turn += 0.5;
+    this.turn = this.turn % 2;
+    this.turn_count += 0.5;
+    this.turns_played_locally += 0.5;
+
+    this.deselect();
+    Crafty.trigger("ResetVisuals");
+    if (Game.options && Game.options.fog_of_war) {
+      LineOfSight.handleLineOfSight(this.turn);
+    }
+
+    this.loadOnline(save);
+  },
+
   determineSelection: function() {
     if (this.turn % 1 != 0) {
       return false;
@@ -200,6 +227,38 @@ Game = {
     Output.updateVictoryBar(hard_reset);
   },
 
+  saveOnline: function() {
+    var data = {};
+
+    var this_turn = this.turn;
+    var units = Unit.getFriendlyUnits(this_turn);
+    for (var i in units) {
+      var unit = units[i];
+      var unit_turn = {
+        actions: unit.performed_actions,
+        move_path: unit.move_target_path,
+      };
+      data[unit.name] = unit_turn;
+    }
+
+    return data;
+  },
+
+  loadOnline: function(data) {
+    var previous_turn = Game.turn - 0.5 % 2;
+    // get unit actions and movement paths
+    for (var name in data) {
+      var unit_turn = data[name];
+      var unit = Unit.getUnitByName(name, previous_turn);
+      for (var i in unit_turn.actions) {
+        var action = unit_turn.actions[i];
+        unit.performAction(action);
+      }
+      unit.nextTurn(Game.turn);
+    }
+    
+    // perform actions and movements (use nextTurn on units)
+  },
   /*
    * For now, output JSON as text so that it can be loaded manually.
    */

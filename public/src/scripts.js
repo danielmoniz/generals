@@ -11,38 +11,42 @@ $(document).ready(function() {
   $("#save-button").click(function() {
     Game.save();
   });
-  $("#start-hotseat-button").click(function() {
+
+  $("#menu-toggle-button").click(function() {
+    $("#menu").toggle();
+  });
+
+  $("input.start").click(function() {
+    $("#game-container").toggle();
+    $("#front-page").toggle();
+    $("input.start").toggle();
+    $("#options").toggle();
+
     var options = {};
     var options_form = document.getElementById("options");
     for (var i=0; i<options_form.elements.length; i++) {
       var e = options_form.elements[i];
       if (e.type == "checkbox") options[e.name] = e.checked;
     }
-    Game.start(Game.types.HOTSEAT, UI.getOptions());
-  });
-  $("#start-email-button").click(function() {
-    Game.start(Game.types.EMAIL, UI.getOptions());
-  });
-  $("#menu-toggle-button").click(function() {
-    $("#menu").toggle();
-  });
-  $("input.start").click(function() {
-    $("#game-container").toggle();
-    $("#front-page").toggle();
-    $("input.start").toggle();
-    $("#options").toggle();
+    var game_type = $(this).attr("game_type");
+    Game.start(game_type, UI.getOptions());
   });
 
   $("#next-turn").click(function() {
-    Game.nextTurn();
+    if (Game.type == Game.types.ONLINE && Game.turn % 1 == 0) {
+      Game.nextTurnOnline()
+    } else {
+      Game.nextTurn();
+    }
     return false;
   });
 
   $("#tool-bar").width("{0}px".format(Game.map_grid.width * Game.map_grid.tile.width));
 
   // TEST ONLY
-  $("#start-hotseat-button").click();
+  //$("#start-hotseat-button").click();
   //$("#start-email-button").click();
+  $("#start-online-button").click();
 
 });
 
