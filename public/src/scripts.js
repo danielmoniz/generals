@@ -46,7 +46,7 @@ $(document).ready(function() {
   // TEST ONLY
   //$("#start-hotseat-button").click();
   //$("#start-email-button").click();
-  $("#start-online-button").click();
+  //$("#start-online-button").click();
 
 });
 

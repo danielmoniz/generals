@@ -89,6 +89,7 @@ Crafty.c('Unit', {
   },
 
   getActionChoices: function() {
+    if (this.battle) return [];
     var actions = [];
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.type == 'Farm')
@@ -102,12 +103,10 @@ Crafty.c('Unit', {
 
   performAction: function(action) {
     this.turn_action = action;
-    if (!Game.type == Game.types.ONLINE) {
-      if (action == "pillage") {
-        this.pillage();
-        Victory.updateWillToFight();
-        Output.updateVictoryBar();
-      }
+    if (action == "pillage") {
+      this.pillage();
+      Victory.updateWillToFight();
+      Output.updateVictoryBar();
     }
     this.performed_actions.push(action);
     this.updateActionChoices();
