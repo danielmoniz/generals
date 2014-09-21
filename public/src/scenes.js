@@ -21,10 +21,10 @@ Crafty.scene('Game', function() {
       turn_indicator.at(6, 0);
 
     var willpower = Crafty.e("TitleBar");
-      willpower.at(10, 0);
+      willpower.at(11, 0);
 
     var victory_bar = Crafty.e("VictoryBar");
-    victory_bar.at(18, 0);
+    victory_bar.at(19, 0);
     var victory_html = '\
 	<div id="will-container">\
 	  <div class="bar-container blue">\

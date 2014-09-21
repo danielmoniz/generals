@@ -91,7 +91,7 @@ Crafty.c("ToolBar", {
 
 Crafty.c("VictoryBar", {
   init: function() {
-    this.requires("2D, Canvas, HTML");
+    this.requires("2D, DOM, HTML");
     this.attr({
       //w: 60,
       h: Game.board_title.height,
