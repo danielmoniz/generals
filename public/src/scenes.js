@@ -261,7 +261,7 @@ Crafty.scene('Game', function() {
           var start = Game.terrain_build_graph.grid[start_village.getX()][start_village.getY()];
           var end = Game.terrain_build_graph.grid[end_village.getX()][end_village.getY()];
           var result = Game.pathfind.search(Game.terrain_build_graph, start, end);
-          var total_cost = totalCost(result);
+          var total_cost = Pathing.totalCost(result);
           if (least_cost === undefined || total_cost < least_cost) {
             closest = result;
             least_cost = total_cost;
@@ -304,7 +304,7 @@ Crafty.scene('Game', function() {
           var end = grid[Game.map_grid.width - 1][j];
         }
         var path = Game.pathfind.search(Game.terrain_build_graph, start, end);
-        var cost = totalCost(path);
+        var cost = Pathing.totalCost(path);
         if (best_route === undefined || cost < best_cost) {
           best_route = path;
           best_cost = cost;

@@ -133,8 +133,8 @@ Crafty.c('Unit', {
   updateMovementPaths: function() {
     if (Game.turn == this.side) {
       if (this.move_target_path) {
-        if (this.movement_path) destroyMovementPath(this.movement_path);
-        this.movement_path = colourMovementPath(this.move_target_path, this.movement, this.at());
+        if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
+        this.movement_path = Pathing.colourMovementPath(this.move_target_path, this.movement, this.at());
       }
     }
   },
@@ -301,7 +301,7 @@ Crafty.c('Unit', {
     if (this.at().x == target_x && this.at().y == target_y) {
       delete this.move_target;
       delete this.move_target_path;
-      destroyMovementPath(this.movement_path);
+      Pathing.destroyMovementPath(this.movement_path);
       delete this.movement_path;
       return false;
     }
@@ -321,7 +321,7 @@ Crafty.c('Unit', {
       Output.message("Target impossible to reach!");
       return false;
     }
-    var partial_path = getPartialPath(new_path, this.movement);
+    var partial_path = Pathing.getPartialPath(new_path, this.movement);
     if (!partial_path) {
       Output.message("Cannot move to first square! Movement value too low.");
       return false;
@@ -337,10 +337,10 @@ Crafty.c('Unit', {
     var movement = this.movement;
     if (this.battle) movement += 1;
     //var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
-    if (this.movement_path) destroyMovementPath(this.movement_path);
+    if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
 
     if (!ignore_visuals) {
-      this.movement_path = colourMovementPath(path, movement, this.at());
+      this.movement_path = Pathing.colourMovementPath(path, movement, this.at());
     }
 
     this.move_target_path = path;
@@ -359,7 +359,7 @@ Crafty.c('Unit', {
     if (is_retreat === undefined) is_retreat = false;
     var movement = this.movement;
     if (is_retreat) movement += 1;
-    var partial_path = getPartialPath(this.move_target_path, movement);
+    var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
     // check for enemies that will be bumped into
     for (var i=0; i<partial_path.length; i++) {
       if (this.battle) break;
@@ -399,7 +399,7 @@ Crafty.c('Unit', {
   },
 
   stop_unit: function() {
-    destroyMovementPath(this.movement_path);
+    Pathing.destroyMovementPath(this.movement_path);
     delete this.movement_path;
     delete this.move_target_path;
     delete this.move_target;
