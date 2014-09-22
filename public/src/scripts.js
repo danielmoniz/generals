@@ -38,6 +38,8 @@ $(document).ready(function() {
     } else {
       Game.nextTurn();
     }
+
+    $(this).blur();
     return false;
   });
 

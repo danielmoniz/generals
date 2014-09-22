@@ -6,6 +6,7 @@ Output = {
   alerts_container_element_id: "#alerts-container",
   will_bar_element_id_blue: "div.will.bar.blue",
   will_bar_element_id_white: "div.will.bar.white",
+  next_turn_button_id: "#next-turn",
   buffer: [],
 
   push: function(info) {
@@ -383,7 +384,15 @@ Output = {
   clearMessage: function() {
     $(this.message_element_id).empty();
     return this;
-  }
+  },
+
+  updateNextTurnButton: function(turn) {
+    var text = "Start Turn";
+    if (turn % 1 == 0) {
+      text = "Next Turn";
+    }
+    $(this.next_turn_button_id).val(text);
+  },
 
 }
 

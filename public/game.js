@@ -123,6 +123,7 @@ Game = {
     this.turn_count += 0.5;
     this.turns_played_locally += 0.5;
     Output.updateStatusBar();
+    Output.updateNextTurnButton(this.turn);
 
     this.deselect();
     var victory = Victory.checkVictoryConditions();
