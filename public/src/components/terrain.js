@@ -162,7 +162,7 @@ Crafty.c('Bridge', {
       .changeColour('rgb(192, 192, 192)')
       .addStats({
         type: "Bridge",
-        move_difficulty: 0.5, 
+        move_difficulty: 1,
         build_over: 0.02 ,
         defense_bonus: 1.5,
         supply: 1,
@@ -182,7 +182,7 @@ Crafty.c('Village', {
       })
       .addStats({
         type: "Village", 
-        move_difficulty: 0.8, 
+        move_difficulty: 0.9,
         build_over: 0.01,
         defense_bonus: 1.25,
         supply: 1,
@@ -215,7 +215,7 @@ Crafty.c('Road', {
     this.requires('Terrain, Passable, Transportation')
       .addStats({
         type: "Road",
-        move_difficulty: 0.4,
+        move_difficulty: 0.75,
         build_over: 0.01,
         defense_bonus: 1,
         is_supply_route: false,
