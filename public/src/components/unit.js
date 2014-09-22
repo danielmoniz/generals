@@ -122,8 +122,6 @@ Crafty.c('Unit', {
       this.addSupply(amount);
       var amount_pillaged = this.supply_remaining - old_supply;
       var message = "Pillaged {0} supply!".format(amount_pillaged);
-      console.log(amount_pillaged);
-      console.log(message);
       Output.message(message);
     }
   },
@@ -154,16 +152,6 @@ Crafty.c('Unit', {
 
   getValue: function() {
     return this.quantity;
-  },
-
-  retreat: function() {
-    console.log("RETREAT HAS BEEN CALLED");
-    // awful things happen
-    var battle = this.isBattlePresent();
-    var num_losses = battle.retreat(this);
-    Output.printRetreat(this, num_losses);
-    this.battle = false;
-    this.moveTowardTarget();
   },
 
   report: function() {
@@ -310,6 +298,14 @@ Crafty.c('Unit', {
   },
 
   prepareMove: function(target_x, target_y, ignore_visuals, queue_move) {
+    if (this.at().x == target_x && this.at().y == target_y) {
+      delete this.move_target;
+      delete this.move_target_path;
+      destroyMovementPath(this.movement_path);
+      delete this.movement_path;
+      return false;
+    }
+
     this.move_target = { x: target_x, y: target_y };
 
     if (queue_move && this.move_target_path) {
@@ -347,9 +343,6 @@ Crafty.c('Unit', {
       this.movement_path = colourMovementPath(path, movement, this.at());
     }
 
-    console.log('setting move_target_path');
-    console.log("path");
-    console.log(path);
     this.move_target_path = path;
   },
 
