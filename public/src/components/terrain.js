@@ -4,6 +4,29 @@ Crafty.c('Terrain', {
   init: function() {
     this.requires('Actor, Clickable');
     this.z = 80;
+    this.attr({
+      stats: {},
+    });
+  },
+
+  addStats: function(dict) {
+    this.attr(dict);
+    for (var key in dict) {
+      this.stats[key] = dict[key];
+    }
+    return this;
+  },
+
+  addStat: function(name, value) {
+    var obj = {};
+    obj[name] = value;
+    this.addStats(obj);
+  },
+
+  changeColour: function(colour_string) {
+    this.color(colour_string);
+    this.addStats({ 'colour': colour_string });
+    return this;
   },
 
   select: function() {
@@ -55,7 +78,7 @@ Crafty.c('Impassable', {
 Crafty.c('Tree', {
   init: function() {
     this.requires('spr_tree, Terrain, Passable')
-      .attr({ 
+      .addStats({
         type: "Tree", 
         move_difficulty: 2, 
         build_over: 3,
@@ -69,7 +92,7 @@ Crafty.c('Tree', {
 Crafty.c('Grass', {
   init: function() {
     this.requires('Terrain, Passable')
-      .attr({ 
+      .addStats({
         type: "Grass", 
         move_difficulty: 1, 
         build_over: 1,
@@ -83,54 +106,45 @@ Crafty.c('Grass', {
 Crafty.c('Farm', {
   init: function() {
     this.requires('Terrain, Passable, Color')
-      .attr({
+      .addStats({
         type: "Farm",
-        move_difficulty: 1.2,
         build_over: 1,
+        move_difficulty: 1.2,
         defense_bonus: 1,
         alpha: 0.5,
         provides_supply: 2,
       })
-      .color('rgb(196, 196, 0)')
+      .changeColour('rgb(196, 196, 0)')
       ;
   },
 
   pillage: function() {
     var provided_supply = this.provides_supply;
     this.addComponent("PillagedFarm");
+    this.addStats({
+        move_difficulty: 1.35,
+        pillaged: true,
+        provides_supply: 0,
+      })
+      .changeColour('brown')
+      ;
     return provided_supply;
   },
 
 });
 
-// A pillaged farm provides no supply
-Crafty.c('PillagedFarm', {
-  init: function() {
-    this.requires('Farm')
-      .attr({
-        type: "Farm (Pillaged)",
-        defense_bonus: 1,
-        move_difficulty: 1.35,
-        pillaged: true,
-        provides_supply: 0,
-      })
-      .color('brown')
-      ;
-  },
-});
-
 Crafty.c('Water', {
   init: function() {
     this.requires('Color, Terrain, Impassable')
-      //.color('#0080FF')
-      .color('rgb(0, 128, 255)')
-      .attr({ 
+      //.changeColour('#0080FF')
+      .changeColour('rgb(0, 128, 255)')
+      .addStats({
         type: "Water", 
         move_difficulty: 0, 
         build_over: 8,
         defense_bonus: 0,
       })
-      .attr({ type: "Water", colour: { r: 0, g: 128, b: 255 } })
+      .attr({ colour: { r: 0, g: 128, b: 255 } })
       ;
     //this.z = 75;
   }
@@ -140,8 +154,8 @@ Crafty.c('Water', {
 Crafty.c('Bridge', {
   init: function() {
     this.requires('Color, Terrain, Passable, Transportation')
-      .color('rgb(192, 192, 192)')
-      .attr({
+      .changeColour('rgb(192, 192, 192)')
+      .addStats({
         type: "Bridge",
         move_difficulty: 0.5, 
         build_over: 0.02 ,
@@ -158,13 +172,15 @@ Crafty.c('Bridge', {
 Crafty.c('Village', {
   init: function() {
     this.requires('spr_village, Terrain, Passable')
-      .attr({ 
+      .attr({
+        farms: [],
+      })
+      .addStats({
         type: "Village", 
         move_difficulty: 0.8, 
         build_over: 0.01,
         defense_bonus: 1.25,
         supply: 1,
-        farms: [],
         provides_supply: 4,
         supply_remaining: 6,
       })
@@ -179,7 +195,7 @@ Crafty.c('Village', {
       this.provides_supply = 0;
       this.defense_bonus = 1.1;
       this.addComponent("Color");
-      this.color("black");
+      this.changeColour("black");
       this.alpha = 0.5;
     }
 
@@ -192,7 +208,7 @@ Crafty.c('Road', {
   init: function() {
     //this.requires('spr_road, Terrain, Passable')
     this.requires('Terrain, Passable, Transportation')
-      .attr({
+      .addStats({
         type: "Road",
         move_difficulty: 0.4,
         build_over: 0.01,

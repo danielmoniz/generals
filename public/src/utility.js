@@ -32,6 +32,13 @@ Utility = {
     return { r: parseInt(red), g: parseInt(green), b: parseInt(blue), };
   },
 
+  isEmpty: function(object) {
+    for (var i in object) {
+      return false;
+    }
+    return true;
+  },
+
 }
 
 if (!String.prototype.format) {

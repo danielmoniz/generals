@@ -195,7 +195,7 @@ Crafty.scene('Game', function() {
 
     for (var j in villages) {
       var village = villages[j];
-      village.side = getMapSide(village.at().x);
+      village.addStat('side', getMapSide(village.at().x));
     }
 
     return villages;
@@ -231,7 +231,7 @@ Crafty.scene('Game', function() {
           if (!Game.occupied[x][y] && Math.random() < probability) {
             var farm = Crafty.e('Farm');
             farm.at(x, y);
-            farm.side = getMapSide(x);
+            farm.addStat('side', getMapSide(x));
             village.farms.push(farm);
             Game.occupied[x][y] = true;
           }
@@ -422,8 +422,15 @@ Crafty.scene('Game', function() {
   function buildTerrainFromLoad() {
     for (var x=0; x<Game.map_grid.width; x++) {
       for (var y=0; y<Game.map_grid.height; y++) {
-        var terrain_type = Game.terrain_type[x][y];
-        var terrain = Crafty.e(terrain_type);
+        var terrain_data = Game.terrain_type[x][y];
+        if (typeof terrain_data == 'string') {
+          var terrain = Crafty.e(terrain_data);
+        } else if (typeof terrain_data == 'object') {
+          var terrain = Crafty.e(terrain_data.type);
+          terrain.addStats(terrain_data);
+        } else {
+          throw "TerrainInvalid: Must be object or string.";
+        }
         terrain.at(x, y);
       }
     }
@@ -529,7 +536,7 @@ Crafty.scene('Game', function() {
     Victory.reset();
     Game.select(Crafty('Unit').get(0));
 
-  } else {
+  } else { // eg. local hotseat play
     startNewGame();
   }
 

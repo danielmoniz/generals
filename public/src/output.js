@@ -296,6 +296,11 @@ Output = {
   printTerrain: function(terrain) {
     Output.push(terrain.type);
     if (terrain.has('Impassable')) Output.push("(Impassable)");
+    if (terrain.has("Farm")) {
+      if (terrain.pillaged) {
+        Output.pushLast(" (pillaged)");
+      }
+    }
     if (terrain.has("Village")) {
       if (terrain.supply_remaining > 0) {
         Output.push("Supply: {0}".format(terrain.supply_remaining));

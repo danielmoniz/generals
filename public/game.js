@@ -345,6 +345,20 @@ Game = {
       saved_game.battles.push(new_battle);
     }
 
+    // handle extra terrain data
+    var terrain = Crafty('Terrain').get();
+    for (var i in terrain) {
+      var terrain_tile = terrain[i];
+      var terrain_object = {};
+      if (!Utility.isEmpty(terrain_tile.stats)) {
+        for (var key in terrain_tile.stats) {
+          if (!terrain_tile.hasOwnProperty(key)) continue;
+          terrain_object[key] = terrain_tile[key];
+        }
+        saved_game.terrain_type[terrain_tile.at().x][terrain_tile.at().y] = terrain_object;
+      }
+    }
+
     var json_output = JSON.stringify(saved_game);
     var textarea_id = "load-input";
     document.getElementById(textarea_id).value = json_output;
