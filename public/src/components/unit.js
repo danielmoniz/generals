@@ -78,7 +78,7 @@ Crafty.c('Unit', {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
 
-      this.updateActionChoices();
+      console.log("updated action choices");
       this.reset(); // should happen last!
     }
   },
@@ -86,10 +86,12 @@ Crafty.c('Unit', {
   reset: function() {
     this.turn_action = "move";
     this.performed_actions = [];
+    this.updateActionChoices();
   },
 
   getActionChoices: function() {
     if (this.battle) return [];
+    if (this.performed_actions.length > 0) return [];
     var actions = [];
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.type == 'Farm')
@@ -153,9 +155,13 @@ Crafty.c('Unit', {
 
     if (!this.battle) {
       var other_units_present = this.getPresentUnits(true);
-      if (other_units_present.length == 0) return;
-      Output.printUnitsPresent(other_units_present);
+      if (other_units_present.length > 0) {
+        Output.printUnitsPresent(other_units_present);
+      }
     }
+
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    local_terrain.report();
   },
 
   getValue: function() {

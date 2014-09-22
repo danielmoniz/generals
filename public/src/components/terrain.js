@@ -166,21 +166,23 @@ Crafty.c('Village', {
         supply: 1,
         farms: [],
         provides_supply: 4,
+        supply_remaining: 6,
       })
       ;
   },
 
   pillage: function() {
     var provided_supply = this.provides_supply;
-    this.attr({
-      defense_bonus: 1.1,
-      provides_supply: 0,
-      pillaged: true,
-    });
+    this.supply_remaining -= 2;
+    if (this.supply_remaining <= 0) {
+      this.pillaged = true;
+      this.provides_supply = 0;
+      this.defense_bonus = 1.1;
+      this.addComponent("Color");
+      this.color("black");
+      this.alpha = 0.5;
+    }
 
-    this.addComponent("Color");
-    this.color("black");
-    this.alpha = 0.5;
     return provided_supply;
   },
 });
