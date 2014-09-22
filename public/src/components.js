@@ -45,6 +45,16 @@ Crafty.c('Actor', {
   },
 });
 
+Crafty.c("Divider", {
+  init: function() {
+    this.requires('Actor, Color')
+      .color("black")
+    ;
+    this.w = 1;
+    this.z = 2000;
+  },
+});
+
 Crafty.c("TitleBar", {
   init: function() {
     this.requires("2D, Canvas, Text");

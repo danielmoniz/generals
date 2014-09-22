@@ -9,6 +9,16 @@ Crafty.scene('Game', function() {
 
   Game.resetStatusVisuals();
 
+  function divideMap(num_parts) {
+    if (num_parts === undefined) num_parts = 3;
+    for (var i=0; i<num_parts - 1; i++) {
+      var x = Math.floor((i + 1) * Game.map_grid.width / num_parts);
+      for (var y=0; y<Game.map_grid.height; y++) {
+        Crafty.e("Divider").at(x, y);
+      }
+    }
+  }
+
   function addTitleBar() {
     var title = Crafty.e("TitleBar");
     title.at(0, 0)
@@ -532,6 +542,7 @@ Crafty.scene('Game', function() {
 
     colourHeightMap(Game.location);
     colourWater();
+    divideMap(3);
 
     Victory.reset();
     Game.select(Crafty('Unit').get(0));
