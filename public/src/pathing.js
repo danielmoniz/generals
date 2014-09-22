@@ -80,13 +80,13 @@ function destroyMovementPath(movement_path) {
 
 function highlightPath(movement_path) {
   for (var i=0; i<movement_path.length; i++) {
-    movement_path[i][1].alpha = 1;
+    movement_path[i][1].visible = true;
   }
 }
 
 // May not need this if using triggers
 function unhighlightPath(movement_path) {
   for (var i=0; i<movement_path.length; i++) {
-    movement_path[i][1].alpha = 0;
+    movement_path[i][1].visible = false;
   }
 }
