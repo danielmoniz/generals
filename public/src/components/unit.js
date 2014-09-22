@@ -202,22 +202,26 @@ Crafty.c('Unit', {
   },
 
   handleAttrition: function() {
-    if (this.detectAttrition()) {
+    if (this.isSupplied()) {
+      this.resupply();
+    } else {
       var units_lost = this.sufferAttrition();
       if (!this.battle) {
         Output.usePanel("alerts");
         Output.reportAttrition(this, units_lost);
       }
-    } else {
-      this.resupply();
     }
   },
 
-  resupply: function() {
-    this.supply_remaining = this.max_supply;
+  resupply: function(full) {
+    if (full) {
+      this.addSupply(this.max_supply);
+    } else {
+      this.addSupply(1);
+    }
   },
 
-  detectAttrition: function() {
+  isSupplied: function() {
     // detect possible lack of supply
     // @TODO: Allow for more than two supply endpoints
     var target_location = Game.supply_route[this.side];
@@ -264,11 +268,11 @@ Crafty.c('Unit', {
       }
       
       var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
-      if (supply_route.length == 0) return true;
+      if (supply_route.length == 0) return false;
     } else {
       // Supplied because unit is on supply route end point
     }
-    return false;
+    return true;
   },
 
   sufferAttrition: function() {
