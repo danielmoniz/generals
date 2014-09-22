@@ -187,23 +187,30 @@ Crafty.scene('Game', function() {
       var min_x = i * (Game.map_grid.width / 3);
       var max_x = (i + 1) * (Game.map_grid.width / 3);
       var new_villages = addVillagesToSection(estimated_villages / 3, min_x, max_x);
+
       villages = villages.concat(new_villages);
     }
+
+    for (var j in villages) {
+      var village = villages[j];
+      village.side = getMapSide(village.at().x);
+    }
+
     return villages;
   }
 
-  function addFarms(villages) {
-
-    function getSide(x) {
-      var map_third = Game.map_grid.width / 3;
-      if (x < map_third) {
-        return 0;
-      } else if (x < 2 * map_third) {
-        return undefined;
-      } else {
-        return 1;
-      }
+  function getMapSide(x) {
+    var map_third = Game.map_grid.width / 3;
+    if (x < map_third) {
+      return 0;
+    } else if (x < 2 * map_third) {
+      return undefined;
+    } else {
+      return 1;
     }
+  }
+
+  function addFarms(villages) {
 
     for (var i in villages) {
       var village = villages[i];
@@ -222,7 +229,7 @@ Crafty.scene('Game', function() {
           if (!Game.occupied[x][y] && Math.random() < probability) {
             var farm = Crafty.e('Farm');
             farm.at(x, y);
-            farm.side = getSide(x);
+            farm.side = getMapSide(x);
             village.farms.push(farm);
             Game.occupied[x][y] = true;
           }

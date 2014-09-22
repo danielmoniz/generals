@@ -94,6 +94,8 @@ Crafty.c('Unit', {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.type == 'Farm')
       actions.push("pillage");
+    if (local_terrain.type == 'Village' && local_terrain.side != this.side && !local_terrain.pillaged)
+      actions.push("pillage");
     return actions;
   },
 
@@ -115,8 +117,14 @@ Crafty.c('Unit', {
 
   pillage: function() {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
-    local_terrain.addComponent("PillagedFarm");
-    var amount = local_terrain.provides_supply;
+    if (local_terrain.has('Farm')) {
+      var amount = local_terrain.pillage();
+    } else if (local_terrain.has("Village") && !local_terrain.pillaged) {
+      var amount = local_terrain.pillage();
+    } else {
+      throw "CannotPillageEntity: {0} not valid type to be pillaged.".format(local_terrain.type);
+    }
+
     if (amount) {
       var old_supply = this.supply_remaining;
       this.addSupply(amount);

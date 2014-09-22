@@ -3,6 +3,7 @@ Victory = {
     this.will_to_fight = [100, 100];
     this.troop_values = [undefined, undefined];
     this.farm_values = [undefined, undefined];
+    this.village_values = [undefined, undefined];
     this.ratio_to_win = 3; // need X times higher will than opponent to win
     this.setWillToFight();
   },
@@ -10,6 +11,9 @@ Victory = {
   set: function(victory_data) {
     this.will_to_fight = victory_data.will_to_fight;
     this.troop_values = victory_data.troop_values;
+    this.farm_values = victory_data.farm_values;
+    this.village_values = victory_data.village_values;
+
     this.ratio_to_win = victory_data.ratio_to_win;
   },
   
@@ -43,7 +47,12 @@ Victory = {
       var total_unpillaged_farms = this.getUnpillagedFarms(i).length;
       var farm_factor = total_unpillaged_farms * this.farm_values[i];
 
-      this.will_to_fight[i] = 100 * troop_factor * farm_factor;
+      var villages = this.getVillages(i);
+      var total_villages = villages[i].length;
+      var total_unpillaged_villages = this.getUnpillagedVillages(i).length;
+      var village_factor = total_unpillaged_villages * this.village_values[i];
+
+      this.will_to_fight[i] = 100 * troop_factor * farm_factor * village_factor;
     }
     Output.updateVictoryBar();
   },
@@ -83,6 +92,24 @@ Victory = {
     return unpillaged_farms;
   },
 
+  getUnpillagedVillages: function(side) {
+    var villages = this.getVillages(side);
+    var unpillaged_villages = [];
+    for (var i in villages) {
+      if (!villages[i].pillaged) unpillaged_villages.push(villages[i]);
+    }
+    return unpillaged_villages;
+  },
+
+  getVillages: function(side) {
+    var villages = Crafty('Village').get();
+    var villages_in_sides = { 0: [], 1: [], undefined: [], };
+    for (var i in villages) {
+      villages_in_sides[villages[i].side].push(villages[i]);
+    }
+    return villages_in_sides[side];
+  },
+
   setWillToFight: function() {
     for (var i=0; i<2; i++) {
       var units = this.getUnits(i);
@@ -93,6 +120,10 @@ Victory = {
       var farms = this.getFarms(i);
       var farm_value = 1 / farms.length;
       this.farm_values[i] = farm_value;
+
+      var villages = this.getVillages(i);
+      var village_value = 1 / villages.length;
+      this.village_values[i] = village_value;
     }
 
   },

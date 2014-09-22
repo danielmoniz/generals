@@ -95,6 +95,12 @@ Crafty.c('Farm', {
       ;
   },
 
+  pillage: function() {
+    var provided_supply = this.provides_supply;
+    this.addComponent("PillagedFarm");
+    return provided_supply;
+  },
+
 });
 
 // A pillaged farm provides no supply
@@ -103,10 +109,10 @@ Crafty.c('PillagedFarm', {
     this.requires('Farm')
       .attr({
         type: "Farm (Pillaged)",
-        move_difficulty: 1.2,
-        alpha: 0.5,
+        defense_bonus: 1,
+        move_difficulty: 1.35,
         pillaged: true,
-        //provides_supply: 0,
+        provides_supply: 0,
       })
       .color('brown')
       ;
@@ -159,13 +165,23 @@ Crafty.c('Village', {
         defense_bonus: 1.25,
         supply: 1,
         farms: [],
+        provides_supply: 4,
       })
       ;
   },
 
-  collect: function() {
-    this.destroy();
-    Crafty.trigger('VillageVisited', this);
+  pillage: function() {
+    var provided_supply = this.provides_supply;
+    this.attr({
+      defense_bonus: 1.1,
+      provides_supply: 0,
+      pillaged: true,
+    });
+
+    this.addComponent("Color");
+    this.color("black");
+    this.alpha = 0.5;
+    return provided_supply;
   },
 });
 
