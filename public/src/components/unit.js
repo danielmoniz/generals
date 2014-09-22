@@ -270,6 +270,7 @@ Crafty.c('Unit', {
       var to_injure = Math.floor(attrition_casualties * (1 - Game.attrition_death_rate));
       this.kill(to_kill);
       this.injure(to_injure);
+      this.supply_remaining = Math.max(0, this.supply_remaining);
       return to_kill;
     }
     return 0;
