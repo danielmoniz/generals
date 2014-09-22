@@ -1,5 +1,11 @@
 LineOfSight = {
 
+  clearFog: function() {
+    var fog = Crafty('Shadow').get();
+    this.makeInvisible(fog);
+    return this;
+  },
+
   makeVisible: function(entities) {
     for (var i=0; i<entities.length; i++) {
       entities[i].visible = true;

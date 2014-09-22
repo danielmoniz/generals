@@ -14,6 +14,11 @@ Crafty.c('Terrain', {
     for (var key in dict) {
       this.stats[key] = dict[key];
     }
+
+    if (dict['colour'] !== undefined) {
+      this.color(dict['colour']);
+    }
+
     return this;
   },
 
@@ -21,10 +26,10 @@ Crafty.c('Terrain', {
     var obj = {};
     obj[name] = value;
     this.addStats(obj);
+    return this;
   },
 
   changeColour: function(colour_string) {
-    this.color(colour_string);
     this.addStats({ 'colour': colour_string });
     return this;
   },

@@ -510,6 +510,10 @@ Crafty.scene('Game', function() {
     colourHeightMap(Game.location);
     colourWater();
 
+    if (Game.options && Game.options.fog_of_war) {
+      shadowHeightMap(Game.location);
+    }
+
     addUnitsFromLoad();
     addBattlesFromLoad();
     if (Game.options && Game.options.fog_of_war) {
@@ -554,6 +558,11 @@ Crafty.scene('Game', function() {
     //addSupplyRoads(1, 1);
     addRoadGraphics();
 
+    if (Game.options && Game.options.fog_of_war) {
+      shadowHeightMap(Game.location);
+      LineOfSight.clearFog();
+    }
+
     addPlayers();
 
     colourHeightMap(Game.location);
@@ -565,10 +574,6 @@ Crafty.scene('Game', function() {
   }
 
   addTitleBar();
-  if (Game.options && Game.options.fog_of_war) {
-    shadowHeightMap(Game.location);
-  }
-
 
   // Creates a road on the map given a shortest-path solution.
   function createRoad(path, including_end, is_supply_route_road) {
