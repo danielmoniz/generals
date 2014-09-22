@@ -6,6 +6,8 @@ Crafty.scene('Game', function() {
   this.bind('KeyDown', UI.nextTurn);
   this.unbind('KeyDown', UI.pillage);
   this.bind('KeyDown', UI.pillage);
+  this.unbind('KeyDown', UI.sack);
+  this.bind('KeyDown', UI.sack);
 
   Game.resetStatusVisuals();
 

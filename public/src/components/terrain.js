@@ -175,7 +175,7 @@ Crafty.c('Village', {
     var provided_supply = this.provides_supply;
     this.supply_remaining -= 2;
     if (this.supply_remaining <= 0) {
-      this.pillaged = true;
+      this.sacked = true;
       this.provides_supply = 0;
       this.defense_bonus = 1.1;
       this.addComponent("Color");

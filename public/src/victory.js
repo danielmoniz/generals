@@ -49,7 +49,7 @@ Victory = {
 
       var villages = this.getVillages(i);
       var total_villages = villages[i].length;
-      var total_unpillaged_villages = this.getUnpillagedVillages(i).length;
+      var total_unpillaged_villages = this.getUnsackedVillages(i).length;
       var village_factor = total_unpillaged_villages * this.village_values[i];
 
       this.will_to_fight[i] = 100 * troop_factor * farm_factor * village_factor;
@@ -92,13 +92,13 @@ Victory = {
     return unpillaged_farms;
   },
 
-  getUnpillagedVillages: function(side) {
+  getUnsackedVillages: function(side) {
     var villages = this.getVillages(side);
-    var unpillaged_villages = [];
+    var unsacked_villages = [];
     for (var i in villages) {
-      if (!villages[i].pillaged) unpillaged_villages.push(villages[i]);
+      if (!villages[i].sacked) unsacked_villages.push(villages[i]);
     }
-    return unpillaged_villages;
+    return unsacked_villages;
   },
 
   getVillages: function(side) {

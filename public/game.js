@@ -132,7 +132,6 @@ Game = {
     Crafty.trigger("NextTurn");
 
     this.determineSelection();
-    console.log("determined selection");
     if (Game.options && Game.options.fog_of_war) {
       LineOfSight.handleLineOfSight(this.turn);
     }

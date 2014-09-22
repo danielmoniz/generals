@@ -78,7 +78,6 @@ Crafty.c('Unit', {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
 
-      console.log("updated action choices");
       this.reset(); // should happen last!
     }
   },
@@ -96,8 +95,8 @@ Crafty.c('Unit', {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.type == 'Farm')
       actions.push("pillage");
-    if (local_terrain.type == 'Village' && local_terrain.side != this.side && !local_terrain.pillaged)
-      actions.push("pillage");
+    if (local_terrain.type == 'Village' && local_terrain.side != this.side && !local_terrain.sacked)
+      actions.push("sack");
     return actions;
   },
 
@@ -111,6 +110,10 @@ Crafty.c('Unit', {
       this.pillage();
       Victory.updateWillToFight();
       Output.updateVictoryBar();
+    } else if (action == "sack") {
+      this.pillage();
+      Victory.updateWillToFight();
+      Output.updateVictoryBar();
     }
     this.performed_actions.push(action);
     this.updateActionChoices();
@@ -121,10 +124,10 @@ Crafty.c('Unit', {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.has('Farm')) {
       var amount = local_terrain.pillage();
-    } else if (local_terrain.has("Village") && !local_terrain.pillaged) {
+    } else if (local_terrain.has("Village") && !local_terrain.sacked) {
       var amount = local_terrain.pillage();
     } else {
-      throw "CannotPillageEntity: {0} not valid type to be pillaged.".format(local_terrain.type);
+      throw "CannotPillageEntity: {0} not valid type to be pillaged/sacked.".format(local_terrain.type);
     }
 
     if (amount) {

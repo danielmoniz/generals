@@ -82,6 +82,14 @@ UI = {
     return false;
   },
 
+  sack: function(e) {
+    if (e.key == 83) {
+      $(".sack").click();
+    } else {
+    }
+    return false;
+  },
+
   getOptions: function() {
     var options = {};
     var options_form = document.getElementById("options");
