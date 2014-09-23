@@ -32,6 +32,7 @@ Factions = {
 
     sprites: {
       Infantry: "spr_infantry_mongols",
+      Cavalry: "spr_cavalry_mongols",
     },
   },
 
@@ -68,6 +69,7 @@ Factions = {
 
     sprites: {
       Infantry: "spr_infantry_romans",
+      Cavalry: "spr_cavalry_romans",
     },
   },
 
