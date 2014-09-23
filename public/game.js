@@ -3,7 +3,7 @@ var tile_size = 32;
 
 Game = {
   location: locations.test,
-  factions: [factions.mongols, factions.romans],
+  factions: ["mongols", "romans"],
 
   types: {
     HOTSEAT: "hotseat",

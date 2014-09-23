@@ -1,108 +1,74 @@
-factions = {
-  mongols: [
-    {
-      name: "Subutai",
-      unit: "Cavalry",
-      quantity: 4000,
-    },
-    {
-      name: "Genghis Khan",
-      unit: "Cavalry",
-      quantity: 4000,
-    },
-    {
-      name: "Kublai Khan",
-      unit: "Cavalry",
-      quantity: 4000,
-    },
-    {
-      name: "Batu Khan",
-      unit: "Cavalry",
-      quantity: 4000,
-    },
-  ],
+Factions = {
+  mongols: {
+    name: "Mongols",
+    blurb: "Genghis Khan, under the leadership of his chief general and strategist Subutai, divided their forces into four groups as they began their invasion of Europe.",
+    units: [
+      {
+        name: "Subutai",
+        unit: "Cavalry",
+        quantity: 3000,
+      },
+      {
+        name: "Genghis Khan",
+        unit: "Cavalry",
+        quantity: 3000,
+      },
+      {
+        name: "Kublai Khan",
+        unit: "Cavalry",
+        quantity: 3000,
+      },
+      {
+        name: "Batu Khan",
+        unit: "Cavalry",
+        quantity: 3000,
+      },
+      {
+        name: "Mandhuhai",
+        unit: "Infantry",
+        quantity: 3000,
+      },
+    ],
 
-  romans: [
-    {
-      name: "Scipio",
-      unit: "Cavalry",
-      quantity: 5000,
+    sprites: {
+      Infantry: "spr_infantry_mongols",
     },
-    {
-      name: "Agrippa",
-      unit: "Cavalry",
-      quantity: 4000,
-    },
-    {
-      name: "Rufus",
-      unit: "Cavalry",
-      quantity: 3000,
-    },
-    {
-      name: "Flavius",
-      unit: "Cavalry",
-      quantity: 2000,
-    },
-    {
-      name: "Marc Antony",
-      unit: "Cavalry",
-      quantity: 1000,
-    },
-  ],
+  },
 
-  mongols_backup: [
-    {
-      name: "Subutai",
-      unit: "Cavalry",
-      quantity: 5000,
-    },
-    {
-      name: "Genghis Khan",
-      unit: "Cavalry",
-      quantity: 4000,
-    },
-    {
-      name: "Kublai Khan",
-      unit: "Cavalry",
-      quantity: 3000,
-    },
-    {
-      name: "Batu Khan",
-      unit: "Cavalry",
-      quantity: 2000,
-    },
-    {
-      name: "Mandhuhai",
-      unit: "Cavalry",
-      quantity: 1000,
-    },
-  ],
+  romans: {
+    name: "Romans",
+    blurb: "The core unit of a Roman army was the well-trained and disciplined Legionary. These were professional soldiers enlisted for 25 years at a time. However, Scipio Africanus, the defeater of Hannibal in the 2nd Punic War, was arguably the greatest general in Roman history. His adaptation to Hannibal's tactics - highly trained cavalry on the flanks for encircling a less-mobile enemy - led to the defeat of the Carthaginians and the continued existence of the Roman Empire.",
+    units: [
+      {
+        name: "Scipio",
+        unit: "Cavalry",
+        quantity: 4000,
+      },
+      {
+        name: "Agrippa",
+        unit: "Infantry",
+        quantity: 6000,
+      },
+      {
+        name: "Rufus",
+        unit: "Infantry",
+        quantity: 4000,
+      },
+      {
+        name: "Flavius",
+        unit: "Infantry",
+        quantity: 2000,
+      },
+      {
+        name: "Marc Antony",
+        unit: "Infantry",
+        quantity: 2000,
+      },
+    ],
 
-  romans_backup: [
-    {
-      name: "Scipio",
-      unit: "Cavalry",
-      quantity: 5000,
+    sprites: {
+      Infantry: "spr_infantry_romans",
     },
-    {
-      name: "Agrippa",
-      unit: "Cavalry",
-      quantity: 4000,
-    },
-    {
-      name: "Rufus",
-      unit: "Cavalry",
-      quantity: 3000,
-    },
-    {
-      name: "Flavius",
-      unit: "Cavalry",
-      quantity: 2000,
-    },
-    {
-      name: "Marc Antony",
-      unit: "Cavalry",
-      quantity: 1000,
-    },
-  ],
+  },
+
 }

@@ -504,6 +504,18 @@ Crafty.c('Unit', {
     return this.getId() == unit.getId();
   },
 
+  toggleVisibility: function() {
+    if (this.visible == false) {
+      this.visible = true;
+    } else {
+      this.visible = false;
+    }
+  },
+
+  getOppositeSide: function() {
+    return (this.side + 1) % 2;
+  },
+
 });
 
 Crafty.c('Cavalry', {
@@ -515,9 +527,8 @@ Crafty.c('Cavalry', {
         injured: 0,
         name: "NAME ME",
         type: 'Cavalry',
-        //side: 1,
-        movement: 8, 
-        max_sight: 10,
+        movement: 8,
+        max_sight: 8,
       })
       ;
   },
@@ -531,16 +542,25 @@ Crafty.c('Cavalry', {
     }
   },
 
-  getOppositeSide: function() {
-    return (this.side + 1) % 2;
+});
+
+Crafty.c('Infantry', {
+  init: function() {
+    this.requires('Unit, Collision, Targetable, Movable')
+      //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
+      .attr({
+        quantity: 0,
+        injured: 0,
+        name: "NAME ME",
+        type: 'Infantry',
+        movement: 4,
+        max_sight: 8,
+      })
+      ;
   },
 
-  toggleVisibility: function() {
-    if (this.visible == false) {
-      this.visible = true;
-    } else {
-      this.visible = false;
-    }
+  pick_side: function(side) {
+    if (side !== undefined) this.side = side;
   },
 
 });

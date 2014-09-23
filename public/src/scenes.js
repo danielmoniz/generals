@@ -345,23 +345,25 @@ Crafty.scene('Game', function() {
 
   function createNewUnit(type, side, location, name, quantity) {
     var unit = Crafty.e(type);
-    unit.at(location.x, location.y)
-      .pick_side(side)
+    unit.at(location.x, location.y);
+    unit.pick_side(side)
       ;
     unit.name = name;
     unit.quantity = quantity;
     return unit;
   }
 
-  function createUnitFromFaction(faction, side, location, index) {
-    var name = faction[index].name;
-    var quantity = faction[index].quantity;
-    var type = faction[index].unit;
-    return createNewUnit(type, side, location, name, quantity);
-  }
-
-  function createUnitFromLoad(unit) {
-    createNewUnit();
+  function createUnitFromFaction(faction_name, faction, side, location, index) {
+    var name = faction.units[index].name;
+    var quantity = faction.units[index].quantity;
+    var type = faction.units[index].unit;
+    var sprite = faction.sprites[type];
+    if (sprite === undefined) {
+      // @TODO Currently relying on unit.pickSide() code to add a sprite
+    }
+    var new_unit = createNewUnit(type, side, location, name, quantity);
+    if (sprite) new_unit.addComponent(sprite);
+    return new_unit;
   }
 
   function addPlayers() {
@@ -375,8 +377,8 @@ Crafty.scene('Game', function() {
     }
 
     function addUnits(side, x_value) {
-      var faction = Game.factions[side];
-      var units_left = faction.length;
+      var faction = Factions[Game.factions[side]];
+      var units_left = faction.units.length;
       var current_index = 0;
       var column = 0;
       while (units_left > 0) {
@@ -385,7 +387,7 @@ Crafty.scene('Game', function() {
           var y = getStartY(side, max_units_per_column);
           var spot = {x: x_value + column, y: y + i};
           if (!Game.terrain[spot.x][spot.y].has('Water')) {
-            createUnitFromFaction(faction, side, spot, current_index);
+            createUnitFromFaction(Game.factions[side], faction, side, spot, current_index);
             units_left -= 1;
             current_index += 1;
             if (!units_left) break;
@@ -715,15 +717,22 @@ Crafty.scene('Loading', function() {
       spr_cavalry: [2, 2],
       */
     });
-    Crafty.sprite(tile_width, 'assets/cavalry-white-' + tile_width + '.png', {
-      spr_cavalry: [0, 0],
-    });
     Crafty.sprite(tile_width, 'assets/cavalry-blue-' + tile_width + '.png', {
       spr_cavalry_blue: [0, 0],
     });
+    Crafty.sprite(tile_width, 'assets/cavalry-white-' + tile_width + '.png', {
+      spr_cavalry: [0, 0],
+      spr_cavalry_white: [0, 0],
+    });
+    Crafty.sprite(tile_width, 'assets/infantry-mongol.png', {
+      spr_infantry_mongols: [0, 0],
+    });
+    Crafty.sprite(tile_width, 'assets/infantry-roman.png', {
+      spr_infantry_romans: [0, 0],
+    });
       /*
       */
-    Crafty.sprite(16, 'assets/swords-16.gif', {
+    Crafty.sprite(16, 'assets/Combat2.png', {
       spr_battle: [0, 0],
     });
     Crafty.sprite(32, 'assets/road-32.png', {
