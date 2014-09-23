@@ -288,6 +288,10 @@ Crafty.c('Unit', {
       this.kill(to_kill);
       this.injure(to_injure);
       this.supply_remaining = Math.max(0, this.supply_remaining);
+
+      if (!this.isAlive()) this.die();
+      if (this.getActive() <= 0) this.disband();
+
       return to_kill;
     }
     return 0;
