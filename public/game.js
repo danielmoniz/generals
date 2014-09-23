@@ -110,6 +110,7 @@ Game = {
   attrition_death_rate: 1/3,
   healing_rate: 1/30,
   village_healing_rate: 15/100,
+  min_troops_for_supply_cut: 500,
 
   nextTurn: function() {
 

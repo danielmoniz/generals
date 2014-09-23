@@ -258,6 +258,7 @@ Crafty.c('Unit', {
       for (var i=0; i<enemy_units.length; i++) {
         // add enemy units to Game supply graph as blockers of supply lines
         var unit = enemy_units[i];
+        if (unit.getActive() < Game.min_troops_for_supply_cut) continue;
         var weight = Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight;
         Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight = 0;
         // Uncomment below line for supply overlay
