@@ -732,7 +732,7 @@ Crafty.scene('Loading', function() {
     });
       /*
       */
-    Crafty.sprite(16, 'assets/Combat2.png', {
+    Crafty.sprite(32, 'assets/Combat2.png', {
       spr_battle: [0, 0],
     });
     Crafty.sprite(32, 'assets/road-32.png', {
