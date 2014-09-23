@@ -194,8 +194,11 @@ Crafty.c('Unit', {
     var num_to_kill = this.injured * succumb_rate;
     this.kill(num_to_kill, true);
 
+    var num_to_heal = Game.healing_rate * this.injured;
+    this.heal(num_to_heal);
+
     var village = this.isVillagePresent();
-    if (village && !this.battle) {
+    if (village && !village.sacked && village.supply_remaining > 0 && !this.battle) {
       var num_to_heal = Game.village_healing_rate * this.injured;
       this.heal(num_to_heal);
     }

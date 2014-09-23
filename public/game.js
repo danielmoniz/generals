@@ -108,6 +108,7 @@ Game = {
   battle_death_rate: 1/5,
   attrition_rate: 1/10,
   attrition_death_rate: 1/3,
+  healing_rate: 1/30,
   village_healing_rate: 15/100,
 
   nextTurn: function() {
