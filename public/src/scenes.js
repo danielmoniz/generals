@@ -149,10 +149,6 @@ Crafty.scene('Game', function() {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Game.height_map[x][y];
         if (height >= 1 - water_level) {
-          var water = Crafty.e('Water');
-          water.at(x, y);
-          water.setHeight();
-
           var water_obj = { type: "Water" };
           water_obj.height = Game.height_map[x][y];
           Game.terrain_type[x][y] = water_obj;
@@ -176,19 +172,21 @@ Crafty.scene('Game', function() {
 
           if (value >= 1 - probability && !Game.occupied[x][y]) {
             var color = Math.ceil(Game.height_map[x][y] * 255);
+            /*
             var village = Crafty.e('Village');
             village.at(x, y);
             village.setHeight();
             village.addStat('side', getMapSide(x));
-            Game.occupied[x][y] = true;
-            villages.push(village);
+            */
 
+            Game.occupied[x][y] = true;
             village_locations.push({ x: x, y: y });
             var village_obj = {};
             village_obj.type = "Village";
             village_obj.height = Game.height_map[x][y];
             village_obj.side = getMapSide(x);
             Game.terrain_type[x][y] = village_obj;
+            villages.push(village_obj);
 
             if (villages.length >= 1 + estimated_villages) return village_locations;
             if (villages.length >= 1 + estimated_villages) return villages;
@@ -250,13 +248,15 @@ Crafty.scene('Game', function() {
           //var probability = Math.pow(factor, distance + 1);
           var probability = Math.pow(factor, Math.pow(distance, distance));
           if (!Game.occupied[x][y] && Math.random() < probability) {
+            /*
             var farm = Crafty.e('Farm');
             farm.at(x, y);
             farm.addStat('side', getMapSide(x));
             //village.farms.push(farm);
-            Game.occupied[x][y] = true;
+            */
 
-            var farm_obj = {};
+            Game.occupied[x][y] = true;
+            var farm_obj = { type: "Farm" };
             farm_obj.side = getMapSide(x);
             Game.terrain_type[x][y] = farm_obj;
           }
@@ -274,9 +274,11 @@ Crafty.scene('Game', function() {
     for (var x = 0; x < Game.map_grid.width; x++) {
       for (var y = 0; y < Game.map_grid.height; y++) {
         if (!Game.occupied[x][y]) {
+          /*
           var grass = Crafty.e('Grass');
           grass.at(x, y);
           grass.setHeight();
+          */
 
           var grass_obj = { type: "Grass" };
           grass_obj.height = Game.height_map[x][y];
@@ -583,6 +585,8 @@ Crafty.scene('Game', function() {
     addFarms(village_locations);
     addTrees(Game.location);
     addGrass();
+
+    buildTerrainFromLoad();
     buildTerrainData();
 
     addSupplyRoads(1);
@@ -682,9 +686,18 @@ Crafty.scene('Game', function() {
         }
         
         if (noise_value >= 1 - frequency && !Game.occupied[x][y]) {
+          /*
           var entity = Crafty.e(entity_name);
           entity.at(x, y);
           entity.setHeight();
+          if (update_occupied) {
+            Game.occupied[x][y] = true;
+          }
+          */
+
+          var entity = { type: entity_name };
+          entity.height = Game.height_map[x][y];
+          Game.terrain_type[x][y] = entity;
           if (update_occupied) {
             Game.occupied[x][y] = true;
           }
