@@ -63,6 +63,10 @@ Crafty.scene('Game', function() {
   function buildEmptyGameData() {
     Game.height_map = generateHeightMap(Game.location);
     Game.occupied = buildOccupied();
+    Game.terrain_type = [];
+    for (var x=0; x<Game.map_grid.width; x++) {
+      Game.terrain_type[x] = [];
+    }
   }
 
   function buildOccupied() {
@@ -136,7 +140,7 @@ Crafty.scene('Game', function() {
   }
 
   function shadowHeightMap(location_map) {
-    colourHeightMap(location_map, true);
+    colourHeightMap(location_map, "shadow_height_map");
   }
 
   function addWater(location_map) {
@@ -148,6 +152,10 @@ Crafty.scene('Game', function() {
           var water = Crafty.e('Water');
           water.at(x, y);
           water.setHeight();
+
+          var water_obj = { type: "Water" };
+          water_obj.height = Game.height_map[x][y];
+          Game.terrain_type[x][y] = water_obj;
           Game.occupied[x][y] = true;
         }
       }
@@ -156,6 +164,7 @@ Crafty.scene('Game', function() {
 
   function addVillagesToSection(estimated_villages, min_x, max_x) {
     var villages = [];
+    var village_locations = [];
     while (villages.length < estimated_villages) {
       for (var x = min_x; x < max_x; x++) {
         for (var y = 0; y < Game.map_grid.height; y++) {
@@ -170,14 +179,24 @@ Crafty.scene('Game', function() {
             var village = Crafty.e('Village');
             village.at(x, y);
             village.setHeight();
+            village.addStat('side', getMapSide(x));
             Game.occupied[x][y] = true;
             villages.push(village);
 
+            village_locations.push({ x: x, y: y });
+            var village_obj = {};
+            village_obj.type = "Village";
+            village_obj.height = Game.height_map[x][y];
+            village_obj.side = getMapSide(x);
+            Game.terrain_type[x][y] = village_obj;
+
+            if (villages.length >= 1 + estimated_villages) return village_locations;
             if (villages.length >= 1 + estimated_villages) return villages;
           }
         }
       }
     }
+    return village_locations;
     return villages;
   }
 
@@ -193,10 +212,12 @@ Crafty.scene('Game', function() {
       villages = villages.concat(new_villages);
     }
 
+    /*
     for (var j in villages) {
       var village = villages[j];
       village.addStat('side', getMapSide(village.at().x));
     }
+    */
 
     return villages;
   }
@@ -212,11 +233,11 @@ Crafty.scene('Game', function() {
     }
   }
 
-  function addFarms(villages) {
+  function addFarms(village_locations) {
 
-    for (var i in villages) {
-      var village = villages[i];
-      var center = village.at();
+    for (var i in village_locations) {
+      var village = village_locations[i];
+      var center = village;
       // get first circle around village
       var max_distance = 2;
       var factor = 0.80;
@@ -232,8 +253,12 @@ Crafty.scene('Game', function() {
             var farm = Crafty.e('Farm');
             farm.at(x, y);
             farm.addStat('side', getMapSide(x));
-            village.farms.push(farm);
+            //village.farms.push(farm);
             Game.occupied[x][y] = true;
+
+            var farm_obj = {};
+            farm_obj.side = getMapSide(x);
+            Game.terrain_type[x][y] = farm_obj;
           }
         }
       }
@@ -252,6 +277,10 @@ Crafty.scene('Game', function() {
           var grass = Crafty.e('Grass');
           grass.at(x, y);
           grass.setHeight();
+
+          var grass_obj = { type: "Grass" };
+          grass_obj.height = Game.height_map[x][y];
+          Game.terrain_type[x][y] = grass_obj;
         }
       }
     }
@@ -507,8 +536,8 @@ Crafty.scene('Game', function() {
 
     addSupplyRoads(1);
     addRoadsBetweenVillages();
-    addRoadGraphics();
 
+    addRoadGraphics();
     colourHeightMap(Game.location);
     colourWater();
 
@@ -532,8 +561,8 @@ Crafty.scene('Game', function() {
 
     addSupplyRoads(1);
     addRoadsBetweenVillages();
-    addRoadGraphics();
 
+    addRoadGraphics();
     colourHeightMap(Game.location);
     colourWater();
 
@@ -549,8 +578,9 @@ Crafty.scene('Game', function() {
   function startNewGame() {
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
-    var villages = addVillages(6, this.occupied);
-    addFarms(villages);
+    //var villages = addVillages(6, this.occupied);
+    var village_locations = addVillages(6, this.occupied);
+    addFarms(village_locations);
     addTrees(Game.location);
     addGrass();
     buildTerrainData();
@@ -558,7 +588,7 @@ Crafty.scene('Game', function() {
     addSupplyRoads(1);
     addRoadsBetweenVillages();
     //addSupplyRoads(1, 1);
-    addRoadGraphics();
+    buildTerrainFromLoad();
 
     if (Game.options && Game.options.fog_of_war) {
       shadowHeightMap(Game.location);
@@ -567,6 +597,7 @@ Crafty.scene('Game', function() {
 
     addPlayers();
 
+    addRoadGraphics();
     colourHeightMap(Game.location);
     colourWater();
     divideMap(3);
@@ -586,6 +617,9 @@ Crafty.scene('Game', function() {
       var x = path[i].x;
       var y = path[i].y;
       var terrain = Game.terrain[x][y];
+
+      var entity_obj = {};
+
       if (terrain.has("Village")) {
         road.push(terrain);
         continue;
@@ -596,6 +630,8 @@ Crafty.scene('Game', function() {
         entity.at(path[i].x, path[i].y);
         Game.terrain[x][y] = entity;
         road.push(entity);
+
+        entity_obj.type = "Bridge";
       } else {
         var is_supply_route = false;
         if (terrain.has('Road') && terrain.is_supply_route) {
@@ -606,10 +642,14 @@ Crafty.scene('Game', function() {
         entity.at(path[i].x, path[i].y);
         if (is_supply_route || (is_supply_route_road && i == end - 1)) {
           entity.is_supply_route = true;
+          entity_obj.is_supply_route = true;
         }
         Game.terrain[x][y] = entity;
         road.push(entity);
+
+        entity_obj.type = "Road";
       }
+      Game.terrain_type[x][y] = entity_obj;
     }
     buildTerrainData();
     return road;
