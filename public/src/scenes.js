@@ -700,7 +700,7 @@ Crafty.scene('Loading', function() {
   // Load our sprite map image
   
   var tile_width = Game.map_grid.tile.width;
-  Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -708,10 +708,13 @@ Crafty.scene('Loading', function() {
     // These components names' are prefixed with "spr_" to remind us that they
     // simply cause the entity to be drawn with a certain sprite.
     Crafty.sprite(16, 'assets/16x16_generals.png', {
-      spr_tree: [0, 0],
+      //spr_tree: [0, 0],
       spr_bush: [1, 0],
       spr_village: [0, 1],
       spr_player: [1, 1],
+    });
+    Crafty.sprite(32, 'assets/Forest-32.png', {
+      spr_tree: [0, 0],
     });
     Crafty.sprite(tile_width, 'assets/cavalry-blue-' + tile_width + '.png', {
       spr_cavalry_blue: [0, 0],
