@@ -31,9 +31,22 @@ this.Terrain = {
   },
 
   "Road": {
+      type: "Road",
+      move_difficulty: 0.75,
+      build_over: 0.01,
+      defense_bonus: 1,
+      is_supply_route: false,
+      supply: 1,
   },
   "Bridge": {
     'parent': 'Road',
+      type: "Bridge",
+      move_difficulty: 1,
+      build_over: 0.02 ,
+      defense_bonus: 1.5,
+      supply: 1,
+      z: 81,
+      colour: { r: 192, g: 192, b: 192 },
   },
 
   /*
@@ -201,17 +214,7 @@ Crafty.c('Water', {
 // Grass is just green, passable terrain
 Crafty.c('Bridge', {
   init: function() {
-    this.requires('Color, Terrain, Passable, Transportation')
-      .changeColour('rgb(192, 192, 192)')
-      .addStats({
-        type: "Bridge",
-        move_difficulty: 1,
-        build_over: 0.02 ,
-        defense_bonus: 1.5,
-        supply: 1,
-      })
-      ;
-      this.z = 81;
+    this.requires('Color, Terrain, Passable, Transportation');
   },
 });
 
@@ -257,12 +260,8 @@ Crafty.c('Road', {
     //this.requires('spr_road, Terrain, Passable')
     this.requires('Terrain, Passable, Transportation')
       .addStats({
-        type: "Road",
-        move_difficulty: 0.75,
+        // @TODO Remove this!
         build_over: 0.01,
-        defense_bonus: 1,
-        is_supply_route: false,
-        supply: 1,
       })
       ;
   },

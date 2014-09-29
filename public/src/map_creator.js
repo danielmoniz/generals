@@ -275,6 +275,9 @@ var MapCreator = function() {
 
         entity_obj.type = "Road";
       }
+      entity_obj = Terrain.create(entity_obj.type, entity_obj);
+      console.log("entity_obj");
+      console.log(entity_obj);
       road.push({ x: x, y: y});
       this.Game.terrain_type[x][y] = entity_obj;
     }
