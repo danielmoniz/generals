@@ -1,3 +1,47 @@
+this.Terrain = {
+  "Water": {
+    type: "Water", 
+    move_difficulty: 0, 
+    build_over: 8,
+    defense_bonus: 0,
+    colour: { r: 0, g: 128, b: 255 },
+  },
+  "Grass": {
+  },
+  "Tree": {
+  },
+  "Farm": {
+    type: "Farm",
+    build_over: 1,
+    move_difficulty: 1.2,
+    defense_bonus: 1,
+    alpha: 0.5,
+    provides_supply: 2,
+    colour: { r: 196, g: 196, b: 0 },
+  },
+  "Village": {
+  },
+
+  "Road": {
+  },
+  "Bridge": {
+    'parent': 'Road',
+  },
+
+  create: function(type, stats) {
+    var entity = Crafty.e(type);
+    entity.addStats({ 'type': type });
+    entity.addStats(this[type]);
+    if (this[type].parent) {
+      entity.addStats(this[type].parent);
+    }
+
+    entity.addStats(stats);
+
+    return entity;
+  },
+
+};
 
 // Terrain is an entity that will be drawn on the map and will affect movement
 Crafty.c('Terrain', {
@@ -16,6 +60,8 @@ Crafty.c('Terrain', {
     }
 
     if (dict['colour'] !== undefined) {
+      //console.log("dict['colour']");
+      //console.log(dict['colour']);
       this.color(dict['colour']);
     }
 
@@ -112,15 +158,6 @@ Crafty.c('Grass', {
 Crafty.c('Farm', {
   init: function() {
     this.requires('Terrain, Passable, Color')
-      .addStats({
-        type: "Farm",
-        build_over: 1,
-        move_difficulty: 1.2,
-        defense_bonus: 1,
-        alpha: 0.5,
-        provides_supply: 2,
-      })
-      .changeColour('rgb(196, 196, 0)')
       ;
   },
 
@@ -142,16 +179,8 @@ Crafty.c('Farm', {
 Crafty.c('Water', {
   init: function() {
     this.requires('Color, Terrain, Impassable')
-      //.changeColour('#0080FF')
-      .changeColour('rgb(0, 128, 255)')
-      .addStats({
-        type: "Water", 
-        move_difficulty: 0, 
-        build_over: 8,
-        defense_bonus: 0,
-      })
-      .attr({ colour: { r: 0, g: 128, b: 255 } })
-      ;
+      //.changeColour({ r: 0, g: 128, b: 255 })
+    ;
     //this.z = 75;
   }
 });

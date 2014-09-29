@@ -279,8 +279,13 @@ Crafty.scene('Game', function() {
         if (typeof terrain_data == 'string') {
           var terrain = Crafty.e(terrain_data);
         } else if (typeof terrain_data == 'object') {
-          var terrain = Crafty.e(terrain_data.type);
-          terrain.addStats(terrain_data);
+          // test!
+          if (terrain_data.type == 'Water' || terrain_data.type == 'Farm') {
+            var terrain = Terrain.create(terrain_data.type, terrain_data);
+          } else {
+            var terrain = Crafty.e(terrain_data.type);
+            terrain.addStats(terrain_data);
+          }
         } else {
           throw "TerrainInvalid: Must be object or string.";
         }
