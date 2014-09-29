@@ -578,6 +578,12 @@ Crafty.scene('Game', function() {
   }
 
   function startNewGame() {
+
+    var map_creator = new MapCreator();
+    var map_data = map_creator.buildNewMap(Game);
+    Game.terrain_type = map_data.terrain_type;
+    Game.height_map = map_data.height_map;
+    /*
     buildEmptyGameData();
     addWater(Game.location, this.occupied);
     //var villages = addVillages(6, this.occupied);
@@ -585,6 +591,7 @@ Crafty.scene('Game', function() {
     addFarms(village_locations);
     addTrees(Game.location);
     addGrass();
+    */
 
     buildTerrainFromLoad();
     buildTerrainData();
