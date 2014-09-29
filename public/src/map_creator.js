@@ -24,11 +24,11 @@ var MapCreator = function() {
     this.addTrees(options, options.location);
     this.addGrass(options);
 
+    this.updateBuildDifficultyData(options, this.Game.terrain_type);
     /*
     buildTerrainFromLoad();
     buildTerrainData();
 
-    addSupplyRoads(1);
     addRoadsBetweenVillages(village_locations);
     //addSupplyRoads(1, 1);
     buildTerrainFromLoad();
@@ -417,13 +417,13 @@ var MapCreator = function() {
 
       for (var y = 0; y < options.map_grid.height; y++) {
         var terrain = terrain_list[x][y];
-        terrain_build_difficulty[x][y] = terrain_list[i].build_over;
+        terrain_build_difficulty[x][y] = terrain_list[x][y].build_over;
       }
     }
 
     this.Game.terrain_build_difficulty = terrain_build_difficulty;
 
-    Game.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
+    this.Game.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
   };
 
 };
