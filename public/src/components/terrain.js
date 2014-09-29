@@ -28,6 +28,13 @@ this.Terrain = {
     colour: { r: 196, g: 196, b: 0 },
   },
   "Village": {
+    type: "Village", 
+    move_difficulty: 0.9,
+    build_over: 0.01,
+    defense_bonus: 1.25,
+    supply: 1,
+    provides_supply: 4,
+    supply_remaining: 6,
   },
 
   "Road": {
@@ -166,10 +173,7 @@ Crafty.c('Impassable', {
 // A Tree is just an actor with a certain color
 Crafty.c('Tree', {
   init: function() {
-    this.requires('spr_tree, Terrain, Passable')
-      .addStats({
-      })
-      ;
+    this.requires('spr_tree, Terrain, Passable');
   },
 });
 
@@ -183,8 +187,7 @@ Crafty.c('Grass', {
 // Farmland is open terrain that provides supply
 Crafty.c('Farm', {
   init: function() {
-    this.requires('Terrain, Passable, Color')
-      ;
+    this.requires('Terrain, Passable, Color');
   },
 
   pillage: function() {
@@ -204,10 +207,7 @@ Crafty.c('Farm', {
 
 Crafty.c('Water', {
   init: function() {
-    this.requires('Color, Terrain, Impassable')
-      //.changeColour({ r: 0, g: 128, b: 255 })
-    ;
-    //this.z = 75;
+    this.requires('Color, Terrain, Impassable');
   }
 });
 
@@ -225,15 +225,6 @@ Crafty.c('Village', {
     this.requires('spr_village, Terrain, Passable')
       .attr({
         farms: [],
-      })
-      .addStats({
-        type: "Village", 
-        move_difficulty: 0.9,
-        build_over: 0.01,
-        defense_bonus: 1.25,
-        supply: 1,
-        provides_supply: 4,
-        supply_remaining: 6,
       })
       ;
   },

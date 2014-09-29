@@ -280,7 +280,7 @@ Crafty.scene('Game', function() {
           var terrain = Crafty.e(terrain_data);
         } else if (typeof terrain_data == 'object') {
           // test!
-          if (terrain_data.type == 'Water' || terrain_data.type == 'Farm' || terrain_data.type == 'Grass' || terrain_data.type == 'Tree' || terrain_data.type == 'Road' || terrain_data.type == 'Bridge') {
+          if (terrain_data.type == 'Water' || terrain_data.type == 'Farm' || terrain_data.type == 'Grass' || terrain_data.type == 'Tree' || terrain_data.type == 'Road' || terrain_data.type == 'Bridge' || terrain_data.type == 'Village') {
             var terrain_object = Terrain.create(terrain_data.type, terrain_data);
             var terrain = Terrain.render(terrain_object);
           } else {
