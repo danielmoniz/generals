@@ -7,8 +7,16 @@ this.Terrain = {
     colour: { r: 0, g: 128, b: 255 },
   },
   "Grass": {
+    type: "Grass", 
+    move_difficulty: 1, 
+    build_over: 1,
+    defense_bonus: 1,
   },
   "Tree": {
+      type: "Tree", 
+      move_difficulty: 2, 
+      build_over: 3,
+      defense_bonus: 1.05,
   },
   "Farm": {
     type: "Farm",
@@ -147,10 +155,6 @@ Crafty.c('Tree', {
   init: function() {
     this.requires('spr_tree, Terrain, Passable')
       .addStats({
-        type: "Tree", 
-        move_difficulty: 2, 
-        build_over: 3,
-        defense_bonus: 1.05,
       })
       ;
   },
@@ -159,14 +163,7 @@ Crafty.c('Tree', {
 // Grass is just green, passable terrain
 Crafty.c('Grass', {
   init: function() {
-    this.requires('Terrain, Passable')
-      .addStats({
-        type: "Grass", 
-        move_difficulty: 1, 
-        build_over: 1,
-        defense_bonus: 1,
-      })
-      ;
+    this.requires('Terrain, Passable');
   },
 });
 
