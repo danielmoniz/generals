@@ -95,7 +95,7 @@ var MapCreator = function() {
       for (var y = 0; y < options.map_grid.height; y++) {
         var height = this.Game.height_map[x][y];
         if (height >= 1 - water_level) {
-          var water_obj = { type: "Water" };
+          var water_obj = Terrain.create("Water");
           water_obj.height = this.Game.height_map[x][y];
           this.Game.terrain_type[x][y] = water_obj;
           this.Game.occupied[x][y] = true;
@@ -121,8 +121,7 @@ var MapCreator = function() {
 
             this.Game.occupied[x][y] = true;
             village_locations.push({ x: x, y: y });
-            var village_obj = {};
-            village_obj.type = "Village";
+            var village_obj = Terrain.create("Village");
             village_obj.height = this.Game.height_map[x][y];
             village_obj.side = this.getMapSide(options, x);
             this.Game.terrain_type[x][y] = village_obj;
@@ -182,15 +181,9 @@ var MapCreator = function() {
           //var probability = Math.pow(factor, distance + 1);
           var probability = Math.pow(factor, Math.pow(distance, distance));
           if (!this.Game.occupied[x][y] && Math.random() < probability) {
-            /*
-            var farm = Crafty.e('Farm');
-            farm.at(x, y);
-            farm.addStat('side', getMapSide(x));
-            //village.farms.push(farm);
-            */
 
             this.Game.occupied[x][y] = true;
-            var farm_obj = { type: "Farm" };
+            var farm_obj = Terrain.create("Farm");
             farm_obj.side = this.getMapSide(options, x);
             this.Game.terrain_type[x][y] = farm_obj;
           }
@@ -215,7 +208,7 @@ var MapCreator = function() {
           grass.setHeight();
           */
 
-          var grass_obj = { type: "Grass" };
+          var grass_obj = Terrain.create("Grass");
           grass_obj.height = this.Game.height_map[x][y];
           this.Game.terrain_type[x][y] = grass_obj;
         }
@@ -403,9 +396,9 @@ var MapCreator = function() {
         }
         
         if (noise_value >= 1 - frequency && !this.Game.occupied[x][y]) {
-          var entity = { type: entity_name };
-          entity.height = this.Game.height_map[x][y];
-          this.Game.terrain_type[x][y] = entity;
+          var entity_obj = Terrain.create(entity_name);
+          entity_obj.height = this.Game.height_map[x][y];
+          this.Game.terrain_type[x][y] = entity_obj;
           if (update_occupied) {
             this.Game.occupied[x][y] = true;
           }

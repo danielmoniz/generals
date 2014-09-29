@@ -65,8 +65,11 @@ this.Terrain = {
       var parent_stats = this[type].parent;
       base_stats = $.extend({}, parent_stats, base_stats);
     }
-    var combined_stats = $.extend({}, base_stats, stats);
-    combined_stats['type'] = type;
+    base_stats['type'] = type;
+    var combined_stats = base_stats;
+    if (stats !== undefined) {
+      combined_stats = $.extend({}, base_stats, stats);
+    }
     return combined_stats;
   },
 
