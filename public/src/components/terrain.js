@@ -44,6 +44,7 @@ Crafty.c('Terrain', {
 
   setHeight: function() {
     this.height = Game.height_map[this.at().x][this.at().y];
+    return this;
   },
 });
 
