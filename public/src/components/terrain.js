@@ -28,16 +28,27 @@ this.Terrain = {
     'parent': 'Road',
   },
 
+  /*
+   * Creates a complete set of stats for a given entity type.
+   */
   create: function(type, stats) {
-    var entity = Crafty.e(type);
-    entity.addStats({ 'type': type });
-    entity.addStats(this[type]);
+    var base_stats = this[type];
     if (this[type].parent) {
-      entity.addStats(this[type].parent);
+      var parent_stats = this[type].parent;
+      base_stats = $.extend({}, parent_stats, base_stats);
     }
+    var combined_stats = $.extend({}, base_stats, stats);
+    combined_stats['type'] = type;
+    return combined_stats;
+  },
 
+  /*
+   * Creates a Crafty object based on a COMPLETE set of stats.
+   * Assumes that .type exists.
+   */
+  render: function(stats) {
+    var entity = Crafty.e(stats.type);
     entity.addStats(stats);
-
     return entity;
   },
 
@@ -62,7 +73,12 @@ Crafty.c('Terrain', {
     if (dict['colour'] !== undefined) {
       //console.log("dict['colour']");
       //console.log(dict['colour']);
-      this.color(dict['colour']);
+      if (typeof dict['colour'] == 'object') {
+        var colour_string = Utility.getColourStringFromObject(dict['colour']);
+      } else {
+        var colour_string = dict['colour'];
+      }
+      this.color(colour_string);
     }
 
     return this;

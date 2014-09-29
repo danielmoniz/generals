@@ -105,7 +105,7 @@ Crafty.scene('Game', function() {
   }
 
   function shadowHeightMap(location_map) {
-    colourHeightMap(location_map, "shadow_height_map");
+    colourHeightMap(location_map, "shadow height map");
   }
 
   function addRoadsBetweenVillages() {
@@ -281,7 +281,8 @@ Crafty.scene('Game', function() {
         } else if (typeof terrain_data == 'object') {
           // test!
           if (terrain_data.type == 'Water' || terrain_data.type == 'Farm') {
-            var terrain = Terrain.create(terrain_data.type, terrain_data);
+            var terrain_object = Terrain.create(terrain_data.type, terrain_data);
+            var terrain = Terrain.render(terrain_object);
           } else {
             var terrain = Crafty.e(terrain_data.type);
             terrain.addStats(terrain_data);

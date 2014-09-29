@@ -32,6 +32,11 @@ Utility = {
     return { r: parseInt(red), g: parseInt(green), b: parseInt(blue), };
   },
 
+  getColourStringFromObject: function(rgb) {
+    var string = "rgb({0}, {1}, {2})".format(rgb.r, rgb.g, rgb.b);
+    return string;
+  },
+
   isEmpty: function(object) {
     for (var i in object) {
       return false;
