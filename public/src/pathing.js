@@ -93,3 +93,10 @@ function unhighlightPath(movement_path) {
     movement_path[i][1].visible = false;
   }
 }
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Pathing;
+} else {
+  this.Pathing = Pathing;
+}
+
