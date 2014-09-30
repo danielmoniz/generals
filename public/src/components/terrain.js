@@ -70,7 +70,7 @@ this.Terrain = function(type, stats) {
 
   var base_stats = this.terrain_data[this.type];
   if (base_stats.parent) {
-    var parent_stats = base_stats.parent;
+    var parent_stats = this.terrain_data[base_stats.parent];
     base_stats = $.extend({}, parent_stats, base_stats);
   }
   base_stats.type = this.type;
