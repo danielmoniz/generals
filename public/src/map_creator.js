@@ -30,9 +30,9 @@ var MapCreator = function() {
     this.buildTerrainData(options, this.Game, this.Game.terrain_type);
     this.addSupplyRoads(options, village_locations, 1);
     this.addRoadsBetweenVillages(options, village_locations);
-    /*
-    buildTerrainFromLoad();
 
+    this.Game.starting_units = this.addStartingUnits(options, this.Game);
+    /*
     addRoadsBetweenVillages(village_locations);
     //addSupplyRoads(1, 1);
     buildTerrainFromLoad();
@@ -41,16 +41,6 @@ var MapCreator = function() {
       shadowHeightMap(Game.location);
       LineOfSight.clearFog();
     }
-
-    addPlayers();
-
-    addRoadGraphics();
-    colourHeightMap(Game.location);
-    colourWater();
-    divideMap(3);
-
-    Victory.reset();
-    Game.select(Crafty('Unit').get(0));
     */
 
    var map_data = {};
@@ -383,16 +373,6 @@ var MapCreator = function() {
     var right = this.Game.supply_route[1];
   };
 
-
-  this.createNewUnit = function(type, side, location, name, quantity) {
-  };
-
-  this.createUnitFromFaction = function(faction_name, faction, side, location, index) {
-  };
-
-  this.addPlayers = function() {
-  };
-
   /*
    * entity_name: eg. 'Water' or 'Tree'
    * noise: the noise function object to be used. Eg. Game.noise.perlin2
@@ -493,6 +473,81 @@ var MapCreator = function() {
     game.terrain_defense_bonus_graph = new options.graph_ftn(terrain_defense_bonus);
     game.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
     game.terrain_supply_graph = new options.graph_ftn(terrain_supply);
+  };
+
+  this.createUnitFromFaction = function(faction_name, faction, side, location, index) {
+    var unit_faction_data = {};
+    Utility.loadDataIntoObject(faction.units[index], unit_faction_data);
+    /*
+    var name = faction.units[index].name;
+    var quantity = faction.units[index].quantity;
+    var type = faction.units[index].type;
+    */
+    var sprite = faction.sprites[unit_faction_data.type];
+    if (sprite === undefined) {}
+
+    var new_unit_data = this.createNewUnitData(unit_faction_data, side, location);
+    if (sprite) new_unit_data.addComponent(sprite);
+    return new_unit_data;
+  };
+
+  this.addStartingUnits = function(options, game) {
+
+    this.getStartY = function(side, max_units_per_column) {
+      var supply_road = game.player_supply_roads[side][0];
+      var y = supply_road[supply_road.length - 1].y;
+      var min_y = Math.max(y - Math.floor(max_units_per_column/2), 0);
+      var max_y = Math.min(min_y, options.map_grid.height - max_units_per_column);
+      return max_y;
+    };
+
+    this.addUnits = function(side, x_value) {
+      var units = [];
+      var faction = Factions[options.factions[side]];
+      var units_left = faction.units.length;
+      var current_index = 0;
+      var column = 0;
+      while (units_left > 0) {
+        var max_units_per_column = 3;
+        for (var i = 0; i<max_units_per_column; i++) {
+          var y = this.getStartY(side, max_units_per_column);
+          var spot = {x: x_value + column, y: y + i};
+          var local_terrain = game.terrain_type[spot.x][spot.y].type;
+          if (local_terrain == 'Water' || local_terrain.type == 'Water') {
+          } else {
+            var unit_obj = this.createUnitFromFaction(options.factions[side], faction, side, spot, current_index);
+            units.push(unit_obj);
+            units_left -= 1;
+            current_index += 1;
+            if (!units_left) break;
+          }
+        }
+        if (x_value == 0) {
+          column += 1;
+        } else {
+          column -= 1;
+        }
+      }
+
+      return units;
+    };
+
+    //this.player = Crafty.e('PlayerCharacter')
+    //this.player.at(0, 0);
+    var units = [];
+    units.push(this.addUnits(options.FIRST_PLAYER, 0));
+    units.push(this.addUnits(options.SECOND_PLAYER, options.map_grid.width - 1));
+
+    return units;
+  };
+
+  this.createNewUnitData = function(faction_data, side, location) {
+
+    var unit_object = new UnitData(faction_data.type, faction_data);
+    //unit.pick_side(side);
+    unit_object.add({ side: side });
+    unit_object.setLocation(location);
+    return unit_object;
   };
 
 };

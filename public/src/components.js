@@ -45,6 +45,9 @@ Crafty.c('Actor', {
   },
 
   addStats: function(dict) {
+    this.attr({
+      stats: {},
+    });
     this.attr(dict);
     for (var key in dict) {
       this.stats[key] = dict[key];

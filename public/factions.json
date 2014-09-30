@@ -5,27 +5,27 @@ Factions = {
     units: [
       {
         name: "Subutai",
-        unit: "Cavalry",
+        type: "Cavalry",
         quantity: 3000,
       },
       {
         name: "Genghis Khan",
-        unit: "Cavalry",
+        type: "Cavalry",
         quantity: 3000,
       },
       {
         name: "Kublai Khan",
-        unit: "Cavalry",
+        type: "Cavalry",
         quantity: 3000,
       },
       {
         name: "Batu Khan",
-        unit: "Cavalry",
+        type: "Cavalry",
         quantity: 3000,
       },
       {
         name: "Mandhuhai",
-        unit: "Infantry",
+        type: "Infantry",
         quantity: 3000,
       },
     ],
@@ -42,27 +42,27 @@ Factions = {
     units: [
       {
         name: "Scipio",
-        unit: "Cavalry",
+        type: "Cavalry",
         quantity: 4000,
       },
       {
         name: "Agrippa",
-        unit: "Infantry",
+        type: "Infantry",
         quantity: 6000,
       },
       {
         name: "Rufus",
-        unit: "Infantry",
+        type: "Infantry",
         quantity: 4000,
       },
       {
         name: "Flavius",
-        unit: "Infantry",
+        type: "Infantry",
         quantity: 2000,
       },
       {
         name: "Marc Antony",
-        unit: "Infantry",
+        type: "Infantry",
         quantity: 2000,
       },
     ],

@@ -121,7 +121,7 @@ Crafty.scene('Game', function() {
   function createUnitFromFaction(faction_name, faction, side, location, index) {
     var name = faction.units[index].name;
     var quantity = faction.units[index].quantity;
-    var type = faction.units[index].unit;
+    var type = faction.units[index].type;
     var sprite = faction.sprites[type];
     if (sprite === undefined) {
       // @TODO Currently relying on unit.pickSide() code to add a sprite
@@ -200,6 +200,15 @@ Crafty.scene('Game', function() {
         }
         terrain.at(x, y);
         Game.terrain[x][y] = terrain;
+      }
+    }
+  }
+
+  function buildUnitsFromData(unit_data) {
+    for (var side=0; side<2; side++) {
+      for (var i=0; i<unit_data[side].length; i++) {
+        var unit_object = unit_data[side][i];
+        var unit = unit_object.render();
       }
     }
   }
@@ -325,7 +334,8 @@ Crafty.scene('Game', function() {
       LineOfSight.clearFog();
     }
 
-    addPlayers();
+    //addPlayers();
+    buildUnitsFromData(game_data.starting_units);
 
     addRoadGraphics();
     colourHeightMap(Game.location);

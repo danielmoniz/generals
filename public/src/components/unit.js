@@ -1,6 +1,8 @@
 
-this.UnitData = function(type) {
+this.UnitData = function(type, stats) {
   this.type = type;
+  this.components = [];
+  this.location = {};
 
   /*
    * Creates a complete set of stats for a given entity type.
@@ -12,6 +14,14 @@ this.UnitData = function(type) {
     }
     this.stats = combined_stats;
     return this;
+  };
+
+  this.addComponent = function(component) {
+    this.components.push(component);
+  };
+
+  this.setLocation = function(location) {
+    this.location = location;
   };
 
   this.unit_data = {
@@ -52,11 +62,15 @@ this.UnitData = function(type) {
 
   var base_stats = this.unit_data[this.type];
   if (base_stats.parent) {
-    var parent_stats = base_stats.parent;
+    var parent_stats = this.unit_data[base_stats.parent];
     base_stats = $.extend({}, parent_stats, base_stats);
   }
   base_stats.type = this.type;
   this.stats = base_stats;
+
+  if (typeof stats !== 'undefined') {
+    this.add(stats);
+  }
 
   /*
    * Creates a Crafty object based on a COMPLETE set of stats.
@@ -65,6 +79,12 @@ this.UnitData = function(type) {
   this.render = function() {
     var entity = Crafty.e(this.stats.type);
     entity.addStats(this.stats);
+    for (var i in this.components) {
+      entity.addComponent(this.components[i]);
+    }
+    if (this.location.x !== undefined) {
+      entity.at(this.location.x, this.location.y);
+    }
     return entity;
   };
 

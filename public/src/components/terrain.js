@@ -97,9 +97,6 @@ Crafty.c('Terrain', {
   init: function() {
     this.requires('Actor, Clickable');
     this.z = 80;
-    this.attr({
-      stats: {},
-    });
   },
 
   select: function() {
