@@ -108,70 +108,6 @@ Crafty.scene('Game', function() {
     colourHeightMap(location_map, "shadow height map");
   }
 
-  function createNewUnit(type, side, location, name, quantity) {
-    var unit = Crafty.e(type);
-    unit.at(location.x, location.y);
-    unit.pick_side(side)
-      ;
-    unit.name = name;
-    unit.quantity = quantity;
-    return unit;
-  }
-
-  function createUnitFromFaction(faction_name, faction, side, location, index) {
-    var name = faction.units[index].name;
-    var quantity = faction.units[index].quantity;
-    var type = faction.units[index].type;
-    var sprite = faction.sprites[type];
-    if (sprite === undefined) {
-      // @TODO Currently relying on unit.pickSide() code to add a sprite
-    }
-    var new_unit = createNewUnit(type, side, location, name, quantity);
-    if (sprite) new_unit.addComponent(sprite);
-    return new_unit;
-  }
-
-  function addPlayers() {
-    // Player character, placed on the grid
-    function getStartY(side, max_units_per_column) {
-      var supply_road = Game.player_supply_roads[side][0];
-      var y = supply_road[supply_road.length - 1].y;
-      var min_y = Math.max(y - Math.floor(max_units_per_column/2), 0);
-      var max_y = Math.min(min_y, Game.map_grid.height - max_units_per_column);
-      return max_y;
-    }
-
-    function addUnits(side, x_value) {
-      var faction = Factions[Game.factions[side]];
-      var units_left = faction.units.length;
-      var current_index = 0;
-      var column = 0;
-      while (units_left > 0) {
-        var max_units_per_column = 3;
-        for (var i = 0; i<max_units_per_column; i++) {
-          var y = getStartY(side, max_units_per_column);
-          var spot = {x: x_value + column, y: y + i};
-          if (!Game.terrain[spot.x][spot.y].has('Water')) {
-            createUnitFromFaction(Game.factions[side], faction, side, spot, current_index);
-            units_left -= 1;
-            current_index += 1;
-            if (!units_left) break;
-          }
-        }
-        if (x_value == 0) {
-          column += 1;
-        } else {
-          column -= 1;
-        }
-      }
-    }
-
-    this.player = Crafty.e('PlayerCharacter')
-    this.player.at(0, 0);
-    addUnits(Game.FIRST_PLAYER, 0);
-    addUnits(Game.SECOND_PLAYER, Game.map_grid.width - 1);
-  }
-
   function addRoadGraphics() {
     var roads = Crafty('Road').get();
     for (var i=0; i<roads.length; i++) {
@@ -334,13 +270,12 @@ Crafty.scene('Game', function() {
       LineOfSight.clearFog();
     }
 
-    //addPlayers();
-    buildUnitsFromData(game_data.starting_units);
-
     addRoadGraphics();
     colourHeightMap(Game.location);
     colourWater();
     divideMap(3);
+
+    buildUnitsFromData(game_data.starting_units);
 
     Victory.reset();
     Game.select(Crafty('Unit').get(0));
