@@ -221,7 +221,7 @@ Crafty.scene('Game', function() {
     // Player character, placed on the grid
     function getStartY(side, max_units_per_column) {
       var supply_road = Game.player_supply_roads[side][0];
-      var y = supply_road[supply_road.length - 1].at().y;
+      var y = supply_road[supply_road.length - 1].y;
       var min_y = Math.max(y - Math.floor(max_units_per_column/2), 0);
       var max_y = Math.min(min_y, Game.map_grid.height - max_units_per_column);
       return max_y;
@@ -279,14 +279,10 @@ Crafty.scene('Game', function() {
         if (typeof terrain_data == 'string') {
           var terrain = Crafty.e(terrain_data);
         } else if (typeof terrain_data == 'object') {
-          // test!
-          if (terrain_data.type == 'Water' || terrain_data.type == 'Farm' || terrain_data.type == 'Grass' || terrain_data.type == 'Tree' || terrain_data.type == 'Road' || terrain_data.type == 'Bridge' || terrain_data.type == 'Village') {
-            var terrain_object = Terrain.create(terrain_data.type, terrain_data);
-            var terrain = Terrain.render(terrain_object);
-          } else {
-            var terrain = Crafty.e(terrain_data.type);
-            terrain.addStats(terrain_data);
-          }
+          var terrain_object = Terrain.create(terrain_data.type, terrain_data);
+          var terrain = Terrain.render(terrain_object);
+          //var terrain = Crafty.e(terrain_data.type);
+          //terrain.addStats(terrain_data);
         } else {
           throw "TerrainInvalid: Must be object or string.";
         }
@@ -409,23 +405,16 @@ Crafty.scene('Game', function() {
     var map_data = map_creator.buildNewMap(Game);
     Game.terrain_type = map_data.terrain_type;
     Game.height_map = map_data.height_map;
-    /*
-    buildEmptyGameData();
-    addWater(Game.location, this.occupied);
-    //var villages = addVillages(6, this.occupied);
-    var village_locations = addVillages(6, this.occupied);
-    addFarms(village_locations);
-    addTrees(Game.location);
-    addGrass();
-    */
+    Game.player_supply_roads = map_data.player_supply_roads;
+    Game.supply_route = map_data.supply_route;
 
     buildTerrainFromLoad();
     buildTerrainData();
 
-    addSupplyRoads(1);
-    addRoadsBetweenVillages();
+    //addSupplyRoads(1);
+    //addRoadsBetweenVillages();
     //addSupplyRoads(1, 1);
-    buildTerrainFromLoad();
+    //buildTerrainFromLoad();
 
     if (Game.options && Game.options.fog_of_war) {
       shadowHeightMap(Game.location);

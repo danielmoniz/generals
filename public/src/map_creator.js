@@ -30,6 +30,16 @@ var MapCreator = function() {
     //this.updateBuildDifficultyData(options, this.Game.terrain_type);
     this.buildTerrainData(options, this.Game.terrain_type);
     this.addSupplyRoads(options, village_locations, 1);
+    // test!
+    for (var x=0; x<this.Game.terrain_type; x++) {
+      for (var y=0; y<this.Game.terrain_type[x]; y++) {
+        var terrain = this.Game.terrain_type[x][y];
+        if (terrain.is_supply_route) {
+          console.log(x + ", " + y);
+        }
+      }
+    }
+    this.addRoadsBetweenVillages(options, village_locations);
     /*
     buildTerrainFromLoad();
 
@@ -56,6 +66,9 @@ var MapCreator = function() {
    var map_data = {};
    map_data.terrain_type = this.Game.terrain_type;
    map_data.height_map = this.Game.height_map;
+   map_data.player_supply_roads = this.Game.player_supply_roads;
+   map_data.supply_route = this.Game.supply_route;
+
    return map_data;
   };
 
@@ -190,8 +203,6 @@ var MapCreator = function() {
             var farm_obj = Terrain.create("Farm");
             farm_obj.side = this.getMapSide(options, x);
             this.Game.terrain_type[x][y] = farm_obj;
-            console.log("farm_obj.side");
-            console.log(farm_obj.side);
           }
         }
       }
@@ -271,7 +282,7 @@ var MapCreator = function() {
           entity_obj.is_supply_route = true;
         }
         //this.Game.terrain[x][y] = entity;
-        road.push(entity_obj);
+        //road.push(entity_obj);
 
         entity_obj.type = "Road";
       }
@@ -288,8 +299,18 @@ var MapCreator = function() {
     if (left_or_right === undefined) return false;
     if (left_or_right == "left") {
       var start_village = village_locations[0];
+      for (var i in village_locations) {
+        if (village_locations[i].x < start_village.x) {
+          start_village = village_locations[i];
+        }
+      }
     } else {
       var start_village = village_locations[village_locations.length - 1];
+      for (var i in village_locations) {
+        if (village_locations[i].x > start_village.x) {
+          start_village = village_locations[i];
+        }
+      }
     }
     if (start_village == undefined) return false;
     // cannot have supply village on end of map
@@ -328,7 +349,7 @@ var MapCreator = function() {
           var end_location = village_locations[b];
           var start = this.Game.terrain_build_graph.grid[start_village.x][start_village.y];
           var end = this.Game.terrain_build_graph.grid[end_location.x][end_location.y];
-          var result = options.pathfind.search(Game.terrain_build_graph, start, end);
+          var result = options.pathfind.search(this.Game.terrain_build_graph, start, end);
           var total_cost = Pathing.totalCost(result);
           if (least_cost === undefined || total_cost < least_cost) {
             closest = result;
@@ -351,6 +372,8 @@ var MapCreator = function() {
     // @TODO Save the supply end point locations, but nothing else
     for (var i = 0 + offset; i < max_roads; i++) {
       var new_supply_road = this.addSupplyRoad(options, village_locations, 'left');
+      console.log("new_supply_road");
+      console.log(new_supply_road);
       this.Game.player_supply_roads[0].push(new_supply_road);
     }
     var left_supply_route = this.Game.player_supply_roads[0][0][this.Game.player_supply_roads[0][0].length - 1];
@@ -433,24 +456,20 @@ var MapCreator = function() {
   this.buildTerrainData = function(options, terrain_list) {
     // build Game.terrain Graph for pathfinding purposes
     var terrain = [];
-    //var terrain_type = [];
     var terrain_difficulty = [];
     var terrain_defense_bonus = [];
     var terrain_build_difficulty = [];
     var terrain_supply = [];
-    for (var x = 0; x < options.map_grid.width; x++) {
+
+    for (var x = 0; x < terrain_list.length; x++) {
       terrain[x] = [];
-      //terrain_type[x] = [];
       terrain_defense_bonus[x] = [];
       terrain_difficulty[x] = [];
       terrain_build_difficulty[x] = [];
       terrain_supply[x] = [];
-    }
 
-    for (var x = 0; x < terrain_list.length; x++) {
       for (var y = 0; y < terrain_list[x].length; y++) {
         terrain[x][y] = terrain_list[x][y];
-        //terrain_type[terrain_list[i].getX()][terrain_list[i].getY()] = terrain_list[i].type;
         terrain_difficulty[x][y] = terrain_list[x][y].move_difficulty;
         terrain_defense_bonus[x][y] = terrain_list[x][y].defense_bonus;
         terrain_build_difficulty[x][y] = terrain_list[x][y].build_over;
