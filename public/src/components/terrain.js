@@ -4,27 +4,23 @@ this.Terrain = function(type, stats) {
 
   this.terrain_data = {
     "Water": {
-      type: "Water", 
       move_difficulty: 0, 
       build_over: 8,
       defense_bonus: 0,
       colour: { r: 0, g: 128, b: 255 },
     },
     "Grass": {
-      type: "Grass", 
       move_difficulty: 1, 
       build_over: 1,
       defense_bonus: 1,
     },
     "Tree": {
-        type: "Tree", 
         move_difficulty: 2, 
         build_over: 3,
         defense_bonus: 1.05,
     },
 
     "Farm": {
-      type: "Farm",
       build_over: 1,
       move_difficulty: 1.2,
       defense_bonus: 1,
@@ -33,7 +29,6 @@ this.Terrain = function(type, stats) {
       colour: { r: 196, g: 196, b: 0 },
     },
     "Village": {
-      type: "Village", 
       move_difficulty: 0.9,
       build_over: 0.01,
       defense_bonus: 1.25,
@@ -43,7 +38,6 @@ this.Terrain = function(type, stats) {
     },
 
     "Road": {
-        type: "Road",
         move_difficulty: 0.75,
         build_over: 0.01,
         defense_bonus: 1,
@@ -52,7 +46,6 @@ this.Terrain = function(type, stats) {
     },
     "Bridge": {
       'parent': 'Road',
-        type: "Bridge",
         move_difficulty: 1,
         build_over: 0.02 ,
         defense_bonus: 1.5,
