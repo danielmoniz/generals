@@ -12,7 +12,15 @@ Battle = {
     var quantity = 0;
     for (var i=0; i<units.length; i++) {
       if (!units[i]) console.log(units[i]);
-      quantity += units[i].getActive();
+      var unit = units[i];
+      if (unit === undefined) {
+        console.log('Unit is not defined!');
+        console.log('Unit number (in tile): {0}'.format(i));
+        continue;
+      }
+      if (unit !== undefined) {
+        quantity += unit.getActive();
+      }
     }
     return quantity;
   },
@@ -116,19 +124,17 @@ Crafty.c('Battle', {
   unitDead: function(unit) {
     if (unit.battle_side == Battle.ATTACKER) {
       if (this.attacker && this.attacker.is && this.attacker.is(unit)) delete this.attacker;
-      var dead_index = undefined;
-      for (var i=0; i<this.attackers.length; i++) {
+      for (var i=this.attackers.length - 1; i>=0; i--) {
         if (!this.attackers[i] || this.attackers[i].is(unit)) {
-          dead_index = i;
-          delete this.attackers[i];
-          break;
+          this.attackers.splice(i, 1);
+          //delete this.attackers[i];
         }
       }
     } else if (unit.battle_side == Battle.DEFENDER) {
-      for (var i=0; i<this.defenders.length; i++) {
+      for (var i=this.defenders.length - 1; i>=0; i--) {
         if (!this.defenders[i] || this.defenders[i].is(unit)) {
-          delete this.defenders[i];
-          break;
+          this.defenders.splice(i, 1);
+          //delete this.defenders[i];
         }
       }
     } else {
