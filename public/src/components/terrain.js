@@ -104,38 +104,6 @@ Crafty.c('Terrain', {
     });
   },
 
-  addStats: function(dict) {
-    this.attr(dict);
-    for (var key in dict) {
-      this.stats[key] = dict[key];
-    }
-
-    if (dict['colour'] !== undefined) {
-      //console.log("dict['colour']");
-      //console.log(dict['colour']);
-      if (typeof dict['colour'] == 'object') {
-        var colour_string = Utility.getColourStringFromObject(dict['colour']);
-      } else {
-        var colour_string = dict['colour'];
-      }
-      this.color(colour_string);
-    }
-
-    return this;
-  },
-
-  addStat: function(name, value) {
-    var obj = {};
-    obj[name] = value;
-    this.addStats(obj);
-    return this;
-  },
-
-  changeColour: function(colour_string) {
-    this.addStats({ 'colour': colour_string });
-    return this;
-  },
-
   select: function() {
     this.report();
   },
