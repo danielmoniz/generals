@@ -158,9 +158,11 @@ var MapCreator = function() {
     //generateRandomEntities('Village', 'random', 
     // Place entity randomly on the map using noise
     var villages = [];
+    // @TODO Ensure both sides have a map side/third equal in size
     for (var i=0; i<3; i++) {
-      var min_x = i * (options.map_grid.width / 3);
-      var max_x = (i + 1) * (options.map_grid.width / 3);
+      var width = Math.floor(options.map_grid.width / 3);
+      var min_x = i * width;
+      var max_x = (i + 1) * width;
       var new_villages = this.addVillagesToSection(options, estimated_villages / 3, min_x, max_x);
 
       villages = villages.concat(new_villages);
