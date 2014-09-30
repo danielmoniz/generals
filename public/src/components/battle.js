@@ -123,26 +123,21 @@ Crafty.c('Battle', {
 
   unitDead: function(unit) {
     if (unit.battle_side == Battle.ATTACKER) {
+      var units = this.attackers;
       if (this.attacker && this.attacker.is && this.attacker.is(unit)) delete this.attacker;
-      for (var i=this.attackers.length - 1; i>=0; i--) {
-        if (!this.attackers[i] || this.attackers[i].is(unit)) {
-          this.attackers.splice(i, 1);
-          //delete this.attackers[i];
-        }
-      }
     } else if (unit.battle_side == Battle.DEFENDER) {
-      for (var i=this.defenders.length - 1; i>=0; i--) {
-        if (!this.defenders[i] || this.defenders[i].is(unit)) {
-          this.defenders.splice(i, 1);
-          //delete this.defenders[i];
-        }
-      }
+      var units = this.defenders;
     } else {
       console.log(unit);
       console.log(unit.battle_side);
       console.log(Battle.ATTACKER);
       console.log(Battle.DEFENDER);
       throw "NoBattleSide: unit had battle_side {0}. Needs to be 'attacker' or 'defender'.".format(unit.battle_side);
+    }
+    for (var i=units.length - 1; i>=0; i--) {
+      if (!units[i] || units[i].is(unit)) {
+        units.splice(i, 1);
+      }
     }
   },
 
