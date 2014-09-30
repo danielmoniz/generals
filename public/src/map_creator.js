@@ -19,23 +19,20 @@ var MapCreator = function() {
   this.buildNewMap = function(options) {
     this.Game.height_map = this.generateHeightMap(options, options.location);
     this.buildEmptyGameData(options, this.Game);
-    this.addWater(options, options.location);
+    this.addWater(options, this.Game, options.location);
 
-    var village_locations = this.addVillages(options, 6);
-    this.addFarms(options, village_locations);
-    this.addTrees(options, options.location);
-    this.addGrass(options);
+    var village_locations = this.addVillages(options, this.Game, 6);
+    this.addFarms(options, this.Game, village_locations);
+    this.addTrees(options, this.Game, options.location);
+    this.addGrass(options, this.Game);
 
     //this.updateBuildDifficultyData(options, this.Game.terrain_type);
     this.buildTerrainData(options, this.Game, this.Game.terrain_type);
-    this.addSupplyRoads(options, village_locations, 1);
-    this.addRoadsBetweenVillages(options, village_locations);
+    this.addSupplyRoads(options, this.Game, village_locations, 1);
+    this.addRoadsBetweenVillages(options, this.Game, village_locations);
 
     this.Game.starting_units = this.addStartingUnits(options, this.Game);
     /*
-    addRoadsBetweenVillages(village_locations);
-    //addSupplyRoads(1, 1);
-    buildTerrainFromLoad();
 
     if (Game.options && Game.options.fog_of_war) {
       shadowHeightMap(Game.location);
@@ -88,22 +85,22 @@ var MapCreator = function() {
     return height_map;
   };
 
-  this.addWater = function(options, location_map) {
+  this.addWater = function(options, game, location_map) {
     var water_level = location_map.water.water_level;
     for (var x = 0; x < options.map_grid.width; x++) {
       for (var y = 0; y < options.map_grid.height; y++) {
-        var height = this.Game.height_map[x][y];
+        var height = game.height_map[x][y];
         if (height >= 1 - water_level) {
-          var data = { height: this.Game.height_map[x][y] };
+          var data = { height: game.height_map[x][y] };
           var water_obj = new Terrain("Water").add(data).stats;
-          this.Game.terrain_type[x][y] = water_obj;
-          this.Game.occupied[x][y] = true;
+          game.terrain_type[x][y] = water_obj;
+          game.occupied[x][y] = true;
         }
       }
     }
   };
 
-  this.addVillagesToSection = function(options, estimated_villages, min_x, max_x) {
+  this.addVillagesToSection = function(options, game_object, estimated_villages, min_x, max_x) {
     var village_locations = [];
     while (village_locations.length < estimated_villages) {
       for (var x = min_x; x < max_x; x++) {
@@ -114,17 +111,17 @@ var MapCreator = function() {
           var probability = estimated_villages / num_tiles;
           var value = Math.random();
 
-          if (value >= 1 - probability && !this.Game.occupied[x][y]) {
-            var color = Math.ceil(this.Game.height_map[x][y] * 255);
+          if (value >= 1 - probability && !game_object.occupied[x][y]) {
+            var color = Math.ceil(game_object.height_map[x][y] * 255);
 
-            this.Game.occupied[x][y] = true;
+            game_object.occupied[x][y] = true;
             village_locations.push({ x: x, y: y });
             var stats = {
-              height: this.Game.height_map[x][y], 
+              height: game_object.height_map[x][y], 
               side: this.getMapSide(options, x)
             };
             var village_obj = new Terrain("Village").add(stats).stats;
-            this.Game.terrain_type[x][y] = village_obj;
+            game_object.terrain_type[x][y] = village_obj;
 
             if (village_locations.length >= 1 + estimated_villages) return village_locations;
           }
@@ -134,7 +131,7 @@ var MapCreator = function() {
     return village_locations;
   };
 
-  this.addVillages = function(options, estimated_villages) {
+  this.addVillages = function(options, game_object, estimated_villages) {
     //generateRandomEntities('Village', 'random', 
     // Place entity randomly on the map using noise
     var villages = [];
@@ -143,7 +140,7 @@ var MapCreator = function() {
       var width = Math.floor(options.map_grid.width / 3);
       var min_x = i * width;
       var max_x = (i + 1) * width;
-      var new_villages = this.addVillagesToSection(options, estimated_villages / 3, min_x, max_x);
+      var new_villages = this.addVillagesToSection(options, game_object, estimated_villages / 3, min_x, max_x);
 
       villages = villages.concat(new_villages);
     }
@@ -162,7 +159,7 @@ var MapCreator = function() {
     }
   };
 
-  this.addFarms = function(options, village_locations) {
+  this.addFarms = function(options, game_object, village_locations) {
 
     for (var i in village_locations) {
       var village = village_locations[i];
@@ -179,39 +176,39 @@ var MapCreator = function() {
           var distance = Utility.getDistance(center, { x: x, y: y });
           //var probability = Math.pow(factor, distance + 1);
           var probability = Math.pow(factor, Math.pow(distance, distance));
-          if (!this.Game.occupied[x][y] && Math.random() < probability) {
+          if (!game_object.occupied[x][y] && Math.random() < probability) {
 
-            this.Game.occupied[x][y] = true;
+            game_object.occupied[x][y] = true;
             //var data = { side: this.getMapSide(options, x) };
             var data = { side: this.getMapSide(options, x )};
             var farm_obj = new Terrain("Farm").add(data).stats;
             //farm_obj.side = this.getMapSide(options, x);
-            this.Game.terrain_type[x][y] = farm_obj;
+            game_object.terrain_type[x][y] = farm_obj;
           }
         }
       }
     }
   };
 
-  this.addTrees = function(options, location_map) {
+  this.addTrees = function(options, game_object, location_map) {
     var trees = location_map.trees;
-    this.generateRandomEntities(options, 'Tree', options.noise[trees.noise], trees.size, trees.freq, true);
+    this.generateRandomEntities(options, game_object, 'Tree', options.noise[trees.noise], trees.size, trees.freq, true);
   };
 
-  this.addGrass = function(options) {
+  this.addGrass = function(options, game_object) {
     // MUST GO LAST - fill everything else with grass
     for (var x = 0; x < options.map_grid.width; x++) {
       for (var y = 0; y < options.map_grid.height; y++) {
-        if (!this.Game.occupied[x][y]) {
+        if (!game_object.occupied[x][y]) {
           /*
           var grass = Crafty.e('Grass');
           grass.at(x, y);
           grass.setHeight();
           */
 
-          var stats = { height: this.Game.height_map[x][y] };
+          var stats = { height: game_object.height_map[x][y] };
           var grass_obj = new Terrain("Grass").add(stats).stats;
-          this.Game.terrain_type[x][y] = grass_obj;
+          game_object.terrain_type[x][y] = grass_obj;
         }
       }
     }
@@ -322,7 +319,7 @@ var MapCreator = function() {
   };
 
 
-  this.addRoadsBetweenVillages = function(options, village_locations) {
+  this.addRoadsBetweenVillages = function(options, game_object, village_locations) {
     if (village_locations.length >= 2) {
       for (var a = 0; a < village_locations.length; a++) {
         var start_village = village_locations[a];
@@ -331,9 +328,9 @@ var MapCreator = function() {
         for (var b = a; b < village_locations.length; b++) {
           if (a == b) continue;
           var end_location = village_locations[b];
-          var start = this.Game.terrain_build_graph.grid[start_village.x][start_village.y];
-          var end = this.Game.terrain_build_graph.grid[end_location.x][end_location.y];
-          var result = options.pathfind.search(this.Game.terrain_build_graph, start, end);
+          var start = game_object.terrain_build_graph.grid[start_village.x][start_village.y];
+          var end = game_object.terrain_build_graph.grid[end_location.x][end_location.y];
+          var result = options.pathfind.search(game_object.terrain_build_graph, start, end);
           var total_cost = Pathing.totalCost(result);
           if (least_cost === undefined || total_cost < least_cost) {
             closest = result;
@@ -347,7 +344,7 @@ var MapCreator = function() {
     }
   };
 
-  this.addSupplyRoads = function(options, village_locations, max_roads, offset) { // <-- requires refactor
+  this.addSupplyRoads = function(options, game_object, village_locations, max_roads, offset) { // <-- requires refactor
     // Entities are placed left to right, so the first will be on the left.
     if (max_roads === undefined) max_roads = 1;
     if (offset === undefined) offset = 0;
@@ -356,21 +353,21 @@ var MapCreator = function() {
     // @TODO Save the supply end point locations, but nothing else
     for (var i = 0 + offset; i < max_roads; i++) {
       var new_supply_road = this.addSupplyRoad(options, village_locations, 'left');
-      this.Game.player_supply_roads[0].push(new_supply_road);
+      game_object.player_supply_roads[0].push(new_supply_road);
     }
-    var left_supply_route = this.Game.player_supply_roads[0][0][this.Game.player_supply_roads[0][0].length - 1];
-    this.Game.supply_route[0] = left_supply_route;
+    var left_supply_route = game_object.player_supply_roads[0][0][game_object.player_supply_roads[0][0].length - 1];
+    game_object.supply_route[0] = left_supply_route;
 
     for (var i = village_locations.length - 1 - offset; i > village_locations.length - 1 - max_roads; i--) {
       var new_supply_road = this.addSupplyRoad(options, village_locations, 'right');
-      this.Game.player_supply_roads[1].push(new_supply_road);
+      game_object.player_supply_roads[1].push(new_supply_road);
     }
-    var right_supply_route = this.Game.player_supply_roads[1][0][this.Game.player_supply_roads[1][0].length - 1];
-    this.Game.supply_route[1] = right_supply_route;
+    var right_supply_route = game_object.player_supply_roads[1][0][game_object.player_supply_roads[1][0].length - 1];
+    game_object.supply_route[1] = right_supply_route;
 
 
-    var left = this.Game.supply_route[0];
-    var right = this.Game.supply_route[1];
+    var left = game_object.supply_route[0];
+    var right = game_object.supply_route[1];
   };
 
   /*
@@ -380,7 +377,7 @@ var MapCreator = function() {
    * frequency: // relative, between 0 and 1; larger number means more lakes.
    * occupied: the array to update when entities are placed
    */
-  this.generateRandomEntities = function(options, entity_name, noise, size, frequency, update_occupied) {
+  this.generateRandomEntities = function(options, game_object, entity_name, noise, size, frequency, update_occupied) {
     // Place entity randomly on the map using noise
     options.noise.seed(Math.random());
     for (var x = 0; x < options.map_grid.width; x++) {
@@ -395,19 +392,19 @@ var MapCreator = function() {
           var noise_value = Math.abs(value);
         }
         
-        if (noise_value >= 1 - frequency && !this.Game.occupied[x][y]) {
-          var stats = { height: this.Game.height_map[x][y] };
+        if (noise_value >= 1 - frequency && !game_object.occupied[x][y]) {
+          var stats = { height: game_object.height_map[x][y] };
           var entity_obj = new Terrain(entity_name).add(stats).stats;
-          this.Game.terrain_type[x][y] = entity_obj;
+          game_object.terrain_type[x][y] = entity_obj;
           if (update_occupied) {
-            this.Game.occupied[x][y] = true;
+            game_object.occupied[x][y] = true;
           }
         }
       }
     }
   };
 
-  this.updateBuildDifficultyData = function(options, terrain_list) {
+  this.updateBuildDifficultyData = function(options, game_object, terrain_list) {
     // update/create build difficulty Graph for pathfinding purposes
     var terrain_build_difficulty = [];
 
@@ -420,12 +417,12 @@ var MapCreator = function() {
       }
     }
 
-    this.Game.terrain_build_difficulty = terrain_build_difficulty;
-    this.Game.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
-    return this.Game.terrain_build_graph;
+    game_object.terrain_build_difficulty = terrain_build_difficulty;
+    game_object.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
+    return game_object.terrain_build_graph;
   };
 
-  this.buildTerrainData = function(options, game, terrain_list) {
+  this.buildTerrainData = function(options, game_object, terrain_list) {
     // build Game.terrain Graph for pathfinding purposes
     var terrain_difficulty = [];
     var terrain_defense_bonus = [];
@@ -448,10 +445,10 @@ var MapCreator = function() {
     }
 
     //Game.terrain_type = terrain_type;
-    game.terrain_difficulty = terrain_difficulty;
-    game.terrain_defense_bonus = terrain_defense_bonus;
-    game.terrain_build_difficulty = terrain_build_difficulty;
-    game.terrain_supply = terrain_supply;
+    game_object.terrain_difficulty = terrain_difficulty;
+    game_object.terrain_defense_bonus = terrain_defense_bonus;
+    game_object.terrain_build_difficulty = terrain_build_difficulty;
+    game_object.terrain_supply = terrain_supply;
 
     // Uncomment below for Supply overlay
     /*
@@ -469,10 +466,10 @@ var MapCreator = function() {
     }
     */
 
-    game.terrain_graph = new options.graph_ftn(terrain_difficulty);
-    game.terrain_defense_bonus_graph = new options.graph_ftn(terrain_defense_bonus);
-    game.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
-    game.terrain_supply_graph = new options.graph_ftn(terrain_supply);
+    game_object.terrain_graph = new options.graph_ftn(terrain_difficulty);
+    game_object.terrain_defense_bonus_graph = new options.graph_ftn(terrain_defense_bonus);
+    game_object.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
+    game_object.terrain_supply_graph = new options.graph_ftn(terrain_supply);
   };
 
   this.createUnitFromFaction = function(faction_name, faction, side, location, index) {
@@ -491,10 +488,10 @@ var MapCreator = function() {
     return new_unit_data;
   };
 
-  this.addStartingUnits = function(options, game) {
+  this.addStartingUnits = function(options, game_object) {
 
     this.getStartY = function(side, max_units_per_column) {
-      var supply_road = game.player_supply_roads[side][0];
+      var supply_road = game_object.player_supply_roads[side][0];
       var y = supply_road[supply_road.length - 1].y;
       var min_y = Math.max(y - Math.floor(max_units_per_column/2), 0);
       var max_y = Math.min(min_y, options.map_grid.height - max_units_per_column);
@@ -512,7 +509,7 @@ var MapCreator = function() {
         for (var i = 0; i<max_units_per_column; i++) {
           var y = this.getStartY(side, max_units_per_column);
           var spot = {x: x_value + column, y: y + i};
-          var local_terrain = game.terrain_type[spot.x][spot.y].type;
+          var local_terrain = game_object.terrain_type[spot.x][spot.y].type;
           if (local_terrain == 'Water' || local_terrain.type == 'Water') {
           } else {
             var unit_obj = this.createUnitFromFaction(options.factions[side], faction, side, spot, current_index);
@@ -544,7 +541,6 @@ var MapCreator = function() {
   this.createNewUnitData = function(faction_data, side, location) {
 
     var unit_object = new UnitData(faction_data.type, faction_data);
-    //unit.pick_side(side);
     unit_object.add({ side: side });
     unit_object.setLocation(location);
     return unit_object;
