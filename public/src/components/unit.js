@@ -1,3 +1,75 @@
+
+this.UnitData = function(type) {
+  this.type = type;
+
+  this.unit_data = {
+
+    "Unit": {
+      z: 100,
+      max_supply: 3,
+      battle: false, 
+      side: 0, 
+      supply_remaining: this.max_supply,
+      alive: true,
+      injured: 0,
+      active: true,
+      performed_actions: [],
+    },
+
+    "Cavalry": {
+      parent: 'Unit',
+      quantity: 0,
+      injured: 0,
+      name: "NAME ME",
+      type: 'Cavalry',
+      movement: 8,
+      max_sight: 8,
+    },
+
+    "Infantry": {
+      parent: 'Unit',
+      quantity: 0,
+      injured: 0,
+      name: "NAME ME",
+      type: 'Infantry',
+      movement: 4,
+      max_sight: 8,
+    },
+
+  };
+
+  var base_stats = this.unit_data[this.type];
+  if (base_stats.parent) {
+    var parent_stats = base_stats.parent;
+    base_stats = $.extend({}, parent_stats, base_stats);
+  }
+  base_stats.type = this.type;
+  this.stats = base_stats;
+
+  /*
+   * Creates a complete set of stats for a given entity type.
+   */
+  this.add = function(stats) {
+    var combined_stats = this.stats;
+    if (stats !== undefined) {
+      combined_stats = $.extend({}, this.stats, stats);
+    }
+    this.stats = combined_stats;
+    return this;
+  };
+
+  /*
+   * Creates a Crafty object based on a COMPLETE set of stats.
+   * Assumes that .type exists.
+   */
+  this.render = function() {
+    var entity = Crafty.e(this.stats.type);
+    entity.addStats(this.stats);
+    return entity;
+  };
+
+};
+
 Unit = {
   getUnitsBySide: function(side) {
     var units = Crafty('Unit').get();
