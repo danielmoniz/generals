@@ -43,12 +43,12 @@ Victory = {
       var troop_factor = total_troops * this.troop_values[i];
 
       var farms = this.getFarms(i);
-      var total_farms = farms[i].length;
+      var total_farms = farms.length;
       var total_unpillaged_farms = this.getUnpillagedFarms(i).length;
       var farm_factor = total_unpillaged_farms * this.farm_values[i];
 
       var villages = this.getVillages(i);
-      var total_villages = villages[i].length;
+      var total_villages = villages.length;
       var total_unpillaged_villages = this.getUnsackedVillages(i).length;
       var village_factor = total_unpillaged_villages * this.village_values[i];
 
