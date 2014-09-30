@@ -15,6 +15,7 @@ this.Terrain = function(type, stats) {
   };
 
   this.terrain_data = {
+
     "Water": {
       move_difficulty: 0, 
       build_over: 8,
