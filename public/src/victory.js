@@ -50,9 +50,13 @@ Victory = {
       var villages = this.getVillages(i);
       var total_villages = villages.length;
       var total_unpillaged_villages = this.getUnsackedVillages(i).length;
+      console.log("total_unpillaged_villages");
+      console.log(total_unpillaged_villages);
       var village_factor = total_unpillaged_villages * this.village_values[i];
 
       this.will_to_fight[i] = 100 * troop_factor * farm_factor * village_factor;
+      console.log("village_factor");
+      console.log(village_factor);
     }
     Output.updateVictoryBar();
   },

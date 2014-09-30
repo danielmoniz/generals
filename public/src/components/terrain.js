@@ -1,87 +1,96 @@
-this.Terrain = {
-  "Water": {
-    type: "Water", 
-    move_difficulty: 0, 
-    build_over: 8,
-    defense_bonus: 0,
-    colour: { r: 0, g: 128, b: 255 },
-  },
-  "Grass": {
-    type: "Grass", 
-    move_difficulty: 1, 
-    build_over: 1,
-    defense_bonus: 1,
-  },
-  "Tree": {
-      type: "Tree", 
-      move_difficulty: 2, 
-      build_over: 3,
-      defense_bonus: 1.05,
-  },
-  "Farm": {
-    type: "Farm",
-    build_over: 1,
-    move_difficulty: 1.2,
-    defense_bonus: 1,
-    alpha: 0.5,
-    provides_supply: 2,
-    colour: { r: 196, g: 196, b: 0 },
-  },
-  "Village": {
-    type: "Village", 
-    move_difficulty: 0.9,
-    build_over: 0.01,
-    defense_bonus: 1.25,
-    supply: 1,
-    provides_supply: 4,
-    supply_remaining: 6,
-  },
 
-  "Road": {
-      type: "Road",
-      move_difficulty: 0.75,
-      build_over: 0.01,
+this.Terrain = function(type, stats) {
+  this.type = type;
+
+  this.terrain_data = {
+    "Water": {
+      type: "Water", 
+      move_difficulty: 0, 
+      build_over: 8,
+      defense_bonus: 0,
+      colour: { r: 0, g: 128, b: 255 },
+    },
+    "Grass": {
+      type: "Grass", 
+      move_difficulty: 1, 
+      build_over: 1,
       defense_bonus: 1,
-      is_supply_route: false,
+    },
+    "Tree": {
+        type: "Tree", 
+        move_difficulty: 2, 
+        build_over: 3,
+        defense_bonus: 1.05,
+    },
+
+    "Farm": {
+      type: "Farm",
+      build_over: 1,
+      move_difficulty: 1.2,
+      defense_bonus: 1,
+      alpha: 0.5,
+      provides_supply: 2,
+      colour: { r: 196, g: 196, b: 0 },
+    },
+    "Village": {
+      type: "Village", 
+      move_difficulty: 0.9,
+      build_over: 0.01,
+      defense_bonus: 1.25,
       supply: 1,
-  },
-  "Bridge": {
-    'parent': 'Road',
-      type: "Bridge",
-      move_difficulty: 1,
-      build_over: 0.02 ,
-      defense_bonus: 1.5,
-      supply: 1,
-      z: 81,
-      colour: { r: 192, g: 192, b: 192 },
-  },
+      provides_supply: 4,
+      supply_remaining: 6,
+    },
+
+    "Road": {
+        type: "Road",
+        move_difficulty: 0.75,
+        build_over: 0.01,
+        defense_bonus: 1,
+        is_supply_route: false,
+        supply: 1,
+    },
+    "Bridge": {
+      'parent': 'Road',
+        type: "Bridge",
+        move_difficulty: 1,
+        build_over: 0.02 ,
+        defense_bonus: 1.5,
+        supply: 1,
+        z: 81,
+        colour: { r: 192, g: 192, b: 192 },
+    },
+  };
+
+  var base_stats = this.terrain_data[this.type];
+  if (base_stats.parent) {
+    var parent_stats = base_stats.parent;
+    base_stats = $.extend({}, parent_stats, base_stats);
+  }
+  base_stats.type = this.type;
+  this.stats = base_stats;
 
   /*
    * Creates a complete set of stats for a given entity type.
    */
-  create: function(type, stats) {
-    var base_stats = this[type];
-    if (this[type].parent) {
-      var parent_stats = this[type].parent;
-      base_stats = $.extend({}, parent_stats, base_stats);
-    }
-    base_stats['type'] = type;
-    var combined_stats = base_stats;
+  this.add = function(stats) {
+    var combined_stats = this.stats;
     if (stats !== undefined) {
-      combined_stats = $.extend({}, base_stats, stats);
+      combined_stats = $.extend({}, this.stats, stats);
     }
-    return combined_stats;
-  },
+    this.stats = combined_stats;
+    return this;
+  };
 
   /*
    * Creates a Crafty object based on a COMPLETE set of stats.
    * Assumes that .type exists.
    */
-  render: function(stats) {
-    var entity = Crafty.e(stats.type);
-    entity.addStats(stats);
+  this.render = function() {
+    var entity = Crafty.e(this.stats.type);
+    entity.addStats(this.stats);
     return entity;
-  },
+  };
 
 };
 

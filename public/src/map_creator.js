@@ -112,8 +112,8 @@ var MapCreator = function() {
       for (var y = 0; y < options.map_grid.height; y++) {
         var height = this.Game.height_map[x][y];
         if (height >= 1 - water_level) {
-          var water_obj = Terrain.create("Water");
-          water_obj.height = this.Game.height_map[x][y];
+          var data = { height: this.Game.height_map[x][y] };
+          var water_obj = new Terrain("Water").add(data).stats;
           this.Game.terrain_type[x][y] = water_obj;
           this.Game.occupied[x][y] = true;
         }
@@ -122,9 +122,8 @@ var MapCreator = function() {
   };
 
   this.addVillagesToSection = function(options, estimated_villages, min_x, max_x) {
-    var villages = [];
     var village_locations = [];
-    while (villages.length < estimated_villages) {
+    while (village_locations.length < estimated_villages) {
       for (var x = min_x; x < max_x; x++) {
         for (var y = 0; y < options.map_grid.height; y++) {
           var at_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
@@ -138,20 +137,19 @@ var MapCreator = function() {
 
             this.Game.occupied[x][y] = true;
             village_locations.push({ x: x, y: y });
-            var village_obj = Terrain.create("Village");
-            village_obj.height = this.Game.height_map[x][y];
-            village_obj.side = this.getMapSide(options, x);
+            var stats = {
+              height: this.Game.height_map[x][y], 
+              side: this.getMapSide(options, x)
+            };
+            var village_obj = new Terrain("Village").add(stats).stats;
             this.Game.terrain_type[x][y] = village_obj;
-            villages.push(village_obj);
 
-            if (villages.length >= 1 + estimated_villages) return village_locations;
-            if (villages.length >= 1 + estimated_villages) return villages;
+            if (village_locations.length >= 1 + estimated_villages) return village_locations;
           }
         }
       }
     }
     return village_locations;
-    return villages;
   };
 
   this.addVillages = function(options, estimated_villages) {
@@ -202,8 +200,10 @@ var MapCreator = function() {
           if (!this.Game.occupied[x][y] && Math.random() < probability) {
 
             this.Game.occupied[x][y] = true;
-            var farm_obj = Terrain.create("Farm");
-            farm_obj.side = this.getMapSide(options, x);
+            //var data = { side: this.getMapSide(options, x) };
+            var data = { side: this.getMapSide(options, x )};
+            var farm_obj = new Terrain("Farm").add(data).stats;
+            //farm_obj.side = this.getMapSide(options, x);
             this.Game.terrain_type[x][y] = farm_obj;
           }
         }
@@ -227,8 +227,8 @@ var MapCreator = function() {
           grass.setHeight();
           */
 
-          var grass_obj = Terrain.create("Grass");
-          grass_obj.height = this.Game.height_map[x][y];
+          var stats = { height: this.Game.height_map[x][y] };
+          var grass_obj = new Terrain("Grass").add(stats).stats;
           this.Game.terrain_type[x][y] = grass_obj;
         }
       }
@@ -288,7 +288,7 @@ var MapCreator = function() {
 
         entity_obj.type = "Road";
       }
-      entity_obj = Terrain.create(entity_obj.type, entity_obj);
+      entity_obj = new Terrain(entity_obj.type).add(entity_obj).stats;
       road.push({ x: x, y: y});
       this.Game.terrain_type[x][y] = entity_obj;
     }
@@ -374,8 +374,6 @@ var MapCreator = function() {
     // @TODO Save the supply end point locations, but nothing else
     for (var i = 0 + offset; i < max_roads; i++) {
       var new_supply_road = this.addSupplyRoad(options, village_locations, 'left');
-      console.log("new_supply_road");
-      console.log(new_supply_road);
       this.Game.player_supply_roads[0].push(new_supply_road);
     }
     var left_supply_route = this.Game.player_supply_roads[0][0][this.Game.player_supply_roads[0][0].length - 1];
@@ -426,8 +424,8 @@ var MapCreator = function() {
         }
         
         if (noise_value >= 1 - frequency && !this.Game.occupied[x][y]) {
-          var entity_obj = Terrain.create(entity_name);
-          entity_obj.height = this.Game.height_map[x][y];
+          var stats = { height: this.Game.height_map[x][y] };
+          var entity_obj = new Terrain(entity_name).add(stats).stats;
           this.Game.terrain_type[x][y] = entity_obj;
           if (update_occupied) {
             this.Game.occupied[x][y] = true;

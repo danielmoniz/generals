@@ -279,8 +279,8 @@ Crafty.scene('Game', function() {
         if (typeof terrain_data == 'string') {
           var terrain = Crafty.e(terrain_data);
         } else if (typeof terrain_data == 'object') {
-          var terrain_object = Terrain.create(terrain_data.type, terrain_data);
-          var terrain = Terrain.render(terrain_object);
+          var terrain_object = new Terrain(terrain_data.type).add(terrain_data);
+          var terrain = terrain_object.render();
           //var terrain = Crafty.e(terrain_data.type);
           //terrain.addStats(terrain_data);
         } else {
@@ -403,6 +403,7 @@ Crafty.scene('Game', function() {
 
     var map_creator = new MapCreator();
     var map_data = map_creator.buildNewMap(Game);
+    // @TODO run a load function on Game using the return data
     Game.terrain_type = map_data.terrain_type;
     Game.height_map = map_data.height_map;
     Game.player_supply_roads = map_data.player_supply_roads;
@@ -410,6 +411,14 @@ Crafty.scene('Game', function() {
 
     buildTerrainFromLoad();
     buildTerrainData();
+
+    /*
+    var farms = Crafty('Farm').get();
+    for (var i in farms) {
+      console.log("farms[i].side");
+      console.log(farms[i].side);
+    };
+    */
 
     //addSupplyRoads(1);
     //addRoadsBetweenVillages();
