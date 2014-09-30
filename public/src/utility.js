@@ -44,6 +44,15 @@ Utility = {
     return true;
   },
 
+
+  loadDataIntoObject: function(data, object) {
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) {
+        object[key] = data[key];
+      }
+    }
+  },
+
 }
 
 if (!String.prototype.format) {

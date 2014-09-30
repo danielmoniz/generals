@@ -2,6 +2,18 @@
 this.Terrain = function(type, stats) {
   this.type = type;
 
+  /*
+   * Creates a complete set of stats for a given entity type.
+   */
+  this.add = function(stats) {
+    var combined_stats = this.stats;
+    if (stats !== undefined) {
+      combined_stats = $.extend({}, this.stats, stats);
+    }
+    this.stats = combined_stats;
+    return this;
+  };
+
   this.terrain_data = {
     "Water": {
       move_difficulty: 0, 
@@ -63,17 +75,9 @@ this.Terrain = function(type, stats) {
   base_stats.type = this.type;
   this.stats = base_stats;
 
-  /*
-   * Creates a complete set of stats for a given entity type.
-   */
-  this.add = function(stats) {
-    var combined_stats = this.stats;
-    if (stats !== undefined) {
-      combined_stats = $.extend({}, this.stats, stats);
-    }
-    this.stats = combined_stats;
-    return this;
-  };
+  if (typeof stats !== 'undefined') {
+    this.add(stats);
+  }
 
   /*
    * Creates a Crafty object based on a COMPLETE set of stats.

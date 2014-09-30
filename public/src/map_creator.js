@@ -14,12 +14,11 @@ var MapCreator = function() {
   this.occupied = [];
   this.terrain_type = [];
   this.map_grid = {};
-  var Game = Game;
   this.options = Game;
 
   this.buildNewMap = function(options) {
     this.Game.height_map = this.generateHeightMap(options, options.location);
-    this.buildEmptyGameData(options);
+    this.buildEmptyGameData(options, this.Game);
     this.addWater(options, options.location);
 
     var village_locations = this.addVillages(options, 6);
@@ -28,17 +27,8 @@ var MapCreator = function() {
     this.addGrass(options);
 
     //this.updateBuildDifficultyData(options, this.Game.terrain_type);
-    this.buildTerrainData(options, this.Game.terrain_type);
+    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
     this.addSupplyRoads(options, village_locations, 1);
-    // test!
-    for (var x=0; x<this.Game.terrain_type; x++) {
-      for (var y=0; y<this.Game.terrain_type[x]; y++) {
-        var terrain = this.Game.terrain_type[x][y];
-        if (terrain.is_supply_route) {
-          console.log(x + ", " + y);
-        }
-      }
-    }
     this.addRoadsBetweenVillages(options, village_locations);
     /*
     buildTerrainFromLoad();
@@ -69,14 +59,16 @@ var MapCreator = function() {
    map_data.player_supply_roads = this.Game.player_supply_roads;
    map_data.supply_route = this.Game.supply_route;
 
-   return map_data;
+   return this.Game;
   };
 
-  this.buildEmptyGameData = function(options) {
-    this.Game.occupied = this.buildOccupied(options);
-    this.Game.terrain_type = [];
+  this.buildEmptyGameData = function(options, game) {
+    game.occupied = this.buildOccupied(options);
+    game.terrain_type = [];
+    game.terrain = [];
     for (var x=0; x < options.map_grid.width; x++) {
-      this.Game.terrain_type[x] = [];
+      game.terrain_type[x] = [];
+      game.terrain[x] = [];
     }
   };
 
@@ -292,7 +284,7 @@ var MapCreator = function() {
       road.push({ x: x, y: y});
       this.Game.terrain_type[x][y] = entity_obj;
     }
-    this.buildTerrainData(options, this.Game.terrain_type);
+    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
     return road;
   };
 
@@ -453,23 +445,20 @@ var MapCreator = function() {
     return this.Game.terrain_build_graph;
   };
 
-  this.buildTerrainData = function(options, terrain_list) {
+  this.buildTerrainData = function(options, game, terrain_list) {
     // build Game.terrain Graph for pathfinding purposes
-    var terrain = [];
     var terrain_difficulty = [];
     var terrain_defense_bonus = [];
     var terrain_build_difficulty = [];
     var terrain_supply = [];
 
     for (var x = 0; x < terrain_list.length; x++) {
-      terrain[x] = [];
       terrain_defense_bonus[x] = [];
       terrain_difficulty[x] = [];
       terrain_build_difficulty[x] = [];
       terrain_supply[x] = [];
 
       for (var y = 0; y < terrain_list[x].length; y++) {
-        terrain[x][y] = terrain_list[x][y];
         terrain_difficulty[x][y] = terrain_list[x][y].move_difficulty;
         terrain_defense_bonus[x][y] = terrain_list[x][y].defense_bonus;
         terrain_build_difficulty[x][y] = terrain_list[x][y].build_over;
@@ -478,12 +467,11 @@ var MapCreator = function() {
       }
     }
 
-    this.Game.terrain = terrain;
     //Game.terrain_type = terrain_type;
-    this.Game.terrain_difficulty = terrain_difficulty;
-    this.Game.terrain_defense_bonus = terrain_defense_bonus;
-    this.Game.terrain_build_difficulty = terrain_build_difficulty;
-    this.Game.terrain_supply = terrain_supply;
+    game.terrain_difficulty = terrain_difficulty;
+    game.terrain_defense_bonus = terrain_defense_bonus;
+    game.terrain_build_difficulty = terrain_build_difficulty;
+    game.terrain_supply = terrain_supply;
 
     // Uncomment below for Supply overlay
     /*
@@ -501,10 +489,10 @@ var MapCreator = function() {
     }
     */
 
-    this.Game.terrain_graph = new options.graph_ftn(terrain_difficulty);
-    this.Game.terrain_defense_bonus_graph = new options.graph_ftn(terrain_defense_bonus);
-    this.Game.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
-    this.Game.terrain_supply_graph = new options.graph_ftn(terrain_supply);
+    game.terrain_graph = new options.graph_ftn(terrain_difficulty);
+    game.terrain_defense_bonus_graph = new options.graph_ftn(terrain_defense_bonus);
+    game.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
+    game.terrain_supply_graph = new options.graph_ftn(terrain_supply);
   };
 
 };
