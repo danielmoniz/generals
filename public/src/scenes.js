@@ -72,7 +72,7 @@ Crafty.scene('Game', function() {
       var g = Math.ceil(entity.colour.g - height);
       var b = Math.ceil(entity.colour.b - height);
       var color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-      entity.color('rgb(' + r + ', ' + g + ', ' + b + ')');
+      entity.changeColour('rgb(' + r + ', ' + g + ', ' + b + ')');
       // Use below for grey-scale heightmap
       //ground.color('rgb(' + height + ', ' + height + ',' + height + ')')
       ;

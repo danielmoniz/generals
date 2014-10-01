@@ -68,8 +68,14 @@ this.Terrain = function(type, stats) {
 // Terrain is an entity that will be drawn on the map and will affect movement
 Crafty.c('Terrain', {
   init: function() {
-    this.requires('Actor, Clickable');
+    this.requires('Actor, Clickable')
+      .bind("NextTurn", this.nextTurn)
+    ;
     this.z = 80;
+  },
+
+  nextTurn: function() {
+    this.updateStats();
   },
 
   select: function() {
@@ -140,7 +146,7 @@ Crafty.c('Farm', {
 
   pillage: function() {
     var provided_supply = this.provides_supply;
-    this.addComponent("PillagedFarm");
+    this.addNewComponent("PillagedFarm");
     this.addStats({
         move_difficulty: 1.35,
         pillaged: true,
@@ -181,12 +187,14 @@ Crafty.c('Village', {
     var provided_supply = this.provides_supply;
     this.supply_remaining -= 2;
     if (this.supply_remaining <= 0) {
-      this.sacked = true;
-      this.provides_supply = 0;
-      this.defense_bonus = 1.1;
+      this.addStats({
+        sacked: true,
+        provides_supply: 0,
+        defense_bonus: 1.1,
+        alpha: 0.5,
+      });
       this.addComponent("Color");
       this.changeColour("black");
-      this.alpha = 0.5;
     }
 
     return provided_supply;

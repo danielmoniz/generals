@@ -15,10 +15,13 @@ this.DataTools = {
 
   /*
    * Adds a component string to the item's component list, to be later rendered
-   * via entity.addComponent().
+   * via entity.addNewComponent().
    */
   addComponent: function(component) {
-    this.components.push(component);
+    if (this.stats.components === undefined) {
+      this.stats.components = [];
+    }
+    this.stats.components.push(component);
   },
 
   setUpEntityData: function(entity_data, stats) {
@@ -45,8 +48,8 @@ this.DataTools = {
     if (entity.setStats !== undefined) {
       entity.setStats(); // sets any dynamic stats that require this.stats
     }
-    for (var i in this.components) {
-      entity.addComponent(this.components[i]);
+    for (var i in this.stats.components) {
+      entity.addComponent(this.stats.components[i]);
     }
     if (this.stats.location && this.stats.location.x !== undefined) {
       entity.at(this.stats.location.x, this.stats.location.y);
@@ -101,7 +104,9 @@ Crafty.c('Actor', {
   init: function() {
     this.requires('2D, DOM, Grid');
     this.attr({
-      stats: {},
+      stats: {
+        components: [],
+      },
     });
   },
 
@@ -128,6 +133,26 @@ Crafty.c('Actor', {
     obj[name] = value;
     this.addStats(obj);
     return this;
+  },
+
+  /*
+   * Updates the .stats dict using the current stats of the entity.
+   */
+  updateStats: function() {
+    for (var stat in this.stats) {
+      var real_value = this[stat];
+      this.addStat(stat, real_value);
+    }
+
+    this.addStat('location', this.at());
+  },
+
+  addNewComponent: function(component) {
+    if (this.stats.components === undefined) {
+      this.stats.components = [];
+    }
+    this.stats.components.push(component);
+    this.addComponent(component);
   },
 
   changeColour: function(colour_string) {

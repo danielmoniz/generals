@@ -276,7 +276,7 @@ Game = {
       options: this.options,
 
       map_grid: this.map_grid,
-      terrain_type: this.terrain_type,
+      //terrain_type: this.terrain_type,
       height_map: this.height_map,
       occupied: this.occupied,
 
@@ -318,24 +318,6 @@ Game = {
     var units = Crafty('Unit').get();
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
-      /*
-      var new_unit = {};
-      new_unit.type = unit.type;
-      new_unit.side = unit.side;
-      new_unit.name = unit.name;
-      new_unit.quantity = unit.quantity;
-      new_unit.injured = unit.injured;
-      new_unit.location = unit.at();
-      new_unit.battle = unit.battle;
-      new_unit.injured = unit.injured;
-      new_unit.alive = unit.alive;
-      new_unit.active = unit.active;
-      new_unit.supply_remaining = unit.supply_remaining;
-      new_unit.battle_side = unit.battle_side;
-      new_unit.move_target = unit.move_target;
-
-      saved_game.units.push(new_unit);
-      */
       saved_game.units.push(unit.stats);
     }
 
@@ -351,21 +333,17 @@ Game = {
       saved_game.battles.push(new_battle);
     }
 
-    /*
-    // handle extra terrain data
+    // handle all terrain data
+    saved_game.terrain_type = [];
     var terrain = Crafty('Terrain').get();
     for (var i in terrain) {
-      var terrain_tile = terrain[i];
-      var terrain_object = {};
-      if (!Utility.isEmpty(terrain_tile.stats)) {
-        for (var key in terrain_tile.stats) {
-          if (!terrain_tile.hasOwnProperty(key)) continue;
-          terrain_object[key] = terrain_tile[key];
-        }
-        saved_game.terrain_type[terrain_tile.at().x][terrain_tile.at().y] = terrain_object;
+      var x = terrain[i].at().x;
+      var y = terrain[i].at().y;
+      if (saved_game.terrain_type[x] === undefined) {
+        saved_game.terrain_type[x] = [];
       }
+      saved_game.terrain_type[x][y] = terrain[i].stats;
     }
-    */
 
     var json_output = JSON.stringify(saved_game);
     var textarea_id = "load-input";

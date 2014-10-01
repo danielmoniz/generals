@@ -1,7 +1,6 @@
 
 this.UnitData = function(type, stats) {
   this.type = type;
-  this.components = [];
 
   this.add = DataTools.add;
   this.addComponent = DataTools.addComponent;
@@ -114,18 +113,6 @@ Crafty.c('Unit', {
     }
 
     this.updateStats(); // should happen last!
-  },
-
-  /*
-   * Updates the .stats dict using the current stats of the unit.
-   */
-  updateStats: function() {
-    for (var stat in this.stats) {
-      var real_value = this[stat];
-      this.addStat(stat, real_value);
-    }
-
-    this.addStat('location', this.at());
   },
 
   reset: function() {
@@ -484,6 +471,7 @@ Crafty.c('Unit', {
     this.battle = true;
     this.stop_unit();
     var battle = Crafty.e('Battle').at(this.at().x, this.at().y);
+    var battle_data = new BattleData('Battle', this);
     battle.start(this);
   },
 
