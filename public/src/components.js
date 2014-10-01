@@ -21,6 +21,24 @@ this.DataTools = {
     this.components.push(component);
   },
 
+  setUpEntityData: function(entity_data, stats) {
+    var base_stats = entity_data[this.type];
+    if (this.type == 'Cavalry' || this.type == 'Infantry') {
+    console.log("base_stats");
+    console.log(base_stats);
+    }
+    if (base_stats.parent) {
+      var parent_stats = entity_data[base_stats.parent];
+      base_stats = $.extend({}, parent_stats, base_stats);
+    }
+    base_stats.type = this.type;
+    this.stats = base_stats;
+
+    if (typeof stats !== 'undefined') {
+      this.add(stats);
+    }
+  },
+
   /*
    * Creates a Crafty object based on a COMPLETE set of stats.
    * Assumes that .type exists.
