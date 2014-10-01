@@ -130,12 +130,16 @@ Crafty.c('Unit', {
       ;
   },
 
+  /*
+   * Sets any dynamic stats for the unit that require this.stats to be set
+   * properly.
+   * Note: This MUST be called after a unit is created!
+   */
   setStats: function() {
     this.addStat('supply_remaining', this.max_supply);
   },
 
   nextTurn: function(turn) {
-    this.updateStats();
     if (turn === undefined) turn = Game.turn;
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
