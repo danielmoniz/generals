@@ -6,6 +6,8 @@ var ChatListener = function(io) {
 
   io.on('connection', function(socket) {
 
+    console.log("new connection");
+
     socket.on('disconnect', function() {
       socket.broadcast.emit('chat message', socket.username + ' has left the chat');
 

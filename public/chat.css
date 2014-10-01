@@ -1,4 +1,6 @@
-form { background: #000; padding: 3px; float:left;
+/* Why is the below styling not working? */
+div#chat { color: black; background-color: white; }
+form { padding: 3px; float:left;
   bottom: 0; width: 100%; }
 form input { border: 0; padding: 10px; width: 90%;
   margin-right: .5%; }
@@ -6,8 +8,8 @@ form button { width: 9%; background: rgb(130, 224,
   255); border: none; padding: 10px; }
 ul { list-style-type: none; margin: 0; min-height: 400px;
   padding: 0; float: left; }
-#messages { width: 65%; max-height: 400px; overflow-y: scroll }
-#online-users { margin-left: 15px; width: 30%; }
+#messages { background-color: white; width: 65%; max-height: 400px; overflow-y: scroll }
+#online-users { background-color: white; margin-left: 15px; width: 30%; }
 #ul li { padding: 5px 10px; }
 #messages li:nth-child(odd) {
   background: #eee; }

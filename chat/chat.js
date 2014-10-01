@@ -49,7 +49,7 @@ var Chat = function(io) {
     if (make_active) {
       socket.active_room = room;
       this.updateUserList(room);
-      this.clearMessages(room);
+      this.clearMessages(socket.username);
     }
   };
 

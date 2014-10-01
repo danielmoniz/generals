@@ -7,31 +7,6 @@ my_current_room = "";
 var socket = io();
 socket.emit("new user", my_username);
 
-$('form.message').submit(function() {
-  var text = $('#m').val();
-  if (text) {
-    socket.emit('chat message', text);
-    $('#m').val('');
-
-  }
-  $("#m").focus();
-  return false;
-});
-
-$('form.change-name').submit(function() {
-  var old_username = my_username;
-  var new_username = $('#username').val();
-  if (new_username == old_username) {
-    addMessage("Name (" + new_username + ") is the same!");
-    $("input#username").focus();
-    return false;
-  }
-  socket.emit('change name', old_username, new_username);
-
-  $("#m").focus();
-  return false;
-});
-
 socket.on('name changed', function(new_name) {
   my_username = new_name;
   //$("input#username").val(new_name);
@@ -83,6 +58,8 @@ socket.on('new game', function(game_name) {
   var message = "Joined " + game_name + ".";
   addMessage(message);
   console.log(message);
+
+  Game.start();
 });
 
 socket.on('joined room', function(room_name) {
@@ -95,6 +72,32 @@ socket.on('joined room', function(room_name) {
 
 $(document).ready(function() {
   $("#username").val(my_username);
+
+  $('form.message').submit(function(e) {
+    var text = $('#m').val();
+    if (text) {
+      socket.emit('chat message', text);
+      $('#m').val('');
+
+    }
+    $("#m").focus();
+    return false;
+  });
+
+  $('form.change-name').submit(function() {
+    var old_username = my_username;
+    var new_username = $('#username').val();
+    if (new_username == old_username) {
+      addMessage("Name (" + new_username + ") is the same!");
+      $("input#username").focus();
+      return false;
+    }
+    socket.emit('change name', old_username, new_username);
+
+    $("#m").focus();
+    return false;
+  });
+
 });
 
 function addMessage(message) {
