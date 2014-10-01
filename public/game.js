@@ -317,6 +317,7 @@ Game = {
     var units = Crafty('Unit').get();
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
+      /*
       var new_unit = {};
       new_unit.type = unit.type;
       new_unit.side = unit.side;
@@ -333,6 +334,8 @@ Game = {
       new_unit.move_target = unit.move_target;
 
       saved_game.units.push(new_unit);
+      */
+      saved_game.units.push(unit.stats);
     }
 
     var battles = Crafty('Battle').get();
@@ -347,6 +350,7 @@ Game = {
       saved_game.battles.push(new_battle);
     }
 
+    /*
     // handle extra terrain data
     var terrain = Crafty('Terrain').get();
     for (var i in terrain) {
@@ -360,6 +364,7 @@ Game = {
         saved_game.terrain_type[terrain_tile.at().x][terrain_tile.at().y] = terrain_object;
       }
     }
+    */
 
     var json_output = JSON.stringify(saved_game);
     var textarea_id = "load-input";

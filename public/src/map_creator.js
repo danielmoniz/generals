@@ -541,8 +541,7 @@ var MapCreator = function() {
   this.createNewUnitData = function(faction_data, side, location) {
 
     var unit_object = new UnitData(faction_data.type, faction_data);
-    unit_object.add({ side: side });
-    unit_object.setLocation(location);
+    unit_object.add({ side: side, location: location });
     return unit_object;
   };
 

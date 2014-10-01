@@ -2,7 +2,6 @@
 this.UnitData = function(type, stats) {
   this.type = type;
   this.components = [];
-  this.location = {};
 
   /*
    * Creates a complete set of stats for a given entity type.
@@ -80,8 +79,8 @@ this.UnitData = function(type, stats) {
     for (var i in this.components) {
       entity.addComponent(this.components[i]);
     }
-    if (this.location.x !== undefined) {
-      entity.at(this.location.x, this.location.y);
+    if (this.stats.location.x !== undefined) {
+      entity.at(this.stats.location.x, this.stats.location.y);
     }
     return entity;
   };
@@ -155,15 +154,22 @@ Crafty.c('Unit', {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
 
-      this.reset();
+      this.reset(); // should happen after every other active effect!
     }
 
     this.updateStats(); // should happen last!
   },
 
+  /*
+   * Updates the .stats dict using the current stats of the unit.
+   */
   updateStats: function() {
     for (var stat in this.stats) {
+      var real_value = this[stat];
+      this.addStat(stat, real_value);
     }
+
+    this.addStat('location', this.at());
   },
 
   reset: function() {
