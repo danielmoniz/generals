@@ -31,7 +31,7 @@ socket.on('update user list', function(usernames) {
   }
 });
 
-socket.on('invite to game', function(invite_id, inviter) {
+socket.on('invite to game', function(invite_id, inviter, options) {
   var output = inviter + " has invited you to a game.";
   addMessage(output);
 
@@ -53,13 +53,14 @@ socket.on('decline invite', function(username) {
   console.log(output);
 });
 
-socket.on('new game', function(game_name, game_type, options) {
+socket.on('new game', function(game_name, options) {
+  // @TODO Do something with game_name
   clearMessages();
   var message = "Joined " + game_name + ".";
   addMessage(message);
   console.log(message);
 
-  Game.start(game_type, options);
+  Game.start('online', options);
 });
 
 socket.on('joined room', function(room_name) {
@@ -126,9 +127,12 @@ function makeUsernameListItem(username) {
     if (target_username == my_username) return false;
     var invite = confirm("Invite " + target_username + " to game?");
     if (invite) {
+      socket.emit("invite to game", my_username, target_username, UI.getOptions());
+      /*
       var text = "/invite " + target_username;
       $("#m").val(text);
       $("form.message").submit();
+      */
       console.log("Waiting for invite response...");
     }
   });

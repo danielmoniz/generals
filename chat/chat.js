@@ -9,7 +9,7 @@ var Chat = function(io) {
   this.users = {};
   this.rooms = {};
 
-  this.joinGame = function(inviter, invitee) {
+  this.joinGame = function(inviter, invitee, options) {
     // @TODO Ensure user is still inviting the invitee
     if (inviter === undefined || invitee === undefined) {
       return false;
@@ -18,7 +18,8 @@ var Chat = function(io) {
     this.joinRoom(inviter, room_name, 'make active');
     this.joinRoom(invitee, room_name, 'make active');
 
-    this.io.to(room_name).emit("new game", room_name);
+    // @TODO Send game data here, instead of the options!
+    this.io.to(room_name).emit("new game", room_name, options);
 
     var game = new Game(this.io);
     //inviter.game = game;
@@ -119,22 +120,24 @@ var Chat = function(io) {
     socket.emit('name changed', new_name);
   };
 
-  this.invite = function(inviter, invitee_name) {
+  this.invite = function(inviter_name, invitee_name, options) {
+    var inviter = this.users[inviter_name];
     var invitee = this.users[invitee_name];
     var invite_id = Math.round(Math.random() * 100000);
     inviter.invite = invite_id;
-    this.invites[invite_id] = [inviter, invitee];
+    this.invites[invite_id] = [inviter, invitee, options];
 
     var inviter_message = "Waiting for response from " + invitee.username + " for game invite...";
     this.io.to(inviter.username).emit("chat message", inviter_message);
 
-    this.io.to(invitee_name).emit("invite to game", invite_id, inviter.username);
+    this.io.to(invitee_name).emit("invite to game", invite_id, inviter.username, options);
   };
 
   this.acceptGameInvite = function(invite_id) {
     var invite = this.invites[invite_id];
     if (!invite) return false;
-    this.joinGame(invite[0], invite[1]);
+    var options = invite[2];
+    this.joinGame(invite[0], invite[1], options);
   };
 
   this.declineGameInvite = function(invite_id) {

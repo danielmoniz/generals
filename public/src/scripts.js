@@ -17,10 +17,7 @@ $(document).ready(function() {
   });
 
   $("input.start").click(function() {
-    $("#game-container").toggle();
-    $("#front-page").toggle();
-    $("input.start").toggle();
-    $("#options").toggle();
+    UI.startGame();
 
     //var game_type = $(this).attr("game_type");
     Game.start(UI.getGameType(), UI.getOptions());
@@ -50,9 +47,21 @@ UI = {
   startGame: function() {
     $("#menu").hide();
     $("#menu-toggle-button").show();
+    $("#game-container").show();
+    $("#front-page").hide();
+    $("#options").hide();
     // @TODO Fix below code! Want to dynamically set width of victory bar.
     //$("#will-container").width(35 * Game.map_grid.tile.width);
   },
+
+  /*
+  startGame: function(game_type, options) {
+    $("#game-container").show();
+    $("#front-page").hide();
+    $("input.start").toggle();
+    $("#options").hide();
+  },
+  */
 
   deselectButtons: function() {
     $("input#load-button").blur();
@@ -97,4 +106,5 @@ UI = {
   getGameType: function() {
     return $(this).attr("game_type");
   },
+
 }
