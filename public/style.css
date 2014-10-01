@@ -1,6 +1,6 @@
 body { margin: 0; background: black; color:white; }
 #front-page {}
-#game-container { display: none; }
+#game-container { display: none; width: 100%; float:left; }
 #info-panel { width:35%; color:white; float:left; }
 #alerts-container { width:65%; color:white; float:right; }
 #title-container { padding: 2px; width: 100%; 24px; color:white; float:left; }
@@ -33,7 +33,9 @@ body { margin: 0; background: black; color:white; }
   float: left;
 }
 
-#input-container { width:100%; float:left; }
+#input-container { display:block; float:left; }
+#input-container:before { display:block; content:""; }
+#menu { display:block; }
 .input-item { float:left; }
 
 #options { border: 1px dotted white; }

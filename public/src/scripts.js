@@ -22,14 +22,8 @@ $(document).ready(function() {
     $("input.start").toggle();
     $("#options").toggle();
 
-    var options = {};
-    var options_form = document.getElementById("options");
-    for (var i=0; i<options_form.elements.length; i++) {
-      var e = options_form.elements[i];
-      if (e.type == "checkbox") options[e.name] = e.checked;
-    }
-    var game_type = $(this).attr("game_type");
-    Game.start(game_type, UI.getOptions());
+    //var game_type = $(this).attr("game_type");
+    Game.start(UI.getGameType(), UI.getOptions());
   });
 
   $("#next-turn").click(function() {
@@ -46,7 +40,7 @@ $(document).ready(function() {
   $("#tool-bar").width("{0}px".format(Game.map_grid.width * Game.map_grid.tile.width));
 
   // TEST ONLY
-  $("#start-hotseat-button").click();
+  //$("#start-hotseat-button").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
 
@@ -98,5 +92,9 @@ UI = {
       if (e.type == "checkbox") options[e.name] = e.checked;
     }
     return options;
+  },
+
+  getGameType: function() {
+    return $(this).attr("game_type");
   },
 }

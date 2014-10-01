@@ -53,13 +53,13 @@ socket.on('decline invite', function(username) {
   console.log(output);
 });
 
-socket.on('new game', function(game_name) {
+socket.on('new game', function(game_name, game_type, options) {
   clearMessages();
   var message = "Joined " + game_name + ".";
   addMessage(message);
   console.log(message);
 
-  Game.start();
+  Game.start(game_type, options);
 });
 
 socket.on('joined room', function(room_name) {
