@@ -31,7 +31,6 @@ this.UnitData = function(type, stats) {
       max_supply: 3,
       battle: false, 
       side: 0, 
-      supply_remaining: this.max_supply,
       alive: true,
       injured: 0,
       active: true,
@@ -77,6 +76,7 @@ this.UnitData = function(type, stats) {
   this.render = function() {
     var entity = Crafty.e(this.stats.type);
     entity.addStats(this.stats);
+    entity.setStats(); // sets any dynamic stats that require this.stats
     for (var i in this.components) {
       entity.addComponent(this.components[i]);
     }
@@ -125,23 +125,17 @@ Unit = {
 Crafty.c('Unit', {
   init: function() {
     this.requires('Actor, Targetable')
-      .bind("UpdateMovementPaths", this.updateMovementPaths);
+      .bind("UpdateMovementPaths", this.updateMovementPaths)
+      .bind("NextTurn", this.nextTurn)
+      ;
+  },
 
-    this.z = 100;
-    this.bind("NextTurn", this.nextTurn);
-    this.max_supply = 3;
-    this.attr({ 
-      battle: false, 
-      side: 0, 
-      supply_remaining: this.max_supply,
-      alive: true,
-      injured: 0,
-      active: true,
-      performed_actions: [],
-    });
+  setStats: function() {
+    this.addStat('supply_remaining', this.max_supply);
   },
 
   nextTurn: function(turn) {
+    this.updateStats();
     if (turn === undefined) turn = Game.turn;
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
@@ -157,7 +151,14 @@ Crafty.c('Unit', {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
 
-      this.reset(); // should happen last!
+      this.reset();
+    }
+
+    this.updateStats(); // should happen last!
+  },
+
+  updateStats: function() {
+    for (var stat in this.stats) {
     }
   },
 

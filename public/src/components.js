@@ -42,20 +42,18 @@ Crafty.c('Grid', {
 Crafty.c('Actor', {
   init: function() {
     this.requires('2D, DOM, Grid');
-  },
-
-  addStats: function(dict) {
     this.attr({
       stats: {},
     });
+  },
+
+  addStats: function(dict) {
     this.attr(dict);
     for (var key in dict) {
       this.stats[key] = dict[key];
     }
 
     if (dict['colour'] !== undefined) {
-      //console.log("dict['colour']");
-      //console.log(dict['colour']);
       if (typeof dict['colour'] == 'object') {
         var colour_string = Utility.getColourStringFromObject(dict['colour']);
       } else {
