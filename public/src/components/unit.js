@@ -42,7 +42,6 @@ this.UnitData = function(type, stats) {
       parent: 'Unit',
       quantity: 0,
       injured: 0,
-      name: "NAME ME",
       type: 'Cavalry',
       movement: 8,
       max_sight: 8,
@@ -52,7 +51,6 @@ this.UnitData = function(type, stats) {
       parent: 'Unit',
       quantity: 0,
       injured: 0,
-      name: "NAME ME",
       type: 'Infantry',
       movement: 4,
       max_sight: 8,
@@ -127,19 +125,8 @@ Unit = {
 Crafty.c('Unit', {
   init: function() {
     this.requires('Actor, Targetable')
-      .bind("MouseUp", function() {
-        //this.report();
-      })
-      .bind("UpdateMovementPaths", this.updateMovementPaths)
-      /*
-      .bind("MouseOver", function() {
-        document.getElementById("info-panel").innerHTML='<object type="text/html" data="src/info.html"></object>';
-      })
-      .bind("MouseOut", function() {
-        document.getElementById("info-panel").innerHTML='';
-      })
-      */
-      ;
+      .bind("UpdateMovementPaths", this.updateMovementPaths);
+
     this.z = 100;
     this.bind("NextTurn", this.nextTurn);
     this.max_supply = 3;
