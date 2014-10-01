@@ -23,10 +23,6 @@ this.DataTools = {
 
   setUpEntityData: function(entity_data, stats) {
     var base_stats = entity_data[this.type];
-    if (this.type == 'Cavalry' || this.type == 'Infantry') {
-    console.log("base_stats");
-    console.log(base_stats);
-    }
     if (base_stats.parent) {
       var parent_stats = entity_data[base_stats.parent];
       base_stats = $.extend({}, parent_stats, base_stats);

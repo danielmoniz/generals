@@ -1,3 +1,23 @@
+
+this.BattleData = function(type, stats) {
+
+  this.add = DataTools.add;
+  this.addComponent = DataTools.addComponent;
+  this.render = DataTools.render;
+
+  var battle_data = {
+
+    "Battle": {
+      z: 200,
+      num_turns: 0,
+    },
+
+  };
+
+  this.setUpEntityData(battle_data, stats);
+
+};
+
 Battle = {
   ATTACKER: "attacker",
   DEFENDER: "defender",
@@ -48,6 +68,7 @@ Battle = {
   },
 
 }
+
 Crafty.c('Battle', {
   init: function() {
     this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
