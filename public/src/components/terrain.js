@@ -2,17 +2,9 @@
 this.Terrain = function(type, stats) {
   this.type = type;
 
-  /*
-   * Creates a complete set of stats for a given entity type.
-   */
-  this.add = function(stats) {
-    var combined_stats = this.stats;
-    if (stats !== undefined) {
-      combined_stats = $.extend({}, this.stats, stats);
-    }
-    this.stats = combined_stats;
-    return this;
-  };
+  this.add = DataTools.add;
+  this.addComponent = DataTools.addComponent;
+  this.render = DataTools.render;
 
   this.terrain_data = {
 
@@ -79,16 +71,6 @@ this.Terrain = function(type, stats) {
   if (typeof stats !== 'undefined') {
     this.add(stats);
   }
-
-  /*
-   * Creates a Crafty object based on a COMPLETE set of stats.
-   * Assumes that .type exists.
-   */
-  this.render = function() {
-    var entity = Crafty.e(this.stats.type);
-    entity.addStats(this.stats);
-    return entity;
-  };
 
 };
 

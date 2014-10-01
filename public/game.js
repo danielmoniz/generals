@@ -73,6 +73,7 @@ Game = {
       throw "NotImplementedError: select() for {0}".format(this.selected.type);
     }
   },
+
   deselect: function() {
     Crafty.trigger("DimPaths");
     Output.clearMain();

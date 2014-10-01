@@ -3,25 +3,9 @@ this.UnitData = function(type, stats) {
   this.type = type;
   this.components = [];
 
-  /*
-   * Creates a complete set of stats for a given entity type.
-   */
-  this.add = function(stats) {
-    var combined_stats = this.stats;
-    if (stats !== undefined) {
-      combined_stats = $.extend({}, this.stats, stats);
-    }
-    this.stats = combined_stats;
-    return this;
-  };
-
-  this.addComponent = function(component) {
-    this.components.push(component);
-  };
-
-  this.setLocation = function(location) {
-    this.location = location;
-  };
+  this.add = DataTools.add;
+  this.addComponent = DataTools.addComponent;
+  this.render = DataTools.render;
 
   this.unit_data = {
 
@@ -67,23 +51,6 @@ this.UnitData = function(type, stats) {
   if (typeof stats !== 'undefined') {
     this.add(stats);
   }
-
-  /*
-   * Creates a Crafty object based on a COMPLETE set of stats.
-   * Assumes that .type exists.
-   */
-  this.render = function() {
-    var entity = Crafty.e(this.stats.type);
-    entity.addStats(this.stats);
-    entity.setStats(); // sets any dynamic stats that require this.stats
-    for (var i in this.components) {
-      entity.addComponent(this.components[i]);
-    }
-    if (this.stats.location.x !== undefined) {
-      entity.at(this.stats.location.x, this.stats.location.y);
-    }
-    return entity;
-  };
 
 };
 
