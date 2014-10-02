@@ -1,4 +1,4 @@
-locations = {
+var locations = {
   test: {
     height_map: {
       noise: 'perlin2',
@@ -39,4 +39,10 @@ locations = {
       noise: 'simplex2',
     },
   },
+}
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = locations;
+} else {
+  window.locations = locations;
 }

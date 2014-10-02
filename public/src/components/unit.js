@@ -604,3 +604,9 @@ Crafty.c('Infantry', {
 
 });
 
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = UnitData;
+} else {
+  window.UnitData = UnitData;
+}
+

@@ -101,11 +101,6 @@ Game = {
   */
   turns_played_locally: 0,
 
-  FIRST_PLAYER: 0,
-  AFTER_FIRST_PLAYER: 0.5,
-  SECOND_PLAYER: 1,
-  AFTER_SECOND_PLAYER: 1.5,
-
   battle_death_rate: 1/5,
   attrition_rate: 1/10,
   attrition_death_rate: 1/3,

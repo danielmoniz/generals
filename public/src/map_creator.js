@@ -3,7 +3,7 @@ if (typeof require !== 'undefined') {
   Pathing = require("./pathing")
 }
 
-var MapCreator = function() {
+var MapCreator = function(options) {
 
   this.Game = {};
 
@@ -14,7 +14,7 @@ var MapCreator = function() {
   this.occupied = [];
   this.terrain_type = [];
   this.map_grid = {};
-  this.options = Game;
+  this.options = options;
 
   this.buildNewMap = function(options) {
     this.Game.height_map = this.generateHeightMap(options, options.location);
