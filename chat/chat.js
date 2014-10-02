@@ -18,9 +18,6 @@ var Chat = function(io) {
     this.joinRoom(inviter, room_name, 'make active');
     this.joinRoom(invitee, room_name, 'make active');
 
-    // @TODO Send game data here, instead of the options!
-    this.io.to(room_name).emit("new game", room_name, options);
-
     var game = new Game(this.io);
     //inviter.game = game;
     //invitee.game = game;

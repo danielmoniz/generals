@@ -1,4 +1,5 @@
-Utility = {
+
+var Utility = {
   capitalizeFirstLetter: function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
@@ -66,3 +67,10 @@ if (!String.prototype.format) {
     });
   };
 }
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Utility;
+} else {
+  window.Utility = Utility;
+}
+

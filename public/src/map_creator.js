@@ -17,6 +17,8 @@ var MapCreator = function(options) {
   this.options = options;
 
   this.buildNewMap = function(options) {
+    console.log("options");
+    console.log(options);
     this.Game.height_map = this.generateHeightMap(options, options.location);
     this.buildEmptyGameData(options, this.Game);
     this.addWater(options, this.Game, options.location);

@@ -8,6 +8,8 @@ if (typeof require !== 'undefined') {
   //var locations_file = __dirname + "../locations.json";
   
   locations = require("../locations.js");
+  console.log("locations");
+  console.log(locations);
 
 } else {
   window.astar = astar;
