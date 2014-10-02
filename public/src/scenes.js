@@ -221,6 +221,9 @@ Crafty.scene('Game', function() {
     divideMap(3);
 
     buildUnitsFromData(Game.starting_units);
+
+    Victory.reset();
+    Game.select(Crafty('Unit').get(0));
   } else if (Game.load_game) {
     buildTerrainFromData(Game.terrain_type);
     buildTerrainData();
