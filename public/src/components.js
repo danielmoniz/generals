@@ -1,5 +1,9 @@
 
-this.DataTools = {
+if (typeof require !== 'undefined') {
+  Utility = require("./utility");
+}
+
+var DataTools = {
 
   /*
    * Creates a complete set of stats for a given entity type.
@@ -515,4 +519,10 @@ Crafty.c('PlayerCharacter', {
     village.collect();
   },
 });
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = DataTools;
+} else {
+  window.DataTools = DataTools;
+}
 

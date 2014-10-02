@@ -14,7 +14,7 @@ this.BattleData = function(type, stats) {
 
   };
 
-  this.setUpEntityData(battle_data, stats);
+  //this.setUpEntityData(battle_data, stats);
 
 };
 
