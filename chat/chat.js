@@ -19,18 +19,12 @@ var Chat = function(io) {
     this.joinRoom(invitee, room_name, 'make active');
 
     var game = new Game(this.io);
-    //inviter.game = game;
-    //invitee.game = game;
+    inviter.game = game;
+    invitee.game = game;
 
-    for (var i in arguments) {
-      var player = arguments[i];
-      player.game = game;
-      if (i < game.players) {
-        player.player_type = i;
-      } else {
-        player.player_type = 'observer';
-      }
-    }
+    var first_player = inviter;
+    var second_player = invitee;
+    var observers = [];
 
     game.create(room_name, options);
   }

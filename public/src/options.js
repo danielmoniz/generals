@@ -3,9 +3,6 @@ if (typeof require !== 'undefined') {
   astar = require("../lib/astar.js");
   Graph = astar.Graph;
   astar = astar.astar;
-
-  //var fs = require('fs');
-  //var locations_file = __dirname + "../locations.json";
   
   locations = require("../locations.js");
   console.log("locations");

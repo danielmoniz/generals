@@ -12,12 +12,12 @@ var Game = function(io) {
     var options = {};
     var default_options = new Options().getDefaultOptions();
     Utility.loadDataIntoObject(default_options, options);
-    Utility.loadDataIntoObject(new_options, options);
+    //Utility.loadDataIntoObject(new_options, options);
 
     this.map = new MapCreator().buildNewMap(options);
 
     // @TODO Send game data here, instead of the options!
-    this.io.to(game_name).emit("new game", game_name, this.map);
+    this.io.to(game_name).emit("new game", game_name, this.map, new_options);
 
   }
 

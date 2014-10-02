@@ -185,13 +185,14 @@ Game = {
   },
 
   // initialize and start our game
-  start: function(game_type, options) {
-    console.log("options");
-    console.log(options);
+  start: function(game_type, options, map) {
     if (!Game.options) Game.options = {};
-    for (key in options) {
+    for (var key in options) {
       var value = options[key];
       Game.options[key] = value;
+    }
+    for (var key in map) {
+      var value = map[key];
       Game[key] = value;
     }
     Game.type = game_type;
