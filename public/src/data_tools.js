@@ -9,11 +9,9 @@ var DataTools = {
    * Creates a complete set of stats for a given entity type.
    */
   add: function(stats) {
-    var combined_stats = this.stats;
     if (stats !== undefined) {
-      combined_stats = $.extend({}, this.stats, stats);
+      Utility.loadDataIntoObject(stats, this.stats);
     }
-    this.stats = combined_stats;
     return this;
   },
 
@@ -29,13 +27,15 @@ var DataTools = {
   },
 
   setUpEntityData: function(entity_data, stats) {
+    var new_stats = {};
     var base_stats = entity_data[this.type];
     if (base_stats.parent) {
       var parent_stats = entity_data[base_stats.parent];
-      base_stats = $.extend({}, parent_stats, base_stats);
+      Utility.loadDataIntoObject(parent_stats, new_stats);
     }
-    base_stats.type = this.type;
-    this.stats = base_stats;
+    Utility.loadDataIntoObject(base_stats, new_stats);
+    new_stats.type = this.type;
+    this.stats = new_stats;
 
     if (typeof stats !== 'undefined') {
       this.add(stats);
