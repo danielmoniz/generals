@@ -5,7 +5,9 @@ my_messages = {};
 my_current_room = "";
 
 var socket = io();
-socket.emit("new user", my_username);
+socket.on('get new user', function() {
+  socket.emit("new user", my_username);
+});
 
 socket.on('name changed', function(new_name) {
   my_username = new_name;

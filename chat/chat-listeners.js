@@ -7,6 +7,7 @@ var ChatListener = function(io) {
   io.on('connection', function(socket) {
 
     console.log("new connection");
+    socket.emit("get new user");
 
     socket.on('disconnect', function() {
       socket.broadcast.emit('chat message', socket.username + ' has left the chat');
@@ -26,6 +27,8 @@ var ChatListener = function(io) {
 
       console.log("socket.id");
       console.log(socket.id);
+      console.log("new username:");
+      console.log(username);
     });
 
     socket.on("change name", function(old_name, new_name) {
