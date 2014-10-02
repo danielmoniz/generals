@@ -11,12 +11,7 @@ var DataTools = {
   add: function(stats) {
     var combined_stats = this.stats;
     if (stats !== undefined) {
-      //combined_stats = $.extend({}, this.stats, stats);
-      Utility.loadDataIntoObject(combined_stats, this.stats);
-      if (this.type == 'Cavalry') {
-        console.log("combined_stats");
-        console.log(combined_stats);
-      }
+      combined_stats = $.extend({}, this.stats, stats);
     }
     this.stats = combined_stats;
     return this;
