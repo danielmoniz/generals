@@ -9,6 +9,7 @@ socket.emit("new user", my_username);
 
 socket.on('name changed', function(new_name) {
   my_username = new_name;
+  addMessage("Name changed to '{0}'".format(new_name));
   //$("input#username").val(new_name);
 });
 

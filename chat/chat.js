@@ -35,7 +35,7 @@ var Chat = function(io) {
       }
     }
 
-    game.create();
+    game.create(room_name, options);
   }
 
   this.joinRoom = function(socket, room, make_active, stay_in_room) {
@@ -50,7 +50,7 @@ var Chat = function(io) {
     if (make_active) {
       socket.active_room = room;
       this.updateUserList(room);
-      this.clearMessages(socket.username);
+      this.io.to(room).emit("joined room", room);
     }
   };
 
@@ -66,11 +66,6 @@ var Chat = function(io) {
   this.updateUserList = function(room_name) {
     if (!room_name) return false;
     this.io.to(room_name).emit("update user list", this.rooms[room_name]);
-  };
-
-  this.clearMessages = function(room_name) {
-    if (!room_name) return false;
-    this.io.to(room_name).emit("joined room", room_name);
   };
 
   this.runCommand = function(text, socket) {
