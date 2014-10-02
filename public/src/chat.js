@@ -56,14 +56,14 @@ socket.on('decline invite', function(username) {
   console.log(output);
 });
 
-socket.on('new game', function(game_name, options) {
+socket.on('new game', function(game_name, map) {
   // @TODO Do something with game_name
   clearMessages();
   var message = "Joined " + game_name + ".";
   addMessage(message);
   console.log(message);
 
-  Game.start('online', options);
+  Game.start('online', map);
 });
 
 socket.on('joined room', function(room_name) {

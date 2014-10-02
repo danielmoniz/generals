@@ -17,7 +17,7 @@ var Game = function(io) {
     this.map = new MapCreator().buildNewMap(options);
 
     // @TODO Send game data here, instead of the options!
-    this.io.to(room_name).emit("new game", room_name, options);
+    this.io.to(game_name).emit("new game", game_name, this.map);
 
   }
 

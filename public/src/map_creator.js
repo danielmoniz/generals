@@ -1,6 +1,9 @@
 if (typeof require !== 'undefined') {
+  Pathing = require("../factions.js")
   Utility = require("./utility");
   Pathing = require("./pathing")
+  TerrainData = require("./components/terrain_data")
+  UnitData = require("./components/unit_data")
 }
 
 var MapCreator = function(options) {

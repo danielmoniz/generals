@@ -186,10 +186,13 @@ Game = {
 
   // initialize and start our game
   start: function(game_type, options) {
+    console.log("options");
+    console.log(options);
     if (!Game.options) Game.options = {};
     for (key in options) {
       var value = options[key];
       Game.options[key] = value;
+      Game[key] = value;
     }
     Game.type = game_type;
     if (Game.turn == undefined) Game.turn = 1.5;

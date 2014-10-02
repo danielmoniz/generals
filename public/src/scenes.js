@@ -148,24 +148,26 @@ Crafty.scene('Game', function() {
     this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
 
-    var units = Game.units;
-    for (var i=0; i<units.length; i++) {
-      var unit = units[i];
-      var new_unit = createNewUnit(unit.type, unit.side, unit.location, unit.name, unit.quantity);
+    var units = Game.starting_units;
+    for (var side=0; side<2; side++) {
+      for (var i=0; i<units[side].length; i++) {
+        var unit = units[side][i];
+        var new_unit = createNewUnit(unit.type, unit.side, unit.location, unit.name, unit.quantity);
 
-      new_unit.battle = unit.battle;
-      new_unit.injured = unit.injured;
-      new_unit.alive = unit.alive;
-      new_unit.active = unit.active;
-      new_unit.supply_remaining = unit.supply_remaining;
-      new_unit.battle_side = unit.battle_side;
-      new_unit.battle_side = unit.battle_side;
-      new_unit.move_target = unit.move_target;
+        new_unit.battle = unit.battle;
+        new_unit.injured = unit.injured;
+        new_unit.alive = unit.alive;
+        new_unit.active = unit.active;
+        new_unit.supply_remaining = unit.supply_remaining;
+        new_unit.battle_side = unit.battle_side;
+        new_unit.battle_side = unit.battle_side;
+        new_unit.move_target = unit.move_target;
 
-      if (new_unit.move_target) {
-        new_unit.prepareMove(new_unit.move_target.x, new_unit.move_target.y, true);
-        if (Game.turn == new_unit.side) {
-          //new_unit.prepareMove(new_unit.move_target.x, new_unit.move_target.y);
+        if (new_unit.move_target) {
+          new_unit.prepareMove(new_unit.move_target.x, new_unit.move_target.y, true);
+          if (Game.turn == new_unit.side) {
+            //new_unit.prepareMove(new_unit.move_target.x, new_unit.move_target.y);
+          }
         }
       }
     }
@@ -206,7 +208,19 @@ Crafty.scene('Game', function() {
   }
 
   if (Game.type == Game.types.ONLINE) {
-    startNewGame();
+    buildTerrainFromData(Game.terrain_type);
+
+    if (Game.options && Game.options.fog_of_war) {
+      shadowHeightMap(Game.location);
+      LineOfSight.clearFog();
+    }
+
+    addRoadGraphics();
+    colourHeightMap(Game.location);
+    colourWater();
+    divideMap(3);
+
+    buildUnitsFromData(Game.starting_units);
   } else if (Game.load_game) {
     buildTerrainFromData(Game.terrain_type);
     buildTerrainData();
