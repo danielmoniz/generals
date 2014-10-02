@@ -2,12 +2,6 @@
 // ----------
 // Runs the core of the gameplay loop
 Crafty.scene('Game', function() {
-  this.unbind("KeyDown", UI.nextTurn);
-  this.bind('KeyDown', UI.nextTurn);
-  this.unbind('KeyDown', UI.pillage);
-  this.bind('KeyDown', UI.pillage);
-  this.unbind('KeyDown', UI.sack);
-  this.bind('KeyDown', UI.sack);
 
   Game.resetStatusVisuals();
 

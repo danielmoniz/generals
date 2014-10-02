@@ -1,4 +1,19 @@
 $(document).ready(function() {
+  // Handle key presses ------------------
+  $(document).keypress(function(e) {
+    var active_tag = document.activeElement.tagName.toLowerCase();
+    if (active_tag == 'body') {
+      if (e.keyCode == 32) { // Space bar
+        UI.nextTurn();
+      } else if (e.keyCode == 80 || e.keyCode == 112) { // P or p
+        UI.pillage();
+      } else if (e.keyCode == 83 || e.keyCode == 115) { // S or s
+        UI.sack();
+      }
+      return false;
+    }
+  });
+
   $("#load-button").click(function() {
     Game.load($("textarea#load-input").val());
     $("#game-container").show();
@@ -54,43 +69,21 @@ UI = {
     //$("#will-container").width(35 * Game.map_grid.tile.width);
   },
 
-  /*
-  startGame: function(game_type, options) {
-    $("#game-container").show();
-    $("#front-page").hide();
-    $("input.start").toggle();
-    $("#options").hide();
-  },
-  */
-
   deselectButtons: function() {
     $("input#load-button").blur();
     $("input#load-map-button").blur();
   },
 
-  nextTurn: function(e) {
-    if (e.key == Crafty.keys.SPACE) {
-      $("#next-turn").click();
-    } else {
-      //console.log(e);
-    }
-    return false;
+  nextTurn: function() {
+    $("#next-turn").click();
   },
 
   pillage: function(e) {
-    if (e.key == 80) {
-      $(".pillage").click();
-    } else {
-    }
-    return false;
+    $(".pillage").click();
   },
 
   sack: function(e) {
-    if (e.key == 83) {
-      $(".sack").click();
-    } else {
-    }
-    return false;
+    $(".sack").click();
   },
 
   getOptions: function() {
