@@ -92,7 +92,7 @@ var MapCreator = function(options) {
         var height = game.height_map[x][y];
         if (height >= 1 - water_level) {
           var data = { height: game.height_map[x][y] };
-          var water_obj = new Terrain("Water").add(data).stats;
+          var water_obj = new TerrainData("Water").add(data).stats;
           game.terrain_type[x][y] = water_obj;
           game.occupied[x][y] = true;
         }
@@ -120,7 +120,7 @@ var MapCreator = function(options) {
               height: game_object.height_map[x][y], 
               side: this.getMapSide(options, x)
             };
-            var village_obj = new Terrain("Village").add(stats).stats;
+            var village_obj = new TerrainData("Village").add(stats).stats;
             game_object.terrain_type[x][y] = village_obj;
 
             if (village_locations.length >= 1 + estimated_villages) return village_locations;
@@ -181,7 +181,7 @@ var MapCreator = function(options) {
             game_object.occupied[x][y] = true;
             //var data = { side: this.getMapSide(options, x) };
             var data = { side: this.getMapSide(options, x )};
-            var farm_obj = new Terrain("Farm").add(data).stats;
+            var farm_obj = new TerrainData("Farm").add(data).stats;
             //farm_obj.side = this.getMapSide(options, x);
             game_object.terrain_type[x][y] = farm_obj;
           }
@@ -207,7 +207,7 @@ var MapCreator = function(options) {
           */
 
           var stats = { height: game_object.height_map[x][y] };
-          var grass_obj = new Terrain("Grass").add(stats).stats;
+          var grass_obj = new TerrainData("Grass").add(stats).stats;
           game_object.terrain_type[x][y] = grass_obj;
         }
       }
@@ -267,7 +267,7 @@ var MapCreator = function(options) {
 
         entity_obj.type = "Road";
       }
-      entity_obj = new Terrain(entity_obj.type).add(entity_obj).stats;
+      entity_obj = new TerrainData(entity_obj.type).add(entity_obj).stats;
       road.push({ x: x, y: y});
       this.Game.terrain_type[x][y] = entity_obj;
     }
@@ -394,7 +394,7 @@ var MapCreator = function(options) {
         
         if (noise_value >= 1 - frequency && !game_object.occupied[x][y]) {
           var stats = { height: game_object.height_map[x][y] };
-          var entity_obj = new Terrain(entity_name).add(stats).stats;
+          var entity_obj = new TerrainData(entity_name).add(stats).stats;
           game_object.terrain_type[x][y] = entity_obj;
           if (update_occupied) {
             game_object.occupied[x][y] = true;
@@ -552,3 +552,4 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 } else {
   this.MapCreator = MapCreator;
 }
+

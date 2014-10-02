@@ -123,7 +123,7 @@ Crafty.scene('Game', function() {
         if (typeof terrain_datum == 'string') {
           var terrain = Crafty.e(terrain_datum);
         } else if (typeof terrain_datum == 'object') {
-          var terrain_object = new Terrain(terrain_datum.type, terrain_datum);
+          var terrain_object = new TerrainData(terrain_datum.type, terrain_datum);
           var terrain = terrain_object.render();
         } else {
           throw "TerrainInvalid: Must be object or string.";
