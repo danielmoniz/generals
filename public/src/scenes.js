@@ -137,7 +137,8 @@ Crafty.scene('Game', function() {
   function buildUnitsFromData(unit_data) {
     for (var side=0; side<2; side++) {
       for (var i=0; i<unit_data[side].length; i++) {
-        var unit_object = unit_data[side][i];
+        var unit_stats = unit_data[side][i];
+        var unit_object = new UnitData(unit_stats.type, unit_stats);
         var unit = unit_object.render();
       }
     }

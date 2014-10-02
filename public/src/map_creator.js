@@ -513,7 +513,7 @@ var MapCreator = function(options) {
           if (local_terrain == 'Water' || local_terrain.type == 'Water') {
           } else {
             var unit_obj = this.createUnitFromFaction(options.factions[side], faction, side, spot, current_index);
-            units.push(unit_obj);
+            units.push(unit_obj.stats);
             units_left -= 1;
             current_index += 1;
             if (!units_left) break;
