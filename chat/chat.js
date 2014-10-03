@@ -27,15 +27,6 @@ var Chat = function(io) {
     game.create(room_name, options, inviter, invitee, observers, this.endGame);
   };
 
-  this.endGame = function(players, observers) {
-    var users = players.concat(observers);
-    for (var i in users) {
-      var user = users[i];
-      this.joinRoom(user, this.main_room, true);
-    }
-    delete players[0].game;
-  };
-
   this.joinRoom = function(socket, room, make_active, stay_in_room) {
     var old_room = socket.active_room;
     if (!stay_in_room && old_room !== undefined) {
@@ -61,19 +52,13 @@ var Chat = function(io) {
     this.updateUserList(room_name);
   };
 
+  this.removeUser = function(socket) {
+    delete this.users[socket.username];
+  };
+
   this.updateUserList = function(room_name) {
     if (!room_name) return false;
     this.io.to(room_name).emit("update user list", this.rooms[room_name]);
-  };
-
-  this.runCommand = function(text, socket) {
-    var command = "/invite";
-    if (text.slice(0, command.length) == command) {
-      var data = text.split(" ");
-      this.invite(socket, data[1]);
-      return true;
-    }
-    return false;
   };
 
   this.sendMessage = function(socket, message) {
@@ -150,6 +135,25 @@ var Chat = function(io) {
     }
     this.rooms[room].push(name);
     return this.rooms;
+  };
+
+  this.endGame = function(players, observers) {
+    var users = players.concat(observers);
+    for (var i in users) {
+      var user = users[i];
+      this.joinRoom(user, this.main_room, true);
+    }
+    delete players[0].game;
+  };
+
+  this.runCommand = function(text, socket) {
+    var command = "/invite";
+    if (text.slice(0, command.length) == command) {
+      var data = text.split(" ");
+      this.invite(socket, data[1]);
+      return true;
+    }
+    return false;
   };
 
 }

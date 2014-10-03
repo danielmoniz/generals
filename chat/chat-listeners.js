@@ -17,6 +17,7 @@ var ChatListener = function(io) {
         chat.leaveRoom(socket.active_room, socket);
         chat.leaveRoom(socket.username, socket);
       }
+      chat.removeUser(socket);
     });
 
     socket.on("new user", function(username, old_username) {
