@@ -185,59 +185,16 @@ Game = {
 
       //this.sendMovesCallback(moves);
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
-      //this.nextTurnUpdates();
       this.nextTurn();
-      /*
-      Output.clearAll();
-      this.updateTurnCount(this.turn_count + 0.5);
-
-      Output.updateStatusBar();
-      Output.updateNextTurnButton(this.turn);
-
-      this.deselect();
-      var victory = Victory.checkVictoryConditions();
-      Output.updateVictoryBar();
-      if (victory) Crafty.scene('Victory');
-      Crafty.trigger("NextTurn");
-
-      this.determineSelection();
-
-      Crafty.trigger("ResetVisuals");
-      if (Game.options && Game.options.fog_of_war) {
-        LineOfSight.handleLineOfSight(this.turn);
-      }
-      */
     }
   },
 
   updateOnlineGame: function(moves, turn_count) {
-    this.updateTurnCount(turn_count);
-
-    Output.updateStatusBar();
-    Output.updateNextTurnButton(this.turn);
-
-    Crafty.trigger("ResetVisuals");
-    if (Game.options && Game.options.fog_of_war) {
-      LineOfSight.handleLineOfSight(this.turn);
-    }
-    console.log("Game.turn");
-    console.log(Game.turn);
-    this.updateTurnCount(turn_count);
-
-    console.log("Game.turn");
-    console.log(Game.turn);
-    console.log("this.loadOnline(moves);");
-    this.loadOnline(moves);
-    console.log("Game.turn");
-    console.log(Game.turn);
-    console.log("this.updateTurnCount(turn_count - 0.5);");
-    this.updateTurnCount(turn_count - 0.5);
-    console.log("Game.turn");
-    console.log(Game.turn);
-    console.log("this.nextTurn();");
+    this.updateTurnCount(turn_count - 1);
     this.nextTurn();
-    console.log("Game.turn");
-    console.log(Game.turn);
+
+    this.loadOnline(moves);
+    this.nextTurn();
   },
 
   determineSelection: function() {
@@ -327,6 +284,7 @@ Game = {
 
   loadOnline: function(data) {
     var previous_turn = Game.turn - 0.5 % 2;
+    var current_turn = Game.turn;
     // get unit actions and movement paths
     console.log('------------------------------');
     console.log('loading data from online');
@@ -334,7 +292,7 @@ Game = {
     console.log(data);
     for (var name in data) {
       var unit_data = data[name];
-      var unit = Unit.getUnitByName(name, previous_turn);
+      var unit = Unit.getUnitByName(name, current_turn);
       unit.move_target_path_list = unit_data.move_target_path_list;
       for (var i in unit_data.actions) {
         var action = unit_data.actions[i];
