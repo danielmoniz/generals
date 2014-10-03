@@ -327,6 +327,7 @@ Crafty.scene('Victory', function() {
   // pressed
   this.restart_game = this.bind('KeyDown', function() {
     Crafty.scene('Game');
+
   });
 }, function() {
   // Remove our event binding from above so that we don't end up having

@@ -3,6 +3,7 @@ var ChatListener = function(io) {
 
   var Chat = require("./chat");
   var chat = new Chat(io);
+  chat.main_room = "main";
 
   io.on('connection', function(socket) {
 
@@ -20,7 +21,7 @@ var ChatListener = function(io) {
 
     socket.on("new user", function(username, old_username) {
       chat.changeName(socket, old_username, username);
-      chat.joinRoom(socket, "main", 'make active');
+      chat.joinRoom(socket, chat.main_room, 'make active');
       socket.emit('chat message', "Welcome to the chat!");
 
       socket.broadcast.emit('chat message', username + ' has entered the chat');

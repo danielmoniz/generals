@@ -77,6 +77,10 @@ socket.on('next turn', function (turn_moves, turn_count) {
   Game.updateOnlineGame(turn_moves, turn_count);
 });
 
+socket.on('game over', function (turn_moves, turn_count) {
+  //Game.updateOnlineGame(turn_moves, turn_count);
+});
+
 
 socket.on('joined room', function(room_name) {
   my_current_room = room_name;

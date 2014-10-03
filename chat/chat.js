@@ -24,8 +24,17 @@ var Chat = function(io) {
 
     var observers = [];
 
-    game.create(room_name, options, inviter, invitee, observers);
-  }
+    game.create(room_name, options, inviter, invitee, observers, this.endGame);
+  };
+
+  this.endGame = function(players, observers) {
+    var users = players.concat(observers);
+    for (var i in users) {
+      var user = users[i];
+      this.joinRoom(user, this.main_room, true);
+    }
+    delete players[0].game;
+  };
 
   this.joinRoom = function(socket, room, make_active, stay_in_room) {
     var old_room = socket.active_room;

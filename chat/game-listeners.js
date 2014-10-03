@@ -11,7 +11,11 @@ var GameListener = function(io) {
 
     socket.on('next turn', function(turn_data, turn_count) {
       socket.game.nextTurn(socket, turn_data, turn_count);
-    })
+    });
+
+    socket.on('game over', function(turn_data, turn_count) {
+      socket.game.endGame();
+    });
 
   });
 }
