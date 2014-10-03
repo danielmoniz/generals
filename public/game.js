@@ -185,9 +185,6 @@ Game = {
       //this.sendMovesCallback(moves);
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       //this.nextTurnUpdates();
-      // do we need to save and load on in-between turns?
-      var save = this.saveOnline();
-
       Output.clearAll();
       this.updateTurnCount(this.turn_count + 0.5);
       //this.turns_played_locally += 0.5;
@@ -196,13 +193,17 @@ Game = {
       Output.updateNextTurnButton(this.turn);
 
       this.deselect();
+      var victory = Victory.checkVictoryConditions();
+      Output.updateVictoryBar();
+      if (victory) Crafty.scene('Victory');
+      Crafty.trigger("NextTurn");
+
+      this.determineSelection();
+
       Crafty.trigger("ResetVisuals");
       if (Game.options && Game.options.fog_of_war) {
         LineOfSight.handleLineOfSight(this.turn);
       }
-
-      // do we need to save and load on in-between turns?
-      this.loadOnline(save);
     }
   },
 
@@ -212,13 +213,16 @@ Game = {
     Output.updateStatusBar();
     Output.updateNextTurnButton(this.turn);
 
-    this.deselect();
     Crafty.trigger("ResetVisuals");
     if (Game.options && Game.options.fog_of_war) {
       LineOfSight.handleLineOfSight(this.turn);
     }
+    this.updateTurnCount(turn_count);
 
     this.loadOnline(moves);
+    this.updateTurnCount(turn_count - 0.5);
+    this.nextTurn();
+    this.deselect();
   },
 
   determineSelection: function() {
@@ -309,14 +313,19 @@ Game = {
   loadOnline: function(data) {
     var previous_turn = Game.turn - 0.5 % 2;
     // get unit actions and movement paths
+    console.log('------------------------------');
     for (var name in data) {
-      var unit_turn = data[name];
+      var unit_data = data[name];
       var unit = Unit.getUnitByName(name, previous_turn);
-      for (var i in unit_turn.actions) {
-        var action = unit_turn.actions[i];
+      console.log("data");
+      console.log(data);
+      console.log('loading online');
+      unit.move_path = unit_data.move_path;
+      for (var i in unit_data.actions) {
+        var action = unit_data.actions[i];
         unit.performAction(action);
       }
-      unit.nextTurn(Game.turn);
+      //unit.nextTurn(Game.turn);
     }
     
     // perform actions and movements (use nextTurn on units)

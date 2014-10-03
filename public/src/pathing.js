@@ -79,6 +79,16 @@ Pathing = {
       movement_path[i][1].destroy();
     }
   },
+
+  getPathList: function(move_target_path) {
+    var path_list = [];
+    for (var i in move_target_path) {
+      var node = move_target_path[i];
+      path_list.push({ x: node.x, y: node.y });
+    }
+    return path_list;
+  },
+
 }
 
 function highlightPath(movement_path) {

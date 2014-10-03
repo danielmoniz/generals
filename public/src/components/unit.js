@@ -117,7 +117,7 @@ Crafty.c('Unit', {
     } else if (local_terrain.has("Village") && !local_terrain.sacked) {
       var amount = local_terrain.pillage();
     } else {
-      throw "CannotPillageEntity: {0} not valid type to be pillaged/sacked.".format(local_terrain.type);
+      throw "CannotPillageEntity: {0} not valid type to be pillaged/sacked. At location: ({1}, {2})".format(local_terrain.type, local_terrain.at().x, local_terrain.at().y);
     }
 
     if (amount) {
@@ -366,6 +366,7 @@ Crafty.c('Unit', {
     }
 
     this.move_target_path = path;
+    this.move_target_path_list = Pathing.getPathList(this.move_target_path);
   },
 
   retreat: function() {
