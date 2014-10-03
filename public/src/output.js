@@ -398,10 +398,18 @@ Output = {
     return this;
   },
 
-  updateNextTurnButton: function(turn) {
+  updateNextTurnButton: function(text) {
     var text = "Start Turn";
-    if (turn % 1 == 0) {
-      text = "Next Turn";
+    if (Game.type == Game.types.ONLINE) {
+      if (Game.turn == Game.player + 0.5) {
+        text = "Waiting for opponent...";
+      } else if (Game.turn % 1 == 0) {
+        text = "Next Turn";
+      }
+    } else {
+      if (Game.turn % 1 == 0) {
+        text = "Next Turn";
+      }
     }
     $(this.next_turn_button_id).val(text);
   },

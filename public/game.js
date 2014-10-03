@@ -116,9 +116,7 @@ Game = {
       }
     }
     Output.clearAll();
-    this.turn += 0.5;
-    this.turn = this.turn % 2;
-    this.turn_count += 0.5;
+    this.updateTurnCount(this.turn_count + 0.5);
     this.turns_played_locally += 0.5;
 
     Output.updateStatusBar();
@@ -132,7 +130,12 @@ Game = {
 
     this.determineSelection();
     if (Game.options && Game.options.fog_of_war) {
-      LineOfSight.handleLineOfSight(this.turn);
+      // Should really be using strategy pattern here
+      if (Game.type == Game.types.ONLINE) {
+        LineOfSight.handleLineOfSight(this.player);
+      } else {
+        LineOfSight.handleLineOfSight(this.turn);
+      }
     }
   },
 
@@ -243,6 +246,7 @@ Game = {
     UI.startGame();
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
+    Output.updateNextTurnButton(this.turn);
   },
 
   reset: function() {
