@@ -143,6 +143,7 @@ Game = {
    * When used for online play, will save a player's actions, then hide the
    * board (?? necessary?), and then send the saved data to the server.
    */
+  /*
   nextTurnUpdates: function() {
     var save = this.saveOnline();
 
@@ -165,6 +166,7 @@ Game = {
 
     this.loadOnline(save);
   },
+  */
 
   updateTurnCount: function(turn_count) {
     this.turn_count = turn_count;
@@ -178,17 +180,16 @@ Game = {
       // @TODO Send moves online to update the game for everyone
       if (socket !== undefined) {
         socket.emit("next turn", moves, this.turn_count);
-        this.nextTurn()
-      } else {
-        // TEST hotseat test case for emulating online
-        this.nextTurn()
       }
+      this.nextTurn()
+
       //this.sendMovesCallback(moves);
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       //this.nextTurnUpdates();
+      this.nextTurn();
+      /*
       Output.clearAll();
       this.updateTurnCount(this.turn_count + 0.5);
-      //this.turns_played_locally += 0.5;
 
       Output.updateStatusBar();
       Output.updateNextTurnButton(this.turn);
@@ -205,6 +206,7 @@ Game = {
       if (Game.options && Game.options.fog_of_war) {
         LineOfSight.handleLineOfSight(this.turn);
       }
+      */
     }
   },
 
@@ -218,12 +220,24 @@ Game = {
     if (Game.options && Game.options.fog_of_war) {
       LineOfSight.handleLineOfSight(this.turn);
     }
+    console.log("Game.turn");
+    console.log(Game.turn);
     this.updateTurnCount(turn_count);
 
+    console.log("Game.turn");
+    console.log(Game.turn);
+    console.log("this.loadOnline(moves);");
     this.loadOnline(moves);
+    console.log("Game.turn");
+    console.log(Game.turn);
+    console.log("this.updateTurnCount(turn_count - 0.5);");
     this.updateTurnCount(turn_count - 0.5);
+    console.log("Game.turn");
+    console.log(Game.turn);
+    console.log("this.nextTurn();");
     this.nextTurn();
-    this.deselect();
+    console.log("Game.turn");
+    console.log(Game.turn);
   },
 
   determineSelection: function() {
@@ -301,8 +315,6 @@ Game = {
     var units = Unit.getFriendlyUnits(this_turn);
     for (var i in units) {
       var unit = units[i];
-      console.log("unit.move_target_path_list");
-      console.log(unit.move_target_path_list);
       var unit_turn = {
         actions: unit.performed_actions,
         move_target_path_list: unit.move_target_path_list,
@@ -317,12 +329,12 @@ Game = {
     var previous_turn = Game.turn - 0.5 % 2;
     // get unit actions and movement paths
     console.log('------------------------------');
+    console.log('loading data from online');
+    console.log("data");
+    console.log(data);
     for (var name in data) {
       var unit_data = data[name];
       var unit = Unit.getUnitByName(name, previous_turn);
-      console.log("data");
-      console.log(data);
-      console.log('loading online');
       unit.move_target_path_list = unit_data.move_target_path_list;
       for (var i in unit_data.actions) {
         var action = unit_data.actions[i];
@@ -333,6 +345,7 @@ Game = {
     
     // perform actions and movements (use nextTurn on units)
   },
+
   /*
    * For now, output JSON as text so that it can be loaded manually.
    */

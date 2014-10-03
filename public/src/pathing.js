@@ -99,7 +99,7 @@ Pathing = {
       var start = Game.terrain_graph.grid[end.x][end.y];
       var end = Game.terrain_graph.grid[path_list[i].x][path_list[i].y];
       var small_path = Game.pathfind.search(Game.terrain_graph, start, end);
-      move_target_path.concat(small_path);
+      move_target_path = move_target_path.concat(small_path);
     }
     return move_target_path;
   },

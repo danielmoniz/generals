@@ -28,7 +28,7 @@ var Game = function(io) {
   }
 
   this.nextTurn = function(socket, turn_data, turn_count) {
-    socket.broadcast.to(this.game_name).emit("next turn", turn_data, turn_count + 0.5);
+    socket.to(this.game_name).broadcast.emit("next turn", turn_data, turn_count + 0.5);
   }
 
 }

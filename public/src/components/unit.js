@@ -384,16 +384,22 @@ Crafty.c('Unit', {
   },
 
   moveTowardTarget: function(is_retreat) {
+    console.log("in moveTowardTarget()");
     if (is_retreat === undefined) is_retreat = false;
     var movement = this.movement;
     if (is_retreat) movement += 1;
     var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
     // check for enemies that will be bumped into
     for (var i=0; i<partial_path.length; i++) {
+      console.log('{0} moving: {1}'.format(this.name, i));
       if (this.battle) break;
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);
+      console.log("this.move_target_path");
+      console.log(this.move_target_path);
       var new_path = this.move_target_path.slice(1, this.move_target_path.length);
+      console.log("new_path");
+      console.log(new_path);
       //this.move_target_path = new_path;
       this.updateMoveTargetPath(new_path);
       if (new_path.length == 0) this.updateMoveTargetPath(undefined);

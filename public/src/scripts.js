@@ -44,7 +44,7 @@ $(document).ready(function() {
       Game.nextTurnOnline()
     } else {
       Game.player = 0;
-      Game.nextTurnOnline();
+      Game.nextTurn();
       //Game.nextTurnOnline();
     }
 
