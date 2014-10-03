@@ -122,12 +122,12 @@ Game = {
     Output.updateStatusBar();
     Output.updateNextTurnButton(this.turn);
 
-    this.deselect();
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
     if (victory) Crafty.scene('Victory');
     Crafty.trigger("NextTurn");
 
+    this.deselect();
     this.determineSelection();
     if (Game.options && Game.options.fog_of_war) {
       // Should really be using strategy pattern here
