@@ -9,8 +9,8 @@ var GameListener = function(io) {
     socket.on("new user", function(username, old_username) {
     });
 
-    socket.on('next turn', function(turn_data) {
-      socket.game.nextTurn(turn_data);
+    socket.on('next turn', function(turn_data, turn_count) {
+      socket.game.nextTurn(turn_data, turn_count);
     })
 
   });

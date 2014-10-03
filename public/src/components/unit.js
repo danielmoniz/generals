@@ -336,6 +336,8 @@ Crafty.c('Unit', {
       var start = Game.terrain_graph.grid[this.at().x][this.at().y];
       var end = Game.terrain_graph.grid[target_x][target_y];
     }
+    console.log("Game.terrain_graph");
+    console.log(Game.terrain_graph);
     var new_path = Game.pathfind.search(Game.terrain_graph, start, end);
     if (!new_path) {
       Output.message("Target impossible to reach!");

@@ -39,10 +39,13 @@ $(document).ready(function() {
   });
 
   $("#next-turn").click(function() {
-    if (Game.type == Game.types.ONLINE && Game.turn % 1 == 0) {
+    //if (Game.type == Game.types.ONLINE && Game.turn % 1 == 0) {
+    if (Game.type == Game.types.ONLINE) {
       Game.nextTurnOnline()
     } else {
       Game.nextTurn();
+      Game.player = 0;
+      //Game.nextTurnOnline();
     }
 
     $(this).blur();

@@ -120,6 +120,7 @@ Game = {
     this.turn = this.turn % 2;
     this.turn_count += 0.5;
     this.turns_played_locally += 0.5;
+
     Output.updateStatusBar();
     Output.updateNextTurnButton(this.turn);
 
@@ -142,7 +143,7 @@ Game = {
    * When used for online play, will save a player's actions, then hide the
    * board (?? necessary?), and then send the saved data to the server.
    */
-  nextTurnOnline: function() {
+  nextTurnUpdates: function() {
     var save = this.saveOnline();
 
     // in online play, would use nextTurn() here for player who just played
@@ -153,6 +154,9 @@ Game = {
     this.turn_count += 0.5;
     this.turns_played_locally += 0.5;
 
+    Output.updateStatusBar();
+    Output.updateNextTurnButton(this.turn);
+
     this.deselect();
     Crafty.trigger("ResetVisuals");
     if (Game.options && Game.options.fog_of_war) {
@@ -160,6 +164,56 @@ Game = {
     }
 
     this.loadOnline(save);
+  },
+
+  updateTurnCount: function(turn_count) {
+    this.turn_count = turn_count;
+    this.turn = turn_count % 2;
+  },
+
+  nextTurnOnline: function() {
+    //if (this.turn == this.player || Math.abs(Game.player - 0.5) % 2 == Game.turn % 2) {
+    if (this.turn == this.player) {
+      var moves = this.saveOnline();
+      // @TODO Send moves online to update the game for everyone
+      socket.emit("next turn", moves, this.turn_count);
+      //this.sendMovesCallback(moves);
+    } else if (Math.abs(Game.player - 0.5) % 2 == Game.turn % 2) {
+      //this.nextTurnUpdates();
+      // do we need to save and load on in-between turns?
+      var save = this.saveOnline();
+
+      Output.clearAll();
+      this.updateTurnCount(this.turn_count + 0.5);
+      //this.turns_played_locally += 0.5;
+
+      Output.updateStatusBar();
+      Output.updateNextTurnButton(this.turn);
+
+      this.deselect();
+      Crafty.trigger("ResetVisuals");
+      if (Game.options && Game.options.fog_of_war) {
+        LineOfSight.handleLineOfSight(this.turn);
+      }
+
+      // do we need to save and load on in-between turns?
+      this.loadOnline(save);
+    }
+  },
+
+  updateOnlineGame: function(moves, turn_count) {
+    this.updateTurnCount(turn_count);
+
+    Output.updateStatusBar();
+    Output.updateNextTurnButton(this.turn);
+
+    this.deselect();
+    Crafty.trigger("ResetVisuals");
+    if (Game.options && Game.options.fog_of_war) {
+      LineOfSight.handleLineOfSight(this.turn);
+    }
+
+    this.loadOnline(moves);
   },
 
   determineSelection: function() {
@@ -185,7 +239,7 @@ Game = {
   },
 
   // initialize and start our game
-  start: function(game_type, options, map) {
+  start: function(game_type, options, map, sendMovesCallback) {
     if (!Game.options) Game.options = {};
     for (var key in options) {
       var value = options[key];

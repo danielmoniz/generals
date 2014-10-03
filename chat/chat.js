@@ -22,11 +22,9 @@ var Chat = function(io) {
     inviter.game = game;
     invitee.game = game;
 
-    var first_player = inviter;
-    var second_player = invitee;
     var observers = [];
 
-    game.create(room_name, options);
+    game.create(room_name, options, inviter, invitee, observers);
   }
 
   this.joinRoom = function(socket, room, make_active, stay_in_room) {
