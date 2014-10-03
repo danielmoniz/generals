@@ -313,5 +313,20 @@ Crafty.c('Battle', {
     return present_units;
   },
 
+  getTotalTroops: function() {
+    var units = this.getPresentUnits();
+    var total = {
+      0: { active: 0, injured: 0, total: 0 },
+      1: { active: 0, injured: 0, total: 0 },
+    };
+    for (var i in units) {
+      var unit = units[i];
+      total[unit.side]['active'] += unit.getActive();
+      total[unit.side]['injured'] += unit.quantity - unit.getActive();
+      total[unit.side]['total'] += unit.quantity;
+    }
+    return total;
+  },
+
 });
 

@@ -144,7 +144,8 @@ Output = {
   },
 
   printBattleStart: function(battle) {
-    var title = "New battle: -------------";
+    var title = "New battle: {0}".format(this.getBattleStatus(battle));
+
     var divs = [];
 
     var units = battle.attackers.concat(battle.defenders);
@@ -162,8 +163,24 @@ Output = {
     return this;
   },
 
+  getBattleStatus: function(battle, type) {
+    var total_troops = battle.getTotalTroops();
+    if (type == "injured") {
+      var first_player_status = "{0}/{1}".format(total_troops[0].active, total_troops[0].total);
+      var second_player_status = "{0}/{1}".format(total_troops[1].active, total_troops[1].total);
+    } else if (type == "total") {
+      var first_player_status = "{0}".format(total_troops[0].total);
+      var second_player_status = "{0}".format(total_troops[1].total);
+    } else {
+      var first_player_status = "{0}".format(total_troops[0].active);
+      var second_player_status = "{0}".format(total_troops[1].active);
+    }
+    var status = "{0} - {1}".format(first_player_status, second_player_status);
+    return status;
+  },
+
   printBattle: function(battle) {
-    var title = "New battle phase (turn {0}): ---------------------------".format(battle.num_turns);
+    var title = "New battle phase (turn {0}): {1}  --------".format(battle.num_turns, this.getBattleStatus(battle));
     var divs = [];
 
     var units = battle.units_in_combat();
