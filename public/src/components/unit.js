@@ -51,6 +51,9 @@ Crafty.c('Unit', {
   },
 
   nextTurn: function(turn) {
+    // rebuild movement path for pathfinding from stored data
+    this.move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
+
     if (turn === undefined) turn = Game.turn;
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
@@ -320,7 +323,8 @@ Crafty.c('Unit', {
   prepareMove: function(target_x, target_y, ignore_visuals, queue_move) {
     if (this.at().x == target_x && this.at().y == target_y) {
       delete this.move_target;
-      delete this.move_target_path;
+      //delete this.move_target_path;
+      this.updateMoveTargetPath('delete');
       Pathing.destroyMovementPath(this.movement_path);
       delete this.movement_path;
       return false;
@@ -365,8 +369,9 @@ Crafty.c('Unit', {
       this.movement_path = Pathing.colourMovementPath(path, movement, this.at());
     }
 
-    this.move_target_path = path;
-    this.move_target_path_list = Pathing.getPathList(this.move_target_path);
+    //this.move_target_path = path;
+    //this.move_target_path_list = Pathing.getPathList(this.move_target_path);
+    this.updateMoveTargetPath(path);
   },
 
   retreat: function() {
@@ -389,8 +394,9 @@ Crafty.c('Unit', {
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);
       var new_path = this.move_target_path.slice(1, this.move_target_path.length);
-      this.move_target_path = new_path;
-      if (new_path.length == 0) this.move_target_path = undefined;
+      //this.move_target_path = new_path;
+      this.updateMoveTargetPath(new_path);
+      if (new_path.length == 0) this.updateMoveTargetPath(undefined);
       this.moved();
     }
   },
@@ -424,7 +430,8 @@ Crafty.c('Unit', {
   stop_unit: function() {
     Pathing.destroyMovementPath(this.movement_path);
     delete this.movement_path;
-    delete this.move_target_path;
+    //delete this.move_target_path;
+    this.updateMoveTargetPath('delete');
     delete this.move_target;
   },
   startBattle: function() {
@@ -513,6 +520,16 @@ Crafty.c('Unit', {
 
   getOppositeSide: function() {
     return (this.side + 1) % 2;
+  },
+
+  updateMoveTargetPath: function(new_path) {
+    if (new_path == 'delete') {
+      delete this.move_target_path;
+      delete this.move_target_path_list;
+      return;
+    }
+    this.move_target_path = new_path;
+    this.move_target_path_list = Pathing.getPathList(this.move_target_path);
   },
 
 });

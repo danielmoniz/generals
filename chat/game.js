@@ -19,11 +19,16 @@ var Game = function(io) {
 
     this.io.to(first_player.id).emit("new game", this.game_name, this.game_data, 0, options);
     this.io.to(second_player.id).emit("new game", this.game_name, this.game_data, 1, options);
+    this.players_by_turn = {
+      0: first_player,
+      1: second_player,
+    };
+
 
   }
 
-  this.nextTurn = function(turn_data, turn_count) {
-    io.to(this.game_name).emit("next turn", turn_data, turn_count + 0.5);
+  this.nextTurn = function(socket, turn_data, turn_count) {
+    socket.broadcast.to(this.game_name).emit("next turn", turn_data, turn_count + 0.5);
   }
 
 }

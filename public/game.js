@@ -178,6 +178,7 @@ Game = {
       // @TODO Send moves online to update the game for everyone
       if (socket !== undefined) {
         socket.emit("next turn", moves, this.turn_count);
+        this.nextTurn()
       } else {
         // TEST hotseat test case for emulating online
         this.nextTurn()
@@ -300,9 +301,11 @@ Game = {
     var units = Unit.getFriendlyUnits(this_turn);
     for (var i in units) {
       var unit = units[i];
+      console.log("unit.move_target_path_list");
+      console.log(unit.move_target_path_list);
       var unit_turn = {
         actions: unit.performed_actions,
-        move_path: unit.move_target_path,
+        move_target_path_list: unit.move_target_path_list,
       };
       data[unit.name] = unit_turn;
     }
@@ -320,7 +323,7 @@ Game = {
       console.log("data");
       console.log(data);
       console.log('loading online');
-      unit.move_path = unit_data.move_path;
+      unit.move_target_path_list = unit_data.move_target_path_list;
       for (var i in unit_data.actions) {
         var action = unit_data.actions[i];
         unit.performAction(action);
