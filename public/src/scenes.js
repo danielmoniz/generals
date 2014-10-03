@@ -222,6 +222,10 @@ Crafty.scene('Game', function() {
 
     buildUnitsFromData(Game.starting_units);
 
+    // Must rebuild Graph objects for pathfinding
+    var map_creator = new MapCreator();
+    map_creator.buildTerrainData(Game, Game, Game.terrain_type);
+
     Victory.reset();
     Game.select(Crafty('Unit').get(0));
   } else if (Game.load_game) {

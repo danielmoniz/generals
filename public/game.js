@@ -176,9 +176,14 @@ Game = {
     if (this.turn == this.player) {
       var moves = this.saveOnline();
       // @TODO Send moves online to update the game for everyone
-      socket.emit("next turn", moves, this.turn_count);
+      if (socket !== undefined) {
+        socket.emit("next turn", moves, this.turn_count);
+      } else {
+        // TEST hotseat test case for emulating online
+        this.nextTurn()
+      }
       //this.sendMovesCallback(moves);
-    } else if (Math.abs(Game.player - 0.5) % 2 == Game.turn % 2) {
+    } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       //this.nextTurnUpdates();
       // do we need to save and load on in-between turns?
       var save = this.saveOnline();

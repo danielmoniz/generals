@@ -15,11 +15,10 @@ var Game = function(io) {
     Utility.loadDataIntoObject(default_settings, settings);
     //Utility.loadDataIntoObject(options, settings);
 
-    this.map = new MapCreator().buildNewMap(settings);
+    this.game_data = new game_dataCreator().buildNewgame_data(settings);
 
-    // @TODO Send game data here, instead of the options!
-    this.io.to(first_player.id).emit("new game", this.game_name, this.map, 0, options);
-    this.io.to(second_player.id).emit("new game", this.game_name, this.map, 1, options);
+    this.io.to(first_player.id).emit("new game", this.game_name, this.game_data, 0, options);
+    this.io.to(second_player.id).emit("new game", this.game_name, this.game_data, 1, options);
 
   }
 

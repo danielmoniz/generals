@@ -43,8 +43,8 @@ $(document).ready(function() {
     if (Game.type == Game.types.ONLINE) {
       Game.nextTurnOnline()
     } else {
-      Game.nextTurn();
       Game.player = 0;
+      Game.nextTurnOnline();
       //Game.nextTurnOnline();
     }
 
