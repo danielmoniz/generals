@@ -183,10 +183,10 @@ Game = {
       // @TODO Send moves online to update the game for everyone
       if (socket !== undefined) {
         socket.emit("next turn", moves, this.turn_count);
+        //this.sendMovesCallback(moves);
       }
       this.nextTurn()
 
-      //this.sendMovesCallback(moves);
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       this.nextTurn();
     }

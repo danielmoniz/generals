@@ -74,7 +74,6 @@ socket.on('new game', function(game_name, game_object, player, options) {
 });
 
 socket.on('next turn', function (turn_moves, turn_count) {
-  console.log("received next turn event");
   Game.updateOnlineGame(turn_moves, turn_count);
 });
 
