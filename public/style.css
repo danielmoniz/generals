@@ -1,7 +1,7 @@
 body { margin: 0; background: black; color:white; }
 #front-page {}
 #game-container { display: none; width: 100%; float:left; }
-#info-panel { width:35%; color:white; float:left; }
+#info-panel { width:35%; min-height: 100px; color:white; float:left; }
 #alerts-container { width:65%; color:white; float:right; }
 #title-container { padding: 2px; width: 100%; 24px; color:white; float:left; }
 #status-container { width: 45%; float:left; min-width: 510px; }
