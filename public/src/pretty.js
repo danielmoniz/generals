@@ -73,8 +73,10 @@ Pretty = {
       return unsupplied;
     },
 
-    unitsPresentTitle: function() {
-      return "Other units present: --------------";
+    unitsPresentTitle: function(active, injured, total) {
+      var text = "Total units present: {0}/{1}".format(active, total);
+      if (injured == 0) var text = "Total units present: {0}".format(active);
+      return text;
     },
 
     inBattle: function() {

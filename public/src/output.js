@@ -163,6 +163,23 @@ Output = {
     return this;
   },
 
+  printBattle: function(battle) {
+    var title = "New battle phase (round {0}): {1}".format(battle.num_turns, this.getBattleStatus(battle));
+    var divs = [];
+
+    var units = battle.units_in_combat();
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      var unit_div = this.createStandardUnitDiv(unit, "sub-report");
+      divs.push(unit_div);
+    }
+    var conclusion = undefined;
+    if (battle.finished) conclusion = "Battle finished!";
+
+    this.makeReport(divs, title, conclusion);
+    return this;
+  },
+
   getBattleStatus: function(battle, type) {
     var total_troops = battle.getTotalTroops();
     if (type == "injured") {
@@ -177,23 +194,6 @@ Output = {
     }
     var status = "{0} - {1}".format(first_player_status, second_player_status);
     return status;
-  },
-
-  printBattle: function(battle) {
-    var title = "New battle phase (turn {0}): {1}  --------".format(battle.num_turns, this.getBattleStatus(battle));
-    var divs = [];
-
-    var units = battle.units_in_combat();
-    for (var i=0; i<units.length; i++) {
-      var unit = units[i];
-      var unit_div = this.createStandardUnitDiv(unit, "sub-report");
-      divs.push(unit_div);
-    }
-    var conclusion = undefined;
-    if (battle.finished) conclusion = "Battle finished!";
-
-    this.makeReport(divs, title, conclusion);
-    return this;
   },
 
   printBattleJoin: function(battle, unit) {
@@ -337,12 +337,20 @@ Output = {
     return this;
   },
 
-  printUnitsPresent: function(units) {
-    var title = Pretty.Unit.unitsPresentTitle();
+  printUnitsPresent: function(unit, other_units) {
+    var total = { active: 0, injured: 0, total: 0, };
+    var all_units = other_units.concat([unit]);
+    for (var i in all_units) {
+      var unit = all_units[i];
+      total['active'] += unit.getActive();
+      total['injured'] += unit.quantity - unit.getActive();
+      total['total'] += unit.quantity;
+    }
+    var title = Pretty.Unit.unitsPresentTitle(total.active, total.injured, total.total);
     var divs = [];
 
-    for (var i=0; i<units.length; i++) {
-      var unit = units[i];
+    for (var i=0; i<other_units.length; i++) {
+      var unit = other_units[i];
       var unit_div = this.createStandardUnitDiv(unit, "sub-report");
       if (unit.battle) {
         var battle = unit.isBattlePresent();
