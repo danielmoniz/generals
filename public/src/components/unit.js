@@ -89,7 +89,7 @@ Crafty.c('Unit', {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.type == 'Farm' && !local_terrain.pillaged)
       actions.push("pillage");
-    if (local_terrain.type == 'Village' && local_terrain.side != this.side && !local_terrain.sacked)
+    if (local_terrain.type == 'City' && local_terrain.side != this.side && !local_terrain.sacked)
       actions.push("sack");
     return actions;
   },
@@ -121,7 +121,7 @@ Crafty.c('Unit', {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.has('Farm')) {
       var amount = local_terrain.pillage();
-    } else if (local_terrain.has("Village") && !local_terrain.sacked) {
+    } else if (local_terrain.has("City") && !local_terrain.sacked) {
       var amount = local_terrain.pillage();
     } else {
       throw "CannotPillageEntity: {0} not valid type to be pillaged/sacked. At location: ({1}, {2})".format(local_terrain.type, local_terrain.at().x, local_terrain.at().y);
@@ -194,9 +194,9 @@ Crafty.c('Unit', {
     var num_to_heal = Game.healing_rate * this.injured;
     this.heal(num_to_heal);
 
-    var village = this.isVillagePresent();
-    if (village && !village.sacked && village.supply_remaining > 0 && !this.battle) {
-      var num_to_heal = Game.village_healing_rate * this.injured;
+    var city = this.isCityPresent();
+    if (city && !city.sacked && city.supply_remaining > 0 && !this.battle) {
+      var num_to_heal = Game.city_healing_rate * this.injured;
       this.heal(num_to_heal);
     }
   },
@@ -320,8 +320,8 @@ Crafty.c('Unit', {
     return this.isEntityPresent('Battle');
   },
 
-  isVillagePresent: function() {
-    return this.isEntityPresent('Village');
+  isCityPresent: function() {
+    return this.isEntityPresent('City');
   },
 
   prepareMove: function(target_x, target_y, ignore_visuals, queue_move) {

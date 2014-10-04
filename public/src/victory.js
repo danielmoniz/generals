@@ -3,7 +3,7 @@ Victory = {
     this.will_to_fight = [100, 100];
     this.troop_values = [undefined, undefined];
     this.farm_values = [undefined, undefined];
-    this.village_values = [undefined, undefined];
+    this.city_values = [undefined, undefined];
     this.ratio_to_win = 3; // need X times higher will than opponent to win
     this.setWillToFight();
   },
@@ -12,7 +12,7 @@ Victory = {
     this.will_to_fight = victory_data.will_to_fight;
     this.troop_values = victory_data.troop_values;
     this.farm_values = victory_data.farm_values;
-    this.village_values = victory_data.village_values;
+    this.city_values = victory_data.city_values;
 
     this.ratio_to_win = victory_data.ratio_to_win;
   },
@@ -47,12 +47,12 @@ Victory = {
       var total_unpillaged_farms = this.getUnpillagedFarms(i).length;
       var farm_factor = total_unpillaged_farms * this.farm_values[i];
 
-      var villages = this.getVillages(i);
-      var total_villages = villages.length;
-      var total_unpillaged_villages = this.getUnsackedVillages(i).length;
-      var village_factor = total_unpillaged_villages * this.village_values[i];
+      var cities = this.getCities(i);
+      var total_cities = cities.length;
+      var total_unpillaged_cities = this.getUnsackedCities(i).length;
+      var city_factor = total_unpillaged_cities * this.city_values[i];
 
-      this.will_to_fight[i] = 100 * troop_factor * farm_factor * village_factor;
+      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor;
     }
     Output.updateVictoryBar();
   },
@@ -92,22 +92,22 @@ Victory = {
     return unpillaged_farms;
   },
 
-  getUnsackedVillages: function(side) {
-    var villages = this.getVillages(side);
-    var unsacked_villages = [];
-    for (var i in villages) {
-      if (!villages[i].sacked) unsacked_villages.push(villages[i]);
+  getUnsackedCities: function(side) {
+    var cities = this.getCities(side);
+    var unsacked_cities = [];
+    for (var i in cities) {
+      if (!cities[i].sacked) unsacked_cities.push(cities[i]);
     }
-    return unsacked_villages;
+    return unsacked_cities;
   },
 
-  getVillages: function(side) {
-    var villages = Crafty('Village').get();
-    var villages_in_sides = { 0: [], 1: [], undefined: [], };
-    for (var i in villages) {
-      villages_in_sides[villages[i].side].push(villages[i]);
+  getCities: function(side) {
+    var cities = Crafty('City').get();
+    var cities_in_sides = { 0: [], 1: [], undefined: [], };
+    for (var i in cities) {
+      cities_in_sides[cities[i].side].push(cities[i]);
     }
-    return villages_in_sides[side];
+    return cities_in_sides[side];
   },
 
   setWillToFight: function() {
@@ -121,9 +121,9 @@ Victory = {
       var farm_value = 1 / farms.length;
       this.farm_values[i] = farm_value;
 
-      var villages = this.getVillages(i);
-      var village_value = 1 / villages.length;
-      this.village_values[i] = village_value;
+      var cities = this.getCities(i);
+      var city_value = 1 / cities.length;
+      this.city_values[i] = city_value;
     }
 
   },

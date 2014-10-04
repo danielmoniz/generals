@@ -233,7 +233,7 @@ Crafty.scene('Game', function() {
     buildTerrainData();
 
     addSupplyRoads(1);
-    addRoadsBetweenVillages();
+    addRoadsBetweenCities();
 
     addRoadGraphics();
     colourHeightMap(Game.location);
@@ -258,7 +258,7 @@ Crafty.scene('Game', function() {
     buildTerrainData();
 
     addSupplyRoads(1);
-    addRoadsBetweenVillages();
+    addRoadsBetweenCities();
 
     addRoadGraphics();
     colourHeightMap(Game.location);
@@ -304,13 +304,13 @@ Crafty.scene('Game', function() {
     return Game.pathfind.search(Game.terrain_build_graph, start, end);
   }
 
-  this.show_victory = this.bind('VillageVisited', function() {
-    if (!Crafty('Village').length) {
+  this.show_victory = this.bind('CityVisited', function() {
+    if (!Crafty('City').length) {
       Crafty.scene('Victory');
     }
   });
 }, function() {
-  this.unbind('VillageVisited', this.show_victory);
+  this.unbind('CityVisited', this.show_victory);
 });
 
 // Victory scene
@@ -360,7 +360,7 @@ Crafty.scene('Loading', function() {
     Crafty.sprite(16, 'assets/16x16_generals.png', {
       //spr_tree: [0, 0],
       spr_bush: [1, 0],
-      spr_village: [0, 1],
+      spr_city: [0, 1],
       spr_player: [1, 1],
     });
     Crafty.sprite(32, 'assets/Forest-32.png', {

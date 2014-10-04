@@ -36,7 +36,7 @@ var Options = function() {
       },
       player_colour: { 0: "Blue", 1: "White" },
       num_sections: 3,
-      num_villages_total: 9,
+      num_cities_total: 9,
 
       pathfind: astar,
       graph_ftn: Graph,

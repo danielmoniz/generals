@@ -319,7 +319,7 @@ Output = {
         Output.pushLast(" (pillaged)");
       }
     }
-    if (terrain.has("Village")) {
+    if (terrain.has("City")) {
       if (terrain.supply_remaining > 0) {
         Output.push("Supply: {0}".format(terrain.supply_remaining));
       } else {

@@ -106,11 +106,11 @@ Crafty.c('Bridge', {
   },
 });
 
-// A village is a tile on the grid that the PC must visit in order to win the
+// A city is a tile on the grid that the PC must visit in order to win the
 // game
-Crafty.c('Village', {
+Crafty.c('City', {
   init: function() {
-    this.requires('spr_village, Terrain, Passable')
+    this.requires('spr_city, Terrain, Passable')
       .attr({
         farms: [],
       })
@@ -151,7 +151,7 @@ Crafty.c('Road', {
     // look at adjacent road spaces and determine which component should be
     // added (ie. which sprite is required).
     function hasRoadConnection(tile) {
-      var road_connections = ['Road', 'Bridge', 'Village'];
+      var road_connections = ['Road', 'Bridge', 'City'];
       for (var i=0; i<road_connections.length; i++) {
         if (tile.has(road_connections[i])) return true;
       }

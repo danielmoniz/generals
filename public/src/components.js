@@ -374,11 +374,11 @@ Crafty.c("Shadow", {
   },
 });
 
-Crafty.c("VillageHighlight", {
+Crafty.c("CityHighlight", {
   init: function() {
     this.requires('Actor, Color');
     this.z = 5;
-    this.type = "VillageHighlight";
+    this.type = "CityHighlight";
     this.alpha = 60;
   },
 
@@ -485,7 +485,7 @@ Crafty.c('PlayerCharacter', {
     this.requires('Actor, Fourway, Collision, spr_player, Movable')
       .fourway(4)
       .stopOnSolids()
-      .onHit('Village', this.visitVillage)
+      .onHit('City', this.visitCity)
       ;
     this.z = 1000;
   },
@@ -507,10 +507,10 @@ Crafty.c('PlayerCharacter', {
     }
   },
 
-  // Respond to this player visiting a village
-  visitVillage: function(data) {
-    var village = data[0].obj;
-    village.collect();
+  // Respond to this player visiting a city
+  visitCity: function(data) {
+    var city = data[0].obj;
+    city.collect();
   },
 });
 

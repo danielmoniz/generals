@@ -37,7 +37,7 @@ var TerrainData = function(type, stats) {
       provides_supply: 2,
       colour: { r: 196, g: 196, b: 0 },
     },
-    "Village": {
+    "City": {
       move_difficulty: 0.9,
       build_over: 0.01,
       defense_bonus: 1.25,
