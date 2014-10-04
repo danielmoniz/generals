@@ -1,9 +1,9 @@
 if (typeof require !== 'undefined') {
-  Factions = require("../factions.js")
+  Factions = require("../factions");
   Utility = require("./utility");
-  Pathing = require("./pathing")
-  TerrainData = require("./components/terrain_data")
-  UnitData = require("./components/unit_data")
+  Pathing = require("./pathing");
+  TerrainData = require("./components/terrain_data");
+  UnitData = require("./components/unit_data");
 }
 
 var MapCreator = function(options) {
@@ -255,38 +255,14 @@ var MapCreator = function(options) {
         continue;
       }
       if (terrain_type == "Water" || terrain_type.type == "Water") {
-      //if (terrain.has("Water")) {
-        /*
-        terrain.destroy();
-        var entity = Crafty.e('Bridge');
-        entity.at(path[i].x, path[i].y);
-        Game.terrain[x][y] = entity;
-        road.push(entity);
-        */
 
         entity_obj.type = "Bridge";
       } else {
         var is_supply_route = false;
-        /*
-        if (terrain_type.is_supply_route) {
-          var is_supply_route = true;
-        }
-        if (terrain.has('Road') && terrain.is_supply_route) {
-          var is_supply_route = true;
-        }
-        */
-        /*
-        terrain.destroy();
-        var entity = Crafty.e('Road');
-        entity.at(path[i].x, path[i].y);
-        */
         //if (is_supply_route || (is_supply_route_road && i == end - 1)) 
         if (is_supply_route_road && i == end - 1) {
-          //entity.is_supply_route = true;
           entity_obj.is_supply_route = true;
         }
-        //this.Game.terrain[x][y] = entity;
-        //road.push(entity_obj);
 
         entity_obj.type = "Road";
       }
@@ -527,12 +503,14 @@ var MapCreator = function(options) {
       var units_left = faction.units.length;
       var current_index = 0;
       var column = 0;
+
       while (units_left > 0) {
         var max_units_per_column = 3;
         for (var i = 0; i<max_units_per_column; i++) {
           var y = this.getStartY(side, max_units_per_column);
           var spot = {x: x_value + column, y: y + i};
           var local_terrain = game_object.terrain_type[spot.x][spot.y].type;
+
           if (local_terrain == 'Water' || local_terrain.type == 'Water') {
           } else {
             var unit_obj = this.createUnitFromFaction(options.factions[side], faction, side, spot, current_index);
@@ -573,6 +551,5 @@ var MapCreator = function(options) {
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports = MapCreator;
 } else {
-  this.MapCreator = MapCreator;
+  window.MapCreator = MapCreator;
 }
-

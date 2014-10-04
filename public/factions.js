@@ -1,4 +1,5 @@
-Factions = {
+
+var Factions = {
   mongols: {
     name: "Mongols",
     blurb: "Genghis Khan, under the leadership of his chief general and strategist Subutai, divided their forces into four groups as they began their invasion of Europe.",
@@ -81,4 +82,10 @@ Factions = {
     cities: ['Beijing', 'Nanjing', 'Luoyang', "Chang’an (Xi’an)", 'Kaifeng', 'Hangzhou', 'Anyang', 'Zhengzhou'],
   },
 
+}
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Factions;
+} else {
+  window.Factions = Factions;
 }
