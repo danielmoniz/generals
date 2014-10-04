@@ -199,7 +199,7 @@ Crafty.c('Clickable', {
       .bind('MouseDown', this.tabletHoldClick)
       .bind('MouseUp', this.tabletClearClick)
       .bind('MouseOut', this.tabletClearClick)
-      .bind('MouseDown', this.setMouseDown)
+      .bind('MouseDown', this.setLeftMouseDown)
       .bind('MouseUp', function(e) { 
         if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
           if (!Game.selected || Game.selected != this) {
@@ -209,16 +209,16 @@ Crafty.c('Clickable', {
           }
         }
         this.ignoreNextMouseUp = false;
-        this.resetMouseUp();
+        this.resetLeftMouseDown();
       })
     ;
   },
 
-  setMouseDown: function() {
+  setLeftMouseDown: function() {
     this.mouse_went_down_here = true;
   },
 
-  resetMouseUp: function() {
+  resetLeftMouseDown: function() {
     this.mouse_went_down_here = false;
   },
 
@@ -263,6 +263,7 @@ Crafty.c('Movable', {
 Crafty.c('Receivable', {
   init: function() {
     this.requires('Clickable')
+      .bind('MouseDown', this.setRightMouseDown)
       .bind('MouseUp', function(e) {
         if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
           this.rightClick(e);
@@ -273,7 +274,7 @@ Crafty.c('Receivable', {
 
   rightClick: function(e) {
     // for now, allow queing moves on any turn
-    if (Game.player !== undefined && Game.player == Game.selected.side) {
+    if (Game.player !== undefined && Game.player == Game.selected.side && this.right_mouse_went_down_here) {
       if (e.shiftKey) {
         Game.selected.prepareMove(this.at().x, this.at().y, false, true);
       } else {
@@ -297,7 +298,16 @@ Crafty.c('Receivable', {
       }
       Output.message(message);
     }
+    this.resetRightMouseDown();
 
+  },
+
+  setRightMouseDown: function() {
+    this.right_mouse_went_down_here = true;
+  },
+
+  resetRightMouseDown: function() {
+    this.right_mouse_went_down_here = false;
   },
 
 });
