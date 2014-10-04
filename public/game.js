@@ -198,6 +198,8 @@ Game = {
 
     this.loadOnline(moves);
     this.nextTurn();
+    // Go right to the next player's turn - skip in-between' turn
+    this.nextTurn();
   },
 
   determineSelection: function() {
