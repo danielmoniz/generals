@@ -115,6 +115,7 @@ Game = {
         return;
       }
     }
+
     Output.clearAll();
     this.updateTurnCount(this.turn_count + 0.5);
     this.turns_played_locally += 0.5;
@@ -137,6 +138,13 @@ Game = {
         LineOfSight.handleLineOfSight(this.turn);
       }
     }
+
+    if (this.type == this.types.HOTSEAT) {
+      if (this.turn % 1 == 0) {
+        this.player = this.turn;
+      }
+    }
+
   },
 
   /*

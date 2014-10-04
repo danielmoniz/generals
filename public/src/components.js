@@ -273,7 +273,7 @@ Crafty.c('Receivable', {
 
   rightClick: function(e) {
     // for now, allow queing moves on any turn
-    if (1 == 1 || Game.turn == Game.selected.side) {
+    if (Game.player !== undefined && Game.player == Game.selected.side) {
       if (e.shiftKey) {
         Game.selected.prepareMove(this.at().x, this.at().y, false, true);
       } else {

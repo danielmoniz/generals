@@ -35,7 +35,7 @@ $(document).ready(function() {
     UI.startGame();
 
     //var game_type = $(this).attr("game_type");
-    Game.start(UI.getGameType(), UI.getOptions());
+    Game.start(UI.getGameType($(this)), UI.getOptions());
   });
 
   $("#next-turn").click(function() {
@@ -43,7 +43,6 @@ $(document).ready(function() {
     if (Game.type == Game.types.ONLINE) {
       Game.nextTurnOnline()
     } else {
-      Game.player = 0;
       Game.nextTurn();
     }
 
@@ -98,8 +97,8 @@ UI = {
     return options;
   },
 
-  getGameType: function() {
-    return $(this).attr("game_type");
+  getGameType: function(item) {
+    return item.attr("game_type");
   },
 
 }
