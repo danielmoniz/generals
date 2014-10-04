@@ -17,7 +17,7 @@ if (typeof require !== 'undefined') {
 var Options = function() {
 
   this.getDefaultOptions = function() {
-    var map_width = 50;
+    var map_width = 40;
     var tile_size = 32;
 
     var options = {
