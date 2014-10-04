@@ -196,17 +196,47 @@ Crafty.c('Clickable', {
   init: function() {
     this.requires('Mouse, Actor')
       // NOTE: 'Click' does not work with right clicking!
+      .bind('MouseDown', this.tabletHoldClick)
+      .bind('MouseUp', this.tabletClearClick)
+      .bind('MouseOut', this.tabletClearClick)
+      .bind('MouseDown', this.setMouseDown)
       .bind('MouseUp', function(e) { 
-        if (e.mouseButton == Crafty.mouseButtons.LEFT) {
+        if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
           if (!Game.selected || Game.selected != this) {
             Game.select(this);
           } else {
             Game.deselect();
           }
         }
+        this.ignoreNextMouseUp = false;
+        this.resetMouseUp();
       })
     ;
   },
+
+  setMouseDown: function() {
+    this.mouse_went_down_here = true;
+  },
+
+  resetMouseUp: function() {
+    this.mouse_went_down_here = false;
+  },
+
+  tabletHoldClick: function(e) {
+    var that = this;
+    if (this.rightClick === undefined) return false;
+    tablet_click_timeout_id = setTimeout(function() {
+      that.rightClick(e);
+      that.ignore_next_mouse_up = true;
+    }, 1000);
+  },
+
+  tabletClearClick: function() {
+    if (typeof tablet_click_timeout_id !== 'undefined') {
+      clearTimeout(tablet_click_timeout_id);
+    }
+  },
+
 });
 
 // A Selected item should display that it is selected.
@@ -235,35 +265,41 @@ Crafty.c('Receivable', {
     this.requires('Clickable')
       .bind('MouseUp', function(e) {
         if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
-          // for now, allow queing moves on any turn
-          if (1 == 1 || Game.turn == Game.selected.side) {
-            if (e.shiftKey) {
-              Game.selected.prepareMove(this.at().x, this.at().y, false, true);
-            } else {
-              if (Game.selected.together(this)) {
-                console.log("Already there!");
-                Game.selected.prepareMove(this.at().x, this.at().y);
-              } else {
-                Game.selected.prepareMove(this.at().x, this.at().y);
-              }
-            }
-
-          } else {
-            // @TODO Print out "not your turn" somewhere visible
-            var next_player_turn = Pretty.Turn.nextPlayerTurn();
-            var player_name = Pretty.Player.name(next_player_turn);
-            var message = "";
-            if (Pretty.Turn.isPlayerTurn()) {
-              message = "{0}'s move!".format(player_name);
-            } else {
-              message = "{0}'s turn is next!".format(player_name);
-            }
-            Output.message(message);
-          }
+          this.rightClick(e);
         }
       })
     ;
-  }
+  },
+
+  rightClick: function(e) {
+    // for now, allow queing moves on any turn
+    if (1 == 1 || Game.turn == Game.selected.side) {
+      if (e.shiftKey) {
+        Game.selected.prepareMove(this.at().x, this.at().y, false, true);
+      } else {
+        if (Game.selected.together(this)) {
+          console.log("Already there!");
+          Game.selected.prepareMove(this.at().x, this.at().y);
+        } else {
+          Game.selected.prepareMove(this.at().x, this.at().y);
+        }
+      }
+
+    } else {
+      // @TODO Print out "not your turn" somewhere visible
+      var next_player_turn = Pretty.Turn.nextPlayerTurn();
+      var player_name = Pretty.Player.name(next_player_turn);
+      var message = "";
+      if (Pretty.Turn.isPlayerTurn()) {
+        message = "{0}'s move!".format(player_name);
+      } else {
+        message = "{0}'s turn is next!".format(player_name);
+      }
+      Output.message(message);
+    }
+
+  },
+
 });
 
 Crafty.c('Targetable', {
