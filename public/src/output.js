@@ -429,7 +429,9 @@ Output = {
       if (Game.turn == Game.player + 0.5) {
         text = "Waiting for opponent...";
       } else if (Game.turn % 1 == 0) {
-        text = "Next Turn";
+        text = "Done!";
+      } else {
+        text = "Begin Game";
       }
     } else {
       if (Game.turn % 1 == 0) {

@@ -249,6 +249,18 @@ Game = {
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
     Output.updateNextTurnButton(this.turn);
+
+    if (this.type == this.types.ONLINE) {
+      var message = "Review the map and your opponent";
+      if (this.player == 0) {
+        var start_game_text = $(Output.next_turn_button_id).val();
+        message += ". Press {0} when you are ready!".format(start_game_text);
+      } else {
+        message += " while you wait for your opponent.".format();
+      }
+      Output.message(message);
+    }
+
   },
 
   reset: function() {
