@@ -1,5 +1,5 @@
 if (typeof require !== 'undefined') {
-  Pathing = require("../factions.js")
+  Factions = require("../factions.js")
   Utility = require("./utility");
   Pathing = require("./pathing")
   TerrainData = require("./components/terrain_data")
@@ -24,7 +24,7 @@ var MapCreator = function(options) {
     this.buildEmptyGameData(options, this.Game);
     this.addWater(options, this.Game, options.location);
 
-    var village_locations = this.addVillages(options, this.Game, 6);
+    var village_locations = this.addVillages(options, this.Game, options.num_villages_total);
     this.addFarms(options, this.Game, village_locations);
     this.addTrees(options, this.Game, options.location);
     this.addGrass(options, this.Game);
@@ -105,7 +105,8 @@ var MapCreator = function(options) {
 
   this.addVillagesToSection = function(options, game_object, estimated_villages, min_x, max_x) {
     var village_locations = [];
-    while (village_locations.length < estimated_villages) {
+    var num_villages = 0;
+    while (num_villages < estimated_villages) {
       for (var x = min_x; x < max_x; x++) {
         for (var y = 0; y < options.map_grid.height; y++) {
           var at_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
@@ -115,18 +116,28 @@ var MapCreator = function(options) {
           var value = Math.random();
 
           if (value >= 1 - probability && !game_object.occupied[x][y]) {
+            num_villages += 1;
             var color = Math.ceil(game_object.height_map[x][y] * 255);
 
             game_object.occupied[x][y] = true;
             village_locations.push({ x: x, y: y });
+
+            var side = this.getMapSide(options, x);
             var stats = {
               height: game_object.height_map[x][y], 
-              side: this.getMapSide(options, x)
+              side: side,
             };
+
+            if (side !== undefined) {
+              var faction = Factions[options.factions[side]];
+              var village_name = faction.cities[num_villages - 1];
+              if (village_name !== undefined) stats.name = village_name;
+            }
+
             var village_obj = new TerrainData("Village").add(stats).stats;
             game_object.terrain_type[x][y] = village_obj;
 
-            if (village_locations.length >= 1 + estimated_villages) return village_locations;
+            if (num_villages >= 1 + estimated_villages) return village_locations;
           }
         }
       }
@@ -138,12 +149,13 @@ var MapCreator = function(options) {
     //generateRandomEntities('Village', 'random', 
     // Place entity randomly on the map using noise
     var villages = [];
+    var num_sections = options.num_sections;
     // @TODO Ensure both sides have a map side/third equal in size
-    for (var i=0; i<3; i++) {
-      var width = Math.floor(options.map_grid.width / 3);
+    for (var i=0; i<num_sections; i++) {
+      var width = Math.floor(options.map_grid.width / num_sections);
       var min_x = i * width;
       var max_x = (i + 1) * width;
-      var new_villages = this.addVillagesToSection(options, game_object, estimated_villages / 3, min_x, max_x);
+      var new_villages = this.addVillagesToSection(options, game_object, estimated_villages / num_sections, min_x, max_x);
 
       villages = villages.concat(new_villages);
     }
@@ -152,15 +164,23 @@ var MapCreator = function(options) {
   };
 
   this.getMapSide = function(options, x) {
-    var map_third = options.map_grid.width / 3;
-    if (x < map_third) {
+    var map_section = options.map_grid.width / options.num_sections;
+    if (x < map_section) {
       return 0;
-    } else if (x < 2 * map_third) {
+    } else if (x < (options.num_sections - 1) * map_section) {
       return undefined;
-    } else {
-      return 1;
     }
+    return 1;
   };
+
+  this.getSideBySection = function(options, section_num) {
+    if (section_num == 0) {
+      return 0;
+    } else if (section_num < options.num_sections - 1) {
+      return undefined;
+    }
+    return 1;
+  },
 
   this.addFarms = function(options, game_object, village_locations) {
 

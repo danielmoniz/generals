@@ -34,6 +34,8 @@ Factions = {
       Infantry: "spr_infantry_mongols",
       Cavalry: "spr_cavalry_mongols",
     },
+
+    cities: ['Avarga', 'Karakorum', 'Dadu'],
   },
 
   romans: {
@@ -71,6 +73,12 @@ Factions = {
       Infantry: "spr_infantry_romans",
       Cavalry: "spr_cavalry_romans",
     },
+
+    cities: ['Rome', 'Constantinople', 'Antioch', 'Alexandria', 'Ephesus', 'Carthage'],
+  },
+
+  chinese: {
+    cities: ['Beijing', 'Nanjing', 'Luoyang', "Chang’an (Xi’an)", 'Kaifeng', 'Hangzhou', 'Anyang', 'Zhengzhou'],
   },
 
 }

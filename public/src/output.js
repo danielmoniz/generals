@@ -311,6 +311,7 @@ Output = {
   },
 
   printTerrain: function(terrain) {
+    if (terrain.name !== undefined) Output.push(terrain.name);
     Output.push(terrain.type);
     if (terrain.has('Impassable')) Output.push("(Impassable)");
     if (terrain.has("Farm")) {
