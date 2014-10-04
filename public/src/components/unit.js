@@ -38,6 +38,7 @@ Crafty.c('Unit', {
     this.requires('Actor, Targetable')
       .bind("UpdateMovementPaths", this.updateMovementPaths)
       .bind("NextTurn", this.nextTurn)
+      .bind("UpdateActionChoices", this.updateActionChoices)
       ;
   },
 
@@ -86,15 +87,17 @@ Crafty.c('Unit', {
     if (this.performed_actions.length > 0) return [];
     var actions = [];
     var local_terrain = Game.terrain[this.at().x][this.at().y];
-    if (local_terrain.type == 'Farm')
+    if (local_terrain.type == 'Farm' && !local_terrain.pillaged)
       actions.push("pillage");
     if (local_terrain.type == 'Village' && local_terrain.side != this.side && !local_terrain.sacked)
       actions.push("sack");
     return actions;
   },
 
-  updateActionChoices: function() {
-    this.action_choices = this.getActionChoices();
+  updateActionChoices: function(location) {
+    if (location === undefined || this.isAtLocation(location)) {
+      this.action_choices = this.getActionChoices();
+    }
   },
 
   performAction: function(action) {
@@ -109,8 +112,9 @@ Crafty.c('Unit', {
       Output.updateVictoryBar();
     }
     this.performed_actions.push(action);
-    this.updateActionChoices();
+    Crafty.trigger("UpdateActionChoices", this.at());
     Game.select(this);
+
   },
 
   pillage: function() {

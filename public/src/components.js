@@ -19,6 +19,20 @@ Crafty.c('Grid', {
     }
   },
 
+  /*
+   * Simply a new version of together(), not requiring passed in objects to
+   * have an at() function.
+   */
+  isAtLocation: function(location) {
+    if (this.at().x == location.x && this.at().y == location.y) {
+      return true;
+    }
+    return false;
+  },
+
+  /*
+   * Deprecated.
+   */
   together: function(grid_object, ignore_self) {
     if (ignore_self === undefined) ignore_self = true;
     if (grid_object.at().x == this.at().x && grid_object.at().y == this.at().y) {
