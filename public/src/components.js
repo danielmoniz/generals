@@ -221,7 +221,8 @@ Crafty.c('Receivable', {
     this.requires('Clickable')
       .bind('MouseUp', function(e) {
         if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
-          if (Game.turn == Game.selected.side) {
+          // for now, allow queing moves on any turn
+          if (1 == 1 || Game.turn == Game.selected.side) {
             if (e.shiftKey) {
               Game.selected.prepareMove(this.at().x, this.at().y, false, true);
             } else {
@@ -230,9 +231,6 @@ Crafty.c('Receivable', {
                 Game.selected.prepareMove(this.at().x, this.at().y);
               } else {
                 Game.selected.prepareMove(this.at().x, this.at().y);
-                //Game.selected.at(this.at().x, this.at().y);
-                //Game.selected.moved();
-                //Game.deselect();
               }
             }
 
