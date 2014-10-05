@@ -50,8 +50,6 @@ $(document).ready(function() {
     return false;
   });
 
-  $("#tool-bar").width("{0}px".format(Game.map_grid.width * Game.map_grid.tile.width));
-
   // TEST ONLY
   //$("#start-hotseat-button").click();
   //$("#start-email-button").click();
@@ -69,6 +67,18 @@ UI = {
     // @TODO Fix below code! Want to dynamically set width of victory bar.
     //$("#will-container").width(35 * Game.map_grid.tile.width);
     $("ul").css("min-height", "75px");
+  },
+
+  endGame: function() {
+    $("#menu").show();
+    $("#menu-toggle-button").hide();
+    $("#game-container").hide();
+    $("#tool-bar").hide();
+    $("#front-page").show();
+    $("#options").show();
+    // @TODO Fix below code! Want to dynamically set width of victory bar.
+    //$("#will-container").width(35 * Game.map_grid.tile.width);
+    $("ul").css("min-height", "300px");
   },
 
   deselectButtons: function() {

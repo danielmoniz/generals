@@ -8,6 +8,7 @@ Output = {
   will_bar_element_id_white: "div.will.bar.white",
   next_turn_button_id: "#next-turn",
   victory_container_id: "#will-container",
+  tool_bar_id: "#tool-bar",
 
   buffer: [],
 
@@ -424,6 +425,12 @@ Output = {
       Game.title_bar.willpower.text(will);
     }
     return this;
+  },
+
+  setToolBar: function() {
+    var width = Game.map_grid.width * Game.map_grid.tile.width;
+    $(this.tool_bar_id).width("{0}px".format(width));
+    $(this.tool_bar_id).show();
   },
 
   message: function(message) {

@@ -276,6 +276,9 @@ Crafty.scene('Game', function() {
     startNewGame();
   }
 
+  addTitleBar();
+  Output.setToolBar();
+
   function startNewGame() {
 
     var map_creator = new MapCreator();
@@ -300,8 +303,6 @@ Crafty.scene('Game', function() {
     Victory.reset();
     Game.select(Crafty('Unit').get(0));
   }
-
-  addTitleBar();
 
   function getShortestPath(graph, start, end) {
     return Game.pathfind.search(Game.terrain_build_graph, start, end);

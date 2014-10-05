@@ -5,6 +5,7 @@ my_messages = {};
 my_current_room = "";
 
 var socket = io();
+
 socket.on('get new user', function() {
   socket.emit("new user", my_username);
 });
