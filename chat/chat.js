@@ -72,6 +72,10 @@ var Chat = function(io) {
 
   this.changeName = function(socket, old_name, new_name) {
     // first determine if name is taken
+    if (!new_name) {
+      socket.emit("invalid username", new_name);
+      return false;
+    }
     if (this.users[new_name] !== undefined) {
       socket.emit("name taken", old_name, new_name);
       return false;

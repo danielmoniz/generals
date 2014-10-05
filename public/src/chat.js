@@ -22,6 +22,13 @@ socket.on('name taken', function(old_name, new_name) {
   $("input#username").focus();
 });
 
+socket.on('invalid username', function(bad_username) {
+  var message = "Invalid username.";
+  addMessage(message);
+  //$("input#username").val(my_username);
+  $("input#username").focus();
+});
+
 socket.on('chat message', function(message, username) {
   if (username == my_username) username = "You";
   var text = formatMessage(message, username);
