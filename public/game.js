@@ -11,6 +11,7 @@ Game = {
     ONLINE: "online",
   },
 
+  /*
   // this defines our grid's size and the size of each of its tiles
   map_grid: {
     width: Math.ceil(map_width),
@@ -22,6 +23,7 @@ Game = {
       height: tile_size,
     }
   },
+  */
 
   board_title: {
     height: 24,
@@ -235,9 +237,14 @@ Game = {
   // initialize and start our game
   start: function(game_type, options, map, sendMovesCallback) {
     if (!Game.options) Game.options = {};
+    default_settings = new Options().getDefaultOptions();
+    for (var key in default_settings) {
+      var value = default_settings[key];
+      Game[key] = value;
+    }
     for (var key in options) {
       var value = options[key];
-      Game.options[key] = value;
+      Game[key] = value;
     }
     for (var key in map) {
       var value = map[key];
@@ -249,6 +256,12 @@ Game = {
     //Game.type = Game.types['EMAIL'];
     var load_game = Game.load_game;
     Game.load_game = load_game;
+    console.log("Game");
+    console.log(Game);
+    console.log("map");
+    console.log(map);
+    console.log("options");
+    console.log(options);
     this.initCrafty();
     //Crafty.background('rgb(87, 109, 20)');
 

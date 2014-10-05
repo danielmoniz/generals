@@ -13,13 +13,15 @@ var Game = function(io) {
     this.chat_callback = chat_callback;
     var settings = {};
     var default_settings = new Options().getDefaultOptions();
+    console.log("default_settings");
+    console.log(default_settings);
     Utility.loadDataIntoObject(default_settings, settings);
-    //Utility.loadDataIntoObject(options, settings);
+    Utility.loadDataIntoObject(options, settings);
 
     this.game_data = new MapCreator().buildNewMap(settings);
 
-    this.io.to(first_player.id).emit("new game", this.game_name, this.game_data, 0, options);
-    this.io.to(second_player.id).emit("new game", this.game_name, this.game_data, 1, options);
+    this.io.to(first_player.id).emit("new game", this.game_name, this.game_data, 0, settings);
+    this.io.to(second_player.id).emit("new game", this.game_name, this.game_data, 1, settings);
     this.players = {
       0: first_player,
       1: second_player,
