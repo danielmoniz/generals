@@ -68,6 +68,7 @@ UI = {
     $("#options").hide();
     // @TODO Fix below code! Want to dynamically set width of victory bar.
     //$("#will-container").width(35 * Game.map_grid.tile.width);
+    $("ul").css("min-height", "75px");
   },
 
   deselectButtons: function() {

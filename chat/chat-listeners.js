@@ -38,7 +38,7 @@ var ChatListener = function(io) {
     });
 
     socket.on('chat message', function(message) {
-      chat.sendMessage(socket, message);
+      chat.sendMessage(socket, message, socket.username);
     });
 
     socket.on('join game', function(inviter, invitee) {

@@ -61,12 +61,12 @@ var Chat = function(io) {
     this.io.to(room_name).emit("update user list", this.rooms[room_name]);
   };
 
-  this.sendMessage = function(socket, message) {
+  this.sendMessage = function(socket, message, username) {
     if (message == '' || typeof message != 'string') return false;
     if (Utility.countItems(socket) == 0) return false;
     var text = socket.username + ": " + message;
     if (!this.runCommand(message, socket)) {
-      this.io.to(socket.active_room).emit('chat message', text);
+      this.io.to(socket.active_room).emit('chat message', text, username);
       console.log("to room " + socket.active_room + " only");
     }
   };

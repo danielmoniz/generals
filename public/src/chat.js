@@ -22,8 +22,11 @@ socket.on('name taken', function(old_name, new_name) {
   $("input#username").focus();
 });
 
-socket.on('chat message', function(msg) {
-  addMessage(msg);
+socket.on('chat message', function(message, username) {
+  addMessage(message);
+  if (username) {
+    Output.message('{0}'.format(message));
+  }
 });
 
 socket.on('update user list', function(usernames) {
@@ -53,7 +56,6 @@ socket.on('invite to game', function(invite_id, inviter, options) {
 socket.on('decline invite', function(username) {
   var output = username + " has declined your game invite.";
   addMessage(output);
-  console.log(output);
 });
 
 socket.on('new game', function(game_name, game_object, player, options) {
@@ -61,11 +63,8 @@ socket.on('new game', function(game_name, game_object, player, options) {
   clearMessages();
   var message = "Joined " + game_name + ".";
   addMessage(message);
-  console.log(message);
 
   game_object.player = player;
-  console.log("game_object");
-  console.log(game_object);
 
   function sendMoves() {
   }
@@ -131,6 +130,8 @@ function addMessage(message) {
   });
   $('#messages').append($('<li>').text(message));
   $("#messages").scrollTop($('#messages').height());
+
+  console.log(message);
 }
 
 function clearMessages(message) {
