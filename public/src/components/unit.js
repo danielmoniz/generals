@@ -164,7 +164,7 @@ Crafty.c('Unit', {
     local_terrain.report();
   },
 
-  getValue: function() {
+  getQuantity: function() {
     return this.quantity;
   },
 
@@ -327,7 +327,6 @@ Crafty.c('Unit', {
   prepareMove: function(target_x, target_y, ignore_visuals, queue_move) {
     if (this.at().x == target_x && this.at().y == target_y) {
       delete this.move_target;
-      //delete this.move_target_path;
       this.updateMoveTargetPath('delete');
       Pathing.destroyMovementPath(this.movement_path);
       delete this.movement_path;
@@ -344,8 +343,6 @@ Crafty.c('Unit', {
       var start = Game.terrain_graph.grid[this.at().x][this.at().y];
       var end = Game.terrain_graph.grid[target_x][target_y];
     }
-    console.log("Game.terrain_graph");
-    console.log(Game.terrain_graph);
     var new_path = Game.pathfind.search(Game.terrain_graph, start, end);
     if (!new_path) {
       Output.message("Target impossible to reach!");
@@ -373,8 +370,6 @@ Crafty.c('Unit', {
       this.movement_path = Pathing.colourMovementPath(path, movement, this.at());
     }
 
-    //this.move_target_path = path;
-    //this.move_target_path_list = Pathing.getPathList(this.move_target_path);
     this.updateMoveTargetPath(path);
   },
 
@@ -388,23 +383,17 @@ Crafty.c('Unit', {
   },
 
   moveTowardTarget: function(is_retreat) {
-    console.log("in moveTowardTarget()");
     if (is_retreat === undefined) is_retreat = false;
     var movement = this.movement;
     if (is_retreat) movement += 1;
     var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
+
     // check for enemies that will be bumped into
     for (var i=0; i<partial_path.length; i++) {
-      console.log('{0} moving: {1}'.format(this.name, i));
       if (this.battle) break;
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);
-      console.log("this.move_target_path");
-      console.log(this.move_target_path);
       var new_path = this.move_target_path.slice(1, this.move_target_path.length);
-      console.log("new_path");
-      console.log(new_path);
-      //this.move_target_path = new_path;
       this.updateMoveTargetPath(new_path);
       if (new_path.length == 0) this.updateMoveTargetPath(undefined);
       this.moved();
@@ -440,7 +429,6 @@ Crafty.c('Unit', {
   stop_unit: function() {
     Pathing.destroyMovementPath(this.movement_path);
     delete this.movement_path;
-    //delete this.move_target_path;
     this.updateMoveTargetPath('delete');
     delete this.move_target;
   },
@@ -480,6 +468,8 @@ Crafty.c('Unit', {
   },
 
   kill: function(num_troops, injured) {
+    if (isNaN(num_troops)) throw "NaN: num_troops in unit.kill()";
+    if (num_troops === undefined) throw "undefined: num_troops in unit.kill()";
     if (injured === undefined) injured = false;
     var num_killed = Math.ceil(Math.min(this.quantity, num_troops));
     this.quantity -= num_killed;
@@ -487,6 +477,8 @@ Crafty.c('Unit', {
   },
 
   injure: function(num_troops) {
+    if (isNaN(num_troops)) throw "NaN: num_troops in unit.injure()";
+    if (num_troops === undefined) throw "undefined: num_troops in unit.injure()";
     this.injured += Math.ceil(Math.min(this.quantity, num_troops));
   },
 

@@ -105,7 +105,7 @@ Game = {
   attrition_rate: 1/10,
   attrition_death_rate: 1/3,
   healing_rate: 1/30,
-  village_healing_rate: 15/100,
+  city_healing_rate: 15/100,
   min_troops_for_supply_cut: 500,
 
   nextTurn: function() {
@@ -365,7 +365,7 @@ Game = {
       battle_death_rate: this.battle_death_rate,
       attrition_rate: this.attrition_rate,
       attrition_death_rate: this.attrition_death_rate,
-      village_healing_rate: this.village_healing_rate,
+      city_healing_rate: this.city_healing_rate,
 
       units: [],
       battles: [],

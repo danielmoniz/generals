@@ -20,7 +20,6 @@ var UnitData = function(type, stats) {
       alive: true,
       quantity: 0,
       injured: 0,
-      injured: 0,
       active: true,
       performed_actions: [],
     },

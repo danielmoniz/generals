@@ -69,7 +69,7 @@ Victory = {
     var units = this.getUnits(side);
     var total_troops = 0;
     for (var i=0; i<units.length; i++) {
-      total_troops += units[i].getValue();
+      total_troops += units[i].getQuantity();
     }
     return total_troops;
   },
