@@ -38,9 +38,11 @@ var Options = function() {
       num_sections: 3,
       num_cities_total: 9,
 
+      /*
       pathfind: astar,
       graph_ftn: Graph,
       noise: noise,
+      */
 
       // Move to constants file
       FIRST_PLAYER: 0,

@@ -4,6 +4,14 @@ if (typeof require !== 'undefined') {
   Pathing = require("./pathing");
   TerrainData = require("./components/terrain_data");
   UnitData = require("./components/unit_data");
+
+  astar = require("../lib/astar.js");
+  Pathfind = astar.astar;
+  Noise = require("../lib/perlin").noise;
+  Graph = astar.Graph;
+} else {
+  Noise = noise;
+  Pathfind = astar;
 }
 
 var MapCreator = function(options) {
@@ -75,8 +83,8 @@ var MapCreator = function(options) {
 
   this.generateHeightMap = function(options, location_map) {
     var size = location_map.height_map.size;
-    options.noise.seed(Math.random());
-    var noise = options.noise[location_map.height_map.noise]
+    Noise.seed(Math.random());
+    var noise = Noise[location_map.height_map.noise]
     var height_map = [];
     for (var x = 0; x < options.map_grid.width; x++) {
       height_map[x] = [];
@@ -215,7 +223,7 @@ var MapCreator = function(options) {
 
   this.addTrees = function(options, game_object, location_map) {
     var trees = location_map.trees;
-    this.generateRandomEntities(options, game_object, 'Tree', options.noise[trees.noise], trees.size, trees.freq, true);
+    this.generateRandomEntities(options, game_object, 'Tree', Noise[trees.noise], trees.size, trees.freq, true);
   };
 
   this.addGrass = function(options, game_object) {
@@ -306,7 +314,7 @@ var MapCreator = function(options) {
       } else {
         var end = grid[options.map_grid.width - 1][j];
       }
-      var path = options.pathfind.search(this.Game.terrain_build_graph, start, end);
+      var path = Pathfind.search(this.Game.terrain_build_graph, start, end);
       var cost = Pathing.totalCost(path);
       if (best_route === undefined || cost < best_cost) {
         best_route = path;
@@ -329,7 +337,7 @@ var MapCreator = function(options) {
           var end_location = city_locations[b];
           var start = game_object.terrain_build_graph.grid[start_city.x][start_city.y];
           var end = game_object.terrain_build_graph.grid[end_location.x][end_location.y];
-          var result = options.pathfind.search(game_object.terrain_build_graph, start, end);
+          var result = Pathfind.search(game_object.terrain_build_graph, start, end);
           var total_cost = Pathing.totalCost(result);
           if (least_cost === undefined || total_cost < least_cost) {
             closest = result;
@@ -378,7 +386,7 @@ var MapCreator = function(options) {
    */
   this.generateRandomEntities = function(options, game_object, entity_name, noise, size, frequency, update_occupied) {
     // Place entity randomly on the map using noise
-    options.noise.seed(Math.random());
+    Noise.seed(Math.random());
     for (var x = 0; x < options.map_grid.width; x++) {
       for (var y = 0; y < options.map_grid.height; y++) {
         // Allows for somewhat hacky reuse of the function for pure randomness.
@@ -417,7 +425,7 @@ var MapCreator = function(options) {
     }
 
     game_object.terrain_build_difficulty = terrain_build_difficulty;
-    game_object.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
+    game_object.terrain_build_graph = new Graph(terrain_build_difficulty);
     return game_object.terrain_build_graph;
   };
 
@@ -465,10 +473,10 @@ var MapCreator = function(options) {
     }
     */
 
-    game_object.terrain_graph = new options.graph_ftn(terrain_difficulty);
-    game_object.terrain_defense_bonus_graph = new options.graph_ftn(terrain_defense_bonus);
-    game_object.terrain_build_graph = new options.graph_ftn(terrain_build_difficulty);
-    game_object.terrain_supply_graph = new options.graph_ftn(terrain_supply);
+    game_object.terrain_graph = new Graph(terrain_difficulty);
+    game_object.terrain_defense_bonus_graph = new Graph(terrain_defense_bonus);
+    game_object.terrain_build_graph = new Graph(terrain_build_difficulty);
+    game_object.terrain_supply_graph = new Graph(terrain_supply);
   };
 
   this.createUnitFromFaction = function(faction_name, faction, side, location, index) {
