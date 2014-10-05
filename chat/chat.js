@@ -64,9 +64,8 @@ var Chat = function(io) {
   this.sendMessage = function(socket, message, username) {
     if (message == '' || typeof message != 'string') return false;
     if (Utility.countItems(socket) == 0) return false;
-    var text = socket.username + ": " + message;
     if (!this.runCommand(message, socket)) {
-      this.io.to(socket.active_room).emit('chat message', text, username);
+      this.io.to(socket.active_room).emit('chat message', message, username);
       console.log("to room " + socket.active_room + " only");
     }
   };

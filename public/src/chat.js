@@ -23,9 +23,11 @@ socket.on('name taken', function(old_name, new_name) {
 });
 
 socket.on('chat message', function(message, username) {
-  addMessage(message);
+  if (username == my_username) username = "You";
+  var text = formatMessage(message, username);
+  addMessage(text);
   if (username) {
-    Output.message('{0}'.format(message));
+    Output.message('{0}'.format(text));
   }
 });
 
@@ -128,6 +130,7 @@ function addMessage(message) {
   var new_list_item = $('<li>').text(message);
   new_list_item.click(function() {
   });
+
   $('#messages').append($('<li>').text(message));
   $("#messages").scrollTop($('#messages').height());
 
@@ -159,3 +162,9 @@ function makeUsernameListItem(username) {
   return new_list_item;
 }
 
+function formatMessage(message, username) {
+  var text = "";
+  if (username) text += "{0}: ".format(username);
+  text += message;
+  return text;
+}
