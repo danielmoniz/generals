@@ -7,6 +7,8 @@ Output = {
   will_bar_element_id_blue: "div.will.bar.blue",
   will_bar_element_id_white: "div.will.bar.white",
   next_turn_button_id: "#next-turn",
+  victory_container_id: "#will-container",
+
   buffer: [],
 
   push: function(info) {
@@ -404,6 +406,16 @@ Output = {
     if (Game.title_bar) {
       Game.title_bar.willpower.text(will_text);
     }
+  },
+
+  setVictoryBar: function(id, start_tile) {
+    this.victory_container_id = "#" + id;
+    // I have idea why I have to fudge the math here, but it seems to work
+    var width = ((Game.map_grid.width + 0.35) - start_tile) * Game.map_grid.tile.width - 1;
+    width = Math.floor(width);
+    if (width % 2 == 0) width -= 1;
+    $(this.victory_container_id).width("{0}px".format(width));
+    return width;
   },
 
   resetVictoryBar: function() {

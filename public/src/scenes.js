@@ -30,9 +30,11 @@ Crafty.scene('Game', function() {
       willpower.at(11, 0);
 
     var victory_bar = Crafty.e("VictoryBar");
-    victory_bar.at(19, 0);
+    var victory_bar_start = 19;
+    victory_bar.at(victory_bar_start, 0);
+    var victory_bar_id = "will-container";
     var victory_html = '\
-	<div id="will-container">\
+	<div id="' + victory_bar_id + '">\
 	  <div class="bar-container blue">\
 	    <div class="will blue bar"></div>\
 	  </div>\
@@ -41,6 +43,7 @@ Crafty.scene('Game', function() {
 	  </div>\
 	</div>';
     victory_bar.replace(victory_html);
+    Output.setVictoryBar(victory_bar_id, victory_bar_start);
 
     Game.title_bar = {
       title: title,
