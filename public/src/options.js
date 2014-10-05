@@ -48,6 +48,24 @@ var Options = function() {
       SECOND_PLAYER: 1,
       AFTER_SECOND_PLAYER: 1.5,
 
+      battle_death_rate: 1/5,
+      attrition_rate: 1/10,
+      attrition_death_rate: 1/3,
+      healing_rate: 1/30,
+      city_healing_rate: 15/100,
+      min_troops_for_supply_cut: 500,
+
+      location: locations.test,
+      factions: ["mongols", "romans"],
+
+      board_title: {
+        height: 24,
+      },
+
+      board_tool_bar: {
+        height: 32,
+      },
+
     }
 
     return options;

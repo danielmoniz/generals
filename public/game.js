@@ -1,36 +1,9 @@
-var map_width = 40;
-var tile_size = 32;
 
 Game = {
-  location: locations.test,
-  factions: ["mongols", "romans"],
-
   types: {
     HOTSEAT: "hotseat",
     EMAIL: "email",
     ONLINE: "online",
-  },
-
-  /*
-  // this defines our grid's size and the size of each of its tiles
-  map_grid: {
-    width: Math.ceil(map_width),
-    //height: Math.ceil(map_width),
-    //height: Math.ceil(map_width * 3 / 4),
-    height: Math.ceil(map_width * 0.5625),
-    tile: {
-      width: tile_size,
-      height: tile_size,
-    }
-  },
-  */
-
-  board_title: {
-    height: 24,
-  },
-
-  board_tool_bar: {
-    height: 32,
   },
 
   graph_ftn: Graph,
@@ -90,25 +63,12 @@ Game = {
     delete this.player_selected[side];
   },
 
-  player_colour: { 0: "Blue", 1: "White" },
-
   // @TODO generate on load() - currently relying on pathfinding to replicate
   player_supply_roads: [[], []],
 
   supply_route: [],
 
-  /*
-  turn: 0,
-  turn_count: 0,
-  */
   turns_played_locally: 0,
-
-  battle_death_rate: 1/5,
-  attrition_rate: 1/10,
-  attrition_death_rate: 1/3,
-  healing_rate: 1/30,
-  city_healing_rate: 15/100,
-  min_troops_for_supply_cut: 500,
 
   nextTurn: function() {
 
