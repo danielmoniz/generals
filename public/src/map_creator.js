@@ -45,7 +45,7 @@ var MapCreator = function(options) {
     this.Game.starting_units = this.addStartingUnits(options, this.Game);
     /*
 
-    if (Game.options && Game.options.fog_of_war) {
+    if (Game.fog_of_war) {
       shadowHeightMap(Game.location);
       LineOfSight.clearFog();
     }

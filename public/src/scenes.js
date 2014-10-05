@@ -213,7 +213,9 @@ Crafty.scene('Game', function() {
   if (Game.type == Game.types.ONLINE) {
     buildTerrainFromData(Game.terrain_type);
 
-    if (Game.options && Game.options.fog_of_war) {
+    console.log("Game.fog_of_war");
+    console.log(Game.fog_of_war);
+    if (Game.fog_of_war) {
       shadowHeightMap(Game.location);
       LineOfSight.clearFog();
     }
@@ -242,13 +244,13 @@ Crafty.scene('Game', function() {
     colourHeightMap(Game.location);
     colourWater();
 
-    if (Game.options && Game.options.fog_of_war) {
+    if (Game.fog_of_war) {
       shadowHeightMap(Game.location);
     }
 
     addUnitsFromLoad();
     addBattlesFromLoad();
-    if (Game.options && Game.options.fog_of_war) {
+    if (Game.fog_of_war) {
       LineOfSight.handleLineOfSight(Game.turn);
     }
     Crafty.trigger("UpdateMovementPaths");
@@ -288,7 +290,7 @@ Crafty.scene('Game', function() {
 
     buildTerrainFromData(game_data.terrain_type);
 
-    if (Game.options && Game.options.fog_of_war) {
+    if (Game.fog_of_war) {
       shadowHeightMap(Game.location);
       LineOfSight.clearFog();
     }

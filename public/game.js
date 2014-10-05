@@ -92,7 +92,7 @@ Game = {
 
     this.deselect();
     this.determineSelection();
-    if (Game.options && Game.options.fog_of_war) {
+    if (Game.fog_of_war) {
       // Should really be using strategy pattern here
       if (Game.type == Game.types.ONLINE) {
         LineOfSight.handleLineOfSight(this.player);
@@ -133,7 +133,7 @@ Game = {
 
     this.deselect();
     Crafty.trigger("ResetVisuals");
-    if (Game.options && Game.options.fog_of_war) {
+    if (Game.fog_of_war) {
       LineOfSight.handleLineOfSight(this.turn);
     }
 
