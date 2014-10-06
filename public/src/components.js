@@ -197,8 +197,11 @@ Crafty.c('Clickable', {
     this.requires('Mouse, Actor')
       // NOTE: 'Click' does not work with right clicking!
       .bind('MouseDown', this.tabletHoldClick)
-      .bind('MouseUp', this.tabletClearClick)
-      .bind('MouseOut', this.tabletClearClick)
+      .bind('MouseUp', this.tabletClearHoldClick)
+      .bind('MouseOut', this.tabletClearHoldClick)
+      .bind('MouseDown', this.tabletDoubleHoldClick)
+      .bind('MouseUp', this.tabletClearDoubleHoldClick)
+      .bind('MouseOut', this.tabletClearDoubleHoldClick)
       .bind('MouseDown', this.setLeftMouseDown)
       .bind('MouseUp', function(e) { 
         if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
@@ -228,12 +231,27 @@ Crafty.c('Clickable', {
     tablet_click_timeout_id = setTimeout(function() {
       that.rightClick(e);
       that.ignore_next_mouse_up = true;
-    }, 1000);
+    }, 800);
   },
 
-  tabletClearClick: function() {
+  tabletClearHoldClick: function() {
     if (typeof tablet_click_timeout_id !== 'undefined') {
       clearTimeout(tablet_click_timeout_id);
+    }
+  },
+
+  tabletDoubleHoldClick: function(e) {
+    var that = this;
+    if (this.rightClick === undefined) return false;
+    tablet_double_click_timeout_id = setTimeout(function() {
+      that.rightClick(e, 'double');
+      that.ignore_next_mouse_up = true;
+    }, 1600);
+  },
+
+  tabletClearDoubleHoldClick: function() {
+    if (typeof tablet_double_click_timeout_id !== 'undefined') {
+      clearTimeout(tablet_double_click_timeout_id);
     }
   },
 
@@ -264,17 +282,22 @@ Crafty.c('Receivable', {
   init: function() {
     this.requires('Clickable')
       .bind('MouseDown', this.setRightMouseDown)
+      .bind('MouseDown', this.setDoubleRightMouseDown)
       .bind('MouseUp', function(e) {
         if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
           this.rightClick(e);
         }
+        this.double_right_mouse_went_down_here = false;
       })
     ;
   },
 
-  rightClick: function(e) {
+  rightClick: function(e, double_hold) {
     // for now, allow queing moves on any turn
-    if (Game.player !== undefined && Game.player == Game.selected.side && this.right_mouse_went_down_here) {
+    if (Game.player !== undefined && Game.player == Game.selected.side && this.double_right_mouse_went_down_here && double_hold) {
+      console.log('****************');
+      Game.selected.prepareMove(this.at().x, this.at().y, false, 'queue move', 'use last');
+    } else if (Game.player !== undefined && Game.player == Game.selected.side && this.right_mouse_went_down_here) {
       if (e.shiftKey) {
         Game.selected.prepareMove(this.at().x, this.at().y, false, true);
       } else {
@@ -308,6 +331,14 @@ Crafty.c('Receivable', {
 
   resetRightMouseDown: function() {
     this.right_mouse_went_down_here = false;
+  },
+
+  setDoubleRightMouseDown: function() {
+    this.double_right_mouse_went_down_here = true;
+  },
+
+  resetDoubleRightMouseDown: function() {
+    this.double_right_mouse_went_down_here = false;
   },
 
 });

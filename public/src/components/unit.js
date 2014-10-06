@@ -40,6 +40,7 @@ Crafty.c('Unit', {
       .bind("NextTurn", this.nextTurn)
       .bind("UpdateActionChoices", this.updateActionChoices)
       ;
+    this.lastMoveTarget = undefined;
   },
 
   /*
@@ -324,7 +325,13 @@ Crafty.c('Unit', {
     return this.isEntityPresent('City');
   },
 
-  prepareMove: function(target_x, target_y, ignore_visuals, queue_move) {
+  prepareMove: function(target_x, target_y, ignore_visuals, queue_move, use_last_move) {
+
+    // if double-hold-clicking, update current move to previous and start again
+    if (queue_move && use_last_move) {
+      this.updateMoveTargetPath(this.last_move_target_path);
+      this.prepareMove(target_x, target_y, ignore_visuals, 'queue move', false);
+    }
     if (this.at().x == target_x && this.at().y == target_y) {
       delete this.move_target;
       this.updateMoveTargetPath('delete');
@@ -525,9 +532,13 @@ Crafty.c('Unit', {
   },
 
   updateMoveTargetPath: function(new_path) {
+    if (this.move_target_path) {
+      this.last_move_target_path = this.move_target_path.slice(0);
+    }
     if (new_path == 'delete') {
       delete this.move_target_path;
       delete this.move_target_path_list;
+      delete this.last_move_target_path;
       return;
     }
     this.move_target_path = new_path;

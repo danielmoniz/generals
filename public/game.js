@@ -217,12 +217,7 @@ Game = {
     //Game.type = Game.types['EMAIL'];
     var load_game = Game.load_game;
     Game.load_game = load_game;
-    console.log("Game");
-    console.log(Game);
-    console.log("map");
-    console.log(map);
-    console.log("options");
-    console.log(options);
+
     this.initCrafty();
     //Crafty.background('rgb(87, 109, 20)');
 
