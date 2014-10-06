@@ -210,6 +210,7 @@ Game = {
       var value = map[key];
       Game[key] = value;
     }
+
     Game.type = game_type;
     if (Game.turn == undefined) Game.turn = 1.5;
     if (Game.turn_count == undefined) Game.turn_count = -0.5;

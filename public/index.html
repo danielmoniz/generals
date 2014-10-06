@@ -70,7 +70,49 @@
     <div id="input-container">
       <form id="options">
 	<h2>Options</h2>
-	<input type="checkbox" name="fog_of_war" checked>Fog of war</input>
+	<div class="option_set">
+	  <div class="option">
+	    <input type="checkbox" name="fog_of_war" checked>Fog of war</input>
+	  </div>
+	</div>
+
+	<div class="option_set">
+	  Faction (first player)
+	  <div class="option">
+	    <input type="radio" name="factions[0]" 
+	      value="mongols" checked>Mongols</input>
+	  </div>
+	  <br />
+	  <div class="option">
+	    <input type="radio" name="factions[0]" 
+	      value="romans">Romans</input>
+	  </div>
+	  <br />
+	  <div class="option">
+	    <input type="radio" name="factions[0]" 
+	      value="chinese">Chinese</input>
+	  </div>
+	  <br />
+	</div>
+
+	<div class="option_set">
+	  Faction (second player)
+	  <div class="option">
+	    <input type="radio" name="factions[1]" 
+	      value="mongols">Mongols</input>
+	  </div>
+	  <br />
+	  <div class="option">
+	    <input type="radio" name="factions[1]" 
+	      value="romans" checked>Romans</input>
+	  </div>
+	  <br />
+	  <div class="option">
+	    <input type="radio" name="factions[1]" 
+	      value="chinese">Chinese</input>
+	  </div>
+	</div>
+
       </form>
       <input id="menu-toggle-button" class="input-item" type="button"
 	value="Menu" />

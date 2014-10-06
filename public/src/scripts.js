@@ -101,10 +101,22 @@ UI = {
   getOptions: function() {
     var options = {};
     var options_form = document.getElementById("options");
-    for (var i=0; i<options_form.elements.length; i++) {
-      var e = options_form.elements[i];
-      if (e.type == "checkbox") options[e.name] = e.checked;
+    var form_values = $(options_form).serializeArray()
+    var factions = [];
+
+    for (var i in form_values) {
+      form_item = form_values[i];
+      if (form_item.name.lastIndexOf("factions", 0) === 0) {
+        factions.push(form_item.value);
+      } else {
+        options[form_item.name] = form_item.value;
+      }
     }
+    options.factions = factions;
+
+    console.log("options");
+    console.log(options);
+
     return options;
   },
 

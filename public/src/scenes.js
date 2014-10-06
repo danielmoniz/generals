@@ -284,8 +284,7 @@ Crafty.scene('Game', function() {
   function startNewGame() {
 
     var map_creator = new MapCreator();
-    var options = new Options().getDefaultOptions();
-    var game_data = map_creator.buildNewMap(options);
+    var game_data = map_creator.buildNewMap(Game);
     Utility.loadDataIntoObject(game_data, Game);
 
     buildTerrainFromData(game_data.terrain_type);

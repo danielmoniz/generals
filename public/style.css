@@ -39,6 +39,9 @@ body { margin: 0; background: black; color:white; }
 .input-item { float:left; }
 
 #options { border: 1px dotted white; }
+/*
+div.option_set { float: left; }
+*/
 #save-output { color:white; }
 #menu-toggle-button { display: none; }
 
