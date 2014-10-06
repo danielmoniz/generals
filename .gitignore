@@ -4,3 +4,6 @@
 test.*
 
 resources/*
+node_modules
+gitlog
+*.log
