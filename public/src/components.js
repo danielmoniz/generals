@@ -287,30 +287,28 @@ Crafty.c('Receivable', {
         if (e.mouseButton == Crafty.mouseButtons.RIGHT && Game.selected && Game.selected.has("Movable")) {
           this.rightClick(e);
         }
-        this.double_right_mouse_went_down_here = false;
+        this.resetDoubleRightMouseDown();
       })
     ;
   },
 
   rightClick: function(e, double_hold) {
-    // for now, allow queing moves on any turn
-    if (Game.player !== undefined && Game.player == Game.selected.side && this.double_right_mouse_went_down_here && double_hold) {
-      console.log('****************');
-      Game.selected.prepareMove(this.at().x, this.at().y, false, 'queue move', 'use last');
-    } else if (Game.player !== undefined && Game.player == Game.selected.side && this.right_mouse_went_down_here) {
-      if (e.shiftKey) {
-        Game.selected.prepareMove(this.at().x, this.at().y, false, true);
-      } else {
-        if (Game.selected.together(this)) {
-          console.log("Already there!");
-          Game.selected.prepareMove(this.at().x, this.at().y);
+
+    if (Game.player !== undefined && Game.player == Game.selected.side) {
+      if (this.double_right_mouse_went_down_here && double_hold) {
+        Game.selected.prepareMove(this.at().x, this.at().y, false, 'queue move', 'use last');
+      } else if (this.right_mouse_went_down_here) {
+        if (e.shiftKey) {
+          Game.selected.prepareMove(this.at().x, this.at().y, false, true);
         } else {
+          if (Game.selected.together(this)) {
+            console.log("Already there!");
+          }
           Game.selected.prepareMove(this.at().x, this.at().y);
         }
       }
 
     } else {
-      // @TODO Print out "not your turn" somewhere visible
       var next_player_turn = Pretty.Turn.nextPlayerTurn();
       var player_name = Pretty.Player.name(next_player_turn);
       var message = "";
@@ -321,8 +319,8 @@ Crafty.c('Receivable', {
       }
       Output.message(message);
     }
-    this.resetRightMouseDown();
 
+    this.resetRightMouseDown();
   },
 
   setRightMouseDown: function() {
