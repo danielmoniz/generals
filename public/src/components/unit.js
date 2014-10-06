@@ -22,10 +22,10 @@ var Unit = {
     return this.getUnitsBySide(side).enemy;
   },
 
-  getUnitByName: function(name, side) {
+  getUnitById: function(id, side) {
     var units = this.getFriendlyUnits(side);
     for (var i in units) {
-      if (units[i].name == name) {
+      if (units[i].id == id) {
         return units[i];
       }
     }

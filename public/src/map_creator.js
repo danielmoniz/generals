@@ -490,7 +490,7 @@ var MapCreator = function(options) {
     var sprite = faction.sprites[unit_faction_data.type];
     if (sprite === undefined) {}
 
-    var new_unit_data = this.createNewUnitData(unit_faction_data, side, location);
+    var new_unit_data = this.createNewUnitData(unit_faction_data, side, location, index);
     if (sprite) new_unit_data.addComponent(sprite);
     return new_unit_data;
   };
@@ -547,8 +547,9 @@ var MapCreator = function(options) {
     return units;
   };
 
-  this.createNewUnitData = function(faction_data, side, location) {
+  this.createNewUnitData = function(faction_data, side, location, unit_number) {
 
+    faction_data.id = "side{0}_number{1}".format(side, unit_number);
     var unit_object = new UnitData(faction_data.type, faction_data);
     unit_object.add({ side: side, location: location });
     return unit_object;

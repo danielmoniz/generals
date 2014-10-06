@@ -275,7 +275,7 @@ Game = {
         actions: unit.performed_actions,
         move_target_path_list: unit.move_target_path_list,
       };
-      data[unit.name] = unit_turn;
+      data[unit.id] = unit_turn;
     }
 
     return data;
@@ -289,9 +289,9 @@ Game = {
     console.log('loading data from online');
     console.log("data");
     console.log(data);
-    for (var name in data) {
-      var unit_data = data[name];
-      var unit = Unit.getUnitByName(name, current_turn);
+    for (var id in data) {
+      var unit_data = data[id];
+      var unit = Unit.getUnitById(id, current_turn);
       unit.move_target_path_list = unit_data.move_target_path_list;
       for (var i in unit_data.actions) {
         var action = unit_data.actions[i];

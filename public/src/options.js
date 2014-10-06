@@ -5,8 +5,6 @@ if (typeof require !== 'undefined') {
   astar = astar.astar;
   
   locations = require("../locations.js");
-  console.log("locations");
-  console.log(locations);
 
 } else {
   window.astar = astar;
@@ -23,7 +21,7 @@ var Options = function() {
     var options = {
 
       location: locations.test,
-      factions: ["mongols", "romans"],
+      factions: ["mongols", "mongols"],
       map_grid: {
         width: Math.ceil(map_width),
         //height: Math.ceil(map_width),
@@ -34,6 +32,15 @@ var Options = function() {
           height: tile_size,
         }
       },
+
+      board_title: {
+        height: 24,
+      },
+
+      board_tool_bar: {
+        height: 32,
+      },
+
       player_colour: { 0: "Blue", 1: "White" },
       num_sections: 3,
       num_cities_total: 9,
@@ -56,17 +63,6 @@ var Options = function() {
       healing_rate: 1/30,
       city_healing_rate: 15/100,
       min_troops_for_supply_cut: 500,
-
-      location: locations.test,
-      factions: ["mongols", "romans"],
-
-      board_title: {
-        height: 24,
-      },
-
-      board_tool_bar: {
-        height: 32,
-      },
 
     }
 
