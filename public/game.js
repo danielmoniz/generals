@@ -100,13 +100,14 @@ Game = {
         LineOfSight.handleLineOfSight(this.turn);
       }
     }
-    Output.updateRetreatBlocks();
 
     if (this.type == this.types.HOTSEAT) {
       if (this.turn % 1 == 0) {
         this.player = this.turn;
       }
     }
+
+    Output.updateRetreatBlocks();
 
   },
 

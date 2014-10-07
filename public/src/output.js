@@ -467,7 +467,9 @@ Output = {
       retreat_blocks[i].destroy();
     }
 
-    var units = Unit.getUnitsBySide(Game.turn).friendly;
+    if (Game.turn % 1 != 0) return false;
+
+    var units = Unit.getUnitsBySide(Game.player).friendly;
     var battles = {};
     for (var i in units) {
       var battle = units[i].isBattlePresent();
