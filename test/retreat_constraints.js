@@ -457,6 +457,94 @@ describe('RetreatConstraints', function() {
     });
   });
 
+  describe('#convertToActual', function() {
+
+    it('should convert a relative location to an absolute map position', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+      var direction = { x: 15, y: 6 };
+      retreat_constraints.setSide('attacker', direction);
+
+      var move_target = { x: 15, y: 6 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, true);
+
+      var move_target = { x: 15, y: 8 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, false);
+
+      var move_target = { x: 14, y: 7 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, false);
+
+      var move_target = { x: 16, y: 7 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, false);
+
+    });
+  });
+
+  describe('#()', function() {
+
+    it('should return correct direction if given a valid relative position', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+      var dir = retreat_constraints.relativeToCardinalDirection(relative_top);
+      assert.equal(dir, 'top');
+
+      var dir = retreat_constraints.relativeToCardinalDirection(relative_right);
+      assert.equal(dir, 'right');
+
+      var dir = retreat_constraints.relativeToCardinalDirection(relative_bottom);
+      assert.equal(dir, 'bottom');
+
+      var dir = retreat_constraints.relativeToCardinalDirection(relative_left);
+      assert.equal(dir, 'left');
+
+    });
+
+    it('should throw error if given corner (invalid) location', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+
+      assert.throws(function() {
+        retreat_constraints.relativeToCardinalDirection({ x: 0, y: 0 });
+      }, 'BadDirection');
+
+      assert.throws(function() {
+        retreat_constraints.relativeToCardinalDirection({ x: 0, y: 2 });
+      }, 'BadDirection');
+
+      assert.throws(function() {
+        retreat_constraints.relativeToCardinalDirection({ x: 2, y: 0 });
+      }, 'BadDirection');
+
+      assert.throws(function() {
+        retreat_constraints.relativeToCardinalDirection({ x: 2, y: 2 });
+      }, 'BadDirection');
+
+    });
+
+    it('should throw error if given distant (invalid) location', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+
+      assert.throws(function() {
+        retreat_constraints.relativeToCardinalDirection({ x: 5, y: 10 });
+      }, 'BadDirection');
+
+      assert.throws(function() {
+        retreat_constraints.relativeToCardinalDirection({ x: 15, y: 7 });
+      }, 'BadDirection');
+
+    });
+
+  });
+
   function testAreaPosition(area, x, y, value) {
     assert.equal(area[x][y], value); // top
   }

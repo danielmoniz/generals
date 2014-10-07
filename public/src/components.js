@@ -122,7 +122,7 @@ Crafty.c("Divider", {
       .color("black")
     ;
     this.w = 1;
-    this.z = 2000;
+    this.z = 200;
   },
 });
 
@@ -450,6 +450,32 @@ Crafty.c("HighlightedMovementPath", {
 
   dim: function() {
     this.visible = false;
+  },
+});
+
+var RetreatBlockComponents = {
+  friendly: {
+    left: 'spr_retreat_block_left_green',
+    bottom: 'spr_retreat_block_bottom_green',
+    right: 'spr_retreat_block_right_green',
+    top: 'spr_retreat_block_top_green',
+  },
+  enemy: {
+    left: 'spr_retreat_block_left_red',
+    bottom: 'spr_retreat_block_bottom_red',
+    right: 'spr_retreat_block_right_red',
+    top: 'spr_retreat_block_top_red',
+  },
+};
+
+Crafty.c('RetreatBlock', {
+  init: function() {
+    this.requires('Actor');
+    this.z = 250;
+  },
+
+  setSide: function(battle_side, direction) {
+    this.addComponent(RetreatBlockComponents[battle_side][direction]);
   },
 });
 

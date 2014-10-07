@@ -86,7 +86,7 @@ RetreatConstraints.prototype.addUnit = function(side, move_direction) {
 
 RetreatConstraints.prototype.applyToArray = function(array, property) {
   for (var x=0; x<this.area.length; x++) {
-    var real_x = x +  parseInt(this.location.x) - 1;
+    var real_x = x + parseInt(this.location.x) - 1;
     if (array[real_x] === undefined) continue;
 
     for (var y=0; y<this.area[x].length; y++) {
@@ -99,6 +99,26 @@ RetreatConstraints.prototype.applyToArray = function(array, property) {
       }
     }
   }
+};
+
+RetreatConstraints.prototype.convertToActual = function(relative_location) {
+  var actual = {};
+  actual.x = relative_location.x + parseInt(this.location.x) - 1;
+  actual.y = relative_location.y + parseInt(this.location.y) - 1;
+  return actual;
+};
+
+RetreatConstraints.prototype.relativeToCardinalDirection = function(relative) {
+  if (relative.x == 0 && relative.y == 1) {
+    return 'left';
+  } else if (relative.x == 1 && relative.y == 0) {
+    return 'top';
+  } else if (relative.x == 1 && relative.y == 2) {
+    return 'bottom';
+  } else if (relative.x == 2 && relative.y == 1) {
+    return 'right';
+  }
+  throw new Error("BadDirection");
 };
 
 RetreatConstraints.prototype.isMoveTargetValid = function(location) {

@@ -395,6 +395,7 @@ Crafty.scene('Loading', function() {
     Crafty.sprite(32, 'assets/Combat2.png', {
       spr_battle: [0, 0],
     });
+
     Crafty.sprite(32, 'assets/road-dirt-32.png', {
       spr_road: [0, 1],
       spr_road_horizontal: [0, 0],
@@ -408,6 +409,17 @@ Crafty.scene('Loading', function() {
       spr_road_no_bottom: [2, 1],
       spr_road_no_left: [3, 1],
       spr_road_all: [0, 2],
+    });
+
+    Crafty.sprite(32, 'assets/retreat_constraints_32.png', {
+      spr_retreat_block_left_red: [0, 0],
+      spr_retreat_block_bottom_red: [1, 0],
+      spr_retreat_block_right_red: [2, 0],
+      spr_retreat_block_top_red: [3, 0],
+      spr_retreat_block_left_green: [0, 1],
+      spr_retreat_block_bottom_green: [1, 1],
+      spr_retreat_block_right_green: [2, 1],
+      spr_retreat_block_top_green: [3, 1],
     });
 
     // Now that are sprites are ready to draw, start the game.
