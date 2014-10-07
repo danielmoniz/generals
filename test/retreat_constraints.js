@@ -259,28 +259,28 @@ describe('RetreatConstraints', function() {
 
       var tile = { x: 14, y: 6 };
       assert.throws(function() {
-        retreat_constraints.getArrayDirection(tile), "BadDirection"
-      });
+        retreat_constraints.getArrayDirection(tile);
+      }, "BadDirection");
 
       var tile = { x: 14, y: 8 };
       assert.throws(function() {
-        retreat_constraints.getArrayDirection(tile), "BadDirection"
-      });
+        retreat_constraints.getArrayDirection(tile);
+      }, "BadDirection");
 
       var tile = { x: 16, y: 6 };
       assert.throws(function() {
-        retreat_constraints.getArrayDirection(tile), "BadDirection"
-      });
+        retreat_constraints.getArrayDirection(tile);
+      }, "BadDirection");
 
       var tile = { x: 16, y: 8 };
       assert.throws(function() {
-        retreat_constraints.getArrayDirection(tile), "BadDirection"
-      });
+        retreat_constraints.getArrayDirection(tile);
+      }, "BadDirection");
 
       var tile = { x: 12, y: 65 };
       assert.throws(function() {
-        retreat_constraints.getArrayDirection(tile), "BadDirection"
-      });
+        retreat_constraints.getArrayDirection(tile);
+      }, "BadDirection");
     });
 
     it('should throw an BadLocation error when given a location that is too far away', function() {
