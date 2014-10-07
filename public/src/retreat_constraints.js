@@ -78,7 +78,7 @@ RetreatConstraints.prototype.setDefender = function(attacker_direction) {
 RetreatConstraints.prototype.addUnit = function(side, move_direction) {
   var move_direction = this.getArrayDirection(move_direction);
   var value = 0;
-  if (this.side == side) {
+  if (this.side.toLowerCase() == side) {
     value = 1;
   }
   this.area[move_direction.x][move_direction.y] = value;
@@ -99,6 +99,19 @@ RetreatConstraints.prototype.applyToArray = function(array, property) {
       }
     }
   }
+};
+
+RetreatConstraints.prototype.isMoveTargetValid = function(location) {
+  console.log("location");
+  console.log(location);
+  try {
+    var target = this.getArrayDirection(location);
+  } catch (ex) {
+    return true;
+  }
+  console.log("target");
+  console.log(target);
+  return Boolean(this.area[target.x][target.y]);
 };
 
 RetreatConstraints.prototype.resetCornersAndCentre = function() {

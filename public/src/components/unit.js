@@ -340,7 +340,20 @@ Crafty.c('Unit', {
       return false;
     }
 
-    this.move_target = { x: target_x, y: target_y };
+    var target = { x: target_x, y: target_y };
+    buildTerrainData();
+    if (this.battle) {
+      var battle = this.isBattlePresent();
+      var retreat_constraints = battle.retreat_constraints[this.battle_side];
+      if (!retreat_constraints.isMoveTargetValid(target)) {
+        return false;
+      }
+
+      console.log("Game.terrain_graph.grid");
+      console.log(Game.terrain_graph.grid);
+      retreat_constraints.applyToArray(Game.terrain_graph.grid, 'weight');
+    }
+    this.move_target = target;
 
     if (queue_move && this.move_target_path) {
       var end_path = this.move_target_path[this.move_target_path.length - 1];
@@ -397,6 +410,7 @@ Crafty.c('Unit', {
 
     // check for enemies that will be bumped into
     for (var i=0; i<partial_path.length; i++) {
+      this.last_location = this.at();
       if (this.battle) break;
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);

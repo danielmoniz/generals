@@ -429,6 +429,33 @@ describe('RetreatConstraints', function() {
     });
   });
 
+  describe('#isMoveTargetValid', function() {
+
+    it('should disallow moves with 0 and allow moves with 1', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+      var direction = { x: 15, y: 6 };
+      retreat_constraints.setSide('attacker', direction);
+
+      var move_target = { x: 15, y: 6 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, true);
+
+      var move_target = { x: 15, y: 8 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, false);
+
+      var move_target = { x: 14, y: 7 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, false);
+
+      var move_target = { x: 16, y: 7 };
+      var is_valid = retreat_constraints.isMoveTargetValid(move_target);
+      assert.equal(is_valid, false);
+
+    });
+  });
 
   function testAreaPosition(area, x, y, value) {
     assert.equal(area[x][y], value); // top
