@@ -1,6 +1,6 @@
 /* Why is the below styling not working? */
 div#chat { float: left; width:100%; color: black; }
-div#chat form.chat { padding: 3px; float:left;
+div#chat form.chat { padding: 3px; display:inline-block;
   bottom: 0; width: 100%; }
 div#chat form input.chat { border: 0; padding: 10px; width: 63%;
   margin-right: .5%; }

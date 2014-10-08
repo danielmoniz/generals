@@ -1,9 +1,9 @@
 body { margin: 0; background: black; color:white; }
 #front-page {}
-#game-container { display: none; width: 100%; float:left; }
-#info-panel { width:35%; min-height: 100px; color:white; float:left; }
+#game-container { display: none; width: 100%; }
+#info-panel { width:35%; min-height: 100px; color:white; display:inline-block; }
 #alerts-container { width:65%; color:white; float:right; }
-#title-container { padding: 2px; width: 100%; 24px; color:white; float:left; }
+.alert { display:inline-block; }
 #status-container { width: 45%; float:left; min-width: 510px; }
 #title { padding-right: 20px; 24px; float:left; }
 #turn-count { width:72px; float:left; }
@@ -33,16 +33,15 @@ body { margin: 0; background: black; color:white; }
   float: left;
 }
 
-#input-container { display:block; float:left; }
-#input-container:before { display:block; content:""; }
+#input-container { display:block; }
 #menu { display:block; }
-.input-item { float:left; }
+.input-item { display:inline-block; }
 
 #options { display: none; border: 1px dotted white; }
 #options-waiting { display: none; }
 #starting-game { display: none; }
 
-div#instructions { float: left; max-width: 700px; margin: 0 5px; }
+div#instructions { display:block; max-width: 700px; margin: 0 5px; }
 div#instructions ul { list-style-type: disc; }
 /*
 div.option_set { float: left; }
@@ -50,16 +49,16 @@ div.option_set { float: left; }
 #save-output { color:white; }
 #menu-toggle-button { display: none; }
 
-.unit { max-width: 350px; margin: 2px 30px 5px 0px; padding: 2px; float:left; border: 1px dotted white; cursor: pointer; }
+.unit { max-width: 350px; margin: 2px 30px 5px 0px; padding: 2px; display:inline-block; border: 1px dotted white; cursor: pointer; }
 /*
 .unit-item { float: left; display: block; }
 */
 .battle { border: 1px dotted white; cursor: pointer; }
-.report { display:block; padding-bottom: 5px; width: 100%; float:left;  }
-.icon { float: left; }
+.report { display:inline-block; padding-bottom: 5px; width: 100%; }
+.icon { display:inline-block; }
 
 #tool-bar { display: none; height: 32px; font-family: sans-serif, Times, serif; font-size: 18px; }
-#tool-bar div { float:left; padding: 4px 30px 4px 4px; }
+#tool-bar div { padding: 4px 30px 4px 4px; }
 #tool-bar input { float:right; font-family: sans-serif, Times, serif; padding: 0; border: 0; margin:0; font-size:26px; height: 100%; }
 
 column { float: left; }

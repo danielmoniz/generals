@@ -83,7 +83,6 @@ socket.on('start game', function(game_name, game_object, player, options) {
   function sendMoves() {
   }
   Game.start('online', options, game_object, sendMoves);
-  UI.gameStarted();
 });
 
 socket.on('next turn', function (turn_moves, turn_count) {

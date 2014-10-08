@@ -225,6 +225,7 @@ Game = {
 
     Crafty.scene('Loading');
     UI.startGame();
+    UI.gameStarted();
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
     Output.updateNextTurnButton(this.turn);
