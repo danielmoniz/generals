@@ -8,11 +8,26 @@ var Game = function(io) {
 
   this.num_players = 2;
 
-  this.create = function(game_name, options, first_player, second_player, observers, chat_callback) {
+  this.create = function(game_name, first_player, second_player, observers, chat_callback) {
     this.game_name = game_name;
+    this.players = {
+      0: first_player,
+      1: second_player,
+    };
+    this.observers = observers;
     this.chat_callback = chat_callback;
+
+    this.io.to(first_player.id).emit("new game", this.game_name, 0);
+    this.io.to(second_player.id).emit("new game", this.game_name, 1);
+
+  };
+
+  this.startGame = function(options) {
+    this.options = options;
+
     var settings = {};
     var default_settings = new Options().getDefaultOptions();
+
     console.log("default_settings");
     console.log(default_settings);
     Utility.loadDataIntoObject(default_settings, settings);
@@ -20,14 +35,8 @@ var Game = function(io) {
 
     this.game_data = new MapCreator().buildNewMap(settings);
 
-    this.io.to(first_player.id).emit("new game", this.game_name, this.game_data, 0, settings);
-    this.io.to(second_player.id).emit("new game", this.game_name, this.game_data, 1, settings);
-    this.players = {
-      0: first_player,
-      1: second_player,
-    };
-    this.observers = observers;
-
+    this.io.to(this.players[0].id).emit("start game", this.game_name, this.game_data, 0, settings);
+    this.io.to(this.players[1].id).emit("start game", this.game_name, this.game_data, 1, settings);
 
   };
 

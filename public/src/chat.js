@@ -68,17 +68,20 @@ socket.on('decline invite', function(username) {
   addMessage(output);
 });
 
-socket.on('new game', function(game_name, game_object, player, options) {
+socket.on('new game', function(game_name, player) {
   // @TODO Do something with game_name
   clearMessages();
   var message = "Joined " + game_name + ".";
   addMessage(message);
 
+  UI.prepareGame('online', player);
+});
+
+socket.on('start game', function(game_name, game_object, player, options) {
   game_object.player = player;
 
   function sendMoves() {
   }
-
   Game.start('online', options, game_object, sendMoves);
 });
 

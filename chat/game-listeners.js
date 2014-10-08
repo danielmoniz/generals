@@ -6,6 +6,10 @@ var GameListener = function(io) {
     socket.on('disconnect', function() {
     });
 
+    socket.on("start game", function(options) {
+      socket.game.startGame(options);
+    });
+
     socket.on("new user", function(username, old_username) {
     });
 

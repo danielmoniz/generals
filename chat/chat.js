@@ -9,7 +9,7 @@ var Chat = function(io) {
   this.users = {};
   this.rooms = {};
 
-  this.joinGame = function(inviter, invitee, options) {
+  this.joinGame = function(inviter, invitee) {
     // @TODO Ensure user is still inviting the invitee
     if (inviter === undefined || invitee === undefined) {
       return false;
@@ -24,7 +24,7 @@ var Chat = function(io) {
 
     var observers = [];
 
-    game.create(room_name, options, inviter, invitee, observers, this.endGame);
+    game.create(room_name, inviter, invitee, observers, this.endGame);
   };
 
   this.joinRoom = function(socket, room, make_active, stay_in_room) {
@@ -101,24 +101,23 @@ var Chat = function(io) {
     socket.emit('name changed', new_name);
   };
 
-  this.invite = function(inviter_name, invitee_name, options) {
+  this.invite = function(inviter_name, invitee_name) {
     var inviter = this.users[inviter_name];
     var invitee = this.users[invitee_name];
     var invite_id = Math.round(Math.random() * 100000);
     inviter.invite = invite_id;
-    this.invites[invite_id] = [inviter, invitee, options];
+    this.invites[invite_id] = [inviter, invitee];
 
     var inviter_message = "Waiting for response from " + invitee.username + " for game invite...";
     this.io.to(inviter.username).emit("chat message", inviter_message);
 
-    this.io.to(invitee_name).emit("invite to game", invite_id, inviter.username, options);
+    this.io.to(invitee_name).emit("invite to game", invite_id, inviter.username);
   };
 
   this.acceptGameInvite = function(invite_id) {
     var invite = this.invites[invite_id];
     if (!invite) return false;
-    var options = invite[2];
-    this.joinGame(invite[0], invite[1], options);
+    this.joinGame(invite[0], invite[1]);
   };
 
   this.declineGameInvite = function(invite_id) {

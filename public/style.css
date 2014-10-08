@@ -38,7 +38,7 @@ body { margin: 0; background: black; color:white; }
 #menu { display:block; }
 .input-item { float:left; }
 
-#options { border: 1px dotted white; }
+#options { display: none; border: 1px dotted white; }
 /*
 div.option_set { float: left; }
 */

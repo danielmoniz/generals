@@ -45,8 +45,8 @@ var ChatListener = function(io) {
       chat.joinGame(inviter, invitee);
     })
 
-    socket.on('invite to game', function(inviter_name, invitee_name, options) {
-      chat.invite(inviter_name, invitee_name, options);
+    socket.on('invite to game', function(inviter_name, invitee_name) {
+      chat.invite(inviter_name, invitee_name);
     })
 
     socket.on("accept game invite", function(invite_id) {

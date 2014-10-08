@@ -122,15 +122,11 @@ RetreatConstraints.prototype.relativeToCardinalDirection = function(relative) {
 };
 
 RetreatConstraints.prototype.isMoveTargetValid = function(location) {
-  console.log("location");
-  console.log(location);
   try {
     var target = this.getArrayDirection(location);
   } catch (ex) {
     return true;
   }
-  console.log("target");
-  console.log(target);
   return Boolean(this.area[target.x][target.y]);
 };
 

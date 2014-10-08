@@ -32,10 +32,26 @@ $(document).ready(function() {
   });
 
   $("input.start").click(function() {
-    UI.startGame();
+    //UI.startGame();
 
     //var game_type = $(this).attr("game_type");
-    Game.start(UI.getGameType($(this)), UI.getOptions());
+    UI.prepareGame(UI.getGameType($(this)));
+    //$("#options").show();
+    //window.game_type = UI.getGameType($(this));
+    //Game.start(UI.getGameType($(this)), UI.getOptions());
+  });
+
+  $("input#start-game").click(function() {
+    UI.startGame();
+    console.log("window.game_type");
+    console.log(window.game_type);
+
+    if (typeof socket !== 'undefined') {
+      socket.emit("start game", UI.getOptions());
+    } else {
+      Game.start(window.game_type, UI.getOptions());
+    }
+
   });
 
   $("#next-turn").click(function() {
@@ -58,6 +74,13 @@ $(document).ready(function() {
 });
 
 UI = {
+  prepareGame: function(game_type, player) {
+    if (player === undefined || player == 0) {
+      $("#options").show();
+    }
+    window.game_type = game_type;
+  },
+
   startGame: function() {
     $("#menu").hide();
     $("#menu-toggle-button").show();
