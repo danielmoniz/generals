@@ -12,6 +12,7 @@ $(document).ready(function() {
       }
       return false;
     }
+
   });
 
   $("#load-button").click(function() {
@@ -57,6 +58,12 @@ $(document).ready(function() {
     $(this).blur();
     return false;
   });
+
+  if (typeof socket === 'undefined') {
+    $("#chat").hide();
+  }
+
+  Output.generateInstructions();
 
   // TEST ONLY
   //$("#start-hotseat-button").click();

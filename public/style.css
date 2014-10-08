@@ -41,6 +41,9 @@ body { margin: 0; background: black; color:white; }
 #options { display: none; border: 1px dotted white; }
 #options-waiting { display: none; }
 #starting-game { display: none; }
+
+div#instructions { float: left; max-width: 700px; margin: 0 5px; }
+div#instructions ul { list-style-type: disc; }
 /*
 div.option_set { float: left; }
 */
