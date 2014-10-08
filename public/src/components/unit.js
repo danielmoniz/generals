@@ -214,8 +214,8 @@ Crafty.c('Unit', {
     }
   },
 
-  resupply: function(full) {
-    if (full) {
+  resupply: function(fill) {
+    if (fill) {
       this.addSupply(this.max_supply);
     } else {
       this.addSupply(1);
@@ -269,12 +269,33 @@ Crafty.c('Unit', {
         }
       }
       
-      var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
-      if (supply_route.length == 0) return false;
+      if (this.battle) {
+        return this.isSuppliedInBattle(end);
+      } else {
+        var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
+        if (supply_route.length == 0) return false;
+      }
     } else {
       // Supplied because unit is on supply route end point
     }
     return true;
+  },
+
+  isSuppliedInBattle: function(supply_end_point) {
+    var battle = this.isBattlePresent();
+    var retreat_constraints = battle.retreat_constraints[this.battle_side];
+    var spaces = retreat_constraints.getAdjacentUnblockedSpaces();
+    var route_cost = undefined;
+    for (var i in spaces) {
+      var space = spaces[i];
+      var local_terrain = Game.terrain[space.x][space.y];
+      if (local_terrain.move_difficulty == 0) continue; // impassible
+      if (!local_terrain.supply) continue; // not a road/bridge/city
+      var start = Game.terrain_supply_graph.grid[space.x][space.y];
+      var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, supply_end_point);
+      if (supply_route.length > 0) return true;
+    }
+    return false;
   },
 
   sufferAttrition: function() {

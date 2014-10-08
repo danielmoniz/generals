@@ -24,9 +24,9 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1,
     },
     "Tree": {
-        move_difficulty: 2, 
-        build_over: 3,
-        defense_bonus: 1.05,
+      move_difficulty: 2,
+      build_over: 3,
+      defense_bonus: 1.05,
     },
 
     "Farm": {
@@ -47,20 +47,20 @@ var TerrainData = function(type, stats) {
     },
 
     "Road": {
-        move_difficulty: 0.75,
-        build_over: 0.01,
-        defense_bonus: 1,
-        is_supply_route: false,
-        supply: 1,
+      move_difficulty: 0.75,
+      build_over: 0.01,
+      defense_bonus: 1,
+      is_supply_route: false,
+      supply: 1,
     },
     "Bridge": {
       'parent': 'Road',
-        move_difficulty: 1,
-        build_over: 0.02 ,
-        defense_bonus: 1.5,
-        supply: 1,
-        z: 81,
-        colour: { r: 192, g: 192, b: 192 },
+      move_difficulty: 1,
+      build_over: 0.02 ,
+      defense_bonus: 1.5,
+      supply: 1,
+      z: 81,
+      colour: { r: 192, g: 192, b: 192 },
     },
   };
 

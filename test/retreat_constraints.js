@@ -485,7 +485,7 @@ describe('RetreatConstraints', function() {
     });
   });
 
-  describe('#()', function() {
+  describe('#relativeToCardinalDirection()', function() {
 
     it('should return correct direction if given a valid relative position', function() {
 
@@ -540,6 +540,59 @@ describe('RetreatConstraints', function() {
       assert.throws(function() {
         retreat_constraints.relativeToCardinalDirection({ x: 15, y: 7 });
       }, 'BadDirection');
+
+    });
+
+  });
+
+  describe('#getAdjacentUnblockedSpaces()', function() {
+
+    it('should return all adjacent spaces when there are no retreat blocks', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+      retreat_constraints.setSide('defender', { x: 14, y: 7 });
+      retreat_constraints.addUnit('defender', { x: 14, y: 7 });
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces();
+
+      assert.equal(unblocked.length, 4);
+      /*
+      for (var i in unblocked) {
+        assert.equal(unblock
+      }
+      */
+
+    });
+
+    it('should return no adjacent spaces when there are 4 retreat blocks', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+      retreat_constraints.setSide('attacker', { x: 14, y: 7 });
+      retreat_constraints.addUnit('defender', { x: 14, y: 7 });
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces();
+
+      assert.equal(unblocked.length, 0);
+
+    });
+
+    it('should return adjacent spaces when there are some retreat blocks', function() {
+
+      var location = { x: 15, y: 7 };
+      var retreat_constraints = new RetreatConstraints(location);
+      retreat_constraints.setSide('attacker', { x: 14, y: 7 });
+      retreat_constraints.addUnit('attacker', { x: 16, y: 7 });
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces();
+
+      assert.equal(unblocked.length, 2);
+      // @TODO These tests are brittle/subject to order. Find a better way!
+      var space = unblocked[0];
+      assert.equal(space.x, 14);
+      assert.equal(space.y, 7);
+
+      var space = unblocked[1];
+      assert.equal(space.x, 16);
+      assert.equal(space.y, 7);
 
     });
 
