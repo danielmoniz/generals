@@ -28,8 +28,6 @@ var Game = function(io) {
     var settings = {};
     var default_settings = new Options().getDefaultOptions();
 
-    console.log("default_settings");
-    console.log(default_settings);
     Utility.loadDataIntoObject(default_settings, settings);
     Utility.loadDataIntoObject(options, settings);
 
@@ -37,7 +35,6 @@ var Game = function(io) {
 
     this.io.to(this.players[0].id).emit("start game", this.game_name, this.game_data, 0, settings);
     this.io.to(this.players[1].id).emit("start game", this.game_name, this.game_data, 1, settings);
-
   };
 
   this.nextTurn = function(socket, turn_data, turn_count) {

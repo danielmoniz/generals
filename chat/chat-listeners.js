@@ -27,8 +27,6 @@ var ChatListener = function(io) {
 
       socket.broadcast.emit('chat message', username + ' has entered the chat');
 
-      console.log("socket.id");
-      console.log(socket.id);
       console.log("new username:");
       console.log(username);
     });

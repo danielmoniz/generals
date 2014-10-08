@@ -39,6 +39,8 @@ body { margin: 0; background: black; color:white; }
 .input-item { float:left; }
 
 #options { display: none; border: 1px dotted white; }
+#options-waiting { display: none; }
+#starting-game { display: none; }
 /*
 div.option_set { float: left; }
 */

@@ -32,19 +32,11 @@ $(document).ready(function() {
   });
 
   $("input.start").click(function() {
-    //UI.startGame();
-
-    //var game_type = $(this).attr("game_type");
     UI.prepareGame(UI.getGameType($(this)));
-    //$("#options").show();
-    //window.game_type = UI.getGameType($(this));
-    //Game.start(UI.getGameType($(this)), UI.getOptions());
   });
 
   $("input#start-game").click(function() {
     UI.startGame();
-    console.log("window.game_type");
-    console.log(window.game_type);
 
     if (typeof socket !== 'undefined') {
       socket.emit("start game", UI.getOptions());
@@ -77,8 +69,13 @@ UI = {
   prepareGame: function(game_type, player) {
     if (player === undefined || player == 0) {
       $("#options").show();
+    } else {
+      $("#options-waiting").show();
     }
     window.game_type = game_type;
+
+    $("input.start").hide();
+    //$("#front-page").hide();
   },
 
   startGame: function() {
@@ -87,9 +84,15 @@ UI = {
     $("#game-container").show();
     $("#front-page").hide();
     $("#options").hide();
+    $("#options-waiting").hide();
+    $("#starting-game").show();
     // @TODO Fix below code! Want to dynamically set width of victory bar.
     //$("#will-container").width(35 * Game.map_grid.tile.width);
     $("ul").css("min-height", "75px");
+  },
+
+  gameStarted: function() {
+    $("#starting-game").hide();
   },
 
   endGame: function() {
@@ -98,7 +101,10 @@ UI = {
     $("#game-container").hide();
     $("#tool-bar").hide();
     $("#front-page").show();
-    $("#options").show();
+    $("#options").hide();
+    $("#options-waiting").hide();
+    $("#starting-game").hide();
+    $("input.start").show();
     // @TODO Fix below code! Want to dynamically set width of victory bar.
     //$("#will-container").width(35 * Game.map_grid.tile.width);
     $("ul").css("min-height", "300px");
