@@ -120,7 +120,9 @@ UI = {
 
   gameVictory: function() {
     $("input#play-again").show();
-    $("input#done-playing").show();
+    if (typeof window.socket !== 'undefined') {
+      $("input#done-playing").show();
+    }
   },
 
   endGame: function() {

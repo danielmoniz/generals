@@ -38,6 +38,7 @@ body { margin: 0; background: black; color:white; }
 .input-item { display:inline-block; }
 input#new-map { display: none; }
 input#play-again { display: none; }
+input#done-playing { display: none; }
 
 #options { display: none; border: 1px dotted white; }
 #options-waiting { display: none; }
