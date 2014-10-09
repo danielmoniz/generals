@@ -50,9 +50,8 @@ div.option_set { float: left; }
 #menu-toggle-button { display: none; }
 
 .unit { max-width: 350px; margin: 2px 30px 5px 0px; padding: 2px; display:inline-block; border: 1px dotted white; cursor: pointer; }
-/*
-.unit-item { float: left; display: block; }
-*/
+.unit-item { display: inline-block; margin-right: 5px; }
+
 .battle { border: 1px dotted white; cursor: pointer; }
 .report { display:inline-block; padding-bottom: 5px; width: 100%; }
 .icon { display:inline-block; }

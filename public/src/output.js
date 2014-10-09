@@ -140,7 +140,9 @@ Output = {
         action_div.append(action_button);
         actions_div.append(action_div);
       }
-      unit_div.append(actions_div);
+      if (unit.action_choices.length > 0) {
+        unit_div.append(actions_div);
+      }
     }
 
     this.makeReport([unit_div]);
@@ -250,18 +252,25 @@ Output = {
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
-    var name_div = this.createDiv("unit-item");
+    var top_half = this.createDiv('schloop');
     var img = this.createIconImage(unit);
-    var img_div = this.createDiv("unit-item column", name);
+    var img_div = this.createDiv('unit-item');
     img_div.append(img);
-    name_div.append(img_div);
-    //unit_div.append(this.createDiv("unit-item", general_info));
-    //name_div.append(this.createDiv("unit-item column", name));
-    unit_div.append(name_div);
-    unit_div.append(this.createDiv("unit-item", status));
+    top_half.append(img_div);
+
+    var main_info_div = this.createDiv('unit-item');
+    var name_div = this.createDiv('', name);
+    var status_div = this.createDiv("", status);
+    main_info_div.append(name_div).append(status_div);
+    top_half.append(main_info_div);
+
+    var bottom_half = this.createDiv();
     if (unit.supply_remaining < unit.max_supply) {
-      unit_div.append(this.createDiv("unit-item", supply_remaining));
+      var supply_div = this.createDiv("unit-item", supply_remaining);
+      bottom_half.append(supply_div);
     }
+
+    unit_div.append(top_half).append(bottom_half);
 
     return unit_div;
   },
