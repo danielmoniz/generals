@@ -19,7 +19,7 @@ var Instructions = {
 
   morale_general: "Players lose morale when they lose troops, have their farms pillaged, or have their cities sacked.",
 
-  morale: "It is important to note that each factions' morale is based on a number of factors. Should any of these factors drop to zero, that player's morale will drop to zero! this means that if everyone of your farms is pillaged, you will lose the game, even if your opponent has only one farm left. Similarly, losing all of your armies or having all of your cities sacked also cause morale to drop to zero.",
+  morale: "It is important to note that each factions' morale is based on a number of factors. Should any of these factors drop to zero, that player's morale will drop to zero! This means that if everyone of your farms is pillaged, you will lose the game, even if your opponent has only one farm left. Similarly, losing all of your armies or having all of your cities sacked also cause morale to drop to zero.",
 
   combat_general: "Combat occurs when two opposing armies are in the same tile. Each turn represents a single day of combat. Because of this, combat between two large armies can take days or even weeks to complete if both sides have a similar number of troops. Note, however, that even a small advantage in troop numbers at the beginning can turn into a large advantage within a few turns. The result is that, in almost every case, one side needs to retreat as soon as possible.",
 
@@ -37,7 +37,7 @@ var Instructions = {
 
   unsupplied: "Any unsupplied army will lose 1 supply until they reach 0. After reaching 0, any further loss in supply will instead manifest as attrition casualties (killed and wounded).",
 
-  supplied: "As soon as your army is once again connected to your own supply rooms, the army is considered supplied. At the start of each of your turns, each supplied army will increase it supply by 1 (up to its maximum).",
+  supplied: "As soon as your army is once again connected to your own supply rooms, the army is considered supplied. At the start of each of your turns, each supplied army will increase its supply by 1 (up to its maximum).",
 
   other_factors: "If at any point an army's retreat is blocked, that blockade also prevents supply from that direction. This means that keeping the rear of your armies clear is of vital importance.",
 
@@ -48,7 +48,7 @@ var Instructions = {
 
   hotseat: "In a Hotseat game, two players take turns on the same computer/tablet. If playing with fog of war (default), the map will become shaded between each of their turns. Neither player can see any information about army movements. This allows players to perform their moves in secrecy.",
 
-  online: "In Online play, the player that invites another player becomes the host. Do you host gets to select a number of options after creating a game. Once the host hits 'Start', both players get a full look at the map before beginning. Once the first player hits 'Begin Game', both they are simply take turns placing moves, as no secrecy is required.",
+  online: "In Online play, the player that invites an opponent becomes the host. The host gets to select a number of options after creating a game. Once the host hits 'Start', both players get a full look at the map before beginning. Once the first player hits 'Begin Game', they simply take turns placing moves, as no secrecy is required.",
 
   // Tips
   selection: "Armies can be selected at the bottom display by clicking on their display box. ",
