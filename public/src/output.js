@@ -534,6 +534,10 @@ Output = {
     this.addSubTitle('Combat');
     this.addInstruction('combat_general');
     this.addInstruction('casualties');
+    this.addSubTitle('Injured troops');
+    this.addInstruction('injured_display');
+    this.addInstruction('injured_troops');
+    this.addInstruction('healing');
     this.addSubTitle('Supply');
     this.addInstruction('supply_general');
     this.addInstruction('supply_routes');
@@ -543,6 +547,11 @@ Output = {
     this.addSubTitle('Retreating');
     this.addInstruction('retreat_general');
     this.addInstruction('retreat_constraints');
+    this.addSubTitle('Terrain Types');
+    this.addInstruction('terrain_types_intro');
+    this.addInstructionList('terrain_types');
+    this.addSubTitle('Army/Unit Types');
+    this.addInstruction('unit_composition');
 
     this.addTitle('Game Modes');
     this.addInstructionList('game_modes');
@@ -552,6 +561,9 @@ Output = {
     this.addTitle('Tips');
     this.addInstruction('selection');
     this.addInstruction('two_armies_better_than_one');
+    this.addInstruction('retreat_movement_bonus');
+    this.addInstruction('');
+    this.addInstruction('');
     this.addInstruction('');
     this.addInstruction('');
   },

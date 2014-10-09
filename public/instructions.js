@@ -11,6 +11,12 @@ var Instructions = {
 
   general_instructions: "Select armies by clicking on them and move them by right-clicking where you want them to go. Queue up moves for all of your units and click Next Turn (or hit space bar). Units will sometimes have actions available to perform such as pillaging a farm. Click on the corresponding action button beside your unit's display box below the map.",
 
+  how_to_start_combat: "Moving one of your armies into the same tile as another Army will start a combat. Note that a combat will be started regardless of your intentions if you attempt to move through an opposing army.",
+
+  terrain_types_general: "Terrain affects the movement and combat ability of your armies. For example, water is impassable, while forests are slow but provide a defensive bonus. (see Terrain Types)",
+
+  unit_types_general: "",
+
   goal: "The object of the game is to reduce your opponent's morale. This is represented by the colored victory bars at the top of the screen. This is accomplished by defeating your opponent's armies, pillaging their farms, and sacking their cities.",
 
   map: "The map itself is divided into thirds and consists of terrain and armies. Anything that starts in your third of the map belongs to you and your faction. If your cities are sacked or your farms pillaged, this will affect your faction's will to fight the war.",
@@ -25,7 +31,11 @@ var Instructions = {
 
   casualties: "Each turn, all armies on both sides will take some number of casualties. These will be divided between killed and injured troops. This is a calculation based on the total number of troops on each side.If you have multiple armies in a battle, they will receive casualties that corresponds to the relative size of their armies. For example, One army with 6000 troops might lose 600, but two armies with 3000 troops would each lose 300 in that same scenario.",
 
-  how_to_start_combat: "Moving one of your armies into the same tile as another Army will start a combat. Note that a combat will be started regardless of your intentions if you attempt to move through an opposing army.",
+  injured_troops: "Injured or wounded troops are casualties that are not killed. They are unable to fight. Moreover, each turn a percentage of your wounded will succumb to their battle wounds and die. Injured troops count the same toward your victory score as uninjured (or active) troops. However, an army with only injured troops will be disbanded.",
+
+  injured_display: "Armies will often display their forces in the following format: 2706/2952. This example means that the army has a total of 2952 troops, but that only 2706 are active/uninjured troops ready for combat. The rest are wounded troops that have the potential to be healed.",
+
+  healing: "Injured troops may be healed. This can be automatic, as some very small fraction of your wounded will be healed each turn. Placing an army in an unsacked city will greatly speed up the healing process. Sacked cities provide no such advantage. Armies are also unable to benefit fron this bonus during combat.",
 
   retreat_general: "You may retreat from a combat at any time if it is your turn. This will, however, inflict casualties to the retreating army as if they stayed in combat for one more turn. They will inflict no casualties on any opposing armies until they enter a new combat.",
 
@@ -41,12 +51,29 @@ var Instructions = {
 
   other_factors: "If at any point an army's retreat is blocked, that blockade also prevents supply from that direction. This means that keeping the rear of your armies clear is of vital importance.",
 
+  terrain_types_intro: "Terrain affects both combat and movement. The defender always gets the combat advantage if it exists.",
+
+  terrain_types: [
+    "Water: Impassable.",
+    "Forest: Slow to move through. Provide a moderate defensive bonus.",
+    "City: Slightly faster movement. Provide a large defensive bonus. Can be sacked for supply.",
+    "Road: Fast movement. No defensive advantage.",
+    "Bridge: As fast as Road. Provide a huge defensive bonus.",
+    "Grass: Average movement speed. No defensive combat bonus.",
+    "Farm: Slower than Grass. Slower yet when pillaged. No combat bonus. Can be pillaged for minor supply.",
+  ],
+
+  unit_composition: "Each faction starts with a set number of armies of different types. For example, the Mongols use primarily cavalry, while the Romans have more total troops but rely on infantry. Cavalry move much faster than infantry, but are otherwise equal.",
+
+  unit_types: [
+  ],
+
   game_modes: [
     "Hotseat",
     "Online",
   ],
 
-  hotseat: "In a Hotseat game, two players take turns on the same computer/tablet. If playing with fog of war (default), the map will become shaded between each of their turns. Neither player can see any information about army movements. This allows players to perform their moves in secrecy.",
+  hotseat: "In a Hotseat game, two players take turns on the same computer/tablet. If playing with fog of war (default), the map will become shaded between each of their turns. Neither player can see any information about army movements. This allows players to perform their moves in secrecy. Both players get to view the full map before playing.",
 
   online: "In Online play, the player that invites an opponent becomes the host. The host gets to select a number of options after creating a game. Once the host hits 'Start', both players get a full look at the map before beginning. Once the first player hits 'Begin Game', they simply take turns placing moves, as no secrecy is required.",
 
@@ -54,6 +81,8 @@ var Instructions = {
   selection: "Armies can be selected at the bottom display by clicking on their display box. ",
 
   two_armies_better_than_one: "Two armies are better than one. Try attacking an enemy army from two different directions. In this way, their supply can be cut while simultaneously prohibiting retreat in certain directions.",
+
+  retreat_movement_bonus: "Retreating provides a movement bonus of 1. This represents the fact that your army will do anything to get out of striking range of opposing forces. Use this to retreat just out of range of your pursuer. Be careful, however, because retreating into slow terrain means that you can often be caught!",
 
 };
 
