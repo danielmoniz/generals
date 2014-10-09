@@ -39,7 +39,10 @@ $(document).ready(function() {
   $("input#start-game").click(function() {
     UI.startGame();
 
-    if (typeof socket !== 'undefined') {
+    if (window.game_type == Game.types.ONLINE) {
+      if (typeof socket === 'undefined') {
+        throw new Error("NoSocketConnection", "Need to connect to server for online game.");
+      }
       socket.emit("start game", UI.getOptions());
     } else {
       Game.start(window.game_type, UI.getOptions());
