@@ -139,6 +139,7 @@ Pretty = {
     },
 
     getFactionWinMessage: function(winning_player_num) {
+      if (winning_player_num === undefined) return false;
       var text = "";
       var winner_name = Pretty.Player.name(winning_player_num);
       var loser_name = Pretty.Player.name(1 - winning_player_num);
@@ -149,7 +150,9 @@ Pretty = {
       return text;
     },
 
-    getFactionLossMessage: function(losing_player_num) {
+    getFactionLossMessage: function(winning_player_num) {
+      if (winning_player_num === undefined) return false;
+      losing_player_num = 1 - winning_player_num;
       var text = "";
       var winner_name = Pretty.Player.name(1 - losing_player_num);
       var loser_name = Pretty.Player.name(losing_player_num);

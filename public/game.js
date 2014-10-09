@@ -72,6 +72,9 @@ Game = {
 
   nextTurn: function() {
 
+    // Do nothing if game should be over. Let Victory screen render.
+    if (this.player_winner !== undefined) return false;
+
     if (Game.type == Game.types.EMAIL) {
       if (Game.turns_played_locally >= 1) {
         return;
@@ -116,39 +119,12 @@ Game = {
 
   },
 
-  /*
-   * Enacted when a player ends their turn.
-   * Saves the actions taken by a player, increments the turn, and then loads
-   * the actions for the next player.
-   * When used for online play, will save a player's actions, then hide the
-   * board (?? necessary?), and then send the saved data to the server.
-   */
-  /*
-  nextTurnUpdates: function() {
-    var save = this.saveOnline();
-
-    // in online play, would use nextTurn() here for player who just played
-
-    Output.clearAll();
-    this.turn += 0.5;
-    this.turn = this.turn % 2;
-    this.turn_count += 0.5;
-    this.turns_played_locally += 0.5;
-
-    Output.updateStatusBar();
-    Output.updateNextTurnButton(this.turn);
-
-    this.deselect();
-    Crafty.trigger("ResetVisuals");
-    if (Game.fog_of_war) {
-      LineOfSight.handleLineOfSight(this.turn);
-    }
-
-    this.loadOnline(save);
-  },
-  */
-
   updateTurnCount: function(turn_count) {
+    if (turn_count == 'reset') {
+      Game.turn = 1.5;
+      Game.turn_count = -0.5;
+      return;
+    }
     this.turn_count = turn_count;
     this.turn = turn_count % 2;
   },
@@ -162,7 +138,7 @@ Game = {
         socket.emit("next turn", moves, this.turn_count);
         //this.sendMovesCallback(moves);
       }
-      this.nextTurn()
+      this.nextTurn();
 
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       this.nextTurn();
@@ -219,17 +195,22 @@ Game = {
       Game[key] = value;
     }
 
+    if (game_type === undefined) game_type = Game.types.HOTSEAT;
     Game.type = game_type;
-    if (Game.turn == undefined) Game.turn = 1.5;
-    if (Game.turn_count == undefined) Game.turn_count = -0.5;
+    if (Game.turn_count == undefined) this.updateTurnCount('reset');
     //Game.type = Game.types['EMAIL'];
     var load_game = Game.load_game;
     Game.load_game = load_game;
 
-    this.initCrafty();
     //Crafty.background('rgb(87, 109, 20)');
 
-    Crafty.scene('Loading');
+    if (Game.played_already) {
+      this.reset();
+      Crafty.scene('Game');
+    } else {
+      this.initCrafty();
+      Crafty.scene('Loading');
+    }
     UI.startGame();
     UI.gameStarted();
     Output.updateStatusBar();
@@ -251,13 +232,16 @@ Game = {
 
   reset: function() {
     this.load_map = false;
-    this.turn = 0;
-    this.turn_count = 0;
+    this.updateTurnCount('reset');
     this.selected = undefined;
     this.player_selected = [];
+    // Is this needed?
     this.player_supply_roads = [[], []];
 
     this.resetStatusVisuals(true);
+    Output.clearAll();
+
+    delete this.player_winner;
   },
 
   initCrafty: function() {

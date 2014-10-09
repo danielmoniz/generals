@@ -3,6 +3,7 @@
 // Runs the core of the gameplay loop
 Crafty.scene('Game', function() {
 
+  Game.played_already = true;
   Game.resetStatusVisuals();
 
   function divideMap(num_parts) {

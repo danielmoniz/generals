@@ -50,6 +50,20 @@ $(document).ready(function() {
 
   });
 
+  $("input#new-map").click(function() {
+    //UI.startGame();
+
+    if (window.game_type == Game.types.ONLINE) {
+      if (typeof socket === 'undefined') {
+        throw new Error("NoSocketConnection", "Need to connect to server for online game.");
+      }
+      socket.emit("start game", UI.getOptions());
+    } else {
+      Game.start(window.game_type, UI.getOptions());
+    }
+
+  });
+
   $("#next-turn").click(function() {
     //if (Game.type == Game.types.ONLINE && Game.turn % 1 == 0) {
     if (Game.type == Game.types.ONLINE) {

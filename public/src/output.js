@@ -610,7 +610,7 @@ Output = {
     if (faction_win_message) {
       var faction_win_message_div = this.createDiv('victory message', faction_win_message);
     }
-    var faction_loss_message = Pretty.Victory.getFactionLossMessage(1 - winning_player_num);
+    var faction_loss_message = Pretty.Victory.getFactionLossMessage(winning_player_num);
     if (faction_loss_message) {
       var faction_loss_message_div = this.createDiv('victory message', faction_loss_message);
     }
