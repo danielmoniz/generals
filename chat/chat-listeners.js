@@ -25,8 +25,6 @@ var ChatListener = function(io) {
       chat.joinRoom(socket, chat.main_room, 'make active');
       socket.emit('chat message', "Welcome to the chat!");
 
-      socket.broadcast.emit('chat message', username + ' has entered the chat');
-
       console.log("new username:");
       console.log(username);
     });
@@ -38,6 +36,10 @@ var ChatListener = function(io) {
     socket.on('chat message', function(message) {
       chat.sendMessage(socket, message, socket.username);
     });
+
+    socket.on('leave game', function(room_name) {
+      chat.joinRoom(socket, chat.main_room, 'make active');
+    })
 
     socket.on('join game', function(inviter, invitee) {
       chat.joinGame(inviter, invitee);

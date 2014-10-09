@@ -32,6 +32,7 @@ socket.on('invalid username', function(bad_username) {
 
 socket.on('chat message', function(message, username) {
   if (username == my_username) username = "You";
+  if (username == 'system') username = undefined;
   var text = formatMessage(message, username);
   addMessage(text);
   if (username) {
@@ -179,3 +180,10 @@ function formatMessage(message, username) {
   text += message;
   return text;
 }
+
+Chat = {
+
+  leaveGame: function() {
+    socket.emit("leave game");
+  },
+};

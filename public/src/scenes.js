@@ -337,16 +337,14 @@ Crafty.scene('Victory', function() {
   UI.gameVictory();
 
 
-  // Watch for the player to press a key, then restart the game when a key is
-  // pressed
+  /*
   this.restart_game = this.bind('KeyDown', function() {
     Crafty.scene('Game');
 
   });
+  */
 }, function() {
-  // Remove our event binding from above so that we don't end up having
-  // multiple redundant event watchers after multiple restarts of the game
-  this.unbind('KeyDown', this.restart_game);
+  //this.unbind('KeyDown', this.restart_game);
 });
 
 // Loading scene

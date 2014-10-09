@@ -40,6 +40,8 @@ var Chat = function(io) {
       socket.active_room = room;
       this.updateUserList(room);
       this.io.to(room).emit("joined room", room);
+
+      this.sendMessage(socket, socket.username + ' has entered the chat', 'system', 'broadcast');
     }
   };
 
@@ -61,11 +63,15 @@ var Chat = function(io) {
     this.io.to(room_name).emit("update user list", this.rooms[room_name]);
   };
 
-  this.sendMessage = function(socket, message, username) {
+  this.sendMessage = function(socket, message, username, broadcast) {
     if (message == '' || typeof message != 'string') return false;
     if (Utility.countItems(socket) == 0) return false;
     if (!this.runCommand(message, socket)) {
-      this.io.to(socket.active_room).emit('chat message', message, username);
+      if (broadcast) {
+        socket.broadcast.to(socket.active_room).emit('chat message', message, username);
+      } else {
+        this.io.to(socket.active_room).emit('chat message', message, username);
+      }
       console.log("to room " + socket.active_room + " only");
     }
   };
@@ -105,6 +111,7 @@ var Chat = function(io) {
     var inviter = this.users[inviter_name];
     var invitee = this.users[invitee_name];
     var invite_id = Math.round(Math.random() * 100000);
+    if (inviter === undefined) return false;
     inviter.invite = invite_id;
     this.invites[invite_id] = [inviter, invitee];
 

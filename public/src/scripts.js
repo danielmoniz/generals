@@ -51,6 +51,11 @@ $(document).ready(function() {
 
   });
 
+  $("input#done-playing").click(function() {
+    UI.endGame();
+    $(this).blur();
+  });
+
   $("#next-turn").click(function() {
     //if (Game.type == Game.types.ONLINE && Game.turn % 1 == 0) {
     if (Game.type == Game.types.ONLINE) {
@@ -115,6 +120,7 @@ UI = {
 
   gameVictory: function() {
     $("input#play-again").show();
+    $("input#done-playing").show();
   },
 
   endGame: function() {
@@ -127,9 +133,12 @@ UI = {
     $("#options-waiting").hide();
     $("#starting-game").hide();
     $("input.start").show();
+    $("input#done-playing").hide();
     // @TODO Fix below code! Want to dynamically set width of victory bar.
     //$("#will-container").width(35 * Game.map_grid.tile.width);
     $("ul").css("min-height", "300px");
+
+    Chat.leaveGame();
   },
 
   deselectButtons: function() {
