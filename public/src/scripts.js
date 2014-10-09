@@ -70,6 +70,7 @@ $(document).ready(function() {
 
   // TEST ONLY
   //$("#start-hotseat-button").click();
+  //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
 

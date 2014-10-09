@@ -24,14 +24,9 @@ Victory = {
       var my_will = this.will_to_fight[i];
       var their_will = this.will_to_fight[(i + 1) % 2];
       if (my_will > their_will * this.ratio_to_win) {
-        var text = "Player {0} wins!".format(i);
-        this.victory_text = text;
-        return "Player {0} wins!".format(i);
-      }
-      if (Math.round(my_will) == 0) {
-        var text = "Player {0} loses!".format(i);
-        this.victory_text = text;
-        return "Player {0} loses!".format(i);
+        return i;
+      } else if (Math.round(my_will) == 0 && Math.round(their_will) == 0) {
+        return undefined;
       }
     }
     return false;

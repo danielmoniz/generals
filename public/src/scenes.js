@@ -325,11 +325,14 @@ Crafty.scene('Game', function() {
 // ----------
 // Tells the player when they've won and lets them start a new game
 Crafty.scene('Victory', function() {
-  Crafty.e('2D, DOM, Text')
-    .attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
-    .css($text_css)
-    .text(Victory.victory_text)
-    ;
+  console.log("$text_css");
+  console.log($text_css);
+  var victory = Crafty.e('2D, DOM, HTML');
+    victory.attr({ x: 0, y: 0, w: Game.width() });
+
+  var victory_html = Output.getVictoryHtml(Game.player_winner);
+  victory.replace(victory_html);
+
 
   // Watch for the player to press a key, then restart the game when a key is
   // pressed

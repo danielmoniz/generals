@@ -16,6 +16,7 @@ var Options = function() {
 
   this.getDefaultOptions = function() {
     var map_width = 40;
+    var map_width = 20;
     var tile_size = 32;
 
     var options = {

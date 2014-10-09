@@ -601,5 +601,27 @@ Output = {
     }
   },
 
+  getVictoryHtml: function(winning_player_num) {
+    var basic_message = Pretty.Victory.getWinnerMessage(winning_player_num);
+    var basic_message_div = this.createDiv('victory title', basic_message);
+    var descriptive_message = Pretty.Victory.getDescriptiveMessage(winning_player_num);
+    var descriptive_message_div = this.createDiv('victory outcome', descriptive_message);
+    var faction_win_message = Pretty.Victory.getFactionWinMessage(winning_player_num);
+    if (faction_win_message) {
+      var faction_win_message_div = this.createDiv('victory message', faction_win_message);
+    }
+    var faction_loss_message = Pretty.Victory.getFactionLossMessage(1 - winning_player_num);
+    if (faction_loss_message) {
+      var faction_loss_message_div = this.createDiv('victory message', faction_loss_message);
+    }
+
+    var container = this.createDiv();
+    container.append(basic_message_div);
+    container.append(descriptive_message_div);
+    container.append(faction_win_message_div);
+    container.append(faction_loss_message_div);
+    return container.html();
+  },
+
 }
 

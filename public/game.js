@@ -87,7 +87,12 @@ Game = {
 
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
-    if (victory) Crafty.scene('Victory');
+    if (victory !== false) {
+      console.log("there is at least one loser");
+      this.player_winner = victory;
+      Crafty.scene('Victory');
+      return false;
+    }
     Crafty.trigger("NextTurn");
 
     this.deselect();
