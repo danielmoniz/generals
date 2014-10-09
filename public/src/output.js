@@ -383,7 +383,7 @@ Output = {
     var player_name = Pretty.Player.name(next_player_turn);
 
     if (Pretty.Turn.isPlayerTurn()) {
-      player = "{0}'s move".format(player_name);
+      player = "{0}".format(player_name);
     } else {
       player = "{0} (up next)".format(player_name);
     }
