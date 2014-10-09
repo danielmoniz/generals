@@ -10,6 +10,10 @@ var GameListener = function(io) {
       socket.game.startGame(options);
     });
 
+    socket.on("new map", function(options) {
+      socket.game.startGame(options);
+    });
+
     socket.on("new user", function(username, old_username) {
     });
 

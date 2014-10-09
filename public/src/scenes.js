@@ -334,6 +334,8 @@ Crafty.scene('Victory', function() {
   var victory_html = Output.getVictoryHtml(Game.player_winner);
   victory.replace(victory_html);
 
+  UI.gameVictory();
+
 
   // Watch for the player to press a key, then restart the game when a key is
   // pressed

@@ -36,7 +36,7 @@ $(document).ready(function() {
     UI.prepareGame(UI.getGameType($(this)));
   });
 
-  $("input#start-game").click(function() {
+  $("input.start-game").click(function() {
     UI.startGame();
 
     if (window.game_type == Game.types.ONLINE) {
@@ -47,20 +47,7 @@ $(document).ready(function() {
     } else {
       Game.start(window.game_type, UI.getOptions());
     }
-
-  });
-
-  $("input#new-map").click(function() {
-    //UI.startGame();
-
-    if (window.game_type == Game.types.ONLINE) {
-      if (typeof socket === 'undefined') {
-        throw new Error("NoSocketConnection", "Need to connect to server for online game.");
-      }
-      socket.emit("start game", UI.getOptions());
-    } else {
-      Game.start(window.game_type, UI.getOptions());
-    }
+    $(this).blur();
 
   });
 
@@ -111,6 +98,7 @@ UI = {
     $("#options").hide();
     $("#options-waiting").hide();
     $("#starting-game").show();
+    $("input#play-again").hide();
     // @TODO Fix below code! Want to dynamically set width of victory bar.
     //$("#will-container").width(35 * Game.map_grid.tile.width);
     $("ul").css("min-height", "75px");
@@ -118,6 +106,15 @@ UI = {
 
   gameStarted: function() {
     $("#starting-game").hide();
+    $("input#new-map").show();
+  },
+
+  gameInProgress: function() {
+    $("input#new-map").hide();
+  },
+
+  gameVictory: function() {
+    $("input#play-again").show();
   },
 
   endGame: function() {

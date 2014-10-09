@@ -74,6 +74,7 @@ Game = {
 
     // Do nothing if game should be over. Let Victory screen render.
     if (this.player_winner !== undefined) return false;
+    UI.gameInProgress();
 
     if (Game.type == Game.types.EMAIL) {
       if (Game.turns_played_locally >= 1) {
@@ -204,8 +205,8 @@ Game = {
 
     //Crafty.background('rgb(87, 109, 20)');
 
+    this.reset();
     if (Game.played_already) {
-      this.reset();
       Crafty.scene('Game');
     } else {
       this.initCrafty();
