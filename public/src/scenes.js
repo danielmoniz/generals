@@ -281,6 +281,9 @@ Crafty.scene('Game', function() {
   addTitleBar();
   Output.setToolBar();
 
+  this.player = Crafty.e('PlayerCharacter');
+  this.player.at(0, 0);
+
   function startNewGame() {
 
     var map_creator = new MapCreator();

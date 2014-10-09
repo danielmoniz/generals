@@ -539,8 +539,8 @@ Crafty.c('PlayerCharacter', {
   init: function() {
     this.requires('Actor, Fourway, Collision, spr_player, Movable')
       .fourway(4)
-      .stopOnSolids()
-      .onHit('City', this.visitCity)
+      //.stopOnSolids()
+      //.onHit('City', this.visitCity)
       ;
     this.z = 1000;
   },

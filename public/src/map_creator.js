@@ -538,8 +538,6 @@ var MapCreator = function(options) {
       return units;
     };
 
-    //this.player = Crafty.e('PlayerCharacter')
-    //this.player.at(0, 0);
     var units = [];
     units.push(this.addUnits(options.FIRST_PLAYER, 0));
     units.push(this.addUnits(options.SECOND_PLAYER, options.map_grid.width - 1));
