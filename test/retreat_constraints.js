@@ -553,7 +553,8 @@ describe('RetreatConstraints', function() {
       var retreat_constraints = new RetreatConstraints(location);
       retreat_constraints.setSide('defender', { x: 14, y: 7 });
       retreat_constraints.addUnit('defender', { x: 14, y: 7 });
-      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces();
+      var map_grid = { width: 100, height: 100 };
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces(map_grid);
 
       assert.equal(unblocked.length, 4);
       /*
@@ -582,7 +583,8 @@ describe('RetreatConstraints', function() {
       var retreat_constraints = new RetreatConstraints(location);
       retreat_constraints.setSide('attacker', { x: 14, y: 7 });
       retreat_constraints.addUnit('attacker', { x: 16, y: 7 });
-      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces();
+      var map_grid = { width: 100, height: 100 };
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces(map_grid);
 
       assert.equal(unblocked.length, 2);
       // @TODO These tests are brittle/subject to order. Find a better way!
@@ -594,6 +596,55 @@ describe('RetreatConstraints', function() {
       assert.equal(space.x, 16);
       assert.equal(space.y, 7);
 
+    });
+
+    it('should not return spaces outside top-left corner of map', function() {
+
+      var location = { x: 0, y: 0 };
+      var retreat_constraints = new RetreatConstraints(location);
+      retreat_constraints.setSide('defender', { x: 0, y: 1 });
+      var map_grid = { width: 100, height: 100 };
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces(map_grid);
+
+      assert.equal(unblocked.length, 1);
+      // @TODO These tests are brittle/subject to order. Find a better way!
+      var space = unblocked[0];
+      assert.equal(space.x, 1);
+      assert.equal(space.y, 0);
+    });
+
+    it('should not return spaces outside bottom-right corner of map', function() {
+
+      var location = { x: 14, y: 5 };
+      var retreat_constraints = new RetreatConstraints(location);
+      retreat_constraints.setSide('defender', { x: 13, y: 5 });
+      var map_grid = { width: 15, height: 6 };
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces(map_grid);
+
+      assert.equal(unblocked.length, 1);
+      // @TODO These tests are brittle/subject to order. Find a better way!
+      var space = unblocked[0];
+      assert.equal(space.x, 14);
+      assert.equal(space.y, 4);
+    });
+
+    it('should not return spaces outside right side of map', function() {
+
+      var location = { x: 14, y: 5 };
+      var retreat_constraints = new RetreatConstraints(location);
+      retreat_constraints.setSide('defender', { x: 13, y: 5 });
+      var map_grid = { width: 15, height: 15 };
+      var unblocked = retreat_constraints.getAdjacentUnblockedSpaces(map_grid);
+
+      assert.equal(unblocked.length, 2);
+      // @TODO These tests are brittle/subject to order. Find a better way!
+      var space = unblocked[0];
+      assert.equal(space.x, 14);
+      assert.equal(space.y, 4);
+
+      var space = unblocked[1];
+      assert.equal(space.x, 14);
+      assert.equal(space.y, 6);
     });
 
   });

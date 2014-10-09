@@ -191,6 +191,7 @@ Game = {
       Game.select(item);
       return item;
     } else if (!this.selected) {
+      if (units.length == 0) return false;
       Game.select(units[0]);
       return units[0];
     }

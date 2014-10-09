@@ -133,7 +133,7 @@ RetreatConstraints.prototype.isMoveTargetValid = function(location) {
 /*
  * Return actual map positions of unblocked spaces.
  */
-RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function() {
+RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function(map_grid) {
   var spaces = [
     { x: 0, y: 1 },
     { x: 1, y: 0 },
@@ -144,7 +144,11 @@ RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function() {
   var unblocked = [];
   for (var i in spaces) {
     if (this.area[spaces[i].x][spaces[i].y]) {
-      unblocked.push(this.convertToActual(spaces[i]));
+      var actual = this.convertToActual(spaces[i]);
+      if (actual.x < 0 || actual.x > map_grid.width - 1 || actual.y < 0 || actual.y > map_grid.height - 1) {
+        continue;
+      }
+      unblocked.push(actual);
     }
   }
   return unblocked;

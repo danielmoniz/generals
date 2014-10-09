@@ -284,8 +284,9 @@ Crafty.c('Unit', {
   isSuppliedInBattle: function(supply_end_point) {
     var battle = this.isBattlePresent();
     var retreat_constraints = battle.retreat_constraints[this.battle_side];
-    var spaces = retreat_constraints.getAdjacentUnblockedSpaces();
+    var spaces = retreat_constraints.getAdjacentUnblockedSpaces(Game.map_grid);
     var route_cost = undefined;
+
     for (var i in spaces) {
       var space = spaces[i];
       var local_terrain = Game.terrain[space.x][space.y];
