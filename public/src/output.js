@@ -678,20 +678,21 @@ Output = {
     var unit_divs = $("div.unit");
     var that = this;
     unit_divs.each(function() {
-      that.updateActionsDiv($(this));
-      that.updateSupply($(this));
+      that.updateUnitDisplay($(this));
+
+      //that.updateActionsDiv($(this));
+      //that.updateSupply($(this));
     });
   },
 
-  updateActionsDiv: function(unit_div) {
+  updateUnitDisplay: function(unit_div) {
+    var unit = Crafty(parseInt(unit_div.attr("unit_id")));
+
     var actions_div = unit_div.find("div.actions");
     actions_div.remove();
-    var unit = Crafty(parseInt(unit_div.attr("unit_id")));
     var new_actions_div = this.getActionsChoicesDiv(unit);
     unit_div.append(new_actions_div);
-  },
 
-  updateSupply: function(unit_div) {
     var supply_div = unit_div.find("div.supply");
     var unit = Crafty(parseInt(unit_div.attr("unit_id")));
     var supply = Pretty.Unit.supply(unit.supply_remaining);
