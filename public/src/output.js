@@ -643,24 +643,43 @@ Output = {
     for (var i in units) {
       var unit = units[i];
       var unit_div = this.createStandardUnitDiv(unit);
-      if (Game.selected && Game.selected.getId() == unit.getId()) {
-        unit_div.addClass("selected");
-      }
       var actions_div = this.getActionsChoicesDiv(unit);
       unit_div.append(actions_div);
 
       $(this.units_panel).append(unit_div);
     }
 
+    if (Game.selected) {
+      var unit = Game.selected;
+      var unit_div = this.getUnitDiv(unit);
+      unit_div.addClass("selected");
+      var other_units_present = unit.getPresentUnits(true);
+      this.colocate(other_units_present);
+    }
+
   },
 
   selectUnits: function(units) {
     $(".selected").removeClass("selected");
+    $(".colocated").removeClass("colocated");
     for (var i in units) {
       var unit = units[i];
-      var unit_div = $("div.unit[unit_id='" + unit.getId() + "']");
+      var unit_div = this.getUnitDiv(unit);
       unit_div.addClass('selected');
     }
+  },
+
+  colocate: function(units) {
+    for (var i in units) {
+      var unit = units[i];
+      var unit_div = this.getUnitDiv(unit);
+      unit_div.addClass('colocated');
+    }
+  },
+
+  getUnitDiv: function(unit) {
+    var unit_div = $("div.unit[unit_id='{0}']".format(unit.getId()));
+    return unit_div;
   },
 
   updateActionsDivs: function() {

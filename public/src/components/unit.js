@@ -158,7 +158,7 @@ Crafty.c('Unit', {
     if (!this.battle) {
       var other_units_present = this.getPresentUnits(true);
       if (other_units_present.length > 0) {
-        Output.printUnitsPresent(this, other_units_present);
+        Output.colocate(other_units_present);
       }
     }
 
