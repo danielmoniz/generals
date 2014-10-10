@@ -674,11 +674,12 @@ Output = {
     return unit_div;
   },
 
-  updateActionsDivs: function() {
+  updateUnitDisplays: function() {
     var unit_divs = $("div.unit");
     var that = this;
     unit_divs.each(function() {
       that.updateActionsDiv($(this));
+      that.updateSupply($(this));
     });
   },
 
@@ -688,6 +689,13 @@ Output = {
     var unit = Crafty(parseInt(unit_div.attr("unit_id")));
     var new_actions_div = this.getActionsChoicesDiv(unit);
     unit_div.append(new_actions_div);
+  },
+
+  updateSupply: function(unit_div) {
+    var supply_div = unit_div.find("div.supply");
+    var unit = Crafty(parseInt(unit_div.attr("unit_id")));
+    var supply = Pretty.Unit.supply(unit.supply_remaining);
+    supply_div.text(supply);
   },
 
   getActionsChoicesDiv: function(unit) {

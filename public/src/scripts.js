@@ -171,7 +171,7 @@ UI = {
       return false;
     }
     buttons.click();
-    Output.updateActionsDivs();
+    Output.updateUnitDisplays();
   },
 
   getOptions: function() {
