@@ -649,14 +649,6 @@ Output = {
       $(this.units_panel).append(unit_div);
     }
 
-    if (Game.selected) {
-      var unit = Game.selected;
-      var unit_div = this.getUnitDiv(unit);
-      unit_div.addClass("selected");
-      var other_units_present = unit.getPresentUnits(true);
-      this.colocate(other_units_present);
-    }
-
   },
 
   selectUnits: function(units) {

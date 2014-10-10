@@ -87,7 +87,6 @@ Game = {
     this.updateTurnCount(this.turn_count + 0.5);
     this.turns_played_locally += 0.5;
 
-    Output.updateStatusBar();
     Output.updateNextTurnButton(this.turn);
 
     var victory = Victory.checkVictoryConditions();
@@ -98,10 +97,21 @@ Game = {
       Crafty.scene('Victory');
       return false;
     }
+
     Crafty.trigger("NextTurn");
+    if (this.type == this.types.HOTSEAT) {
+      if (this.turn % 1 == 0) {
+        this.player = this.turn;
+      }
+    }
+    Output.updateStatusBar();
 
     this.deselect();
+
+    Output.updateUnitsPanel();
+
     this.determineSelection();
+
     if (Game.fog_of_war) {
       // Should really be using strategy pattern here
       if (Game.type == Game.types.ONLINE) {
@@ -111,14 +121,7 @@ Game = {
       }
     }
 
-    if (this.type == this.types.HOTSEAT) {
-      if (this.turn % 1 == 0) {
-        this.player = this.turn;
-      }
-    }
-
     Output.updateRetreatBlocks();
-    Output.updateUnitsPanel();
 
   },
 
