@@ -317,7 +317,7 @@ Crafty.c('Battle', {
   },
 
   report: function() {
-    Output.usePanel('alerts').printBattle(this);
+    //Output.usePanel('alerts').printBattle(this);
   },
 
   getPresentUnits: function() {
