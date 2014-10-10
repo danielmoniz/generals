@@ -112,10 +112,6 @@ Output = {
     if (unit.supply_remaining >= unit.supply_max) {
       unit_div.append(supply_div);
     }
-    if (unit.battle) {
-      var battle = unit.isBattlePresent();
-      unit_div.append(this.createBattleDiv(battle.getId(), Pretty.Unit.inBattle()));
-    }
 
     if (unit.action_choices) {
       var actions_div = this.createDiv("actions unit-item");
@@ -246,31 +242,42 @@ Output = {
   },
 
   createStandardUnitDiv: function(unit, classes) {
-    var general_info = Pretty.Unit.generalInfo(unit);
     var name = Pretty.Unit.name(unit);
     var status = Pretty.Unit.status(unit.getActive(), unit.injured);
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
+    var supply_status = 'supplied';
+    if (!unit.is_supplied) supply_status = 'unsupplied';
+    console.log("supply_status");
+    console.log(supply_status);
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
-    var top_half = this.createDiv('schloop');
+    var first_row = this.createDiv();
     var img = this.createIconImage(unit);
     var img_div = this.createDiv('unit-item');
     img_div.append(img);
-    top_half.append(img_div);
+    first_row.append(img_div);
 
     var main_info_div = this.createDiv('unit-item');
     var name_div = this.createDiv('', name);
     var status_div = this.createDiv("", status);
     main_info_div.append(name_div).append(status_div);
-    top_half.append(main_info_div);
+    first_row.append(main_info_div);
 
-    var bottom_half = this.createDiv();
-    if (unit.supply_remaining < unit.max_supply) {
-      var supply_div = this.createDiv("unit-item", supply_remaining);
-      bottom_half.append(supply_div);
+    var second_row = this.createDiv();
+    var rank_div = this.createDiv('square rank_1');
+    second_row.append(rank_div);
+    var supply_div = this.createDiv("unit-item square supply {0}".format(supply_status), supply_remaining);
+    second_row.append(supply_div);
+
+    var battle_div = this.createDiv('square');
+    if (unit.battle) {
+      var battle = unit.isBattlePresent();
+      battle_div.attr("battle_id", battle.getId());
+      battle_div.addClass("battle");
     }
+    second_row.append(battle_div);
 
-    unit_div.append(top_half).append(bottom_half);
+    unit_div.append(first_row).append(second_row);
 
     return unit_div;
   },

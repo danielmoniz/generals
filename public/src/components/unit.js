@@ -204,8 +204,10 @@ Crafty.c('Unit', {
 
   handleAttrition: function() {
     if (this.isSupplied()) {
+      this.is_supplied = true;
       this.resupply();
     } else {
+      this.is_supplied = false;
       var units_lost = this.sufferAttrition();
       if (!this.battle) {
         Output.usePanel("alerts");

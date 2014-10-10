@@ -22,6 +22,7 @@ var UnitData = function(type, stats) {
       injured: 0,
       active: true,
       performed_actions: [],
+      is_supplied: true,
     },
 
     "Cavalry": {

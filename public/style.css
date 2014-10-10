@@ -1,4 +1,4 @@
-body { margin: 0; background: black; color:white; }
+body { font-family: sans-serif, Times, serif; margin: 0; background: black; color:white; }
 #front-page {}
 #game-container { display: none; width: 100%; }
 #info-panel { width:35%; min-height: 100px; color:white; display:inline-block; }
@@ -53,9 +53,16 @@ div.option_set { float: left; }
 #menu-toggle-button { display: none; }
 
 .unit { max-width: 350px; margin: 2px 30px 5px 0px; padding: 2px; display:inline-block; border: 1px dotted white; cursor: pointer; }
-.unit-item { display: inline-block; margin-right: 5px; }
+.selected { border: 1px solid purple; }
+.unit-item { display: inline-block; margin-right: 0px; }
+.square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
+.supply { vertical-align:top; color: black; }
+.supplied { background-image:url("assets/green-supply.png"); }
+.unsupplied { background-image:url("assets/red-supply.png"); }
+.rank_1 { background-image:url("assets/chevron_3.png"); }
+.battle.square { background-image:url("assets/Combat2.png"); }
 
-.battle { border: 1px dotted white; cursor: pointer; }
+.battle { cursor: pointer; }
 .report { display:inline-block; padding-bottom: 5px; width: 100%; }
 .icon { display:inline-block; }
 

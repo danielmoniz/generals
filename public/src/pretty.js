@@ -67,7 +67,7 @@ Pretty = {
     },
 
     supply: function(supply_remaining) {
-      return "Supply: {0}".format(supply_remaining);
+      return "{0}".format(supply_remaining);
     },
 
     unsupplied: function(troops_lost) {
