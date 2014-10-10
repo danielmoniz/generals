@@ -674,6 +674,7 @@ Output = {
     return unit_div;
   },
 
+  /*
   updateUnitDisplays: function() {
     var unit_divs = $("div.unit");
     var that = this;
@@ -684,9 +685,10 @@ Output = {
       //that.updateSupply($(this));
     });
   },
+  */
 
-  updateUnitDisplay: function(unit_div) {
-    var unit = Crafty(parseInt(unit_div.attr("unit_id")));
+  updateUnitDisplay: function(unit) {
+    var unit_div = this.getUnitDiv(unit);
 
     var actions_div = unit_div.find("div.actions");
     actions_div.remove();

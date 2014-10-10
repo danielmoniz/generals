@@ -99,6 +99,7 @@ Crafty.c('Unit', {
     if (location === undefined || this.isAtLocation(location)) {
       this.action_choices = this.getActionChoices();
     }
+    Output.updateUnitDisplay(this);
   },
 
   performAction: function(action) {
