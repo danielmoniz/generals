@@ -152,6 +152,7 @@ Crafty.c('Unit', {
 
   select: function() {
     this.report();
+    Output.selectUnits([this]);
     if (this.movement_path) highlightPath(this.movement_path);
 
     if (!this.battle) {
@@ -169,9 +170,27 @@ Crafty.c('Unit', {
     return this.quantity;
   },
 
+  // @TODO @strategy This is a perfect ues-case for strategy pattern!
   report: function() {
-    Output.printSingleUnit(this);
+    if (Game.type == Game.types.HOTSEAT) {
+      this.reportHotseat();
+    } else {
+      this.reportOnline();
+    }
   },
+
+  reportHotseat: function() {
+    if (Game.turn != this.side) {
+      Output.printSingleUnit(this);
+    }
+  },
+
+  reportOnline: function() {
+    if (Game.player != this.side) {
+      Output.printSingleUnit(this);
+    }
+  },
+
   updateStatus: function() {
     if (this.quantity <= 0) {
       this.alive = false;
@@ -209,10 +228,6 @@ Crafty.c('Unit', {
     } else {
       this.is_supplied = false;
       var units_lost = this.sufferAttrition();
-      if (!this.battle) {
-        Output.usePanel("alerts");
-        Output.reportAttrition(this, units_lost);
-      }
     }
   },
 

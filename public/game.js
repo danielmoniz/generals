@@ -52,6 +52,7 @@ Game = {
   deselect: function() {
     Crafty.trigger("DimPaths");
     Output.clearMain();
+    Output.clearUnitsPanelSelect();
     //Output.clearMessage();
     if (this.selected) {
       delete this.selected;
@@ -117,6 +118,7 @@ Game = {
     }
 
     Output.updateRetreatBlocks();
+    Output.updateUnitsPanel();
 
   },
 
@@ -228,6 +230,8 @@ Game = {
       }
       Output.message(message);
     }
+
+    Output.updateUnitsPanel();
 
   },
 

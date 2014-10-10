@@ -1,6 +1,7 @@
 Output = {
   element_id: "#info-panel",
   main_element_id: "#info-panel",
+  units_panel: "#units-panel",
   message_element_id: "#message-bar",
   alerts_element_id: "#alerts-panel",
   alerts_container_element_id: "#alerts-container",
@@ -247,10 +248,10 @@ Output = {
     var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
     var supply_status = 'supplied';
     if (!unit.is_supplied) supply_status = 'unsupplied';
-    console.log("supply_status");
-    console.log(supply_status);
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
+    unit_div.attr("rank", unit.rank);
+
     var first_row = this.createDiv();
     var img = this.createIconImage(unit);
     var img_div = this.createDiv('unit-item');
@@ -628,6 +629,78 @@ Output = {
     container.append(faction_win_message_div);
     container.append(faction_loss_message_div);
     return container.html();
+  },
+
+  updateUnitsPanel: function() {
+    if (Game.type == Game.types.HOTSEAT) {
+      var side = Game.turn;
+    } else {
+      var side = Game.player;
+    }
+    $(this.units_panel).empty();
+
+    var units = Unit.getFriendlyUnits(side);
+    for (var i in units) {
+      var unit = units[i];
+      var unit_div = this.createStandardUnitDiv(unit);
+      if (Game.selected && Game.selected.getId() == unit.getId()) {
+        unit_div.addClass("selected");
+      }
+      var actions_div = this.getActionsChoicesDiv(unit);
+      unit_div.append(actions_div);
+
+      $(this.units_panel).append(unit_div);
+    }
+
+  },
+
+  selectUnits: function(units) {
+    $(".selected").removeClass("selected");
+    for (var i in units) {
+      var unit = units[i];
+      var unit_div = $("div.unit[unit_id='" + unit.getId() + "']");
+      unit_div.addClass('selected');
+    }
+  },
+
+  updateActionsDiv: function(unit_div) {
+    var actions_div = unit_div.find("div.actions");
+    actions_div.empty();
+    var unit = Crafty(parseInt(unit_div.attr("unit_id")));
+    var new_actions_div = this.getActionsChoicesDiv(unit);
+    actions_div.html(new_actions_div.html());
+  },
+
+  getActionsChoicesDiv: function(unit) {
+    var actions_div = this.createDiv("actions");
+    for (var i in unit.action_choices) {
+      var action = unit.action_choices[i];
+      var action_button = document.createElement('input');
+      action_button.type = "button";
+      action_button.value = Utility.capitalizeFirstLetter(action);
+      action_button = $(action_button);
+
+      var action_div = this.createDiv("action")
+      .val(action)
+      .addClass(action)
+      .click(function() {
+          // get unit_id from parent
+          var unit_id = parseInt($(this).closest(".unit").attr("unit_id"));
+          var unit = Crafty(unit_id);
+          var action = $(this).val();
+          unit.performAction(action);
+          return false;
+      });
+      action_div.append(action_button);
+      actions_div.append(action_div);
+    }
+
+    return actions_div;
+  },
+
+  clearUnitsPanelSelect: function() {
+    var selected_units = $(this.units_panel).find(".selected");
+    selected_units.removeClass("selected");
   },
 
 }

@@ -2,6 +2,7 @@ $(document).ready(function() {
   // Handle key presses ------------------
   $(document).keypress(function(e) {
     var active_tag = document.activeElement.tagName.toLowerCase();
+    var shift_num_keys = [33, 64, 35, 36, 37, 94, 38, 42, 40, 41];
     if (active_tag == 'body') {
       if (e.keyCode == 32) { // Space bar
         UI.nextTurn();
@@ -9,6 +10,10 @@ $(document).ready(function() {
         UI.pillage();
       } else if (e.keyCode == 83 || e.keyCode == 115) { // S or s
         UI.sack();
+      } else if (e.keyCode >= 49 && e.keyCode <= 58) { // S or s
+        UI.selectUnit(e.keyCode - 48);
+      } else if (shift_num_keys.indexOf(e.keyCode) > -1) { // S or s
+        UI.selectAdditionalUnit(shift_num_keys.indexOf(e.keyCode) + 1);
       }
       return false;
     }
@@ -153,11 +158,21 @@ UI = {
   },
 
   pillage: function(e) {
-    $(".pillage").click();
+    this.performAction("pillage");
   },
 
   sack: function(e) {
-    $(".sack").click();
+    this.performAction("sack");
+  },
+
+  performAction: function(action) {
+    var buttons = $(".unit.selected .{0}".format(action));
+    if (buttons.length > 1) {
+      return false;
+    }
+    buttons.click();
+    var unit_div = buttons.parents("div.unit");
+    Output.updateActionsDiv(unit_div);
   },
 
   getOptions: function() {
@@ -176,14 +191,29 @@ UI = {
     }
     options.factions = factions;
 
-    console.log("options");
-    console.log(options);
-
     return options;
   },
 
   getGameType: function(item) {
     return item.attr("game_type");
+  },
+
+  selectUnit: function(rank) {
+    var unit_divs = $("div.unit[rank={0}]".format(rank));
+    if (unit_divs.length == 0) return false;
+
+    var unit_id = parseInt(unit_divs.attr("unit_id"));
+    var unit = Crafty(unit_id);
+    Game.select(unit);
+  },
+
+  selectAdditionalUnit: function(rank) {
+    var unit_divs = $("div.unit[rank={0}]".format(rank));
+    if (unit_divs.length == 0) return false;
+
+    var unit_id = parseInt(unit_divs.attr("unit_id"));
+    var unit = Crafty(unit_id);
+    Game.select(unit);
   },
 
 }

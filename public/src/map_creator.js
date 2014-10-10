@@ -549,7 +549,8 @@ var MapCreator = function(options) {
 
     faction_data.id = "side{0}_number{1}".format(side, unit_number);
     var unit_object = new UnitData(faction_data.type, faction_data);
-    unit_object.add({ side: side, location: location });
+    var rank = unit_number + 1;
+    unit_object.add({ side: side, location: location, rank: rank });
     return unit_object;
   };
 
