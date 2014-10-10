@@ -186,7 +186,7 @@ Crafty.c('Unit', {
   },
 
   reportOnline: function() {
-    if (Game.player != this.side) {
+    if (Game.turn_count < 0 || Game.player != this.side) {
       Output.printSingleUnit(this);
     }
   },
