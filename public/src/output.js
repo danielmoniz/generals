@@ -265,7 +265,7 @@ Output = {
     first_row.append(main_info_div);
 
     var second_row = this.createDiv();
-    var rank_div = this.createDiv('square rank_1');
+    var rank_div = this.createDiv('square rank_{0}'.format(unit.rank));
     second_row.append(rank_div);
     var supply_div = this.createDiv("unit-item square supply {0}".format(supply_status), supply_remaining);
     second_row.append(supply_div);
