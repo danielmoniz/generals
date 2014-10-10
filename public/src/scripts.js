@@ -171,8 +171,7 @@ UI = {
       return false;
     }
     buttons.click();
-    var unit_div = buttons.parents("div.unit");
-    Output.updateActionsDiv(unit_div);
+    Output.updateActionsDivs();
   },
 
   getOptions: function() {

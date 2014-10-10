@@ -663,12 +663,20 @@ Output = {
     }
   },
 
+  updateActionsDivs: function() {
+    var unit_divs = $("div.unit");
+    var that = this;
+    unit_divs.each(function() {
+      that.updateActionsDiv($(this));
+    });
+  },
+
   updateActionsDiv: function(unit_div) {
     var actions_div = unit_div.find("div.actions");
-    actions_div.empty();
+    actions_div.remove();
     var unit = Crafty(parseInt(unit_div.attr("unit_id")));
     var new_actions_div = this.getActionsChoicesDiv(unit);
-    actions_div.html(new_actions_div.html());
+    unit_div.append(new_actions_div);
   },
 
   getActionsChoicesDiv: function(unit) {
