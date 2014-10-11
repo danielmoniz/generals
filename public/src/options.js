@@ -26,7 +26,8 @@ var Options = function() {
         width: Math.ceil(map_width),
         //height: Math.ceil(map_width),
         //height: Math.ceil(map_width * 3 / 4),
-        height: Math.ceil(map_width * 0.5625),
+        //height: Math.ceil(map_width * 0.5625),
+        height: 23,
         tile: {
           width: tile_size,
           height: tile_size,
