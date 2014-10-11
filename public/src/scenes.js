@@ -6,10 +6,10 @@ Crafty.scene('Game', function() {
   Game.played_already = true;
   Game.resetStatusVisuals();
 
-  function divideMap(num_parts) {
-    if (num_parts === undefined) num_parts = 3;
-    for (var i=0; i<num_parts - 1; i++) {
-      var x = Math.floor((i + 1) * Game.map_grid.width / num_parts);
+  function divideMap() {
+    var section_positions = Game.section_positions;
+    for (var i=0; i<section_positions.length - 1; i++) {
+      var x = section_positions[i];
       for (var y=0; y<Game.map_grid.height; y++) {
         Crafty.e("Divider").at(x, y);
       }
@@ -227,7 +227,7 @@ Crafty.scene('Game', function() {
     addRoadGraphics();
     colourHeightMap(Game.location);
     colourWater();
-    divideMap(3);
+    divideMap();
 
     buildUnitsFromData(Game.starting_units);
 
@@ -303,7 +303,7 @@ Crafty.scene('Game', function() {
     addRoadGraphics();
     colourHeightMap(Game.location);
     colourWater();
-    divideMap(3);
+    divideMap();
 
     buildUnitsFromData(game_data.starting_units);
 

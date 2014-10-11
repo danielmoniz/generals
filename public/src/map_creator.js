@@ -32,6 +32,8 @@ var MapCreator = function(options) {
     this.buildEmptyGameData(options, this.Game);
     this.addWater(options, this.Game, options.location);
 
+    this.Game.section_widths = this.getWidthOfSections(options);
+    this.Game.section_positions = this.getPositionOfSections(this.Game);
     var city_locations = this.addCities(options, this.Game, options.num_cities_total);
     this.addFarms(options, this.Game, city_locations);
     this.addTrees(options, this.Game, options.location);
@@ -130,7 +132,7 @@ var MapCreator = function(options) {
             game_object.occupied[x][y] = true;
             city_locations.push({ x: x, y: y });
 
-            var side = this.getMapSide(options, x);
+            var side = this.getMapSide(game_object, x);
             var stats = {
               height: game_object.height_map[x][y], 
               side: side,
@@ -179,16 +181,29 @@ var MapCreator = function(options) {
       return [perfect_width, perfect_width, perfect_width];
     } else if (map_width % options.num_sections == 1) {
       return [floor, floor + 1, floor];
-    } else if (map_width % options.num_sections == 1) {
+    } else if (map_width % options.num_sections == 2) {
       return [floor + 1, floor, floor + 1];
     }
+    throw new Error('InvalidOptions', "num_sections should be 3.");
+  };
+
+  this.getPositionOfSections = function(options) {
+    var widths = options.section_widths;
+    var divider_positions = [];
+    var sum = 0;
+    for (var i in widths) {
+      var width = sum + widths[i];
+      sum = width;
+      divider_positions.push(width);
+    }
+    return divider_positions;
   };
 
   this.getMapSide = function(options, x) {
-    var map_section = options.map_grid.width / options.num_sections;
-    if (x < map_section) {
+    var divider_positions = options.section_positions;
+    if (x < divider_positions[0]) {
       return 0;
-    } else if (x < (options.num_sections - 1) * map_section) {
+    } else if (x < divider_positions[divider_positions.length - 1]) {
       return undefined;
     }
     return 1;
@@ -224,7 +239,7 @@ var MapCreator = function(options) {
 
             game_object.occupied[x][y] = true;
             //var data = { side: this.getMapSide(options, x) };
-            var data = { side: this.getMapSide(options, x )};
+            var data = { side: this.getMapSide(game_object, x )};
             var farm_obj = new TerrainData("Farm").add(data).stats;
             //farm_obj.side = this.getMapSide(options, x);
             game_object.terrain_type[x][y] = farm_obj;
