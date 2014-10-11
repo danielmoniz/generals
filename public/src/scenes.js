@@ -212,6 +212,9 @@ Crafty.scene('Game', function() {
   }
 
   if (Game.type == Game.types.ONLINE) {
+    var map_creator = new MapCreator();
+    Game.map_creator = map_creator;
+
     buildTerrainFromData(Game.terrain_type);
 
     console.log("Game.fog_of_war");
@@ -229,7 +232,6 @@ Crafty.scene('Game', function() {
     buildUnitsFromData(Game.starting_units);
 
     // Must rebuild Graph objects for pathfinding
-    var map_creator = new MapCreator();
     map_creator.buildTerrainData(Game, Game, Game.terrain_type);
 
     Victory.reset();

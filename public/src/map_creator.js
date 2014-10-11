@@ -171,6 +171,19 @@ var MapCreator = function(options) {
     return cities;
   };
 
+  this.getWidthOfSections = function(options) {
+    var map_width = options.map_grid.width;
+    var perfect_width = map_width / options.num_sections;
+    var floor = Math.floor(perfect_width);
+    if (map_width % options.num_sections == 0) {
+      return [perfect_width, perfect_width, perfect_width];
+    } else if (map_width % options.num_sections == 1) {
+      return [floor, floor + 1, floor];
+    } else if (map_width % options.num_sections == 1) {
+      return [floor + 1, floor, floor + 1];
+    }
+  };
+
   this.getMapSide = function(options, x) {
     var map_section = options.map_grid.width / options.num_sections;
     if (x < map_section) {
