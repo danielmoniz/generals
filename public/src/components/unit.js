@@ -160,7 +160,16 @@ Crafty.c('Unit', {
       var other_units_present = this.getPresentUnits(true);
       if (other_units_present.length > 0) {
         Output.colocate(other_units_present);
+
       }
+      var enemy_units_present = [];
+      for (var i in other_units_present) {
+        var unit = other_units_present[i];
+        if (unit.side != Game.player) {
+          enemy_units_present.push(unit);
+        }
+      }
+      Output.printUnitsPresent(this, enemy_units_present);
     }
 
     var local_terrain = Game.terrain[this.at().x][this.at().y];
