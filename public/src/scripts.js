@@ -109,8 +109,7 @@ UI = {
     $("#options-waiting").hide();
     $("#starting-game").show();
     $("input#play-again").hide();
-    // @TODO Fix below code! Want to dynamically set width of victory bar.
-    //$("#will-container").width(35 * Game.map_grid.tile.width);
+
     $("ul").css("min-height", "75px");
   },
 
@@ -141,8 +140,7 @@ UI = {
     $("#starting-game").hide();
     $("input.start").show();
     $("input#done-playing").hide();
-    // @TODO Fix below code! Want to dynamically set width of victory bar.
-    //$("#will-container").width(35 * Game.map_grid.tile.width);
+
     $("ul").css("min-height", "300px");
 
     Chat.leaveGame();

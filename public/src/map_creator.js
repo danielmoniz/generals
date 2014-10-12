@@ -156,18 +156,17 @@ var MapCreator = function(options) {
   };
 
   this.addCities = function(options, game_object, estimated_cities) {
-    //generateRandomEntities('City', 'random', 
-    // Place entity randomly on the map using noise
     var cities = [];
-    var num_sections = options.num_sections;
-    // @TODO Ensure both sides have a map side/third equal in size
-    for (var i=0; i<num_sections; i++) {
-      var width = Math.floor(options.map_grid.width / num_sections);
-      var min_x = i * width;
-      var max_x = (i + 1) * width;
-      var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / num_sections, min_x, max_x);
+    var sections = game_object.section_positions;
+    var base = 0;
+    for (var i=0; i<sections.length; i++) {
+      var min_x = base;
+      var max_x = sections[i];
+      var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, min_x, max_x);
 
       cities = cities.concat(new_cities);
+
+      base = sections[i];
     }
 
     return cities;
