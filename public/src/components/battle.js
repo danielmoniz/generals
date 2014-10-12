@@ -312,8 +312,12 @@ Crafty.c('Battle', {
     return true;
   },
 
+  // @TODO Perfect use case for template/strategy design pattern
   select: function() {
     this.report();
+
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    local_terrain.report();
   },
 
   report: function() {
