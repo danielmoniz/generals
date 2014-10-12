@@ -81,7 +81,8 @@ socket.on('new game', function(game_name, player) {
 socket.on('start game', function(game_name, game_object, player, options) {
   game_object.player = player;
 
-  function sendMoves() {
+  function sendMoves(moves) {
+    socket.emit("next turn", moves, Game.turn_count);
   }
   Game.start('online', options, game_object, sendMoves);
 });

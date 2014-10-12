@@ -139,10 +139,8 @@ Game = {
     //if (this.turn == this.player || Math.abs(Game.player - 0.5) % 2 == Game.turn % 2) {
     if (this.turn == this.player) {
       var moves = this.saveOnline();
-      // @TODO Send moves online to update the game for everyone
       if (socket !== undefined) {
-        socket.emit("next turn", moves, this.turn_count);
-        //this.sendMovesCallback(moves);
+        this.sendMovesCallback(moves);
       }
       this.nextTurn();
 
@@ -208,6 +206,7 @@ Game = {
     var load_game = Game.load_game;
     Game.load_game = load_game;
 
+    this.sendMovesCallback = sendMovesCallback;
     //Crafty.background('rgb(87, 109, 20)');
 
     this.reset();
