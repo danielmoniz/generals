@@ -151,9 +151,9 @@ Crafty.c('Unit', {
     }
   },
 
-  select: function() {
-    this.report();
+  customSelect: function() {
     Output.selectUnits([this]);
+
     if (this.movement_path) highlightPath(this.movement_path);
 
     if (!this.battle) {
@@ -171,9 +171,6 @@ Crafty.c('Unit', {
       }
       Output.printUnitsPresent(this, enemy_units_present);
     }
-
-    var local_terrain = Game.terrain[this.at().x][this.at().y];
-    local_terrain.report();
   },
 
   getQuantity: function() {
@@ -398,8 +395,6 @@ Crafty.c('Unit', {
         return false;
       }
 
-      console.log("Game.terrain_graph.grid");
-      console.log(Game.terrain_graph.grid);
       retreat_constraints.applyToArray(Game.terrain_graph.grid, 'weight');
     }
     this.move_target = target;

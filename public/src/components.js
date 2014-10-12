@@ -114,6 +114,17 @@ Crafty.c('Actor', {
     return this;
   },
 
+  select: function() {
+    this.report();
+
+    if (this.customSelect !== undefined) this.customSelect();
+
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    if (local_terrain.getId() != this.getId()) {
+      local_terrain.report();
+    }
+  },
+
 });
 
 Crafty.c("Divider", {

@@ -12,10 +12,6 @@ Crafty.c('Terrain', {
     this.updateStats();
   },
 
-  select: function() {
-    this.report();
-  },
-
   report: function() {
     Output.printTerrain(this);
   },
