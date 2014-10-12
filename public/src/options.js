@@ -18,6 +18,11 @@ var Options = function() {
     var map_width = 40;
     var tile_size = 32;
 
+    var tile = {
+      width: tile_size,
+      height: tile_size,
+    };
+
     var options = {
 
       location: locations.test,
@@ -34,6 +39,19 @@ var Options = function() {
         }
       },
 
+      map_sizes: {
+        small: {
+          width: 25,
+          height: 15,
+          tile: tile,
+        },
+        large: {
+          width: 40,
+          height: 23,
+          tile: tile,
+        },
+      },
+
       board_title: {
         height: 24,
       },
@@ -48,12 +66,6 @@ var Options = function() {
 
       max_farm_distance: 2,
       farm_probability_factor: 0.8,
-
-      /*
-      pathfind: astar,
-      graph_ftn: Graph,
-      noise: noise,
-      */
 
       // Move to constants file
       FIRST_PLAYER: 0,

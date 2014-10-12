@@ -198,16 +198,16 @@ Game = {
       var value = map[key];
       Game[key] = value;
     }
+    this.setMapSize(options);
 
     if (game_type === undefined) game_type = Game.types.HOTSEAT;
     Game.type = game_type;
     if (Game.turn_count == undefined) this.updateTurnCount('reset');
-    //Game.type = Game.types['EMAIL'];
+
     var load_game = Game.load_game;
     Game.load_game = load_game;
 
     this.sendMovesCallback = sendMovesCallback;
-    //Crafty.background('rgb(87, 109, 20)');
 
     this.reset();
     if (Game.played_already) {
@@ -249,6 +249,10 @@ Game = {
     Output.clearAll();
 
     delete this.player_winner;
+  },
+
+  setMapSize: function(options) {
+    this.map_grid = this.map_sizes[options.map_size];
   },
 
   initCrafty: function() {
