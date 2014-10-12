@@ -26,10 +26,8 @@ var Game = function(io) {
     this.options = options;
 
     var settings = {};
-    var default_settings = new Options().getDefaultOptions();
-
-    Utility.loadDataIntoObject(default_settings, settings);
-    Utility.loadDataIntoObject(options, settings);
+    var options_obj = new Options();
+    options_obj.setOptions(options, settings);
 
     this.game_data = new MapCreator().buildNewMap(settings);
 

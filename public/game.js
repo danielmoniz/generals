@@ -185,20 +185,12 @@ Game = {
   // initialize and start our game
   start: function(game_type, options, map, sendMovesCallback) {
     if (!Game.options) Game.options = {};
-    default_settings = new Options().getDefaultOptions();
-    for (var key in default_settings) {
-      var value = default_settings[key];
-      Game[key] = value;
-    }
-    for (var key in options) {
-      var value = options[key];
-      Game[key] = value;
-    }
+    var options_obj = new Options();
+    options_obj.setOptions(options, this);
     for (var key in map) {
       var value = map[key];
       Game[key] = value;
     }
-    this.setMapSize(options);
 
     if (game_type === undefined) game_type = Game.types.HOTSEAT;
     Game.type = game_type;
@@ -249,10 +241,6 @@ Game = {
     Output.clearAll();
 
     delete this.player_winner;
-  },
-
-  setMapSize: function(options) {
-    this.map_grid = this.map_sizes[options.map_size];
   },
 
   initCrafty: function() {

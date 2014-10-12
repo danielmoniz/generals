@@ -27,17 +27,6 @@ var Options = function() {
 
       location: locations.test,
       factions: ["mongols", "mongols"],
-      map_grid: {
-        width: Math.ceil(map_width),
-        //height: Math.ceil(map_width),
-        //height: Math.ceil(map_width * 3 / 4),
-        //height: Math.ceil(map_width * 0.5625),
-        height: 23,
-        tile: {
-          width: tile_size,
-          height: tile_size,
-        }
-      },
 
       map_sizes: {
         small: {
@@ -46,6 +35,10 @@ var Options = function() {
           tile: tile,
         },
         large: {
+          //width: Math.ceil(map_width),
+          //height: Math.ceil(map_width),
+          //height: Math.ceil(map_width * 3 / 4),
+          //height: Math.ceil(map_width * 0.5625),
           width: 40,
           height: 23,
           tile: tile,
@@ -83,7 +76,25 @@ var Options = function() {
     }
 
     return options;
-  }
+  };
+
+  this.setOptions = function(options, game_object) {
+    var default_settings = this.getDefaultOptions();
+    for (var key in default_settings) {
+      var value = default_settings[key];
+      game_object[key] = value;
+    }
+    for (var key in options) {
+      var value = options[key];
+      game_object[key] = value;
+    }
+
+    this.setMapSize(game_object);
+  };
+
+  this.setMapSize = function(options) {
+    options.map_grid = options.map_sizes[options.map_size];
+  };
 
 }
 
