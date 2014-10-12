@@ -143,6 +143,7 @@ Game = {
         this.sendMovesCallback(moves);
       }
       this.nextTurn();
+      this.nextTurn();
 
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       this.nextTurn();
@@ -150,13 +151,16 @@ Game = {
   },
 
   updateOnlineGame: function(moves, turn_count) {
-    this.updateTurnCount(turn_count - 1);
-    this.nextTurn();
+    if (this.turn_count < 0) {
+      this.updateTurnCount(turn_count - 1);
+      this.nextTurn();
+    }
 
     this.loadOnline(moves);
     this.nextTurn();
     // Go right to the next player's turn - skip in-between' turn
     this.nextTurn();
+
   },
 
   determineSelection: function() {
@@ -285,7 +289,6 @@ Game = {
         var action = unit_data.actions[i];
         unit.performAction(action);
       }
-      //unit.nextTurn(Game.turn);
     }
     
     // perform actions and movements (use nextTurn on units)
