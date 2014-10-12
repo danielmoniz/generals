@@ -203,7 +203,7 @@ var MapCreator = function(options) {
     var divider_positions = options.section_positions;
     if (x < divider_positions[0]) {
       return 0;
-    } else if (x < divider_positions[divider_positions.length - 1]) {
+    } else if (x < divider_positions[divider_positions.length - 2]) {
       return undefined;
     }
     return 1;

@@ -116,4 +116,107 @@ describe('MapCreator', function() {
 
   });
 
+  describe('#getMapSide()', function() {
+
+    function buildOptions(positions) {
+      var options = {
+        section_positions: positions,
+      };
+      return options;
+    }
+
+    function testGetMapSide(options, x, side) {
+      var map_side = map_creator.getMapSide(options, x);
+      assert.equal(map_side, side);
+    }
+
+    it('should return 0, undefined, or 1 for map with three sections', function() {
+      var map_creator = new MapCreator();
+      var positions = [2, 5, 7];
+      var options = buildOptions(positions);
+
+      var side = 0;
+      var map_side = map_creator.getMapSide(options, 0);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 1);
+      assert.equal(map_side, side);
+
+      var side = undefined;
+      var map_side = map_creator.getMapSide(options, 2);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 3);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 4);
+      assert.equal(map_side, side);
+
+      var side = 1;
+      var map_side = map_creator.getMapSide(options, 5);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 6);
+      assert.equal(map_side, side);
+
+    });
+
+    it('should return 0 or 1 for map with two sections', function() {
+      var map_creator = new MapCreator();
+      var positions = [3, 6];
+      var options = buildOptions(positions);
+
+      var side = 0; // boundary condition
+      var map_side = map_creator.getMapSide(options, -1);
+      assert.equal(map_side, side);
+
+      var side = 0;
+      var map_side = map_creator.getMapSide(options, 0);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 1);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 2);
+      assert.equal(map_side, side);
+
+      var side = 1;
+      var map_side = map_creator.getMapSide(options, 3);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 4);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 5);
+      assert.equal(map_side, side);
+
+      var side = 1; // boundary condition
+      var map_side = map_creator.getMapSide(options, 6);
+      assert.equal(map_side, side);
+
+    });
+
+    it('should return 0, undefined, or 1 for map with four sections', function() {
+      var map_creator = new MapCreator();
+      var positions = [2, 4, 6, 8];
+      var options = buildOptions(positions);
+
+      var side = 0;
+      var map_side = map_creator.getMapSide(options, 0);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 1);
+      assert.equal(map_side, side);
+
+      var side = undefined;
+      var map_side = map_creator.getMapSide(options, 2);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 3);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 4);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 5);
+      assert.equal(map_side, side);
+
+      var side = 1;
+      var map_side = map_creator.getMapSide(options, 6);
+      assert.equal(map_side, side);
+      var map_side = map_creator.getMapSide(options, 7);
+      assert.equal(map_side, side);
+
+    });
+
+  });
+
 });
