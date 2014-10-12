@@ -463,12 +463,12 @@ Output = {
   updateNextTurnButton: function(text) {
     var text = "Start Turn";
     if (Game.type == Game.types.ONLINE) {
-      if (Game.turn == Game.player + 0.5) {
-        text = "Waiting for opponent...";
-      } else if (Game.turn % 1 == 0) {
+      if (Game.turn == Game.player && Game.turn % 1 == 0) {
         text = "Done!";
-      } else {
+      } else if (Game.player == 0 && Game.turn % 1 == 0.5) {
         text = "Begin Game";
+      } else {
+        text = "Waiting for opponent...";
       }
     } else {
       if (Game.turn % 1 == 0) {
