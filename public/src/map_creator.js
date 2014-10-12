@@ -222,10 +222,9 @@ var MapCreator = function(options) {
     for (var i in city_locations) {
       var city = city_locations[i];
       var center = city;
-      // get first circle around city
-      // @TODO Get this data from to-to-added options var
-      var max_distance = 2;
-      var factor = 0.80;
+      var max_distance = options.max_farm_distance;
+      var factor = options.farm_probability_factor;
+
       for (var x = center.x - max_distance; x <= center.x + max_distance; x++) {
         if (x < 0 || x > options.map_grid.width - 1) continue;
         for (var y = center.y - max_distance; y <= center.y + max_distance; y++) {

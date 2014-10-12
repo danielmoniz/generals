@@ -177,7 +177,7 @@ Crafty.c('Unit', {
     return this.quantity;
   },
 
-  // @TODO @strategy This is a perfect ues-case for strategy pattern!
+  // @TODO @strategy This is a perfect use-case for strategy pattern!
   report: function() {
     if (Game.type == Game.types.HOTSEAT) {
       this.reportHotseat();

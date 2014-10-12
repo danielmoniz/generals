@@ -134,13 +134,7 @@ Crafty.c('City', {
 // Grass is just green, passable terrain
 Crafty.c('Road', {
   init: function() {
-    //this.requires('spr_road, Terrain, Passable')
-    this.requires('Terrain, Passable, Transportation')
-      .addStats({
-        // @TODO Remove this!
-        build_over: 0.01,
-      })
-      ;
+    this.requires('Terrain, Passable, Transportation');
   },
 
   detect_type: function() {

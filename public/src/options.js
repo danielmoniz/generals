@@ -46,6 +46,9 @@ var Options = function() {
       num_sections: 3,
       num_cities_total: 9,
 
+      max_farm_distance: 2,
+      farm_probability_factor: 0.8,
+
       /*
       pathfind: astar,
       graph_ftn: Graph,
