@@ -40,7 +40,7 @@ var TerrainData = function(type, stats) {
     "City": {
       move_difficulty: 0.9,
       build_over: 0.01,
-      defense_bonus: 1.25,
+      defense_bonus: 1.35,
       supply: 1,
       provides_supply: 4,
       supply_remaining: 6,
