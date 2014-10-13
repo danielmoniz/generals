@@ -44,7 +44,8 @@ LineOfSight = {
     return this;
   },
 
-  handleLineOfSight: function(side) {
+  handleLineOfSight: function(fog_of_war, side) {
+    if (!fog_of_war) return false;
     this.unitLineOfSight(side);
     this.tileLineOfSight(side);
     // Uncomment below if battles should be hidden from in-between turn views
@@ -73,6 +74,7 @@ LineOfSight = {
   },
 
   getUnitsInSight: function(side) {
+    if (side === undefined) return [];
     var units = Unit.getUnitsBySide(side);
     var friendly_units = units.friendly;
     var enemy_units = units.enemy;
@@ -81,6 +83,7 @@ LineOfSight = {
   },
 
   getGenericEntitiesInSight: function(entity, side) {
+    if (side === undefined) return [];
     var friendly_units = Unit.getFriendlyUnits(side);
     var entities = Crafty(entity).get();
     return this.getEntitiesInSight(entities, friendly_units);

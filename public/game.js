@@ -113,14 +113,7 @@ Game = {
 
     this.determineSelection();
 
-    if (Game.fog_of_war) {
-      // Should really be using strategy pattern here
-      if (Game.type == Game.types.ONLINE) {
-        LineOfSight.handleLineOfSight(this.player);
-      } else {
-        LineOfSight.handleLineOfSight(this.turn);
-      }
-    }
+    LineOfSight.handleLineOfSight(Game.fog_of_war, this.player);
 
     Output.updateRetreatBlocks();
 
