@@ -143,7 +143,7 @@ Crafty.c('Unit', {
   },
 
   updateMovementPaths: function() {
-    if (Game.turn == this.side) {
+    if (Game.player == this.side && Game.turn == this.side) {
       if (this.move_target_path) {
         if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
         this.movement_path = Pathing.colourMovementPath(this.move_target_path, this.movement, this.at());

@@ -98,12 +98,13 @@ Game = {
       return false;
     }
 
-    Crafty.trigger("NextTurn");
     if (this.type == this.types.HOTSEAT) {
+      this.player = undefined;
       if (this.turn % 1 == 0) {
         this.player = this.turn;
       }
     }
+    Crafty.trigger("NextTurn");
     Output.updateStatusBar();
 
     this.deselect();
