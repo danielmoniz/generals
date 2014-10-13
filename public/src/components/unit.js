@@ -248,6 +248,14 @@ Crafty.c('Unit', {
 
   isSupplied: function(side) {
     if (side === undefined) side = this.side;
+
+    /*
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    if (!local_terrain.supply) {
+      return false;
+    }
+    */
+
     var is_supplied = true;
     // detect possible lack of supply
     // @TODO: Allow for more than two supply endpoints
@@ -304,9 +312,11 @@ Crafty.c('Unit', {
     } else {
       // Supplied because unit is on supply route end point
     }
+    /*
     if (!is_supplied && side == this.side) {
       return this.isSupplied(1 - this.side);
     }
+    */
     return is_supplied;
   },
 
