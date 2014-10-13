@@ -246,10 +246,12 @@ Crafty.c('Unit', {
     }
   },
 
-  isSupplied: function() {
+  isSupplied: function(side) {
+    if (side === undefined) side = this.side;
+    var is_supplied = true;
     // detect possible lack of supply
     // @TODO: Allow for more than two supply endpoints
-    var target_location = Game.supply_route[this.side];
+    var target_location = Game.supply_route[side];
     var target = Game.terrain[target_location.x][target_location.y];
     if (!this.together(target)) {
       buildTerrainData(); // reset supply graph to remove old supply block info
@@ -294,15 +296,18 @@ Crafty.c('Unit', {
       }
       
       if (this.battle) {
-        return this.isSuppliedInBattle(end);
+        is_supplied = this.isSuppliedInBattle(end);
       } else {
         var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
-        if (supply_route.length == 0) return false;
+        if (supply_route.length == 0) is_supplied = false;
       }
     } else {
       // Supplied because unit is on supply route end point
     }
-    return true;
+    if (!is_supplied && side == this.side) {
+      return this.isSupplied(1 - this.side);
+    }
+    return is_supplied;
   },
 
   isSuppliedInBattle: function(supply_end_point) {
