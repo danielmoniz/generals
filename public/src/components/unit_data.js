@@ -23,20 +23,19 @@ var UnitData = function(type, stats) {
       active: true,
       performed_actions: [],
       is_supplied: true,
+      max_sight: 6,
     },
 
     "Cavalry": {
       parent: 'Unit',
       type: 'Cavalry',
       movement: 8,
-      max_sight: 8,
     },
 
     "Infantry": {
       parent: 'Unit',
       type: 'Infantry',
       movement: 4,
-      max_sight: 8,
     },
 
   };
