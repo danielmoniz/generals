@@ -655,8 +655,6 @@ Output = {
   },
 
   selectUnits: function(units) {
-    $(".selected").removeClass("selected");
-    $(".colocated").removeClass("colocated");
     for (var i in units) {
       var unit = units[i];
       var unit_div = this.getUnitDiv(unit);
@@ -734,6 +732,11 @@ Output = {
   clearUnitsPanelSelect: function() {
     var selected_units = $(this.units_panel).find(".selected");
     selected_units.removeClass("selected");
+    this.clearColocatedUnits();
+  },
+
+  clearColocatedUnits: function() {
+    $(".colocated").removeClass("colocated");
   },
 
 }
