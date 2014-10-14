@@ -26,6 +26,7 @@ var Options = function() {
     var options = {
 
       location: locations.test,
+      location: locations.black_forest,
       factions: ["mongols", "mongols"],
 
       map_sizes: {
