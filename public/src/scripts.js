@@ -37,8 +37,16 @@ $(document).ready(function() {
     $("#menu").toggle();
   });
 
-  $("input.start").click(function() {
+  $("input.prepare-game").click(function() {
     UI.prepareGame(UI.getGameType($(this)));
+    $(this).blur();
+  });
+
+  $("input#play-again").click(function() {
+    UI.prepareGame(window.game_type, 0);
+    console.log("Game.player");
+    console.log(Game.player);
+    $(this).blur();
   });
 
   $("input.start-game").click(function() {
@@ -54,11 +62,6 @@ $(document).ready(function() {
     }
     $(this).blur();
 
-  });
-
-  $("input#done-playing").click(function() {
-    UI.endGame();
-    $(this).blur();
   });
 
   $("#next-turn").click(function() {
@@ -96,6 +99,8 @@ UI = {
       $("#options-waiting").show();
     }
     window.game_type = game_type;
+    console.log("window.game_type");
+    console.log(window.game_type);
 
     $("input.start").hide();
     //$("#front-page").hide();

@@ -43,7 +43,7 @@ var Chat = function(io) {
     var players = [inviter, invitee];
     var observers = [];
 
-    game.create(room_name, players, observers, this.endGame);
+    game.create(room_name, players, observers, this.endGame, this);
     this.games[game.id] = game;
   };
 
@@ -51,7 +51,7 @@ var Chat = function(io) {
     var game = this.games[game_id];
     if (!game) {
       var game = new Game(this.io);
-      game.createEmpty(game_id, game_name, this.endGame);
+      game.createEmpty(game_id, game_name, this.endGame, this);
 
       console.log("had to rebuild specific game.");
       console.log("Game name: {0}".format(game.game_name));
@@ -185,8 +185,8 @@ var Chat = function(io) {
     for (var i in users) {
       var user = users[i];
       this.joinRoom(user, this.main_room, true);
+      delete user.game;
     }
-    delete players[0].game;
   };
 
   this.runCommand = function(text, socket) {

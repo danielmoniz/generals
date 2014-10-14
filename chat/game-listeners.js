@@ -7,7 +7,11 @@ var GameListener = function(io) {
     });
 
     socket.on("start game", function(options) {
-      socket.game.startGame(options);
+      if (socket.game) {
+        socket.game.startGame(options);
+      } else {
+        // @TODO Do smething here - alert user game is over.
+      }
     });
 
     socket.on("new map", function(options) {
@@ -23,9 +27,15 @@ var GameListener = function(io) {
       socket.game.surrender(socket);
     });
 
-    socket.on('game over', function(turn_data, turn_count) {
-      socket.game.endGame();
+    socket.on('game over', function(winners, losers, type) {
+      //socket.game.endGame(winners, losers, type);
     });
+
+    socket.on('leave game', function(room_name) {
+      //socket.game.endGame(winners, losers, type);
+      socket.game.killGame();
+      //chat.joinRoom(socket, chat.main_room, 'make active');
+    })
 
   });
 }

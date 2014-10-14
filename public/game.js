@@ -95,6 +95,7 @@ Game = {
       console.log("there is at least one loser");
       this.player_winner = victory;
       Crafty.scene('Victory');
+      GameActions.endGame(victory);
       return false;
     }
 
