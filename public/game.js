@@ -107,11 +107,17 @@ Game = {
     Crafty.trigger("NextTurn");
     Output.updateStatusBar();
 
-    this.deselect();
+    if (this.type == this.types.HOTSEAT) {
+      this.deselect();
+    }
 
     Output.updateUnitsPanel();
 
-    this.determineSelection();
+    if (this.type == this.types.HOTSEAT) {
+      this.determineSelection();
+    } else {
+      this.determineSelectionOnline();
+    }
 
     LineOfSight.handleLineOfSight(Game.fog_of_war, this.player);
 
@@ -161,22 +167,34 @@ Game = {
     if (this.turn % 1 != 0) {
       return false;
     }
-    var units = Unit.getFriendlyUnits(this.turn);
+    var units = Unit.getFriendlyUnits(this.player);
     var selected = Game.player_selected;
     if (!selected) {
       this.select(units[0]);
       return units[0];
     }
-    var item = selected[this.turn];
-    var item = this.player_selected[this.turn];
+    var item = selected[this.player];
 
-    if (item && item.side == this.turn) {
+    if (item && item.side == this.player) {
       Game.select(item);
       return item;
     } else if (!this.selected) {
       if (units.length == 0) return false;
       Game.select(units[0]);
       return units[0];
+    }
+  },
+
+  determineSelectionOnline: function() {
+    if (this.selected && (this.selected.side == this.player || this.selected.side === undefined)) {
+      this.select(this.selected);
+    } else {
+      if (this.player_selected && this.player_selected[this.player]) {
+        this.select(this.player_selected[this.player]);
+      } else { // select first unit on your team
+        var units = Unit.getFriendlyUnits(this.player);
+        this.select(units[0]);
+      }
     }
   },
 

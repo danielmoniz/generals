@@ -235,7 +235,7 @@ Crafty.scene('Game', function() {
     map_creator.buildTerrainData(Game, Game, Game.terrain_type);
 
     Victory.reset();
-    Game.select(Crafty('Unit').get(0));
+    Game.determineSelectionOnline();
   } else if (Game.load_game) {
     buildTerrainFromData(Game.terrain_type);
     buildTerrainData();
