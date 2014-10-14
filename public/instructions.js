@@ -43,7 +43,7 @@ var Instructions = {
 
   supply_general: "Each player must ensure that their armies are supplied in order to avoid taking casualties due to attrition. This simply requires that each army be within one space from the road, and that that road be connected to their own supply route.",
 
-  supply_routes: "Your supply route is the only road space that leads off the map on your own side. From it, your armies are supplied as long as the road is unbroken by enemy armies. Moreover, if one of your armies strays more than one space from a road/bridge/city, they cannot be supplied. ",
+  supply_routes: "Your supply route is the only road space that leads off the map on your own side. From it, your armies are supplied if they are on or adjacent to a road as long as the road is unbroken by enemy armies. Supply can therefore be cut by interposing an army between an enemy army and their supply route. This requires that the army cutting supply must have a minimum of 500 troops.",
 
   unsupplied: "Any unsupplied army will lose 1 supply until they reach 0. After reaching 0, any further loss in supply will instead manifest as attrition casualties (killed and wounded).",
 
