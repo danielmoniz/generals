@@ -39,9 +39,40 @@ var Game = function(io) {
     socket.to(this.game_name).broadcast.emit("next turn", turn_data, turn_count + 0.5);
   };
 
-  this.endGame = function() {
-    io.to(this.game_name).emit("game over");
-    this.chat_callback(this.players, this.observers);
+  this.endGame = function(winners, losers, type_of_win) {
+    if (type_of_win == 'surrender') {
+      for (var i in winners) {
+        winners[i].emit('game over', 'victory', type_of_win);
+      }
+      for (var i in losers) {
+        losers[i].emit('game over', 'defeat', type_of_win);
+      }
+    } else {
+      io.to(this.game_name).emit("game over", winner, type_of_win);
+      this.chat_callback(this.players, this.observers);
+    }
+  };
+
+  this.surrender = function(socket) {
+    var losers = [socket];
+    var winners = [];
+    for (var i in this.players) {
+      var player = this.players[i];
+      if (player.id != socket.id) {
+        winners.push(player);
+      }
+    }
+    console.log("winners:");
+    for (var i in winners) {
+      console.log(winners[i].username);
+    }
+    console.log("losers:");
+    for (var i in losers) {
+      console.log(losers[i].username);
+    }
+    console.log("--------");
+
+    this.endGame(winners, losers, 'surrender');
   };
 
 }

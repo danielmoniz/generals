@@ -21,6 +21,11 @@ var GameListener = function(io) {
       socket.game.nextTurn(socket, turn_data, turn_count);
     });
 
+    socket.on('surrender', function() {
+      console.log("received surrender");
+      socket.game.surrender(socket);
+    });
+
     socket.on('game over', function(turn_data, turn_count) {
       socket.game.endGame();
     });
