@@ -55,14 +55,15 @@ div.option_set { float: left; }
 
 #units-panel { margin: 0 0 10px 0; }
 .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
-.selected { border: 2px solid purple; }
-.colocated { border: 2px solid green; }
-.unit-item { display: inline-block; margin-right: 0px; }
-.square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
-.supply { vertical-align:top; color: black; }
-.supplied { background-image:url("assets/green-supply.png"); }
-.unsupplied { background-image:url("assets/red-supply.png"); }
-.battle.square { background-image:url("assets/Combat2.png"); }
+.unit .selected { border: 2px solid purple; }
+.unit .colocated { border: 2px solid green; }
+.unit .unit-item { display: inline-block; margin-right: 0px; }
+.unit .square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
+.unit .supply { vertical-align:top; color: black; }
+.unit .supplied { background-image:url("assets/green-supply.png"); }
+.unit .unsupplied { background-image:url("assets/red-supply.png"); }
+.unit .battle.square { background-image:url("assets/Combat2.png"); }
+.unit .status.small { color: red; }
 
 .rank_1 { background-image:url("assets/star_gold.png"); }
 .rank_2 { background-image:url("assets/star_silver.png"); }

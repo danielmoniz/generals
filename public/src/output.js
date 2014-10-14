@@ -260,7 +260,10 @@ Output = {
 
     var main_info_div = this.createDiv('unit-item');
     var name_div = this.createDiv('', name);
-    var status_div = this.createDiv("", status);
+    var status_div = this.createDiv("status", status);
+    if (unit.getActive() < Game.min_troops_for_supply_cut) {
+      status_div.addClass("small");
+    }
     main_info_div.append(name_div).append(status_div);
     first_row.append(main_info_div);
 
