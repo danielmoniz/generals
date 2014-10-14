@@ -10,6 +10,26 @@ var Chat = function(io) {
   this.rooms = {};
   this.games = {};
 
+  this.newUser = function(socket, username, room_name, game_id, game_name, player_num) {
+    if (room_name) {
+      this.changeName(socket, undefined, username);
+      this.joinRoom(socket, room_name, 'make active');
+      //socket.emit('chat message', "Welcome to the chat!");
+    } else {
+      this.changeName(socket, undefined, username);
+      this.joinRoom(socket, this.main_room, 'make active');
+      socket.emit('chat message', "Welcome to the chat!");
+
+      console.log("new username:");
+      console.log(username);
+    }
+
+    // @TODO Move this code to chat.js or game.js
+    if (game_id) {
+      chat.rebuildGame(socket, game_id, game_name, player_num);
+    }
+  };
+
   this.joinGame = function(inviter, invitee) {
     // @TODO Ensure user is still inviting the invitee
     if (inviter === undefined || invitee === undefined) {
@@ -27,6 +47,20 @@ var Chat = function(io) {
 
     game.create(room_name, inviter, invitee, observers, this.endGame);
     this.games[game.id] = game;
+  };
+
+  this.rebuildGame = function(socket, game_id, game_name, player_num) {
+    var game = this.games[game_id];
+    if (!game) {
+      var game = new Game(this.io);
+      game.createEmpty(game_id, game_name, this.endGame);
+
+      console.log("had to rebuild specific game.");
+      console.log("Game name: {0}".format(game.game_name));
+      console.log("Game id: {0}".format(game.id));
+    }
+    this.games[game.id] = game;
+    game.registerPlayer(socket, player_num);
   };
 
   this.joinRoom = function(socket, room, make_active, stay_in_room) {

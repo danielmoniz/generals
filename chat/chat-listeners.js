@@ -37,19 +37,7 @@ var ChatListener = function(io) {
 
       // @TODO Move this code to chat.js or game.js
       if (game_id) {
-        var game = chat.games[game_id];
-        if (!game) {
-          var Game = require("./game");
-          var game = new Game(this.io);
-          //var game_name = socket.active_room;
-          game.createEmpty(game_id, game_name, chat.endGame);
-
-          console.log("had to rebuild specific game.");
-          console.log("Game name: {0}".format(game.game_name));
-          console.log("Game id: {0}".format(game.id));
-        }
-        chat.games[game.id] = game;
-        game.registerPlayer(socket, player_num);
+        chat.rebuildGame(socket, game_id, game_name, player_num);
       }
 
     });
