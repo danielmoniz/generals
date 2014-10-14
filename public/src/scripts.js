@@ -80,9 +80,9 @@ $(document).ready(function() {
   Output.generateInstructions();
 
   // TEST ONLY
-  $("#start-hotseat-button").click();
-  $("input[name=map_size][value=small]").click();
-  $("#start-game").click();
+  //$("#start-hotseat-button").click();
+  //$("input[name=map_size][value=small]").click();
+  //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
 

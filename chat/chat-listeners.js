@@ -21,25 +21,7 @@ var ChatListener = function(io) {
     });
 
     socket.on("new user", function(username, room_name, game_id, game_name, player_num) {
-
-      if (room_name) {
-        chat.changeName(socket, undefined, username);
-        chat.joinRoom(socket, room_name, 'make active');
-        //socket.emit('chat message', "Welcome to the chat!");
-      } else {
-        chat.changeName(socket, undefined, username);
-        chat.joinRoom(socket, chat.main_room, 'make active');
-        socket.emit('chat message', "Welcome to the chat!");
-
-        console.log("new username:");
-        console.log(username);
-      }
-
-      // @TODO Move this code to chat.js or game.js
-      if (game_id) {
-        chat.rebuildGame(socket, game_id, game_name, player_num);
-      }
-
+      chat.newUser(socket, username, room_name, game_id, game_name, player_num);
     });
 
     socket.on("change name", function(old_name, new_name) {

@@ -14,28 +14,31 @@ var Game = function(io) {
     this.players = {};
 
     this.chat_callback = chat_callback;
-
   };
 
-  this.create = function(game_name, first_player, second_player, observers, chat_callback) {
-    this.id = Math.round(Math.random() * 1000000000000);
-    this.game_name = game_name;
-    this.players = {
-      0: first_player,
-      1: second_player,
-    };
+  this.create = function(game_name, players, observers, chat_callback) {
+    game_id = Math.round(Math.random() * 1000000000000);
+    this.createEmpty(game_id, game_name, chat_callback);
+
     this.observers = observers;
+    for (var i in observers) {
+      observers[i].game = this;
+      observers[i].observing = true;
+    }
+
     this.chat_callback = chat_callback;
 
-    this.io.to(first_player.id).emit("new game", this.game_name, 0);
-    this.io.to(second_player.id).emit("new game", this.game_name, 1);
-
+    this.players = players;
+    for (var i in players) {
+      players[i].game = this;
+      this.io.to(players[i].id).emit("new game", this.game_name, parseInt(i));
+    }
   };
 
   this.registerPlayer = function(socket, player_num) {
     this.players[player_num] = socket;
     socket.game = this;
-  }
+  };
 
   this.startGame = function(options) {
     this.options = options;

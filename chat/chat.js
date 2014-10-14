@@ -26,7 +26,7 @@ var Chat = function(io) {
 
     // @TODO Move this code to chat.js or game.js
     if (game_id) {
-      chat.rebuildGame(socket, game_id, game_name, player_num);
+      this.rebuildGame(socket, game_id, game_name, player_num);
     }
   };
 
@@ -40,12 +40,10 @@ var Chat = function(io) {
     this.joinRoom(invitee, room_name, 'make active');
 
     var game = new Game(this.io);
-    inviter.game = game;
-    invitee.game = game;
-
+    var players = [inviter, invitee];
     var observers = [];
 
-    game.create(room_name, inviter, invitee, observers, this.endGame);
+    game.create(room_name, players, observers, this.endGame);
     this.games[game.id] = game;
   };
 
