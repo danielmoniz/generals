@@ -3,11 +3,13 @@ var user_num = Math.round(Math.random() * 100000);
 my_username = "User-" + user_num;
 my_messages = {};
 my_current_room = "";
+my_current_game = "";
+my_current_game_name = "";
 
 var socket = io();
 
 socket.on('get new user', function() {
-  socket.emit("new user", my_username);
+  socket.emit("new user", my_username, my_current_room, my_current_game, my_current_game_name, Game.player);
 });
 
 socket.on('name changed', function(new_name) {
@@ -70,7 +72,7 @@ socket.on('decline invite', function(username) {
 });
 
 socket.on('new game', function(game_name, player) {
-  // @TODO Do something with game_name
+  my_current_game_name = game_name;
   clearMessages();
   var message = "Joined " + game_name + ".";
   addMessage(message);
@@ -78,8 +80,9 @@ socket.on('new game', function(game_name, player) {
   UI.prepareGame('online', player);
 });
 
-socket.on('start game', function(game_name, game_object, player, options) {
+socket.on('start game', function(game_id, game_name, game_object, player, options) {
   game_object.player = player;
+  my_current_game = game_id;
 
   function sendMoves(moves) {
     socket.emit("next turn", moves, Game.turn_count);

@@ -14,9 +14,6 @@ var GameListener = function(io) {
       socket.game.startGame(options);
     });
 
-    socket.on("new user", function(username, old_username) {
-    });
-
     socket.on('next turn', function(turn_data, turn_count) {
       socket.game.nextTurn(socket, turn_data, turn_count);
     });

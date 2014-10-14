@@ -20,13 +20,38 @@ var ChatListener = function(io) {
       chat.removeUser(socket);
     });
 
-    socket.on("new user", function(username, old_username) {
-      chat.changeName(socket, old_username, username);
-      chat.joinRoom(socket, chat.main_room, 'make active');
-      socket.emit('chat message', "Welcome to the chat!");
+    socket.on("new user", function(username, room_name, game_id, game_name, player_num) {
 
-      console.log("new username:");
-      console.log(username);
+      if (room_name) {
+        chat.changeName(socket, undefined, username);
+        chat.joinRoom(socket, room_name, 'make active');
+        //socket.emit('chat message', "Welcome to the chat!");
+      } else {
+        chat.changeName(socket, undefined, username);
+        chat.joinRoom(socket, chat.main_room, 'make active');
+        socket.emit('chat message', "Welcome to the chat!");
+
+        console.log("new username:");
+        console.log(username);
+      }
+
+      // @TODO Move this code to chat.js or game.js
+      if (game_id) {
+        var game = chat.games[game_id];
+        if (!game) {
+          var Game = require("./game");
+          var game = new Game(this.io);
+          //var game_name = socket.active_room;
+          game.createEmpty(game_id, game_name, chat.endGame);
+
+          console.log("had to rebuild specific game.");
+          console.log("Game name: {0}".format(game.game_name));
+          console.log("Game id: {0}".format(game.id));
+        }
+        chat.games[game.id] = game;
+        game.registerPlayer(socket, player_num);
+      }
+
     });
 
     socket.on("change name", function(old_name, new_name) {
@@ -44,6 +69,9 @@ var ChatListener = function(io) {
     socket.on('join game', function(inviter, invitee) {
       chat.joinGame(inviter, invitee);
     })
+
+    socket.on('register player', function(game_id, player_num, username) {
+    });
 
     socket.on('invite to game', function(inviter_name, invitee_name) {
       chat.invite(inviter_name, invitee_name);

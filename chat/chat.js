@@ -8,6 +8,7 @@ var Chat = function(io) {
   this.invites = {};
   this.users = {};
   this.rooms = {};
+  this.games = {};
 
   this.joinGame = function(inviter, invitee) {
     // @TODO Ensure user is still inviting the invitee
@@ -25,6 +26,7 @@ var Chat = function(io) {
     var observers = [];
 
     game.create(room_name, inviter, invitee, observers, this.endGame);
+    this.games[game.id] = game;
   };
 
   this.joinRoom = function(socket, room, make_active, stay_in_room) {

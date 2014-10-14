@@ -8,7 +8,17 @@ var Game = function(io) {
 
   this.num_players = 2;
 
+  this.createEmpty = function(game_id, game_name, chat_callback) {
+    this.id = game_id;
+    this.game_name = game_name;
+    this.players = {};
+
+    this.chat_callback = chat_callback;
+
+  };
+
   this.create = function(game_name, first_player, second_player, observers, chat_callback) {
+    this.id = Math.round(Math.random() * 1000000000000);
     this.game_name = game_name;
     this.players = {
       0: first_player,
@@ -22,6 +32,11 @@ var Game = function(io) {
 
   };
 
+  this.registerPlayer = function(socket, player_num) {
+    this.players[player_num] = socket;
+    socket.game = this;
+  }
+
   this.startGame = function(options) {
     this.options = options;
 
@@ -31,8 +46,8 @@ var Game = function(io) {
 
     this.game_data = new MapCreator().buildNewMap(settings);
 
-    this.io.to(this.players[0].id).emit("start game", this.game_name, this.game_data, 0, settings);
-    this.io.to(this.players[1].id).emit("start game", this.game_name, this.game_data, 1, settings);
+    this.io.to(this.players[0].id).emit("start game", this.id, this.game_name, this.game_data, 0, settings);
+    this.io.to(this.players[1].id).emit("start game", this.id, this.game_name, this.game_data, 1, settings);
   };
 
   this.nextTurn = function(socket, turn_data, turn_count) {
