@@ -94,12 +94,9 @@ socket.on('next turn', function (turn_moves, turn_count) {
   Game.updateOnlineGame(turn_moves, turn_count);
 });
 
-socket.on('game over', function (outcome, type_of_ending) {
-  console.log("outcome");
-  console.log(outcome);
-  console.log("type_of_ending");
-  console.log(type_of_ending);
-  //Game.updateOnlineGame(turn_moves, turn_count);
+socket.on('game over', function (outcome, winners, losers, type_of_ending) {
+  // for now assume only one winner!
+  Game.end(winners[0]);
 });
 
 

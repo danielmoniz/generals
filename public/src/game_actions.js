@@ -4,9 +4,14 @@ $(document).ready(function() {
   $("input#surrender").click(function() {
     var surrender = confirm("Are you sure you want to surrender?");
     if (surrender) {
-      socket.emit("surrender");
-      console.log("Surrendering...");
+      if (Game.type == Game.types.ONLINE) {
+        socket.emit("surrender");
+        console.log("Surrendering...");
+      } else {
+        Game.lose();
+      }
     }
+    // @TODO temporarily disable the surrender button
     $(this).blur();
   });
 

@@ -29,13 +29,14 @@ var Game = function(io) {
 
     this.players = players;
     for (var i in players) {
-      players[i].game = this;
+      this.registerPlayer(players[i], i);
       this.io.to(players[i].id).emit("new game", this.game_name, parseInt(i));
     }
   };
 
   this.registerPlayer = function(socket, player_num) {
     this.players[player_num] = socket;
+    socket.player_num = player_num;
     socket.game = this;
   };
 
@@ -58,40 +59,42 @@ var Game = function(io) {
 
   this.endGame = function(winner_ids, loser_ids, type_of_win) {
     var winners = [];
+    var winner_names = [];
     for (var i in winner_ids) {
-      var player = this.players[i];
+      var player = this.players[winner_ids[i]];
       winners.push(player);
+      winner_names.push(player.username);
     }
     var losers = [];
+    var loser_names = [];
     for (var i in loser_ids) {
-      var player = this.players[i];
+      var player = this.players[loser_ids[i]];
       losers.push(player);
+      loser_names.push(player.username);
     }
 
-    if (type_of_win == 'surrender') {
-      for (var i in winners) {
-        winners[i].emit('game over', 'victory', type_of_win);
-      }
-      for (var i in losers) {
-        losers[i].emit('game over', 'defeat', type_of_win);
-      }
-    } else {
-      io.to(this.game_name).emit("game over", winner_ids, type_of_win);
-      //this.killGame();
+    for (var i in winners) {
+      winners[i].emit('game over', 'victory', winner_ids, loser_ids, type_of_win);
+    }
+    for (var i in losers) {
+      losers[i].emit('game over', 'defeat', winner_ids, loser_ids, type_of_win);
     }
   };
 
+  /*
+   * Used when a game is to be annihilated, ie. impossible to restart.
+   */
   this.killGame = function() {
     this.chat.endGame(this.players, this.observers);
   };
 
   this.surrender = function(socket) {
-    var losers = [socket];
+    var losers = [socket.player_num];
     var winners = [];
     for (var i in this.players) {
       var player = this.players[i];
       if (player.id != socket.id) {
-        winners.push(player);
+        winners.push(player.player_num);
       }
     }
 

@@ -126,10 +126,16 @@ UI = {
 
   gameInProgress: function() {
     $("input#new-map").hide();
+    if (Game.player === undefined) {
+      $("input#surrender").hide();
+    } else {
+      $("input#surrender").show();
+    }
   },
 
   gameVictory: function() {
     $("input#play-again").show();
+    $("input#surrender").hide();
     if (typeof window.socket !== 'undefined') {
       $("input#done-playing").show();
     }
@@ -146,6 +152,7 @@ UI = {
     $("#starting-game").hide();
     $("input.start").show();
     $("input#done-playing").hide();
+    $("input#surrender").hide();
 
     $("ul").css("min-height", "300px");
 

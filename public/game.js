@@ -75,7 +75,6 @@ Game = {
 
     // Do nothing if game should be over. Let Victory screen render.
     if (this.player_winner !== undefined) return false;
-    UI.gameInProgress();
 
     if (Game.type == Game.types.EMAIL) {
       if (Game.turns_played_locally >= 1) {
@@ -93,8 +92,7 @@ Game = {
     Output.updateVictoryBar();
     if (victory !== false) {
       console.log("there is at least one loser");
-      this.player_winner = victory;
-      Crafty.scene('Victory');
+      this.end(victory);
       GameActions.endGame(victory);
       return false;
     }
@@ -106,6 +104,7 @@ Game = {
       }
     }
     Crafty.trigger("NextTurn");
+    UI.gameInProgress();
     Output.updateStatusBar();
 
     if (this.type == this.types.HOTSEAT) {
@@ -124,6 +123,15 @@ Game = {
 
     Output.updateRetreatBlocks();
 
+  },
+
+  end: function(winner) {
+    this.player_winner = winner;
+    Crafty.scene('Victory');
+  },
+
+  lose: function() {
+    this.end(1 - Game.player);
   },
 
   updateTurnCount: function(turn_count) {
