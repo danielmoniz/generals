@@ -24,6 +24,7 @@ var UnitData = function(type, stats) {
       performed_actions: [],
       is_supplied: true,
       max_sight: 6,
+      combat_ability: 1,
     },
 
     "Cavalry": {

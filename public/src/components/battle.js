@@ -45,6 +45,23 @@ Battle = {
     return quantity;
   },
 
+  getCombatAbility: function(units) {
+    var total = 0;
+    for (var i=0; i<units.length; i++) {
+      if (!units[i]) console.log(units[i]);
+      var unit = units[i];
+      if (unit === undefined) {
+        console.log('Unit is not defined!');
+        console.log('Unit number (in tile): {0}'.format(i));
+        continue;
+      }
+      if (unit !== undefined) {
+        total += unit.getActive() * unit.combat_ability;
+      }
+    }
+    return total;
+  },
+
   getRatiosOfTotal: function(units, total) {
     var ratios = [];
     for (var i=0; i<units.length; i++) {
@@ -114,10 +131,6 @@ Crafty.c('Battle', {
 
   start: function(attacker) {
     var attacker_direction = attacker.last_location;
-    console.log("attacker_direction");
-    console.log(attacker_direction);
-    console.log("this.at()");
-    console.log(this.at());
 
     this.attacker = attacker;
     this.attacking_side = attacker.side;
@@ -237,11 +250,11 @@ Crafty.c('Battle', {
     var attacker_random_factor = 1;
     var defender_random_factor = 1;
 
-    var attackers_quantity = Battle.getQuantity(attackers);
-    var defenders_quantity = Battle.getQuantity(defenders);
+    var attackers_ability = Battle.getCombatAbility(attackers);
+    var defenders_ability = Battle.getCombatAbility(defenders);
 
-    var attacker_losses = attacker_random_factor * defenders_quantity * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
-    var defender_losses = defender_random_factor * attackers_quantity * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
+    var attacker_losses = attacker_random_factor * defenders_ability * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
+    var defender_losses = defender_random_factor * attackers_ability * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
 
     var losses = {};
     losses[Battle.ATTACKER] = attacker_losses;
