@@ -57,7 +57,7 @@ div.option_set { float: left; }
 
 #units-panel { margin: 0 0 10px 0; }
 #units-panel .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
-#alerts-panel { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
+#alerts-panel .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
 #units-panel .unit.selected { border: 2px solid purple; }
 #units-panel .unit.colocated { border: 2px solid green; }
 .unit .unit-item { display: inline-block; margin-right: 0px; }
