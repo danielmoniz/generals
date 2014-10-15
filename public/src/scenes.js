@@ -290,6 +290,7 @@ Crafty.scene('Game', function() {
   function startNewGame() {
 
     var map_creator = new MapCreator();
+    //var game_data = map_creator.buildNewComposedMap(Game);
     var game_data = map_creator.buildNewMap(Game);
     Utility.loadDataIntoObject(game_data, Game);
 

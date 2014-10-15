@@ -27,6 +27,59 @@ var MapCreator = function(options) {
   this.map_grid = {};
   this.options = options;
 
+  this.buildNewComposedMap = function(options) {
+    this.Game.height_map = this.generateHeightMap(options, options.location);
+    this.buildEmptyGameData(options, this.Game);
+    this.addWater(options, this.Game, options.location);
+
+    this.Game.section_widths = this.getWidthOfSections(options);
+    this.Game.section_positions = this.getPositionOfSections(this.Game);
+    //var city_locations = this.addCities(options, this.Game, options.num_cities_total, 1);
+    var city_locations = this.addCities(options, this.Game, options.num_cities_total, 1);
+    console.log("city_locations");
+    console.log(city_locations);
+    //var city_locations = this.addCities(options, this.Game, 1, 2);
+    this.addFarms(options, this.Game, city_locations);
+    this.addTrees(options, this.Game, options.location);
+    this.addGrass(options, this.Game);
+
+    //this.updateBuildDifficultyData(options, this.Game.terrain_type);
+    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
+    this.addSupplyRoads(options, this.Game, city_locations, 1);
+
+    var halved_city_locations = [[], []];
+    for (var i in city_locations) {
+      var location = city_locations[i];
+      if (location.y <= options.map_grid.height / 2) {
+        halved_city_locations[0].push(location);
+      } else {
+        halved_city_locations[1].push(location);
+      }
+    }
+
+    this.addRoadsBetweenCities(options, this.Game, halved_city_locations[0]);
+    this.addRoadsBetweenCities(options, this.Game, halved_city_locations[1]);
+    this.addRoadsBetweenCities(options, this.Game, [halved_city_locations[0][0], halved_city_locations[1][0]]);
+    //this.addRoadsBetweenCities(options, this.Game, city_locations);
+
+    this.Game.starting_units = this.addStartingUnits(options, this.Game);
+    /*
+
+    if (Game.fog_of_war) {
+      shadowHeightMap(Game.location);
+      LineOfSight.clearFog();
+    }
+    */
+
+   var map_data = {};
+   map_data.terrain_type = this.Game.terrain_type;
+   map_data.height_map = this.Game.height_map;
+   map_data.player_supply_roads = this.Game.player_supply_roads;
+   map_data.supply_route = this.Game.supply_route;
+
+   return this.Game;
+  };
+
   this.buildNewMap = function(options) {
     this.Game.height_map = this.generateHeightMap(options, options.location);
     this.buildEmptyGameData(options, this.Game);
@@ -113,15 +166,17 @@ var MapCreator = function(options) {
     }
   };
 
-  this.addCitiesToSection = function(options, game_object, estimated_cities, min_x, max_x) {
+  this.addCitiesToSection = function(options, game_object, estimated_cities, min_x, max_x, min_y, max_y) {
+    if (max_y === undefined) max_y = options.map_grid.height;
+    if (min_y === undefined) min_y = 0;
     var city_locations = [];
     var num_cities = 0;
     while (num_cities < estimated_cities) {
       for (var x = min_x; x < max_x; x++) {
-        for (var y = 0; y < options.map_grid.height; y++) {
+        for (var y = min_y; y < max_y; y++) {
           var at_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
           if (at_edge) continue;
-          var num_tiles = options.map_grid.width * options.map_grid.height;
+          var num_tiles = (max_y - min_y) * (max_x - min_x);
           var probability = estimated_cities / num_tiles;
           var value = Math.random();
 
@@ -155,18 +210,30 @@ var MapCreator = function(options) {
     return city_locations;
   };
 
-  this.addCities = function(options, game_object, estimated_cities) {
+  this.addCities = function(options, game_object, estimated_cities, vertical_sections) {
+    if (!vertical_sections) vertical_sections = 1;
     var cities = [];
     var sections = game_object.section_positions;
     var base = 0;
     for (var i=0; i<sections.length; i++) {
-      var min_x = base;
-      var max_x = sections[i];
-      var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, min_x, max_x);
+      for (var y=0; y<vertical_sections; y++) {
+        var min_x = base;
+        var max_x = sections[i];
+        //var min_y = y * vertical_section_height;
+        //var max_y = (1 + y) * vertical_section_height;
+        var min_y = Math.round(y * options.map_grid.height / vertical_sections);
+        var max_y = Math.round((1 + y) * options.map_grid.height / vertical_sections);
+        console.log("min_y");
+        console.log(min_y);
+        console.log("max_y");
+        console.log(max_y);
 
-      cities = cities.concat(new_cities);
+        var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, min_x, max_x, min_y, max_y);
 
-      base = sections[i];
+        cities = cities.concat(new_cities);
+
+        base = sections[i];
+      }
     }
 
     return cities;
