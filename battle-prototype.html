@@ -1,11 +1,10 @@
 <html>
   <head>
     <style type="text/css">
-      html,body { height: 100%; }
       .column { display: inline-block; vertical-align: top; }
-      .title .winning { border: 1px solid green; }
-      .title .losing { border: 1px solid red; }
-      .title .container { width: 67px; height: 34px; text-align: center; }
+      .battle .title .winning { border: 1px solid green; }
+      .battle .title .losing { border: 1px solid red; }
+      .battle .title .container { width: 67px; height: 34px; text-align: center; }
 
       .icon { height: 32px; width: 32px; }
       .rank_1 { background-image:url("public/assets/star_gold.png"); }
@@ -14,16 +13,16 @@
       .rank_4 { background-image:url("public/assets/chevron_2.png"); }
       .rank_5 { background-image:url("public/assets/chevron_1.png"); }
 
-      .total-stats-display { width: 32px; font-size: 0; }
-      .bar_container {}
-      .attacker.bar_container { margin-left: 5px 0 0 0; }
-      .defender.bar_container { margin-right: 0; }
-      .bar_container .bar { margin: 0; padding: 0; border: 1px solid black; }
-      .attacker .bar { border-right: 0; }
-      .defender .bar {}
-      .bar { height: 100%; width: 9px; }
-      .active { background-image:url("public/assets/green-supply.png"); }
-      .injured.bar { border-top: 0; background-image:url("public/assets/colour_bar-yellow.png"); }
+      .battle .total-stats-display { width: 32px; font-size: 0; }
+      .battle .bar_container {}
+      .battle .attacker.bar_container { margin-left: 5px 0 0 0; }
+      .battle .defender.bar_container { margin-right: 0; }
+      .battle .bar_container .bar { margin: 0; padding: 0; border: 1px solid black; }
+      .battle .attacker .bar { border-right: 0; }
+      .battle .defender .bar {}
+      .battle .bar { height: 100%; width: 9px; }
+      .battle .active { background-image:url("public/assets/green-supply.png"); }
+      .battle .injured.bar { border-top: 0; background-image:url("public/assets/colour_bar-yellow.png"); }
     </style>
   </head>
   <body>
@@ -46,7 +45,7 @@
 
       <div class="stats">
 
-	<div class="column">
+	<div class="attacker types column">
 	  <div class="icon"
 	    style="background-image:url('public/assets/cavalry-mongol.png');">
 	  </div>
@@ -58,7 +57,7 @@
 	  </div>
 	</div>
 
-	<div class="column">
+	<div class="attacker ranks column">
 	  <div class="icon rank_1">
 	  </div>
 	  <div class="icon rank_4">
@@ -88,14 +87,14 @@
 	  </div>
 	</div>
 
-	<div class="column">
+	<div class="defender ranks column">
 	  <div class="icon rank_1">
 	  </div>
 	  <div class="icon rank_2">
 	  </div>
 	</div>
 
-	<div class="column">
+	<div class="defender types column">
 	  <div class="icon"
 	    style="background-image:url('public/assets/cavalry-roman.png');">
 	  </div>

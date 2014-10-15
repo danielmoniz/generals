@@ -10,6 +10,8 @@ Output = {
   next_turn_button_id: "#next-turn",
   victory_container_id: "#will-container",
   tool_bar_id: "#tool-bar",
+  battles_id: "#battles",
+  battles_container_id: "#battles_container",
 
   buffer: [],
 
@@ -179,6 +181,71 @@ Output = {
     if (battle.finished) conclusion = "Battle finished!";
 
     this.makeReport(divs, title, conclusion);
+    // test!
+    this.printBattleNew(battle);
+    return this;
+  },
+
+  printBattleNew: function(battle) {
+    $(this.battles_id).css('display', 'inline-block');
+    //var status = this.getBattleStatus(battle);
+    var total_troops = battle.getTotalTroops();
+    var attacker_active = total_troops[0].active;
+    var attacker_injured = total_troops[0].injured;
+    var defender_active = total_troops[1].active;
+    var defender_injured = total_troops[1].injured;
+    //var num_turns = battle.num_turns;
+    var attacker_name = Pretty.Player.name(battle.attacking_side);
+    var defender_name = Pretty.Player.name(battle.defending_side);
+
+    var battle_div = this.createDiv('battle');
+
+    var title_div = this.createDiv('title');
+    var attacker_div = this.createDiv('attacker container panel');
+    attacker_div.append(this.createDiv('', attacker_name));
+    attacker_div.append(this.createDiv('', attacker_active));
+
+    var defender_div = this.createDiv('defender container panel');
+    defender_div.append(this.createDiv('', defender_name));
+    defender_div.append(this.createDiv('', defender_active));
+
+    var battle_icon_div = this.createDiv('square');
+    battle_icon_div.attr("battle_id", battle.getId());
+    battle_icon_div.addClass("battle");
+
+    title_div.append(attacker_div);
+    title_div.append(battle_icon_div);
+    title_div.append(defender_div);
+
+    battle_div.append(title_div);
+
+
+    var stats_div = this.createDiv('stats');
+
+    var attacker_types_div = this.createDiv('attacker types panel');
+    var attacker_ranks_div = this.createDiv('attacker ranks panel');
+    var defender_types_div = this.createDiv('defender types panel');
+    var defender_ranks_div = this.createDiv('defender ranks panel');
+    var total_stats_div = this.createDiv('total-stats-display panel');
+
+    stats_div.append(attacker_types_div);
+    stats_div.append(attacker_ranks_div);
+    stats_div.append(total_stats_div);
+    stats_div.append(defender_ranks_div);
+    stats_div.append(defender_types_div);
+
+    var units = battle.units_in_combat();
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+
+      var img = this.createIconImage(unit);
+      var img_div = this.createDiv('unit-item');
+      img_div.append(img);
+    }
+    var conclusion = undefined;
+    if (battle.finished) conclusion = "Battle finished!";
+
+    $(this.battles_container_id).append(battle_div);
     return this;
   },
 
@@ -330,6 +397,9 @@ Output = {
     $(this.alerts_element_id).empty();
     $(this.alerts_container_element_id).hide();
     $(this.message_element_id).empty();
+    $(this.battles_id).hide();
+    $(this.battles_id).hide();
+    $(this.battles_container_id).empty();
     return this;
   },
 
@@ -451,6 +521,10 @@ Output = {
     var width = Game.map_grid.width * Game.map_grid.tile.width;
     $(this.tool_bar_id).width("{0}px".format(width));
     $(this.tool_bar_id).show();
+  },
+
+  setBattlePanel: function() {
+    $(this.battles_id).css("margin-top", Game.board_title.height);
   },
 
   message: function(message) {
