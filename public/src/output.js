@@ -200,6 +200,7 @@ Output = {
 
     var battle_div = this.createDiv('battle');
 
+    // TITLE DIV CONTENTS
     var title_div = this.createDiv('title');
     var attacker_div = this.createDiv('attacker container panel');
     attacker_div.append(this.createDiv('', attacker_name));
@@ -220,6 +221,7 @@ Output = {
     battle_div.append(title_div);
 
 
+    // STATS DIV CONTENTS
     var stats_div = this.createDiv('stats');
 
     var attacker_types_div = this.createDiv('attacker types panel');
@@ -239,9 +241,22 @@ Output = {
       var unit = units[i];
 
       var img = this.createIconImage(unit);
-      var img_div = this.createDiv('unit-item');
-      img_div.append(img);
+      var unit_type_div = this.createUnitDiv(unit.getId(), 'icon');
+      unit_type_div.append(img);
+
+      var rank_div = this.createUnitDiv(unit.getId(), 'icon rank_{0}'.format(unit.rank));
+
+      if (unit.side == battle.attacking_side) {
+        attacker_types_div.append(unit_type_div);
+        attacker_ranks_div.append(rank_div);
+      } else {
+        defender_types_div.append(unit_type_div);
+        defender_ranks_div.append(rank_div);
+      }
     }
+
+    battle_div.append(stats_div);
+
     var conclusion = undefined;
     if (battle.finished) conclusion = "Battle finished!";
 

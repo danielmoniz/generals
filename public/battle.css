@@ -2,6 +2,7 @@
 .battle .title .losing { border: 1px solid red; }
 .battle .title .container { width: 67px; height: 34px; text-align: center; }
 .battle .battle.square { background-image:url("assets/Combat2.png"); }
+.battle .icon { display: block; width: 32px; height:32px; vertical-align:top; }
 .battle .square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
 
 .battle .total-stats-display { width: 32px; font-size: 0; }
