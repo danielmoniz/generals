@@ -68,9 +68,9 @@ div.option_set { float: left; }
 
 .rank_1 { background-image:url("assets/star_gold.png"); }
 .rank_2 { background-image:url("assets/star_silver.png"); }
-.rank_3 { background-image:url("assets/chevron_1.png"); }
+.rank_3 { background-image:url("assets/chevron_3.png"); }
 .rank_4 { background-image:url("assets/chevron_2.png"); }
-.rank_5 { background-image:url("assets/chevron_3.png"); }
+.rank_5 { background-image:url("assets/chevron_1.png"); }
 
 .battle { cursor: pointer; }
 .report { display:inline-block; padding-bottom: 5px; width: 100%; }
