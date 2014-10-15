@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <style type="text/css">
+      html,body { height: 100%; }
+      .column { display: inline-block; vertical-align: top; }
+      .title .winning { border: 1px solid green; }
+      .title .losing { border: 1px solid red; }
+      .title .container { width: 67px; height: 34px; text-align: center; }
+
+      .icon { height: 32px; width: 32px; }
+      .rank_1 { background-image:url("public/assets/star_gold.png"); }
+      .rank_2 { background-image:url("public/assets/star_silver.png"); }
+      .rank_3 { background-image:url("public/assets/chevron_3.png"); }
+      .rank_4 { background-image:url("public/assets/chevron_2.png"); }
+      .rank_5 { background-image:url("public/assets/chevron_1.png"); }
+
+      .total-stats-display { width: 32px; font-size: 0; }
+      .bar_container {}
+      .attacker.bar_container { margin-left: 5px 0 0 0; }
+      .defender.bar_container { margin-right: 0; }
+      .bar_container .bar { margin: 0; padding: 0; border: 1px solid black; }
+      .attacker .bar { border-right: 0; }
+      .defender .bar {}
+      .bar { height: 100%; width: 9px; }
+      .active { background-image:url("public/assets/green-supply.png"); }
+      .injured.bar { border-top: 0; background-image:url("public/assets/colour_bar-yellow.png"); }
+    </style>
+  </head>
+  <body>
+
+    <div class="battle">
+      <div class="title">
+	<div class="attacker losing column container">
+	  <div>Mongols</div>
+	  <div class="">7000</div>
+	</div>
+	<div class="column">
+	  <img src="public/assets/swords-16.gif" height=32px width=32px 
+	    class="icon">
+	</div>
+	<div class="defender winning column container">
+	  <div>Romans</div>
+	  <div class="">6583</div>
+	</div>
+      </div>
+
+      <div class="stats">
+
+	<div class="column">
+	  <div class="icon"
+	    style="background-image:url('public/assets/cavalry-mongol.png');">
+	  </div>
+	  <div class="icon"
+	    style="background-image:url('public/assets/cavalry-mongol.png');">
+	  </div>
+	  <div class="icon"
+	    style="background-image:url('public/assets/infantry-mongol.png');">
+	  </div>
+	</div>
+
+	<div class="column">
+	  <div class="icon rank_1">
+	  </div>
+	  <div class="icon rank_4">
+	  </div>
+	  <div class="icon rank_5">
+	  </div>
+	</div>
+
+	<div class="total-stats-display column">
+	  <div class="column" style="width: 7px; height: 1px;">
+	  </div>
+	  <div class="attacker column bar_container" style="">
+	    <div class="active bar" style="height: 60px;">
+	    </div>
+	    <div class="injured bar" style="height: 15px;">
+	    </div>
+	  </div>
+	  <!--
+	  <div class="column" style="width: 7px; height: 1px;">
+	  </div>
+	  -->
+	  <div class="defender column bar_container">
+	    <div class="active bar" style="height: 85px;">
+	    </div>
+	    <div class="injured bar" style="height: 20px;">
+	    </div>
+	  </div>
+	</div>
+
+	<div class="column">
+	  <div class="icon rank_1">
+	  </div>
+	  <div class="icon rank_2">
+	  </div>
+	</div>
+
+	<div class="column">
+	  <div class="icon"
+	    style="background-image:url('public/assets/cavalry-roman.png');">
+	  </div>
+	  <div class="icon"
+	    style="background-image:url('public/assets/infantry-roman.png');">
+	  </div>
+	</div>
+
+      </div>
+      <div>
+      </div>
+      <div>
+      </div>
+      <div>
+      </div>
+    </div>
+    
+
+  </body>
+</html>
