@@ -134,13 +134,14 @@ Crafty.c('Battle', {
 
     this.attacker = attacker;
     this.attacking_side = attacker.side;
+    this.defending_side = 1 - attacker.side;
 
     this.retreat_constraints = {};
     this.retreat_constraints[Battle.ATTACKER] = new RetreatConstraints(this.at());
     this.retreat_constraints[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
     this.retreat_constraints[Battle.DEFENDER] = new RetreatConstraints(this.at());
     this.retreat_constraints[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
-    //this.attackers = [attacker];
+
     this.prepareBattle();
     Output.usePanel('alerts').printBattleStart(this);
   },
