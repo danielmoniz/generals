@@ -71,7 +71,8 @@ Crafty.c('Grass', {
 // Farmland is open terrain that provides supply
 Crafty.c('Farm', {
   init: function() {
-    this.requires('Terrain, Passable, Color');
+    //this.requires('Terrain, Passable, Color');
+    this.requires('Terrain, Passable, spr_farm');
   },
 
   pillage: function() {

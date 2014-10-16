@@ -384,6 +384,10 @@ Crafty.scene('Loading', function() {
       spr_city: [0, 0],
     });
 
+    Crafty.sprite(32, 'assets_test/farm01.png', {
+      spr_farm: [0, 0],
+    });
+
     Crafty.sprite(32, 'assets/Forest-32.png', {
       spr_tree: [0, 0],
     });
