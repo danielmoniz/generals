@@ -1,3 +1,4 @@
+#battles_container div.battle { margin-bottom: 10px; }
 .battle .title .winning { border: 1px solid green; }
 .battle .title .losing { border: 1px solid red; }
 .battle .title .container { width: 67px; height: 34px; text-align: center; }

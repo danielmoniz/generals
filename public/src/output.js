@@ -167,7 +167,7 @@ Output = {
     return this;
   },
 
-  printBattle: function(battle) {
+  printBattleOld: function(battle) {
     var title = "New battle phase (round {0}): {1}".format(battle.num_turns, this.getBattleStatus(battle));
     var divs = [];
 
@@ -181,19 +181,20 @@ Output = {
     if (battle.finished) conclusion = "Battle finished!";
 
     this.makeReport(divs, title, conclusion);
-    // test!
-    this.printBattleNew(battle);
     return this;
   },
 
-  printBattleNew: function(battle) {
+  printBattle: function(battle) {
     $(this.battles_id).css('display', 'inline-block');
     //var status = this.getBattleStatus(battle);
     var total_troops = battle.getTotalTroops();
-    var attacker_active = total_troops[0].active;
-    var attacker_injured = total_troops[0].injured;
-    var defender_active = total_troops[1].active;
-    var defender_injured = total_troops[1].injured;
+    var attacker_active = total_troops[battle.attacking_side].active;
+    var attacker_injured = total_troops[battle.attacking_side].injured;
+    var attacker_total = total_troops[battle.attacking_side].total;
+    var defender_active = total_troops[battle.defending_side].active;
+    var defender_injured = total_troops[battle.defending_side].injured;
+    var defender_total = total_troops[battle.defending_side].total;
+
     //var num_turns = battle.num_turns;
     var attacker_name = Pretty.Player.name(battle.attacking_side);
     var defender_name = Pretty.Player.name(battle.defending_side);
@@ -261,6 +262,39 @@ Output = {
     if (battle.finished) conclusion = "Battle finished!";
 
     $(this.battles_container_id).append(battle_div);
+
+    // add visual bar indicators after in order properly to get height()
+
+    var max_height = Math.max(attacker_types_div.height(), defender_types_div.height());
+    //var total_troops = battle.getTotalTroops();
+
+    if (attacker_total > defender_total) {
+      var attacker_height = max_height;
+      var defender_height = defender_total / attacker_total * max_height;
+    } else {
+      var defender_height = max_height;
+      var attacker_height = attacker_total / defender_total * max_height;
+    }
+
+    var attacker_active_height = attacker_active / attacker_total * attacker_height;
+    var attacker_injured_height = attacker_injured / attacker_total * attacker_height;
+    var defender_active_height = defender_active / defender_total * defender_height;
+    var defender_injured_height = defender_injured / defender_total * defender_height;
+
+    var space_div = this.createDiv('panel').css('width', '7px');
+
+    var attacker_bar_div = this.createDiv('attacker panel bar_container');
+    var active_bar = this.createDiv('active bar').css('height', '{0}px'.format(attacker_active_height));
+    var injured_bar = this.createDiv('injured bar').css('height', '{0}px'.format(attacker_injured_height));
+    attacker_bar_div.append(active_bar).append(injured_bar);
+
+    var defender_bar_div = this.createDiv('defender panel bar_container');
+    var active_bar = this.createDiv('active bar').css('height', '{0}px'.format(defender_active_height));
+    var injured_bar = this.createDiv('injured bar').css('height', '{0}px'.format(defender_injured_height));
+    defender_bar_div.append(active_bar).append(injured_bar);
+
+    total_stats_div.append(space_div).append(attacker_bar_div).append(defender_bar_div);
+
     return this;
   },
 
