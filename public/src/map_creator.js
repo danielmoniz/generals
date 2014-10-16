@@ -181,11 +181,22 @@ var MapCreator = function(options) {
           var value = Math.random();
 
           if (value >= 1 - probability && !game_object.occupied[x][y]) {
+            // if there is another city adjacent, try again
+            var is_adjacent = false;
+            var current_location = { x: x, y: y };
+            for (var i in city_locations) {
+              if (Utility.getDistance(current_location, city_locations[i]) <= 1.5) {
+                is_adjacent = true;
+                break;
+              }
+            }
+            if (is_adjacent) continue;
+
             num_cities += 1;
             var color = Math.ceil(game_object.height_map[x][y] * 255);
 
             game_object.occupied[x][y] = true;
-            city_locations.push({ x: x, y: y });
+            city_locations.push(current_location);
 
             var side = this.getMapSide(game_object, x);
             var stats = {
