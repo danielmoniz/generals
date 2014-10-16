@@ -380,7 +380,7 @@ Crafty.scene('Loading', function() {
       spr_player: [1, 1],
     });
 
-    Crafty.sprite(32, 'assets_test/city01.jpg', {
+    Crafty.sprite(32, 'assets_test/city02.png', {
       spr_city: [0, 0],
     });
 
