@@ -72,7 +72,7 @@ Crafty.c('Grass', {
 Crafty.c('Farm', {
   init: function() {
     //this.requires('Terrain, Passable, Color');
-    this.requires('Terrain, Passable, spr_farm');
+    this.requires('Terrain, Passable, Color, spr_farm');
   },
 
   pillage: function() {
@@ -100,6 +100,14 @@ Crafty.c('Water', {
 Crafty.c('Bridge', {
   init: function() {
     this.requires('Color, Terrain, Passable, Transportation');
+  },
+});
+
+// Grass is just green, passable terrain
+Crafty.c('SupplyRoute', {
+  init: function() {
+    this.requires('Actor, spr_supply');
+    this.z = 70;
   },
 });
 
@@ -168,6 +176,7 @@ Crafty.c('Road', {
       var tile = Game.terrain[road.getX()][road.getY() + 1];
       return hasRoadConnection(tile);
     }
+
     this.sprite_key = "";
     function booleanToKey(bool_val) {
       var key = bool_val ? 'T' : 'F';
@@ -192,6 +201,9 @@ Crafty.c('Road', {
       } else if (this.getY() == Game.map_grid.height - 1) {
         this.sprite_key = modifyStringIndex(this.sprite_key, 2, 'T');
       }
+
+      var supply_route = Crafty.e('SupplyRoute');
+      supply_route.at(this.at().x, this.at().y);
     }
 
     /*
@@ -208,6 +220,7 @@ Crafty.c('Road', {
       }
     }
     */
+
     function modifyStringIndex(string, index, new_str) {
       return string.substr(0, index) + new_str + string.substr(index + new_str.length);
     }

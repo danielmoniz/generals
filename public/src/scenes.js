@@ -366,7 +366,7 @@ Crafty.scene('Loading', function() {
   // Load our sprite map image
   
   var tile_width = Game.map_grid.tile.width;
-  Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets/jaguar_warrior.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets/jaguar_warrior.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets_test/city04.png'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -380,11 +380,11 @@ Crafty.scene('Loading', function() {
       spr_player: [1, 1],
     });
 
-    Crafty.sprite(32, 'assets_test/city03.png', {
+    Crafty.sprite(32, 'assets_test/city04.png', {
       spr_city: [0, 0],
     });
 
-    Crafty.sprite(32, 'assets_test/farm01.png', {
+    Crafty.sprite(32, 'assets_test/farm02.png', {
       spr_farm: [0, 0],
     });
 
@@ -419,7 +419,8 @@ Crafty.scene('Loading', function() {
       spr_battle: [0, 0],
     });
 
-    Crafty.sprite(32, 'assets/road-dirt-32.png', {
+    //Crafty.sprite(32, 'assets/road-dirt-32.png', {
+    Crafty.sprite(32, 'assets_test/road_textured02.png', {
       spr_road: [0, 1],
       spr_road_horizontal: [0, 0],
       spr_road_vertical: [1, 0],
@@ -432,6 +433,10 @@ Crafty.scene('Loading', function() {
       spr_road_no_bottom: [2, 1],
       spr_road_no_left: [3, 1],
       spr_road_all: [0, 2],
+    });
+
+    Crafty.sprite(32, 'assets_test/supply_route.png', {
+      spr_supply: [0, 0],
     });
 
     Crafty.sprite(32, 'assets/retreat_constraints_32.png', {

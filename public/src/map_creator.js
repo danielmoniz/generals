@@ -223,10 +223,6 @@ var MapCreator = function(options) {
         //var max_y = (1 + y) * vertical_section_height;
         var min_y = Math.round(y * options.map_grid.height / vertical_sections);
         var max_y = Math.round((1 + y) * options.map_grid.height / vertical_sections);
-        console.log("min_y");
-        console.log(min_y);
-        console.log("max_y");
-        console.log(max_y);
 
         var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, min_x, max_x, min_y, max_y);
 
