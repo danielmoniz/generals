@@ -618,6 +618,10 @@ Crafty.c('Unit', {
     this.move_target_path_list = Pathing.getPathList(this.move_target_path);
   },
 
+  pick_side: function(side) {
+    if (side !== undefined) this.side = side;
+  },
+
 });
 
 Crafty.c('Cavalry', {
@@ -655,16 +659,22 @@ Crafty.c('Infantry', {
         injured: 0,
         name: "NAME ME",
         type: 'Infantry',
-        movement: 4,
-        max_sight: 8,
       })
       ;
   },
+});
 
-  pick_side: function(side) {
-    if (side !== undefined) this.side = side;
+Crafty.c('Jaguar Warrior', {
+  init: function() {
+    this.requires('Unit, Collision, Targetable, Movable')
+      //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
+      .attr({
+        quantity: 0,
+        injured: 0,
+        type: 'Jaguar Warrior',
+      })
+      ;
   },
-
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

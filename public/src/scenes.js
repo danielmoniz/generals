@@ -366,7 +366,7 @@ Crafty.scene('Loading', function() {
   // Load our sprite map image
   
   var tile_width = Game.map_grid.tile.width;
-  Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets/jaguar_warrior.png'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -400,6 +400,9 @@ Crafty.scene('Loading', function() {
     });
     Crafty.sprite(tile_width, 'assets/infantry-roman.png', {
       spr_infantry_romans: [0, 0],
+    });
+    Crafty.sprite(tile_width, 'assets/jaguar_warrior.png', {
+      spr_jaguar_warrior: [0, 0],
     });
       /*
       */

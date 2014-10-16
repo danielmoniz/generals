@@ -2,7 +2,7 @@
 var Factions = {
   mongols: {
     name: "Mongols",
-    blurb: "Genghis Khan, under the leadership of his chief general and strategist Subutai, divided their forces into four groups as they began their invasion of Europe.",
+    blurb: "Genghis Khan, under the leadership of his chief general and strategist Subutai, divided their forces into four groups as they began their invasion of Europe. This strategy allowed for a concentration of force at a chosen point, while the allies of their opposition had to remain fixed in place out of worry for their own homelands.",
 
     victory_message: "The {0} have been defeated by the Mongol hordes. It appears that none can resist the might of the warriors from the Steppes.",
     loss_message: "The Mongols have been defeated. Exhausted, their horses run half to death, they return to their homeland and scatter to the steppes, taking what refuge and solace they can find in their old nomadic way of life.",
@@ -84,6 +84,39 @@ var Factions = {
     },
 
     cities: ['Rome', 'Constantinople', 'Antioch', 'Alexandria', 'Ephesus', 'Carthage'],
+  },
+
+  aztecs: {
+    name: 'Mongols',
+    blurb: "Mystery!",
+
+    units: [
+      {
+        name: "Montezuma",
+        type: "Jaguar Warrior",
+        quantity: 3000,
+      },
+      {
+        name: "Greg",
+        type: "Jaguar Warrior",
+        quantity: 3000,
+      },
+      {
+        name: "Cheese",
+        type: "Jaguar Warrior",
+        quantity: 3000,
+      },
+      {
+        name: "Bob McKenzie",
+        type: "Jaguar Warrior",
+        quantity: 3000,
+      },
+    ],
+
+    cities: [],
+    sprites: {
+      "Jaguar Warrior": "spr_jaguar_warrior",
+    },
   },
 
   chinese: {

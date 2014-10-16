@@ -39,6 +39,12 @@ var UnitData = function(type, stats) {
       movement: 4,
     },
 
+    "Jaguar Warrior": {
+      parent: 'Unit',
+      type: 'Jaguar Warrior',
+      movement: 5,
+    },
+
   };
 
   this.setUpEntityData(unit_data, stats);
