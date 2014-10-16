@@ -376,9 +376,14 @@ Crafty.scene('Loading', function() {
     Crafty.sprite(16, 'assets/16x16_generals.png', {
       //spr_tree: [0, 0],
       spr_bush: [1, 0],
-      spr_city: [0, 1],
+      //spr_city: [0, 1],
       spr_player: [1, 1],
     });
+
+    Crafty.sprite(32, 'assets_test/city01.jpg', {
+      spr_city: [0, 0],
+    });
+
     Crafty.sprite(32, 'assets/Forest-32.png', {
       spr_tree: [0, 0],
     });
