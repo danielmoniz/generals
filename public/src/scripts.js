@@ -80,11 +80,14 @@ $(document).ready(function() {
     $("#chat").hide();
   }
 
+  Output.generatePlayableFactions();
   Output.generateInstructions();
 
   // TEST ONLY
   //$("#start-hotseat-button").click();
   //$("input[name=map_size][value=small]").click();
+  //$("input[name=factions_0][value=mongols]").click();
+  //$("input[name=factions_1][value=aztecs]").click();
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();

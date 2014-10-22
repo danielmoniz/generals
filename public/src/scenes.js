@@ -397,7 +397,7 @@ Crafty.scene('Loading', function() {
     }
   });
 
-  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets_test/city04.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets_test/city04.png', 'assets/supply_route.png'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -451,7 +451,7 @@ Crafty.scene('Loading', function() {
       spr_road_all: [0, 2],
     });
 
-    Crafty.sprite(32, 'assets_test/supply_route.png', {
+    Crafty.sprite(32, 'assets/supply_route.png', {
       spr_supply: [0, 0],
     });
 

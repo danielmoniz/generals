@@ -649,6 +649,50 @@ Output = {
     }
   },
 
+  generatePlayableFactions: function() {
+    var options = $("div#faction_selection");
+
+    var playable_factions = [];
+    for (var name in Factions) {
+      var faction = Factions[name];
+      if (!faction.disabled) {
+        playable_factions.push(name);
+      }
+    }
+
+    for (var i=0; i<2; i++) { // assumes at least 2 playable factions
+      var option_set = this.createDiv('option_set');
+      if (i == 0) {
+        option_set.text('Faction (first player)');
+      } else if (i == 1){
+        option_set.text('Faction (second player)');
+      }
+      for (var j in playable_factions) {
+        var faction_name = playable_factions[j];
+        var faction = Factions[faction_name];
+        var option_div = this.createDiv('option');
+
+        var radio_button = $('<input/>', {
+          id: 'player_{0}_faction_selector_{1}'.format(i, faction_name),
+          type: 'radio',
+          name: 'factions_{0}'.format(i),
+          value: faction_name,
+        });
+        var label = $('<label/>'.format(), {
+          text: faction.name,
+        });
+        label.attr('for', radio_button.attr('id'));
+        if (j == i) radio_button.attr('checked', 'checked');
+
+        option_div.append(radio_button);
+        option_div.append(label);
+        option_set.append(option_div);
+      }
+
+      options.append(option_set);
+    }
+  },
+
   generateInstructions: function() {
     this.addTitle('About the Game');
     this.addInstruction('general_intro');

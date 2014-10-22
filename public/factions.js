@@ -108,6 +108,7 @@ var Factions = {
 
   chinese: {
     disabled: true,
+    name: 'Chinese',
     cities: ['Beijing', 'Nanjing', 'Luoyang', "Chang’an (Xi’an)", 'Kaifeng', 'Hangzhou', 'Anyang', 'Zhengzhou'],
   },
 
