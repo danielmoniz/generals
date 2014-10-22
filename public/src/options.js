@@ -5,6 +5,7 @@ if (typeof require !== 'undefined') {
   astar = astar.astar;
   
   locations = require("../locations.js");
+  Factions = require("../factions");
 
 } else {
   window.astar = astar;
@@ -90,14 +91,39 @@ var Options = function() {
       game_object[key] = value;
     }
 
+    game_object.faction_data = Factions;
+
     this.setMapSize(game_object);
+    this.setFactionSprites(game_object);
   };
 
   this.setMapSize = function(options) {
     options.map_grid = options.map_sizes[options.map_size];
   };
 
-}
+  this.setFactionSprites = function(game_object) {
+    for (var side in game_object.factions) {
+      var faction = Factions[game_object.factions[side]];
+
+      var unit_types = [];
+      for (var i in faction.units) {
+        var unit = faction.units[i];
+        if (unit_types.indexOf(unit.type) == -1) {
+          unit_types.push(unit.type);
+        }
+      }
+
+      var sprites = {};
+      for (var i in unit_types) {
+        var sprite_name = 'spr_{0}_{1}'.format(unit_types[i].split(' ').join('_'), faction.name);
+        var sprite_name = sprite_name.toLowerCase();
+        sprites[unit_types[i]] = sprite_name;
+      }
+      game_object.faction_data[game_object.factions[side]].sprites = sprites;
+    }
+  };
+
+};
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports = Options;

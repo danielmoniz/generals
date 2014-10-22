@@ -35,11 +35,6 @@ var Factions = {
       },
     ],
 
-    sprites: {
-      Infantry: "spr_infantry_mongols",
-      Cavalry: "spr_cavalry_mongols",
-    },
-
     cities: ['Avarga', 'Karakorum', 'Dadu'],
   },
 
@@ -78,11 +73,6 @@ var Factions = {
       },
     ],
 
-    sprites: {
-      Infantry: "spr_infantry_romans",
-      Cavalry: "spr_cavalry_romans",
-    },
-
     cities: ['Rome', 'Constantinople', 'Antioch', 'Alexandria', 'Ephesus', 'Carthage'],
   },
 
@@ -114,9 +104,6 @@ var Factions = {
     ],
 
     cities: [],
-    sprites: {
-      "Jaguar Warrior": "spr_jaguar_warrior",
-    },
   },
 
   chinese: {

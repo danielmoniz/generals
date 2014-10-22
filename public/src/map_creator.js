@@ -1,5 +1,4 @@
 if (typeof require !== 'undefined') {
-  Factions = require("../factions");
   Utility = require("./utility");
   Pathing = require("./pathing");
   TerrainData = require("./components/terrain_data");
@@ -205,7 +204,7 @@ var MapCreator = function(options) {
             };
 
             if (side !== undefined) {
-              var faction = Factions[options.factions[side]];
+              var faction = options.faction_data[options.factions[side]];
               var city_name = faction.cities[num_cities - 1];
               if (city_name !== undefined) stats.name = city_name;
             }
@@ -607,7 +606,7 @@ var MapCreator = function(options) {
 
     this.addUnits = function(side, x_value) {
       var units = [];
-      var faction = Factions[options.factions[side]];
+      var faction = options.faction_data[options.factions[side]];
       var units_left = faction.units.length;
       var current_index = 0;
       var column = 0;

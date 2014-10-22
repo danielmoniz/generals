@@ -372,7 +372,8 @@ Crafty.scene('Loading', function() {
   var sprite_files = [];
   var sprite_names = [];
   for (var side in Game.factions) {
-    var faction = Factions[Game.factions[side]];
+    var faction = Game.faction_data[Game.factions[side]];
+
     var sprites = faction.sprites;
     for (var unit_type in sprites) {
       var sprite_name = sprites[unit_type];
