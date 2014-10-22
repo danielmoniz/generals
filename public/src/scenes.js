@@ -376,30 +376,27 @@ Crafty.scene('Loading', function() {
     var sprites = faction.sprites;
     for (var unit_type in sprites) {
       var sprite_name = sprites[unit_type];
-      var file_name = sprite_name.slice(4) + ".png";
-      var target = 'assets/unit_sprites/{0}'.format(file_name);
-      sprite_names.push(sprite_name);
-      sprite_files.push(target);
+      if (sprite_names.indexOf(sprite_name) == -1) {
+        var file_name = sprite_name.slice(4) + ".png";
+        var target = 'assets/unit_sprites/{0}'.format(file_name);
+        sprite_names.push(sprite_name);
+        sprite_files.push(target);
+      }
     }
   }
 
   Crafty.load(sprite_files, function() {
-    console.log("sprite_files");
-    console.log(sprite_files);
 
     for (var i in sprite_files) {
       var sprite_name = sprite_names[i];
       var sprite_file_name = sprite_files[i];
       var sprite_map = {};
       sprite_map[sprite_name] = [0, 0];
-      console.log("sprite_names");
-      console.log(sprite_name);
-      console.log(sprite_file_name);
       Crafty.sprite(32, sprite_file_name, sprite_map);
     }
   });
 
-  Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets/jaguar_warrior.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets_test/city04.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets_test/city04.png'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -430,21 +427,6 @@ Crafty.scene('Loading', function() {
     Crafty.sprite(tile_width, 'assets/cavalry-white-' + tile_width + '.png', {
       spr_cavalry: [0, 0],
       spr_cavalry_white: [0, 0],
-    });
-    Crafty.sprite(tile_width, 'assets/cavalry-mongol.png', {
-      spr_cavalry_mongols: [0, 0],
-    });
-    Crafty.sprite(tile_width, 'assets/cavalry-roman.png', {
-      spr_cavalry_romans: [0, 0],
-    });
-    Crafty.sprite(tile_width, 'assets/infantry-mongol.png', {
-      spr_infantry_mongols: [0, 0],
-    });
-    Crafty.sprite(tile_width, 'assets/infantry-roman.png', {
-      spr_infantry_romans: [0, 0],
-    });
-    Crafty.sprite(tile_width, 'assets/jaguar_warrior.png', {
-      spr_jaguar_warrior: [0, 0],
     });
       /*
       */
