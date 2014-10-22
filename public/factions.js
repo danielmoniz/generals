@@ -87,7 +87,7 @@ var Factions = {
   },
 
   aztecs: {
-    name: 'Mongols',
+    name: 'Aztecs',
     blurb: "Mystery!",
 
     units: [
@@ -120,6 +120,7 @@ var Factions = {
   },
 
   chinese: {
+    disabled: true,
     cities: ['Beijing', 'Nanjing', 'Luoyang', "Chang’an (Xi’an)", 'Kaifeng', 'Hangzhou', 'Anyang', 'Zhengzhou'],
   },
 

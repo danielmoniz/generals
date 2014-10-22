@@ -366,6 +366,39 @@ Crafty.scene('Loading', function() {
   // Load our sprite map image
   
   var tile_width = Game.map_grid.tile.width;
+
+
+  // (pre-)load units
+  var sprite_files = [];
+  var sprite_names = [];
+  for (var side in Game.factions) {
+    var faction = Factions[Game.factions[side]];
+    var sprites = faction.sprites;
+    for (var unit_type in sprites) {
+      var sprite_name = sprites[unit_type];
+      var file_name = sprite_name.slice(4) + ".png";
+      var target = 'assets/unit_sprites/{0}'.format(file_name);
+      sprite_names.push(sprite_name);
+      sprite_files.push(target);
+    }
+  }
+
+  Crafty.load(sprite_files, function() {
+    console.log("sprite_files");
+    console.log(sprite_files);
+
+    for (var i in sprite_files) {
+      var sprite_name = sprite_names[i];
+      var sprite_file_name = sprite_files[i];
+      var sprite_map = {};
+      sprite_map[sprite_name] = [0, 0];
+      console.log("sprite_names");
+      console.log(sprite_name);
+      console.log(sprite_file_name);
+      Crafty.sprite(32, sprite_file_name, sprite_map);
+    }
+  });
+
   Crafty.load(['assets/16x16_generals.png', 'assets/infantry-mongol.png', 'assets/infantry-roman.png', 'assets/cavalry-mongol.png', 'assets/cavalry-roman.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets/jaguar_warrior.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets_test/city04.png'], function() {
     // Once the image is loaded...
 
