@@ -622,23 +622,7 @@ Crafty.c('Unit', {
     if (side !== undefined) this.side = side;
   },
 
-});
-
-Crafty.c('Cavalry', {
-  init: function() {
-    this.requires('Unit, Collision, Targetable, Movable')
-      //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
-      .attr({
-        quantity: 0,
-        injured: 0,
-        name: "NAME ME",
-        type: 'Cavalry',
-        movement: 8,
-        max_sight: 8,
-      })
-      ;
-  },
-
+  /*
   pick_side: function(side) {
     if (side !== undefined) this.side = side;
     if (this.side == 0) {
@@ -647,34 +631,8 @@ Crafty.c('Cavalry', {
       this.addComponent('spr_cavalry');
     }
   },
+  */
 
-});
-
-Crafty.c('Infantry', {
-  init: function() {
-    this.requires('Unit, Collision, Targetable, Movable')
-      //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
-      .attr({
-        quantity: 0,
-        injured: 0,
-        name: "NAME ME",
-        type: 'Infantry',
-      })
-      ;
-  },
-});
-
-Crafty.c('Jaguar Warrior', {
-  init: function() {
-    this.requires('Unit, Collision, Targetable, Movable')
-      //.attr({ quantity: Math.floor(Math.random() * 1000), name: 'Cavalry', })
-      .attr({
-        quantity: 0,
-        injured: 0,
-        type: 'Jaguar Warrior',
-      })
-      ;
-  },
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

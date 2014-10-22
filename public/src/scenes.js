@@ -139,11 +139,29 @@ Crafty.scene('Game', function() {
   }
 
   function buildUnitsFromData(unit_data) {
+    createUnitComponents(unit_data);
+
     for (var side=0; side<2; side++) {
       for (var i=0; i<unit_data[side].length; i++) {
         var unit_stats = unit_data[side][i];
         var unit_object = new UnitData(unit_stats.type, unit_stats);
         var unit = unit_object.render();
+      }
+    }
+  }
+
+  function createUnitComponents(unit_data) {
+    var createdComponents = [];
+    for (var i in unit_data) {
+      for (var j in unit_data[i]) {
+        var unit = unit_data[i][j];
+        if (createdComponents.indexOf(unit.type) > -1) continue;
+        createdComponents.push(unit.type);
+        Crafty.c(unit.type, {
+          init: function() {
+            this.requires('Unit, Collision, Targetable, Movable');
+          },
+        });
       }
     }
   }
@@ -367,7 +385,6 @@ Crafty.scene('Loading', function() {
   
   var tile_width = Game.map_grid.tile.width;
 
-
   // (pre-)load units
   var sprite_files = [];
   var sprite_names = [];
@@ -385,6 +402,14 @@ Crafty.scene('Loading', function() {
       }
     }
   }
+
+  console.log("---------");
+  console.log("before (pre-) loading sprites");
+  console.log("sprite_files");
+  console.log(sprite_files);
+  console.log("sprite_names");
+  console.log(sprite_names);
+  console.log("---------");
 
   Crafty.load(sprite_files, function() {
 
