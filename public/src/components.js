@@ -218,11 +218,14 @@ Crafty.c('Clickable', {
         console.log("Crafty.frame");
         console.log(Crafty.frame());
         if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
+          Action.perform('left click', this, Game.selected);
+          /*
           if (!Game.selected || Game.selected != this) {
             Game.select(this);
           } else {
             Game.deselect();
           }
+          */
         }
         this.ignoreNextMouseUp = false;
         this.resetLeftMouseDown();
