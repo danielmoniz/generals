@@ -105,24 +105,6 @@ Crafty.c('Unit', {
     Output.updateUnitDisplay(this);
   },
 
-  performAction: function(action) {
-    this.turn_action = action;
-    if (action == "pillage") {
-      this.pillage();
-      Victory.updateWillToFight();
-      Output.updateVictoryBar();
-    } else if (action == "sack") {
-      this.pillage();
-      Victory.updateWillToFight();
-      Output.updateVictoryBar();
-    }
-    this.performed_actions.push(action);
-    Crafty.trigger("UpdateActionChoices", this.at());
-    Game.select(this);
-
-    Crafty.trigger('RenderScene');
-  },
-
   pillage: function() {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (local_terrain.has('Farm')) {

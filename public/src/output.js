@@ -116,34 +116,6 @@ Output = {
       unit_div.append(supply_div);
     }
 
-    if (unit.action_choices) {
-      var actions_div = this.createDiv("actions unit-item");
-      for (var i in unit.action_choices) {
-        var action = unit.action_choices[i];
-        var action_button = document.createElement('input');
-        action_button.type = "button";
-        action_button.value = Utility.capitalizeFirstLetter(action);
-        action_button = $(action_button);
-
-        var action_div = this.createDiv("action")
-        .val(action)
-        .addClass(action)
-        .click(function() {
-            // get unit_id from parent
-            var unit_id = parseInt($(this).closest(".unit").attr("unit_id"));
-            var unit = Crafty(unit_id);
-            var action = $(this).val();
-            unit.performAction(action);
-            return false;
-        });
-        action_div.append(action_button);
-        actions_div.append(action_div);
-      }
-      if (unit.action_choices.length > 0) {
-        unit_div.append(actions_div);
-      }
-    }
-
     this.makeReport([unit_div]);
   },
 
@@ -886,7 +858,7 @@ Output = {
           var unit_id = parseInt($(this).closest(".unit").attr("unit_id"));
           var unit = Crafty(unit_id);
           var action = $(this).val();
-          unit.performAction(action);
+          Action.perform('unit action', unit, action);
           return false;
       });
       action_div.append(action_button);
@@ -904,6 +876,18 @@ Output = {
 
   clearColocatedUnits: function() {
     $(".colocated").removeClass("colocated");
+  },
+
+  notYourMove: function() {
+    var next_player_turn = Pretty.Turn.nextPlayerTurn();
+    var player_name = Pretty.Player.name(next_player_turn);
+    var message = "";
+    if (Pretty.Turn.isPlayerTurn()) {
+      message = "{0} move!".format(player_name);
+    } else {
+      message = "{0} turn is next!".format(player_name);
+    }
+    Output.message(message);
   },
 
 }

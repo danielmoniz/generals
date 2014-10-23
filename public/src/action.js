@@ -55,17 +55,66 @@ var Action = {
 
   // Action functions ----------------------------
 
-  leftClick: function(object, selected) {
+  leftClick: function(entity, selected) {
     console.log("arguments");
     console.log(arguments);
-    if (!selected || selected != object) {
-      Game.select(object);
+    if (!selected || selected != entity) {
+      Game.select(entity);
     } else {
       Game.deselect();
     }
   },
 
-  rightClick: function() {
+  rightClick: function(entity, e, double_hold) {
+    if (Game.player !== undefined && Game.player == Game.selected.side) {
+      if (entity.double_right_mouse_went_down_here && double_hold) {
+        Game.selected.prepareMove(entity.at().x, entity.at().y, false, 'queue move', 'use last');
+
+      } else if (entity.right_mouse_went_down_here) {
+        if (e.shiftKey) {
+          Game.selected.prepareMove(entity.at().x, entity.at().y, false, true);
+        } else {
+          Game.selected.prepareMove(entity.at().x, entity.at().y);
+        }
+      }
+    } else {
+      Output.notYourMove();
+    }
+
+    entity.resetRightMouseDown();
+  },
+
+  unitAction: function(unit, action) {
+    unit.turn_action = action;
+    if (action == "pillage") {
+      unit.pillage();
+      Victory.updateWillToFight();
+      Output.updateVictoryBar();
+    } else if (action == "sack") {
+      unit.pillage();
+      Victory.updateWillToFight();
+      Output.updateVictoryBar();
+    }
+
+    unit.performed_actions.push(action);
+    Crafty.trigger("UpdateActionChoices", unit.at());
+    Game.select(unit);
+  },
+
+  select: function(clickable_object) {
+    if (Game.selected) Game.deselect();
+    Game.selected = clickable_object;
+    if (Game.selected.side == Game.turn) Game.player_selected[Game.turn] = clickable_object;
+    Game.select_highlight = Entity.create('Selected');
+    if (!Game.selected.at) return;
+    var spot = Game.selected.at();
+    Game.select_highlight.at(spot.x, spot.y);
+
+    if (Game.selected.select) {
+      Game.selected.select();
+    } else {
+      throw "NotImplementedError: select() for {0}".format(Game.selected.type);
+    }
   },
 
   testAction: function(test1, test2, test3) {

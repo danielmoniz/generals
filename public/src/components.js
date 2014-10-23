@@ -215,22 +215,11 @@ Crafty.c('Clickable', {
       .bind('MouseOut', this.tabletClearDoubleHoldClick)
       .bind('MouseDown', this.setLeftMouseDown)
       .bind('MouseUp', function(e) { 
-        console.log("Crafty.frame");
-        console.log(Crafty.frame());
         if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
           Action.perform('left click', this, Game.selected);
-          /*
-          if (!Game.selected || Game.selected != this) {
-            Game.select(this);
-          } else {
-            Game.deselect();
-          }
-          */
         }
         this.ignoreNextMouseUp = false;
         this.resetLeftMouseDown();
-
-        Crafty.trigger('RenderScene');
       })
     ;
   },
@@ -287,12 +276,7 @@ Crafty.c('Selected', {
 
 Crafty.c('Movable', {
   init: function() {
-    this.requires('Clickable')
-      .bind('MouseUp', function(e) {
-        if (Game.selected && e.mouseButton == Crafty.mouseButtons.RIGHT) {
-        }
-      })
-    ;
+    this.requires('Clickable');
   },
 });
 
@@ -311,36 +295,7 @@ Crafty.c('Receivable', {
   },
 
   rightClick: function(e, double_hold) {
-
-    if (Game.player !== undefined && Game.player == Game.selected.side) {
-      if (this.double_right_mouse_went_down_here && double_hold) {
-        Game.selected.prepareMove(this.at().x, this.at().y, false, 'queue move', 'use last');
-      } else if (this.right_mouse_went_down_here) {
-        if (e.shiftKey) {
-          Game.selected.prepareMove(this.at().x, this.at().y, false, true);
-        } else {
-          if (Game.selected.together(this)) {
-            console.log("Already there!");
-          }
-          Game.selected.prepareMove(this.at().x, this.at().y);
-        }
-      }
-
-    } else {
-      var next_player_turn = Pretty.Turn.nextPlayerTurn();
-      var player_name = Pretty.Player.name(next_player_turn);
-      var message = "";
-      if (Pretty.Turn.isPlayerTurn()) {
-        message = "{0}'s move!".format(player_name);
-      } else {
-        message = "{0}'s turn is next!".format(player_name);
-      }
-      Output.message(message);
-    }
-
-    this.resetRightMouseDown();
-
-    Crafty.trigger('RenderScene');
+    Action.perform('right click', this, e, double_hold);
   },
 
   setRightMouseDown: function() {

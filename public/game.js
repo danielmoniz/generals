@@ -35,19 +35,7 @@ Game = {
   selected: undefined,
 
   select: function(clickable_object) {
-    if (this.selected) this.deselect();
-    this.selected = clickable_object;
-    if (this.selected.side == this.turn) this.player_selected[this.turn] = clickable_object;
-    this.select_highlight = Entity.create('Selected');
-    if (!this.selected.at) return;
-    var spot = this.selected.at();
-    this.select_highlight.at(spot.x, spot.y);
-    if (this.selected.select) {
-      this.selected.select();
-    } else {
-      throw "NotImplementedError: select() for {0}".format(this.selected.type);
-    }
-    Crafty.trigger('RenderScene');
+    Action.perform('select', clickable_object);
   },
 
   deselect: function() {
