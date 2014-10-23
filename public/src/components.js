@@ -215,6 +215,8 @@ Crafty.c('Clickable', {
       .bind('MouseOut', this.tabletClearDoubleHoldClick)
       .bind('MouseDown', this.setLeftMouseDown)
       .bind('MouseUp', function(e) { 
+        console.log("Crafty.frame");
+        console.log(Crafty.frame());
         if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
           if (!Game.selected || Game.selected != this) {
             Game.select(this);
@@ -224,6 +226,8 @@ Crafty.c('Clickable', {
         }
         this.ignoreNextMouseUp = false;
         this.resetLeftMouseDown();
+
+        Crafty.trigger('RenderScene');
       })
     ;
   },
@@ -299,6 +303,8 @@ Crafty.c('Receivable', {
           this.rightClick(e);
         }
         this.resetDoubleRightMouseDown();
+
+        Crafty.trigger('RenderScene');
       })
     ;
   },

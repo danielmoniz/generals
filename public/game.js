@@ -38,7 +38,7 @@ Game = {
     if (this.selected) this.deselect();
     this.selected = clickable_object;
     if (this.selected.side == this.turn) this.player_selected[this.turn] = clickable_object;
-    this.select_highlight = Crafty.e('Selected');
+    this.select_highlight = Entity.create('Selected');
     if (!this.selected.at) return;
     var spot = this.selected.at();
     this.select_highlight.at(spot.x, spot.y);
@@ -47,6 +47,7 @@ Game = {
     } else {
       throw "NotImplementedError: select() for {0}".format(this.selected.type);
     }
+    Crafty.trigger('RenderScene');
   },
 
   deselect: function() {
@@ -123,6 +124,7 @@ Game = {
 
     Output.updateRetreatBlocks();
 
+    Crafty.trigger('RenderScene');
   },
 
   end: function(winner) {
@@ -209,6 +211,7 @@ Game = {
 
   // initialize and start our game
   start: function(game_type, options, map, sendMovesCallback) {
+    Crafty.timer.FPS(0);
     if (!Game.options) Game.options = {};
     var options_obj = new Options();
     options_obj.setOptions(options, this);

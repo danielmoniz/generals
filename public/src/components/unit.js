@@ -1,7 +1,7 @@
 
 var Unit = {
   getUnitsBySide: function(side) {
-    var units = Crafty('Unit').get();
+    var units = Entity.get('Unit');
     var friendly_units = [];
     var enemy_units = [];
     for (var i=0; i<units.length; i++) {
@@ -33,6 +33,9 @@ var Unit = {
 
 }
 
+//console.log("Component.create");
+//console.log(Component.create);
+//Component.create('Unit', {
 Crafty.c('Unit', {
   init: function() {
     this.requires('Actor, Targetable')
@@ -117,6 +120,7 @@ Crafty.c('Unit', {
     Crafty.trigger("UpdateActionChoices", this.at());
     Game.select(this);
 
+    Crafty.trigger('RenderScene');
   },
 
   pillage: function() {

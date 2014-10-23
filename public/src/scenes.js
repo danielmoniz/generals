@@ -11,7 +11,7 @@ Crafty.scene('Game', function() {
     for (var i=0; i<section_positions.length - 1; i++) {
       var x = section_positions[i];
       for (var y=0; y<Game.map_grid.height; y++) {
-        Crafty.e("Divider").at(x, y);
+        Entity.create("Divider").at(x, y);
       }
     }
   }
@@ -306,6 +306,9 @@ Crafty.scene('Game', function() {
   this.player = Crafty.e('PlayerCharacter');
   this.player.at(0, 0);
 
+  // rendering the scene should be the last thing that happens
+  Crafty.trigger('RenderScene');
+
   function startNewGame() {
 
     var map_creator = new MapCreator();
@@ -380,6 +383,7 @@ Crafty.scene('Loading', function() {
     .attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
     .css($text_css)
     ;
+    Crafty.trigger('RenderScene');
 
   // Load our sprite map image
   
