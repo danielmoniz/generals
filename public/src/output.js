@@ -2,6 +2,9 @@ Output = {
   element_id: "#info-panel",
   main_element_id: "#info-panel",
   units_panel: "#units-panel",
+  other_units_panel: "#other-units-panel",
+  unit_count_panel: "#unit-count-panel",
+  terrain_panel: "#terrain-panel",
   message_element_id: "#message-bar",
   alerts_element_id: "#alerts-panel",
   alerts_container_element_id: "#alerts-container",
@@ -34,6 +37,7 @@ Output = {
       turn_count: "#turn-count",
       player: "#player",
       message: this.message_element_id,
+      terrain: this.terrain_panel,
     };
     if (panels[panel] === undefined) {
       throw "BadPanelName: Panel name did not correspond to an existing panel.";
@@ -58,7 +62,6 @@ Output = {
   },
 
   print: function(is_unit, unit_id) {
-    //this.clear();
     this.report(this.buffer, is_unit, unit_id);
     this.buffer = [];
     return this;
@@ -425,22 +428,31 @@ Output = {
   },
 
   printTerrain: function(terrain) {
-    if (terrain.name !== undefined) Output.push(terrain.name);
-    Output.push(terrain.type);
-    if (terrain.has('Impassable')) Output.push("(Impassable)");
+    $(this.terrain_panel).empty();
+    var output = [];
+    if (terrain.name !== undefined) output.push(terrain.name);
+    output.push(terrain.type);
+    if (terrain.has('Impassable')) output.push("(Impassable)");
     if (terrain.has("Farm")) {
       if (terrain.pillaged) {
-        Output.pushLast(" (pillaged)");
+        output[output.length -1] += " (pillaged)";
       }
     }
     if (terrain.has("City")) {
       if (terrain.supply_remaining > 0) {
-        Output.push("Supply: {0}".format(terrain.supply_remaining));
+        output.push("Supply: {0}".format(terrain.supply_remaining));
       } else {
-        Output.push("Sacked!");
+        output.push("Sacked!");
       }
     }
-    Output.print();
+
+    var output_html = "";
+    for (var i in output) {
+      console.log("i");
+      console.log(i);
+      output_html += output[i] + "<br />";
+    }
+    $(this.terrain_panel).append(output_html);
   },
 
   reportAttrition: function(unit, units_lost) {
@@ -453,15 +465,25 @@ Output = {
   },
 
   printUnitsPresent: function(unit, other_units) {
-    var total = { active: 0, injured: 0, total: 0, };
-    var all_units = other_units.concat([unit]);
-    for (var i in all_units) {
-      var unit = all_units[i];
-      total['active'] += unit.getActive();
-      total['injured'] += unit.quantity - unit.getActive();
-      total['total'] += unit.quantity;
+    $(this.other_units_panel).empty();
+
+    var units = other_units;
+    if (unit.side != Game.player) {
+      var units = other_units.concat([unit]);
     }
-    var title = Pretty.Unit.unitsPresentTitle(total.active, total.injured, total.total);
+    // sort units by rank for visual consistency
+    units.sort(function(a, b) {
+      return a.rank - b.rank;
+    });
+    for (var i in units) {
+      var unit_div = this.createStandardUnitDiv(units[i]);
+      $(this.other_units_panel).append(unit_div);
+    }
+
+    this.selectUnits([unit]);
+    this.colocateEnemy(other_units);
+
+    /*
     var divs = [];
 
     for (var i=0; i<other_units.length; i++) {
@@ -475,7 +497,26 @@ Output = {
     }
 
     this.makeReport(divs, title);
+    */
     return this;
+  },
+
+  printTotalUnitsPresent: function(selected_unit, other_units) {
+    $(this.unit_count_panel).empty();
+
+    var total = { active: 0, injured: 0, total: 0, };
+    var all_units = other_units.concat([selected_unit]);
+    for (var i in all_units) {
+      var unit = all_units[i];
+      total['active'] += unit.getActive();
+      total['injured'] += unit.quantity - unit.getActive();
+      total['total'] += unit.quantity;
+    }
+
+    var title = Pretty.Unit.unitsPresentTitle(total.active, total.injured, total.total);
+    //var title = "Units present:";
+    $(this.unit_count_panel).append("{0}<br />".format(Pretty.Unit.unitsPresentTitle()));
+    $(this.unit_count_panel).append(Pretty.Unit.unitsPresent(total.active, total.injured, total.total));
   },
 
   updateStatusBar: function() {
@@ -780,6 +821,7 @@ Output = {
       var side = Game.player;
     }
     $(this.units_panel).empty();
+    $(this.other_units_panel).empty();
 
     var units = Unit.getFriendlyUnits(side);
     for (var i in units) {
@@ -801,12 +843,17 @@ Output = {
     }
   },
 
-  colocate: function(units) {
+  colocate: function(units, type) {
+    if (type === undefined) type = 'colocated';
     for (var i in units) {
       var unit = units[i];
       var unit_div = this.getUnitDiv(unit);
-      unit_div.addClass('colocated');
+      unit_div.addClass(type);
     }
+  },
+
+  colocateEnemy: function(units) {
+    this.colocate(units, 'colocatedEnemy');
   },
 
   getUnitDiv: function(unit) {

@@ -142,46 +142,27 @@ Crafty.c('Unit', {
 
     if (this.movement_path) highlightPath(this.movement_path);
 
-    if (!this.battle) {
-      var other_units_present = this.getPresentUnits(true);
-      if (other_units_present.length > 0) {
-        Output.colocate(other_units_present);
+    var other_units_present = this.getPresentUnits(true);
+    if (other_units_present.length > 0) {
+      Output.colocate(other_units_present);
 
-      }
-      var enemy_units_present = [];
-      for (var i in other_units_present) {
-        var unit = other_units_present[i];
-        if (unit.side != Game.player) {
-          enemy_units_present.push(unit);
-        }
-      }
-      Output.printUnitsPresent(this, enemy_units_present);
     }
+    var enemy_units_present = [];
+    for (var i in other_units_present) {
+      var unit = other_units_present[i];
+      if (unit.side != Game.player) {
+        enemy_units_present.push(unit);
+      }
+    }
+    Output.printUnitsPresent(this, enemy_units_present);
+    Output.printTotalUnitsPresent(this, other_units_present);
   },
 
   getQuantity: function() {
     return this.quantity;
   },
 
-  // @TODO @strategy This is a perfect use-case for strategy pattern!
   report: function() {
-    if (Game.type == Game.types.HOTSEAT) {
-      this.reportHotseat();
-    } else {
-      this.reportOnline();
-    }
-  },
-
-  reportHotseat: function() {
-    if (Game.turn != this.side) {
-      Output.printSingleUnit(this);
-    }
-  },
-
-  reportOnline: function() {
-    if (Game.turn_count < 0 || Game.player != this.side) {
-      Output.printSingleUnit(this);
-    }
   },
 
   updateStatus: function() {

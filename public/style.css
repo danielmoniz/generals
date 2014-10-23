@@ -53,11 +53,17 @@ div#instructions ul { list-style-type: disc; }
 #save-output { color:white; }
 #menu-toggle-button { display: none; }
 
-#units-panel { margin: 0 0 10px 0; }
-#units-panel .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
+.unit-panel { margin: 0 0 10px 0; }
+.unit-panel .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
 #alerts-panel .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
-#units-panel .unit.selected { border: 2px solid purple; }
-#units-panel .unit.colocated { border: 2px solid green; }
+.unit-panel .unit.selected { border: 2px solid purple; }
+.unit-panel .unit.colocated { border: 2px solid green; }
+.unit-panel .unit.colocatedEnemy { border: 2px solid red; }
+
+/*
+#other-units-panel { margin: 0 0 10px 0; }
+*/
+
 .unit .unit-item { display: inline-block; margin-right: 0px; }
 .unit .square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
 .unit .supply { vertical-align:top; color: black; }

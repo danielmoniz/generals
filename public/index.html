@@ -73,7 +73,15 @@
 	<div id="message-bar"></div>
       </div>
 
-      <div id="units-panel" class="panel">
+      <div id="units-panel" class="unit-panel panel">
+      </div>
+      <div id="between-panel" class="panel">
+	<div id="terrain-panel">
+	</div>
+	<div id="unit-count-panel">
+	</div>
+      </div>
+      <div id="other-units-panel" class="unit-panel panel">
       </div>
       <div id="info-panel" class="panel">
       </div>
@@ -91,7 +99,8 @@
 	    <input type="checkbox" name="fog_of_war" checked>Fog of war</input>
 	  </div>
 	  <div class="option">
-	    <input type="radio" name="map_size" value="large" checked>Large</input>
+	    <input type="radio" name="map_size" value="large">Large</input>
+	    <input type="radio" name="map_size" value="medium" checked>Medium</input>
 	    <input type="radio" name="map_size" value="small">Small</input>
 	    <input type="radio" name="map_size" value="tiny">Tiny</input>
 	    <!--

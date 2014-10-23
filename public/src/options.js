@@ -38,12 +38,17 @@ var Options = function() {
         },
         tiny: {
           width: 15,
-          height: 9,
+          height: 8,
           tile: tile,
         },
         small: {
           width: 25,
           height: 15,
+          tile: tile,
+        },
+        medium: {
+          width: 33,
+          height: 19,
           tile: tile,
         },
         large: {
