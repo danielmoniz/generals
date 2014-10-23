@@ -31,6 +31,16 @@ var Options = function() {
       factions: ["mongols", "romans"],
 
       map_sizes: {
+        miniature: {
+          width: 10,
+          height: 6,
+          tile: tile,
+        },
+        tiny: {
+          width: 15,
+          height: 9,
+          tile: tile,
+        },
         small: {
           width: 25,
           height: 15,
