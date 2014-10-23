@@ -303,8 +303,6 @@ Crafty.c('Receivable', {
           this.rightClick(e);
         }
         this.resetDoubleRightMouseDown();
-
-        Crafty.trigger('RenderScene');
       })
     ;
   },
@@ -338,6 +336,8 @@ Crafty.c('Receivable', {
     }
 
     this.resetRightMouseDown();
+
+    Crafty.trigger('RenderScene');
   },
 
   setRightMouseDown: function() {
