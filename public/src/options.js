@@ -112,6 +112,8 @@ var Options = function() {
           unit_types.push(unit.type);
         }
       }
+      console.log("unit_types");
+      console.log(unit_types);
 
       var sprites = {};
       for (var i in unit_types) {
@@ -119,8 +121,15 @@ var Options = function() {
         var sprite_name = sprite_name.toLowerCase();
         sprites[unit_types[i]] = sprite_name;
       }
+      console.log("sprites");
+      console.log(sprites);
       game_object.faction_data[game_object.factions[side]].sprites = sprites;
     }
+    console.log("-----------");
+    console.log("game_object.faction_data[game_object.factions[0]].sprites");
+    console.log(game_object.faction_data[game_object.factions[0]].sprites);
+    console.log("game_object.faction_data[game_object.factions[1]].sprites");
+    console.log(game_object.faction_data[game_object.factions[1]].sprites);
   };
 
 };

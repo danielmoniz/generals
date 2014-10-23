@@ -423,6 +423,8 @@ Crafty.scene('Loading', function() {
       var sprite_map = {};
       sprite_map[sprite_name] = [0, 0];
       Crafty.sprite(32, sprite_file_name, sprite_map);
+      console.log("sprite_file_name");
+      console.log(sprite_file_name);
     }
   });
 
