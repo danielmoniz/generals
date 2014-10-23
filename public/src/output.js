@@ -411,6 +411,10 @@ Output = {
     return img;
   },
 
+  clearCounts: function() {
+    $(this.unit_count_panel).empty();
+  },
+
   clearMain: function() {
     $(this.main_element_id).empty();
     return this;
@@ -424,6 +428,7 @@ Output = {
     $(this.battles_id).hide();
     $(this.battles_id).hide();
     $(this.battles_container_id).empty();
+    $(this.unit_count_panel).empty();
     return this;
   },
 
@@ -482,22 +487,6 @@ Output = {
 
     this.selectUnits([unit]);
     this.colocateEnemy(other_units);
-
-    /*
-    var divs = [];
-
-    for (var i=0; i<other_units.length; i++) {
-      var unit = other_units[i];
-      var unit_div = this.createStandardUnitDiv(unit, "sub-report");
-      if (unit.battle) {
-        var battle = unit.isBattlePresent();
-        unit_div.append(this.createBattleDiv(battle.getId(), Pretty.Unit.inBattle()));
-      }
-      divs.push(unit_div);
-    }
-
-    this.makeReport(divs, title);
-    */
     return this;
   },
 
@@ -508,13 +497,13 @@ Output = {
     var all_units = other_units.concat([selected_unit]);
     for (var i in all_units) {
       var unit = all_units[i];
+      if (unit.side != selected_unit.side) continue;
       total['active'] += unit.getActive();
       total['injured'] += unit.quantity - unit.getActive();
       total['total'] += unit.quantity;
     }
 
     var title = Pretty.Unit.unitsPresentTitle(total.active, total.injured, total.total);
-    //var title = "Units present:";
     $(this.unit_count_panel).append("{0}<br />".format(Pretty.Unit.unitsPresentTitle()));
     $(this.unit_count_panel).append(Pretty.Unit.unitsPresent(total.active, total.injured, total.total));
   },

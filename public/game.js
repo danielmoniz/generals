@@ -40,7 +40,7 @@ Game = {
 
   deselect: function() {
     Crafty.trigger("DimPaths");
-    Output.clearMain();
+    Output.clearCounts();
     Output.clearUnitsPanelSelect();
     //Output.clearMessage();
     if (this.selected) {
