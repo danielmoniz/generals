@@ -117,6 +117,18 @@ var Action = {
     }
   },
 
+  nextTurn: function() {
+    if (Game.type == Game.types.ONLINE) {
+      Game.nextTurnOnline()
+    } else if (Game.type == Game.types.HOTSEAT) {
+      Game.nextTurn();
+    } else {
+      throw new Error(
+        'NotImplementedError',
+        'Game type {0} has no nextTurn function.'.format(Game.type));
+    }
+  },
+
   testAction: function(test1, test2, test3) {
     console.log("test1");
     console.log(test1);

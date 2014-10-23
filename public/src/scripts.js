@@ -65,13 +65,7 @@ $(document).ready(function() {
   });
 
   $("#next-turn").click(function() {
-    //if (Game.type == Game.types.ONLINE && Game.turn % 1 == 0) {
-    if (Game.type == Game.types.ONLINE) {
-      Game.nextTurnOnline()
-    } else {
-      Game.nextTurn();
-    }
-
+    Action.perform('next turn');
     $(this).blur();
     return false;
   });
@@ -87,7 +81,7 @@ $(document).ready(function() {
   //$("#start-hotseat-button").click();
   //$("input[name=map_size][value=small]").click();
   //$("input[name=factions_0][value=mongols]").click();
-  //$("input[name=factions_1][value=aztecs]").click();
+  //$("input[name=factions_1][value=romans]").click();
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
