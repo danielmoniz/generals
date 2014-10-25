@@ -44,6 +44,15 @@ var UnitData = function(type, stats) {
       parent: 'Unit',
       type: 'Jaguar Warrior',
       movement: 5,
+      combat_ability: 1.2,
+    },
+
+    "Scout": {
+      parent: 'Unit',
+      type: 'Jaguar Warrior',
+      movement: 6,
+      combat_ability: 0.5,
+      max_sight: 9,
     },
 
   };

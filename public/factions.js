@@ -84,26 +84,34 @@ var Factions = {
       {
         name: "Montezuma",
         type: "Jaguar Warrior",
-        quantity: 3000,
+        quantity: 5000,
       },
       {
-        name: "Greg",
+        name: "Huitzilopochtli",
         type: "Jaguar Warrior",
-        quantity: 3000,
+        quantity: 5000,
+      },
+      /*
+      {
+        name: "Cuauhtémoc",
+        type: "Jaguar Warrior",
+        quantity: 1000,
+      },
+      */
+      {
+        name: "Popocatepetl",
+        type: "Scout",
+        quantity: 1000,
       },
       {
-        name: "Cheese",
-        type: "Jaguar Warrior",
-        quantity: 3000,
-      },
-      {
-        name: "Bob McKenzie",
-        type: "Jaguar Warrior",
-        quantity: 3000,
+        name: "Ahuitzotl",
+        type: "Scout",
+        quantity: 1000,
       },
     ],
 
-    cities: [],
+    cities: ['Tenochtitlan', 'Teotihuacan', 'Tlatelolco', 'Texcoco', 'Tlaxcala', 'Calixtlahuaca', 'Xochicalco', 'Tlacopan', 'Atzcapotzalco', 'Tzintzuntzen', 'Malinalco', 'Tula', 'Tamuin', 'Teayo', 'Cempoala', 'Chalco', 'Tlalmanalco', 'Ixtapaluca', 'Huexotla', 'Tepexpan', 'Tepetlaoxtoc', 'Chiconautla', 'Zitlaltepec', 'Coyotepec', 'Tequixquiac', 'Jilotzingo', 'Tlapanaloya', 'Tultitan', 'Ecatepec', 'Coatepec', 'Chalchiuites', 'Chiauhita', 'Chapultepec', 'Itzapalapa', 'Ayotzinco',],
+
   },
 
   chinese: {
