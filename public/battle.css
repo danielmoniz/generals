@@ -1,4 +1,6 @@
 #battles_container div.battle { margin-bottom: 10px; }
+.battle_container { border: 2px solid transparent; }
+
 .battle .title .winning { border: 1px solid green; }
 .battle .title .losing { border: 1px solid red; }
 .battle .title .container { width: 67px; height: 34px; text-align: center; }
@@ -16,3 +18,7 @@
 .battle .bar { height: 100%; width: 9px; }
 .battle .active { background-image:url("assets/green-supply.png"); }
 .battle .injured.bar { border-top: 0; background-image:url("assets/colour_bar-yellow.png"); }
+
+.battle .unit { border: 1px solid transparent; }
+.battle .unit.new { border: 1px solid whitesmoke; }
+.battle_container.selected { border: 2px solid purple; }

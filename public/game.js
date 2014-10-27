@@ -42,6 +42,7 @@ Game = {
     Crafty.trigger("DimPaths");
     Output.clearCounts();
     Output.clearUnitsPanelSelect();
+    Output.clearBattlesPanelSelect();
     //Output.clearMessage();
     if (this.selected) {
       delete this.selected;
@@ -99,6 +100,10 @@ Game = {
     Output.updateStatusBar();
 
     if (this.type == this.types.HOTSEAT) {
+      Output.printBattles();
+    }
+
+    if (this.type == this.types.HOTSEAT) {
       this.deselect();
     }
 
@@ -147,6 +152,7 @@ Game = {
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       this.nextTurn();
     }
+    Output.printBattles();
   },
 
   updateOnlineGame: function(moves, turn_count) {

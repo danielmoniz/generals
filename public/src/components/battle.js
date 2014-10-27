@@ -184,11 +184,25 @@ Crafty.c('Battle', {
       this.num_turns = 0;
   },
 
+  customSelect: function() {
+    // select current player's unit in battle
+    if (this.attacking_side == Game.player) {
+      var units = this.attackers;
+    } else if (this.defending_side == Game.player) {
+      var units = this.defenders;
+    } else {
+      return;
+    }
+
+    Game.select(units[0]);
+    Output.selectBattles([this]);
+  },
+
   nextTurn: function() {
     if (Game.turn % 1 == 0) this.resolve();
   },
 
-  units_in_combat: function() {
+  unitsInCombat: function() {
     var units = Crafty('Unit').get();
     var units_in_combat = [];
     for (var i=0; i<units.length; i++) {
@@ -199,7 +213,7 @@ Crafty.c('Battle', {
   },
 
   prepareBattle: function() {
-    var units_in_combat = this.units_in_combat();
+    var units_in_combat = this.unitsInCombat();
     var attacking_side = this.attacking_side;
     this.attackers = units_in_combat.filter(function(unit) {
       return unit.side == attacking_side;
@@ -230,12 +244,12 @@ Crafty.c('Battle', {
     this.retreat_constraints[Battle.DEFENDER] = new RetreatConstraints(this.at());
     this.retreat_constraints[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
 
+    this.new_units = [];
     this.prepareBattle();
-    Output.usePanel('alerts').printBattleStart(this);
   },
 
   end: function() {
-    var units_in_combat = this.units_in_combat();
+    var units_in_combat = this.unitsInCombat();
     for (var i=0; i < units_in_combat.length; i++) {
       units_in_combat[i].battle_finished();
     }
@@ -256,13 +270,17 @@ Crafty.c('Battle', {
 
     this.retreat_constraints[Battle.ATTACKER].addUnit(battle_side, unit.last_location);
     this.retreat_constraints[Battle.DEFENDER].addUnit(battle_side, unit.last_location);
-    console.log("this.retreat_constraints");
-    console.log(this.retreat_constraints);
 
-    Output.usePanel('alerts').printBattleJoin(this, unit);
+    if (this.num_turns > 0) {
+      this.new_units.push(unit);
+    }
   },
 
-  unitDead: function(unit) {
+  resetNewUnits: function() {
+    this.new_units = [];
+  },
+
+  removeUnit: function(unit) {
     if (unit.battle_side == Battle.ATTACKER) {
       var units = this.attackers;
       if (this.attacker && this.attacker.is && this.attacker.is(unit)) delete this.attacker;
@@ -282,11 +300,15 @@ Crafty.c('Battle', {
     }
   },
 
+  unitDead: function(unit) {
+    this.removeUnit(unit);
+  },
+
   retreat: function(unit) {
     //unit.morale += 1;
     var attackers = this.attackers;
     var defenders = this.defenders;
-    var losses = this.calculateLosses(attackers, defenders);
+    var losses = Battle.calculateTotalLosses(this, attackers, defenders);
 
     var attackers_quantity = Battle.getQuantity(attackers);
     var defenders_quantity = Battle.getQuantity(defenders);
@@ -313,10 +335,11 @@ Crafty.c('Battle', {
       }
     }
 
+    this.removeUnit(unit);
+
     unit.battle_finished();
     if (!this.isBattleActive()) {
       this.end();
-      Output.usePanel('alerts').printBattle(this);
     }
     return num_losses;
   },
@@ -333,8 +356,6 @@ Crafty.c('Battle', {
       this.end();
       Victory.updateWillToFight();
     }
-
-    Output.usePanel('alerts').printBattle(this);
   },
 
   isBattleActive: function() {
@@ -370,7 +391,6 @@ Crafty.c('Battle', {
   },
 
   report: function() {
-    //Output.usePanel('alerts').printBattle(this);
   },
 
   getPresentUnits: function() {

@@ -146,7 +146,7 @@ Output = {
     var title = "New battle phase (round {0}): {1}".format(battle.num_turns, this.getBattleStatus(battle));
     var divs = [];
 
-    var units = battle.units_in_combat();
+    var units = battle.unitsInCombat();
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
       var unit_div = this.createStandardUnitDiv(unit, "sub-report");
@@ -157,6 +157,13 @@ Output = {
 
     this.makeReport(divs, title, conclusion);
     return this;
+  },
+
+  printBattles: function() {
+    var battles = Crafty("Battle").get();
+    for (var i in battles) {
+      this.printBattle(battles[i]);
+    }
   },
 
   printBattle: function(battle) {
@@ -174,7 +181,7 @@ Output = {
     var attacker_name = Pretty.Player.name(battle.attacking_side);
     var defender_name = Pretty.Player.name(battle.defending_side);
 
-    var battle_div = this.createDiv('battle');
+    var battle_div = this.createDiv('battle battle_container');
 
     // TITLE DIV CONTENTS
     var title_div = this.createDiv('title');
@@ -212,12 +219,13 @@ Output = {
     stats_div.append(defender_ranks_div);
     stats_div.append(defender_types_div);
 
-    var units = battle.units_in_combat();
+    var units = battle.unitsInCombat();
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
 
       var img = this.createIconImage(unit);
       var unit_type_div = this.createUnitDiv(unit.getId(), 'icon');
+      if (battle.new_units.indexOf(unit) > -1) unit_type_div.addClass('new');
       unit_type_div.append(img);
 
       var rank_div = this.createUnitDiv(unit.getId(), 'icon rank_{0}'.format(unit.rank));
@@ -269,6 +277,8 @@ Output = {
     defender_bar_div.append(active_bar).append(injured_bar);
 
     total_stats_div.append(space_div).append(attacker_bar_div).append(defender_bar_div);
+
+    battle.resetNewUnits();
 
     return this;
   },
@@ -823,10 +833,28 @@ Output = {
   },
 
   selectUnits: function(units) {
+    var battles = [];
     for (var i in units) {
       var unit = units[i];
       var unit_div = this.getUnitDiv(unit);
       unit_div.addClass('selected');
+
+      if (unit.battle) {
+        var battle = unit.isBattlePresent();
+        if (battles.indexOf(battle) == -1 ) {
+          battles.push(battle);
+        }
+      }
+    }
+
+    this.selectBattles(battles);
+  },
+
+  selectBattles: function(battles) {
+    for (var i in battles) {
+      var battle = battles[i];
+      var battle_div = this.getBattleDiv(battle);
+      battle_div.addClass('selected');
     }
   },
 
@@ -847,6 +875,13 @@ Output = {
     var unit_div = $("div.unit[unit_id='{0}']".format(unit.getId()));
     return unit_div;
   },
+
+  getBattleDiv: function(battle) {
+    var battle_div = $("div.battle[battle_id='{0}']".format(battle.getId()));
+    var battle_container = battle_div.parents('.battle');
+    return battle_container;
+  },
+
 
   /*
   updateUnitDisplays: function() {
@@ -908,8 +943,17 @@ Output = {
     this.clearColocatedUnits();
   },
 
+  clearBattlesPanelSelect: function() {
+    var selected_battles = $(this.battles_container_id).find(".selected");
+    selected_battles.removeClass("selected");
+  },
+
   clearColocatedUnits: function() {
     $(".colocated").removeClass("colocated");
+  },
+
+  clearNewUnitsInBattle: function() {
+    $(".battle .unit.new").removeClass("new");
   },
 
   notYourMove: function() {
