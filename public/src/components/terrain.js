@@ -140,6 +140,24 @@ Crafty.c('City', {
   },
 });
 
+Crafty.c('CitySide', {
+  init: function() {
+    this.requires('Actor');
+    this.z = 85;
+  },
+
+  pickSide: function(side) {
+    if (side == 'left') {
+      this.addComponent("spr_city_left");
+    } else if (side == 'right') {
+      this.addComponent("spr_city_right");
+    } else {
+      throw new Error('InvalidCitySideValue', "City side value must be 'left' or 'right'.");
+    }
+    return this;
+  },
+});
+
 // Grass is just green, passable terrain
 Crafty.c('Road', {
   init: function() {

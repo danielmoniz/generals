@@ -58,6 +58,17 @@ var DataTools = {
     if (this.stats.location && this.stats.location.x !== undefined) {
       entity.at(this.stats.location.x, this.stats.location.y);
     }
+
+    if (this.stats.type == 'City') {
+      // create left and right city entities
+      var city_left = Crafty.e('CitySide').pickSide('left');
+      city_left.at(entity.at().x - 1, entity.at().y);
+      var city_right = Crafty.e('CitySide').pickSide('right');
+      city_right.at(entity.at().x + 1, entity.at().y);
+
+      entity.addStat('city_sides', [city_left, city_right]);
+    }
+
     return entity;
   },
 

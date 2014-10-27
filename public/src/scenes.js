@@ -127,12 +127,13 @@ Crafty.scene('Game', function() {
         if (typeof terrain_datum == 'string') {
           var terrain = Crafty.e(terrain_datum);
         } else if (typeof terrain_datum == 'object') {
+          terrain_datum.location = { x: x, y: y};
           var terrain_object = new TerrainData(terrain_datum.type, terrain_datum);
           var terrain = terrain_object.render();
         } else {
           throw "TerrainInvalid: Must be object or string.";
         }
-        terrain.at(x, y);
+        //terrain.at(x, y);
         Game.terrain[x][y] = terrain;
       }
     }
@@ -428,7 +429,7 @@ Crafty.scene('Loading', function() {
     }
   });
 
-  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets_test/city04.png', 'assets/supply_route.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets/city.png', 'assets/supply_route.png', 'assets/city_left.png', 'assets/city_right.png'], function() {
     // Once the image is loaded...
 
     // Define the individual sprites in the image.
@@ -442,8 +443,16 @@ Crafty.scene('Loading', function() {
       spr_player: [1, 1],
     });
 
-    Crafty.sprite(32, 'assets_test/city04.png', {
+    Crafty.sprite(32, 'assets/city.png', {
       spr_city: [0, 0],
+    });
+
+    Crafty.sprite(32, 'assets/city_left.png', {
+      spr_city_left: [0, 0],
+    });
+
+    Crafty.sprite(32, 'assets/city_right.png', {
+      spr_city_right: [0, 0],
     });
 
     Crafty.sprite(32, 'assets_test/farm02.png', {

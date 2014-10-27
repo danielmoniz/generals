@@ -165,7 +165,7 @@ var MapCreator = function(options) {
     }
   };
 
-  this.addCitiesToSection = function(options, game_object, estimated_cities, min_x, max_x, min_y, max_y) {
+  this.addCitiesToSection = function(options, game_object, estimated_cities, other_cities, min_x, max_x, min_y, max_y) {
     if (max_y === undefined) max_y = options.map_grid.height;
     if (min_y === undefined) min_y = 0;
     var city_locations = [];
@@ -173,8 +173,9 @@ var MapCreator = function(options) {
     while (num_cities < estimated_cities) {
       for (var x = min_x; x < max_x; x++) {
         for (var y = min_y; y < max_y; y++) {
-          var at_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
-          if (at_edge) continue;
+          var at_map_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
+          if (at_map_edge) continue;
+
           var num_tiles = (max_y - min_y) * (max_x - min_x);
           var probability = estimated_cities / num_tiles;
           var value = Math.random();
@@ -183,8 +184,9 @@ var MapCreator = function(options) {
             // if there is another city adjacent, try again
             var is_adjacent = false;
             var current_location = { x: x, y: y };
-            for (var i in city_locations) {
-              if (Utility.getDistance(current_location, city_locations[i]) <= 1.5) {
+            var all_cities = other_cities.concat(city_locations);
+            for (var i in all_cities) {
+              if (Utility.getDistance(current_location, all_cities[i]) <= 1.5) {
                 is_adjacent = true;
                 break;
               }
@@ -234,7 +236,7 @@ var MapCreator = function(options) {
         var min_y = Math.round(y * options.map_grid.height / vertical_sections);
         var max_y = Math.round((1 + y) * options.map_grid.height / vertical_sections);
 
-        var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, min_x, max_x, min_y, max_y);
+        var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, cities, min_x, max_x, min_y, max_y);
 
         cities = cities.concat(new_cities);
 
