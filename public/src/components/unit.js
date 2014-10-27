@@ -530,6 +530,7 @@ Crafty.c('Unit', {
   },
 
   heal: function(num_to_heal) {
+    return false;
     this.injure(-1 * num_to_heal);
   },
 

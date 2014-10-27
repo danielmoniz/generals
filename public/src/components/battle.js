@@ -45,6 +45,7 @@ Battle = {
     return quantity;
   },
 
+  // @TODO Add terrain as a parameter to allow for terrain-specific bonuses
   getCombatAbility: function(units) {
     var total = 0;
     for (var i=0; i<units.length; i++) {
@@ -76,6 +77,93 @@ Battle = {
       losses[i] = Math.ceil(total_loss * ratios[i]);
     }
     return losses;
+  },
+
+  calculateTotalLosses: function(battle, attackers, defenders) {
+    var TROOP_LOSS = 0.1;
+    var MORALE_FACTOR = 0.75;
+    var terrain_mod = Game.terrain_defense_bonus[battle.at().x][battle.at().y];
+
+    var attacker_morale = 0;
+    var defender_morale = 0;
+
+    var attacker_morale_factor = Math.pow(MORALE_FACTOR, attacker_morale);
+    var defender_morale_factor = Math.pow(MORALE_FACTOR, defender_morale);
+    /*
+    var attacker_random_factor = Math.random() * 0.2 + 0.9;
+    var defender_random_factor = Math.random() * 0.2 + 0.9;
+    */
+    var attacker_random_factor = 1;
+    var defender_random_factor = 1;
+
+    var attackers_ability = Battle.getCombatAbility(attackers);
+    var defenders_ability = Battle.getCombatAbility(defenders);
+
+    var attacker_losses = attacker_random_factor * defenders_ability * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
+    var defender_losses = defender_random_factor * attackers_ability * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
+
+    var losses = {};
+    losses[Battle.ATTACKER] = attacker_losses;
+    losses[Battle.DEFENDER] = defender_losses;
+    return losses;
+  },
+
+  // determine combat losses for a single turn
+  determineCombatLosses: function(battle, attackers, defenders) {
+    if (attackers === undefined) attackers = battle.attackers;
+    if (defenders === undefined) defenders = battle.defenders;
+
+    var total_losses = Battle.calculateTotalLosses(battle, attackers, defenders);
+
+    var attackers_quantity = Battle.getQuantity(attackers);
+    var defenders_quantity = Battle.getQuantity(defenders);
+
+    var attacker_ratios = Battle.getRatiosOfTotal(attackers, attackers_quantity);
+    var defender_ratios = Battle.getRatiosOfTotal(defenders, defenders_quantity);
+
+    var attacker_losses = Battle.getLossesFromRatios(total_losses[Battle.ATTACKER], attacker_ratios);
+    var defender_losses = Battle.getLossesFromRatios(total_losses[Battle.DEFENDER], defender_ratios);
+
+    var units = attackers.concat(defenders);
+    var losses = attacker_losses.concat(defender_losses);
+
+    return { units: units, losses: losses };
+  },
+
+  fakeResolve: function() {
+  },
+
+  /*
+   * NOTE: Not yet fully functional!
+   * Intended to be used for determining which side will eventually win the
+   * combat.
+   */
+  determineEventualWinner: function(battle) {
+    var fake_battle = {};
+    Utility.loadDataIntoObject(battle, fake_battle);
+    console.log("fake_battle.getQuantity");
+    console.log(fake_battle.getQuantity);
+    fake_battle.attackers = [];
+    fake_battle.defenders = [];
+    for (var i in battle.attackers) {
+      var unit = battle.attackers[i];
+      var fake_unit = {};
+      Utility.loadDataIntoObject(unit, fake_unit);
+      fake_battle.attackers.push(fake_unit);
+    }
+    for (var i in battle.defenders) {
+      var unit = battle.defenders[i];
+      var fake_unit = {};
+      Utility.loadDataIntoObject(unit, fake_unit);
+      fake_battle.defenders.push(fake_unit);
+    }
+    console.log("fake_battle.defenders");
+    console.log(fake_battle.defenders);
+
+    for (var i=0; i<3; i++) {
+      var battle_info = Battle.determineCombatLosses(battle, fake_battle.attackers, fake_battle.defenders);
+      Battle.killUnits(battle_info.units, battle_info.losses);
+    }
   },
 
   killUnits: function(units, losses) {
@@ -233,58 +321,13 @@ Crafty.c('Battle', {
     return num_losses;
   },
 
-  calculateLosses: function(attackers, defenders) {
-
-    var TROOP_LOSS = 0.1;
-    var MORALE_FACTOR = 0.75;
-    var terrain_mod = Game.terrain_defense_bonus[this.at().x][this.at().y];
-    console.log("terrain_mod for battle: {0}".format(terrain_mod));
-    var attacker_morale = 0;
-    var defender_morale = 0;
-
-    var attacker_morale_factor = Math.pow(MORALE_FACTOR, attacker_morale);
-    var defender_morale_factor = Math.pow(MORALE_FACTOR, defender_morale);
-    /*
-    var attacker_random_factor = Math.random() * 0.2 + 0.9;
-    var defender_random_factor = Math.random() * 0.2 + 0.9;
-    */
-    var attacker_random_factor = 1;
-    var defender_random_factor = 1;
-
-    var attackers_ability = Battle.getCombatAbility(attackers);
-    var defenders_ability = Battle.getCombatAbility(defenders);
-
-    var attacker_losses = attacker_random_factor * defenders_ability * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
-    var defender_losses = defender_random_factor * attackers_ability * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
-
-    var losses = {};
-    losses[Battle.ATTACKER] = attacker_losses;
-    losses[Battle.DEFENDER] = defender_losses;
-    return losses;
-  },
-
   resolve: function() {
     this.num_turns += 1;
-    var units = Crafty('Unit').get();
-    // assume for now that all units other than attacker are the defenders
-    var attackers = this.attackers;
-    var defenders = this.defenders;
 
-    var total_losses = this.calculateLosses(attackers, defenders);
+    //Battle.determineEventualWinner(this);
 
-    var attackers_quantity = Battle.getQuantity(attackers);
-    var defenders_quantity = Battle.getQuantity(defenders);
-
-    var attacker_ratios = Battle.getRatiosOfTotal(attackers, attackers_quantity);
-    var defender_ratios = Battle.getRatiosOfTotal(defenders, defenders_quantity);
-
-    var attacker_losses = Battle.getLossesFromRatios(total_losses[Battle.ATTACKER], attacker_ratios);
-    var defender_losses = Battle.getLossesFromRatios(total_losses[Battle.DEFENDER], defender_ratios);
-
-    var units = attackers.concat(defenders);
-    var losses = attacker_losses.concat(defender_losses);
-
-    Battle.killUnits(units, losses);
+    var battle_info = Battle.determineCombatLosses(this);
+    Battle.killUnits(battle_info.units, battle_info.losses);
 
     if (!this.isBattleActive()) {
       this.end();

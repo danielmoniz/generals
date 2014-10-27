@@ -91,22 +91,20 @@ var Factions = {
         type: "Jaguar Warrior",
         quantity: 5000,
       },
-      /*
       {
         name: "Cuauhtémoc",
         type: "Jaguar Warrior",
-        quantity: 1000,
+        quantity: 5000,
       },
-      */
       {
         name: "Popocatepetl",
         type: "Scout",
-        quantity: 1000,
+        quantity: 250,
       },
       {
         name: "Ahuitzotl",
         type: "Scout",
-        quantity: 1000,
+        quantity: 250,
       },
     ],
 
