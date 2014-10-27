@@ -443,16 +443,10 @@ Crafty.scene('Loading', function() {
       spr_player: [1, 1],
     });
 
-    Crafty.sprite(32, 'assets/city.png', {
-      spr_city: [0, 0],
-    });
-
-    Crafty.sprite(32, 'assets/city_left.png', {
+    Crafty.sprite(32, 'assets/city_full.png', {
       spr_city_left: [0, 0],
-    });
-
-    Crafty.sprite(32, 'assets/city_right.png', {
-      spr_city_right: [0, 0],
+      spr_city: [1, 0],
+      spr_city_right: [2, 0],
     });
 
     Crafty.sprite(32, 'assets_test/farm02.png', {
