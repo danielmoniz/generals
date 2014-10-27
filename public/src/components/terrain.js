@@ -134,6 +134,10 @@ Crafty.c('City', {
       });
       this.addComponent("Color");
       this.changeColour("black");
+
+      // for now, destroy the city sides when the city is sacked
+      this.city_sides[0].destroy();
+      this.city_sides[1].destroy();
     }
 
     return provided_supply;

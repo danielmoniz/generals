@@ -110,8 +110,6 @@ var Action = {
 
     if (Game.selected.select) {
       Game.selected.select();
-      console.log("Game.selected");
-      console.log(Game.selected);
     } else {
       throw "NotImplementedError: select() for {0}".format(Game.selected.type);
     }

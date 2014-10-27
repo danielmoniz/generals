@@ -453,8 +453,6 @@ Output = {
 
     var output_html = "";
     for (var i in output) {
-      console.log("i");
-      console.log(i);
       output_html += output[i] + "<br />";
     }
     $(this.terrain_panel).append(output_html);
