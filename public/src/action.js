@@ -19,6 +19,7 @@ var Action = {
     var all_args = [].slice.call(arguments);
     var args_to_pass = all_args.slice(1);
 
+    this.action = action;
     var action_words = action.split(' ');
     var function_name = "";
     for (var i in action_words) {
@@ -134,6 +135,23 @@ var Action = {
     console.log(test2);
     console.log("test3");
     console.log(test3);
+  },
+
+  /*
+   * @debug
+   * This function is used for determining which tiles need to be re-rendered.
+   */
+  debugTerrain: function() {
+    var entities = Crafty("Terrain").get();
+    var total = 0;
+    for (var i in entities) {
+      var entity = entities[i];
+      if (entity._changed) {
+        if (entity.type == 'Water') {
+          total += 1;
+        }
+      }
+    }
   },
 
 };

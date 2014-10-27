@@ -76,7 +76,9 @@ Crafty.c('Actor', {
       } else {
         var colour_string = dict['colour'];
       }
-      this.color(colour_string);
+      if (this.color() != colour_string) {
+        this.color(colour_string);
+      }
     }
 
     return this;

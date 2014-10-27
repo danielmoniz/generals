@@ -92,7 +92,9 @@ Game = {
         this.player = this.turn;
       }
     }
+
     Crafty.trigger("NextTurn");
+
     UI.gameInProgress();
     Output.updateStatusBar();
 
@@ -111,8 +113,6 @@ Game = {
     LineOfSight.handleLineOfSight(Game.fog_of_war, this.player);
 
     Output.updateRetreatBlocks();
-
-    Crafty.trigger('RenderScene');
   },
 
   end: function(winner) {
