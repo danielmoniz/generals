@@ -18,71 +18,8 @@ Output = {
 
   buffer: [],
 
-  push: function(info) {
-    //for (var i=0; i<info.length; i++) {
-      //this.buffer.push(info[i]);
-      this.buffer.push(info);
-    //}
-    return this;
-  },
   reset: function() {
     this.element_id = this.main_element_id;
-    return this;
-  },
-
-  usePanel: function(panel) {
-    var panels = {
-      main: this.main_element_id,
-      alerts: this.alerts_element_id,
-      turn_count: "#turn-count",
-      player: "#player",
-      message: this.message_element_id,
-      terrain: this.terrain_panel,
-    };
-    if (panels[panel] === undefined) {
-      throw "BadPanelName: Panel name did not correspond to an existing panel.";
-      return false;
-    }
-    this.element_id = panels[panel];
-    $(this.element_id).show();
-    if (panel == "alerts") $(this.alerts_container_element_id).show();
-
-    return this;
-  },
-
-  add: function(text_array) {
-    for (var i=0; i<text_array.length; i++) {
-      this.push(text_array[i]);
-    }
-    return this;
-  },
-  pushLast: function(text) {
-    this.buffer[this.buffer.length - 1] += text;
-    return this;
-  },
-
-  print: function(is_unit, unit_id) {
-    this.report(this.buffer, is_unit, unit_id);
-    this.buffer = [];
-    return this;
-  },
-
-  report: function(info, is_unit, unit_id) {
-    var info_panel = $(this.main_element_id);
-    var report = this.createDiv("report");
-    info_panel.append(report);
-    if (is_unit) {
-      report.addClass("unit");
-      report.attr("unit_id", unit_id);
-      report.click(this.selectSelf());
-    }
-    for (var i=0; i<info.length; i++) {
-      var item = $('<div class="report-item"></div>')
-        .addClass("report-item")
-        .append(info[i])
-        ;
-      report.append(item);
-    }
     return this;
   },
 
@@ -112,53 +49,6 @@ Output = {
     return this;
   },
 
-  printSingleUnit: function(unit) {
-    var unit_div = this.createStandardUnitDiv(unit, "sub-report");
-    var supply_div = this.createDiv("unit-item", Pretty.Unit.supply(unit.supply_remaining));
-    if (unit.supply_remaining >= unit.supply_max) {
-      unit_div.append(supply_div);
-    }
-
-    this.makeReport([unit_div]);
-  },
-
-  printBattleStart: function(battle) {
-    var title = "New battle: {0}".format(this.getBattleStatus(battle));
-
-    var divs = [];
-
-    var units = battle.attackers.concat(battle.defenders);
-    for (var i=0; i<units.length; i++) {
-      var unit = units[i];
-      var side = {};
-      side[battle.attacker.side] = "Attacker";
-      side[(battle.attacker.side + 1) % 2] = "Defender";
-      var general_info = Pretty.Unit.generalInfoStartingBattle(unit);
-      var unit_div = this.createUnitDiv(unit.getId());
-      unit_div.append(this.createDiv("unit-item", general_info));
-      divs.push(unit_div);
-    }
-    this.makeReport(divs, title);
-    return this;
-  },
-
-  printBattleOld: function(battle) {
-    var title = "New battle phase (round {0}): {1}".format(battle.num_turns, this.getBattleStatus(battle));
-    var divs = [];
-
-    var units = battle.unitsInCombat();
-    for (var i=0; i<units.length; i++) {
-      var unit = units[i];
-      var unit_div = this.createStandardUnitDiv(unit, "sub-report");
-      divs.push(unit_div);
-    }
-    var conclusion = undefined;
-    if (battle.finished) conclusion = "Battle finished!";
-
-    this.makeReport(divs, title, conclusion);
-    return this;
-  },
-
   printBattles: function() {
     var battles = Crafty("Battle").get();
     for (var i in battles) {
@@ -168,7 +58,7 @@ Output = {
 
   printBattle: function(battle) {
     $(this.battles_id).css('display', 'inline-block');
-    //var status = this.getBattleStatus(battle);
+
     var total_troops = battle.getTotalTroops();
     var attacker_active = total_troops[battle.attacking_side].active;
     var attacker_injured = total_troops[battle.attacking_side].injured;
@@ -279,34 +169,6 @@ Output = {
     total_stats_div.append(space_div).append(attacker_bar_div).append(defender_bar_div);
 
     battle.resetNewUnits();
-
-    return this;
-  },
-
-  getBattleStatus: function(battle, type) {
-    var total_troops = battle.getTotalTroops();
-    if (type == "injured") {
-      var first_player_status = "{0}/{1}".format(total_troops[0].active, total_troops[0].total);
-      var second_player_status = "{0}/{1}".format(total_troops[1].active, total_troops[1].total);
-    } else if (type == "total") {
-      var first_player_status = "{0}".format(total_troops[0].total);
-      var second_player_status = "{0}".format(total_troops[1].total);
-    } else {
-      var first_player_status = "{0}".format(total_troops[0].active);
-      var second_player_status = "{0}".format(total_troops[1].active);
-    }
-    var status = "{0} - {1}".format(first_player_status, second_player_status);
-    return status;
-  },
-
-  printBattleJoin: function(battle, unit) {
-    var side = {};
-    side[battle.atttacking_side] = "Attacker";
-    side[(battle.attacking_side + 1) % 2] = "Defender";
-    var general_info = Pretty.Unit.joinBattleMessage(unit.side, unit.type, unit.battle_side, unit.getActive());
-    var unit_div = this.createUnitDiv(unit.getId(), "report");
-    unit_div.append(this.createDiv("unit-item", general_info));
-    this.makeReport([unit_div]);
 
     return this;
   },
@@ -425,11 +287,6 @@ Output = {
     $(this.unit_count_panel).empty();
   },
 
-  clearMain: function() {
-    $(this.main_element_id).empty();
-    return this;
-  },
-
   clearAll: function() {
     $(this.main_element_id).empty();
     $(this.alerts_element_id).empty();
@@ -466,15 +323,6 @@ Output = {
       output_html += output[i] + "<br />";
     }
     $(this.terrain_panel).append(output_html);
-  },
-
-  reportAttrition: function(unit, units_lost) {
-    var unsupplied = Pretty.Unit.unsupplied(units_lost);
-    var unit_div = this.createStandardUnitDiv(unit);
-    unit_div.append(this.createDiv("unit-item", unsupplied));
-    this.makeReport([unit_div], false, false, "inline");
-
-    return this;
   },
 
   printUnitsPresent: function(unit, other_units) {
@@ -881,20 +729,6 @@ Output = {
     var battle_container = battle_div.parents('.battle');
     return battle_container;
   },
-
-
-  /*
-  updateUnitDisplays: function() {
-    var unit_divs = $("div.unit");
-    var that = this;
-    unit_divs.each(function() {
-      that.updateUnitDisplay($(this));
-
-      //that.updateActionsDiv($(this));
-      //that.updateSupply($(this));
-    });
-  },
-  */
 
   updateUnitDisplay: function(unit) {
     var unit_div = this.getUnitDiv(unit);
