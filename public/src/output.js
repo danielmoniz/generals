@@ -181,7 +181,7 @@ Output = {
     var attacker_name = Pretty.Player.name(battle.attacking_side);
     var defender_name = Pretty.Player.name(battle.defending_side);
 
-    var battle_div = this.createDiv('battle battle_container');
+    var battle_div = this.createBattleContainerDiv(battle.getId(), 'battle battle_container');
 
     // TITLE DIV CONTENTS
     var title_div = this.createDiv('title');
@@ -387,13 +387,13 @@ Output = {
     return unit_div;
   },
 
-  createBattleDiv: function(battle_id, text, classes) {
+  createBattleContainerDiv: function(battle_id, classes) {
     if (classes) {
-      classes = "battle {0}".format(classes);
+      classes = "battle battle_container {0}".format(classes);
     } else {
-      classes = "battle";
+      classes = "battle battle_container";
     }
-    var battle_div = this.createDiv(classes, text)
+    var battle_div = this.createDiv(classes)
       .attr("battle_id", battle_id)
       .click(this.selectSelf("battle"))
       ;
@@ -403,13 +403,13 @@ Output = {
   selectSelf: function(type) {
     if (!type) type = "unit";
     var type_id = "{0}_id".format(type);
-    var func = function() {
+    var func = function(event) {
       console.log("{0} clicked!".format(Utility.capitalizeFirstLetter(type)));
       var entity_id = parseInt($(this).attr(type_id));
-      var unit = Crafty(entity_id);
-      console.log("Unit battle value: {0}".format(unit.battle));
-      Game.select(unit);
+      var entity = Crafty(entity_id);
+      Game.select(entity);
     }
+    event.stopPropagation();
     return func;
   },
 

@@ -1,4 +1,4 @@
-#battles_container div.battle { margin-bottom: 10px; }
+.battle_container { margin-bottom: 10px; }
 .battle_container { border: 2px solid transparent; }
 
 .battle .title .winning { border: 1px solid green; }
