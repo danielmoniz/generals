@@ -19,12 +19,16 @@ var Action = {
     var all_args = [].slice.call(arguments);
     var args_to_pass = all_args.slice(1);
 
+    if (action != action.toLowerCase()) {
+      throw new Error('BadActionName', 'Action names must be all lowercase letters.');
+    }
+
     this.action = action;
     var action_words = action.split(' ');
     var function_name = "";
     for (var i in action_words) {
       if (i == 0) {
-        function_name += action_words[i];
+        function_name += action_words[i].toLowerCase();
       } else {
         function_name += Utility.capitalizeFirstLetter(action_words[i]);
       }
