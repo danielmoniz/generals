@@ -87,6 +87,7 @@ Crafty.c('Unit', {
   },
 
   getActionChoices: function() {
+    if (this.side != this.player) return [];
     if (this.battle) return [];
     if (this.performed_actions.length > 0) return [];
     var actions = [];
