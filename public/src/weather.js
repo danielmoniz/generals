@@ -7,7 +7,7 @@ if (typeof require !== 'undefined') {
 var Weather = function() {
   this.wind_dir = [0, 0];
   this.prob_wind_stays_neutral = .50;
-  this.prob_wind_stays_directed = .80;
+  this.prob_wind_stays_directed = .85;
 
   this.nextDay = function() {
     this.updateWind();

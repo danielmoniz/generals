@@ -10,9 +10,11 @@ $(document).ready(function() {
         UI.pillage();
       } else if (e.keyCode == 83 || e.keyCode == 115) { // S or s
         UI.sack();
-      } else if (e.keyCode >= 49 && e.keyCode <= 58) { // S or s
+      } else if (e.keyCode == 70 || e.keyCode == 102) { // F or f
+        UI.startFire();
+      } else if (e.keyCode >= 49 && e.keyCode <= 58) { // numeric key
         UI.selectUnit(e.keyCode - 48);
-      } else if (shift_num_keys.indexOf(e.keyCode) > -1) { // S or s
+      } else if (shift_num_keys.indexOf(e.keyCode) > -1) { // shift + numeric key
         UI.selectAdditionalUnit(shift_num_keys.indexOf(e.keyCode) + 1);
       }
       return false;
@@ -79,7 +81,7 @@ $(document).ready(function() {
 
   // TEST ONLY
   //$("#start-hotseat-button").click();
-  //$("input[name=map_size][value=tiny]").click();
+  //$("input[name=map_size][value=medium]").click();
   //$("input[name=factions_0][value=mongols]").click();
   //$("input[name=factions_1][value=romans]").click();
   //$("#start-game").click();
@@ -171,6 +173,10 @@ UI = {
 
   sack: function(e) {
     this.performAction("sack");
+  },
+
+  startFire: function() {
+    this.performAction('start_fire');
   },
 
   performAction: function(action) {

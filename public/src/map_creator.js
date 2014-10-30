@@ -501,7 +501,10 @@ var MapCreator = function(options) {
         }
         
         if (noise_value >= 1 - frequency && !game_object.occupied[x][y]) {
-          var stats = { height: game_object.height_map[x][y] };
+          var stats = {
+            height: game_object.height_map[x][y],
+            side: this.getMapSide(game_object, x),
+          };
           var entity_obj = new TerrainData(entity_name).add(stats).stats;
           game_object.terrain_type[x][y] = entity_obj;
           if (update_occupied) {
@@ -510,6 +513,24 @@ var MapCreator = function(options) {
         }
       }
     }
+  };
+
+  this.updateMovementDifficultyData = function(options, game_object, terrain_list) {
+    // update/create move difficulty Graph for pathfinding purposes
+    var terrain_difficulty = [];
+
+    for (var x = 0; x < options.map_grid.width; x++) {
+      terrain_difficulty[x] = [];
+
+      for (var y = 0; y < options.map_grid.height; y++) {
+        var terrain = terrain_list[x][y];
+        terrain_difficulty[x][y] = terrain_list[x][y].move_difficulty;
+      }
+    }
+
+    game_object.terrain_difficulty = terrain_difficulty;
+    game_object.terrain_graph = new Graph(terrain_difficulty);
+    return game_object.terrain_graph;
   };
 
   this.updateBuildDifficultyData = function(options, game_object, terrain_list) {

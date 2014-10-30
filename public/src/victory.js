@@ -4,6 +4,7 @@ Victory = {
     this.troop_values = [undefined, undefined];
     this.farm_values = [undefined, undefined];
     this.city_values = [undefined, undefined];
+    this.forest_values = [undefined, undefined];
     this.ratio_to_win = 3; // need X times higher will than opponent to win
     this.setWillToFight();
   },
@@ -13,6 +14,7 @@ Victory = {
     this.troop_values = victory_data.troop_values;
     this.farm_values = victory_data.farm_values;
     this.city_values = victory_data.city_values;
+    this.forest_values = victory_data.forest_values;
 
     this.ratio_to_win = victory_data.ratio_to_win;
   },
@@ -37,17 +39,16 @@ Victory = {
       var total_troops = this.getTotalTroops(i);
       var troop_factor = total_troops * this.troop_values[i];
 
-      var farms = this.getFarms(i);
-      var total_farms = farms.length;
       var total_unpillaged_farms = this.getUnpillagedFarms(i).length;
       var farm_factor = total_unpillaged_farms * this.farm_values[i];
 
-      var cities = this.getCities(i);
-      var total_cities = cities.length;
       var total_unpillaged_cities = this.getUnsackedCities(i).length;
       var city_factor = total_unpillaged_cities * this.city_values[i];
 
-      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor;
+      var total_standing_forests = this.getStandingForests(i).length;
+      var forest_factor = total_standing_forests * this.forest_values[i];
+
+      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor * (1/2 + forest_factor/2);
     }
     Output.updateVictoryBar();
   },
@@ -58,6 +59,14 @@ Victory = {
       return unit.side == side;
     });
     return units;
+  },
+
+  getForests: function(side) {
+    var forests = Crafty('Tree').get();
+    forests = forests.filter(function(forest) {
+      return forest.side == side;
+    });
+    return forests;
   },
 
   getTotalTroops: function(side) {
@@ -96,6 +105,15 @@ Victory = {
     return unsacked_cities;
   },
 
+  getStandingForests: function(side) {
+    var forests = this.getForests(side);
+    var standing_forests = [];
+    for (var i in forests) {
+      if (!forests[i].burned) standing_forests.push(forests[i]);
+    }
+    return standing_forests;
+  },
+
   getCities: function(side) {
     var cities = Crafty('City').get();
     var cities_in_sides = { 0: [], 1: [], undefined: [], };
@@ -103,6 +121,15 @@ Victory = {
       cities_in_sides[cities[i].side].push(cities[i]);
     }
     return cities_in_sides[side];
+  },
+
+  getForests: function(side) {
+    var forests = Crafty('Tree').get();
+    var forests_in_sides = { 0: [], 1: [], undefined: [], };
+    for (var i in forests) {
+      forests_in_sides[forests[i].side].push(forests[i]);
+    }
+    return forests_in_sides[side];
   },
 
   setWillToFight: function() {
@@ -119,6 +146,10 @@ Victory = {
       var cities = this.getCities(i);
       var city_value = 1 / cities.length;
       this.city_values[i] = city_value;
+
+      var forests = this.getForests(i);
+      var forest_value = 1 / forests.length;
+      this.forest_values[i] = forest_value;
     }
 
   },

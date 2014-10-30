@@ -305,10 +305,12 @@ Output = {
     if (terrain.name !== undefined) output.push(terrain.name);
     output.push(terrain.type);
     if (terrain.has('Impassable')) output.push("(Impassable)");
-    if (terrain.has("Farm")) {
-      if (terrain.pillaged) {
-        output[output.length -1] += " (pillaged)";
-      }
+    if (terrain.on_fire) {
+      output.push('(burning!)');
+    } else if (terrain.burned) {
+      output.push('(ruined)');
+    } else if (terrain.pillaged) {
+      output.push("(pillaged)");
     }
     if (terrain.has("City")) {
       if (terrain.supply_remaining > 0) {
@@ -750,7 +752,8 @@ Output = {
       var action = unit.action_choices[i];
       var action_button = document.createElement('input');
       action_button.type = "button";
-      action_button.value = Utility.capitalizeFirstLetter(action);
+      var action_name = Utility.capitalizeFirstLetter(action.split('_').join(' '));
+      action_button.value = action_name;
       action_button = $(action_button);
 
       var action_div = this.createDiv("action")

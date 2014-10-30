@@ -94,13 +94,22 @@ Game = {
       }
     }
 
-    if (this.turn % 1 == 0) {
+    if (this.turn % 2 == 0) {
       this.weather.nextDay();
       console.log("this.weather.wind_dir");
       console.log(this.weather.wind_dir);
     }
+    Crafty.trigger("SpreadFire");
+    this.map_creator.updateMovementDifficultyData(this, this, this.terrain);
 
+    // ------------------------------------
     Crafty.trigger("NextTurn");
+    // ------------------------------------
+
+    this.map_creator.updateMovementDifficultyData(this, this, this.terrain);
+
+    var victory = Victory.checkVictoryConditions();
+    Output.updateVictoryBar();
 
     UI.gameInProgress();
     Output.updateStatusBar();

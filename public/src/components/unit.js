@@ -73,6 +73,7 @@ Crafty.c('Unit', {
     if (turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.injuryAttrition();
+      this.takeFireCasualties();
 
       this.reset(); // should happen after every other active effect!
     }
@@ -87,15 +88,23 @@ Crafty.c('Unit', {
   },
 
   getActionChoices: function() {
-    if (this.side != this.player) return [];
+    if (this.side != Game.player) return [];
     if (this.battle) return [];
     if (this.performed_actions.length > 0) return [];
+
     var actions = [];
     var local_terrain = Game.terrain[this.at().x][this.at().y];
-    if (local_terrain.type == 'Farm' && !local_terrain.pillaged)
+    if (local_terrain.on_fire) return [];
+
+    if (local_terrain.type == 'Farm' && !local_terrain.pillaged) {
       actions.push("pillage");
-    if (local_terrain.type == 'City' && local_terrain.side != this.side && !local_terrain.sacked)
+    }
+    if (local_terrain.type == 'City' && local_terrain.side != this.side && !local_terrain.sacked) {
       actions.push("sack");
+    }
+    if (local_terrain.flammable) {
+      actions.push('start_fire');
+    }
     return actions;
   },
 
@@ -203,6 +212,19 @@ Crafty.c('Unit', {
     } else {
       this.is_supplied = false;
       var units_lost = this.sufferAttrition();
+    }
+  },
+
+  takeFireCasualties: function() {
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    if (local_terrain.on_fire) {
+      var fire_casualty_rate_injured = 0.95;
+      var injured_to_kill = Math.ceil(fire_casualty_rate_injured * this.injured);
+      this.kill(injured_to_kill, true);
+
+      var fire_casualty_rate = 0.75;
+      var casualties = Math.ceil(fire_casualty_rate * this.getActive());
+      this.sufferCasualties(casualties);
     }
   },
 
@@ -531,7 +553,6 @@ Crafty.c('Unit', {
   },
 
   heal: function(num_to_heal) {
-    return false;
     this.injure(-1 * num_to_heal);
   },
 

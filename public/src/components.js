@@ -456,6 +456,77 @@ Crafty.c('RetreatBlock', {
   },
 });
 
+Crafty.c('Fire', {
+  init: function() {
+    this.requires('Actor, spr_fire');
+    this.bind("SpreadFire", this.updateFire)
+    this.z = 75;
+    this.days_left = 3;
+    this.turn_started = Game.turn;
+  },
+
+  updateFire: function() {
+    if (Game.turn != this.turn_started) return false;
+
+    this.days_left -= 1;
+    this.spread();
+    if (this.days_left <= 0) {
+      var local_terrain = Game.terrain[this.at().x][this.at().y];
+      local_terrain.burn();
+      this.destroy();
+    }
+  },
+
+  spread: function() {
+    // spread in direction of wind
+    var wind_spot = this.getWindSpreadSpot();
+    if (wind_spot) {
+      var fire = Crafty.e('Fire');
+      fire.at(wind_spot.x, wind_spot.y);
+    }
+
+    // spread in a random direction with a random chance
+    var directions = [
+      [0, 1],
+      [0, -1],
+      [1, 0],
+      [-1, 0],
+    ];
+    for (var i in directions) {
+      var direction = directions[i];
+      var spot = { x: this.at().x + direction[0], y: this.at().y + direction[1] };
+      var chance_of_spread = 0.2;
+
+      if (Game.terrain[spot.x] && Game.terrain[spot.x][spot.y]) {
+        var local_terrain = Game.terrain[spot.x][spot.y];
+        var random = Random.random();
+        if (local_terrain.flammable && random < chance_of_spread) {
+          local_terrain.ignite();
+        }
+      }
+    }
+  },
+
+  getWindSpreadSpot: function() {
+    var wind_dir = Game.weather.wind_dir;
+    var wind_spot = {
+      x: this.at().x + wind_dir[0],
+      y: this.at().y + wind_dir[1],
+    };
+    if (wind_spot.x < 0 || wind_spot.x > Game.map_grid.width - 1 || wind_spot.y < 0 || wind_spot.y > Game.map_grid.width - 1) {
+      return false;
+    }
+    var local_terrain = Game.terrain[wind_spot.x][wind_spot.y];
+    if (!local_terrain) return false;
+    if (!local_terrain.flammable) {
+      return false;
+    }
+
+    return wind_spot;
+  },
+
+});
+
 /*
 Crafty.c('SupplyBlock', {
   init: function(turns_left) {

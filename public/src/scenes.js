@@ -313,6 +313,8 @@ Crafty.scene('Game', function() {
   function startNewGame() {
 
     var map_creator = new MapCreator();
+    Game.map_creator = map_creator;
+
     //var game_data = map_creator.buildNewComposedMap(Game);
     var game_data = map_creator.buildNewMap(Game);
     Utility.loadDataIntoObject(game_data, Game);
@@ -430,12 +432,11 @@ Crafty.scene('Loading', function() {
   });
 
   Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets/city_full.png', 'assets/supply_route.png'], function() {
-    // Once the image is loaded...
 
-    // Define the individual sprites in the image.
-    // Each one (spr_tree, etc.) becomes a component.
-    // These components names' are prefixed with "spr_" to remind us that they
-    // simply cause the entity to be drawn with a certain sprite.
+    Crafty.sprite(32, 'assets/fire.png', {
+      spr_fire: [0, 0],
+    });
+
     Crafty.sprite(16, 'assets/16x16_generals.png', {
       //spr_tree: [0, 0],
       spr_bush: [1, 0],
@@ -451,6 +452,10 @@ Crafty.scene('Loading', function() {
 
     Crafty.sprite(32, 'assets_test/farm02.png', {
       spr_farm: [0, 0],
+    });
+
+    Crafty.sprite(32, 'assets_test/farm-pillaged.png', {
+      spr_farm_pillaged: [0, 0],
     });
 
     Crafty.sprite(32, 'assets/Forest-32.png', {

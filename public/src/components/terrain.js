@@ -20,6 +20,40 @@ Crafty.c('Terrain', {
     this.height = Game.height_map[this.at().x][this.at().y];
     return this;
   },
+
+  ignite: function() {
+    Crafty.e('Fire').at(this.at().x, this.at().y);
+
+    var ignite_stats = {
+      on_fire: true,
+      flammable: false,
+    };
+    this.addStats(ignite_stats);
+  },
+
+  burn: function() {
+    var burned_stats = {
+      flammable: false,
+      on_fire: false,
+      burned: true,
+
+      provides_supply: false,
+    };
+    this.addStats(burned_stats);
+    if (this.pillage) {
+      this.pillage();
+    } else {
+      var extra_burned_stats = {
+        move_difficulty: 1.3,
+        defense_bonus: 1.05,
+      };
+      this.addStats(extra_burned_stats);
+      this.addComponent('Color');
+      if (this.has('Color')) {
+        this.addStat('colour', 'gray');
+      }
+    }
+  },
 });
 
 // A Transportation object is one meant to carry people/items, eg. a road,
@@ -82,12 +116,17 @@ Crafty.c('Farm', {
         move_difficulty: 1.35,
         pillaged: true,
         provides_supply: 0,
-      })
-      .changeColour('brown')
-      ;
+        flammable: false,
+      });
     return provided_supply;
   },
 
+});
+
+Crafty.c('PillagedFarm', {
+  init: function() {
+    this.requires('spr_farm_pillaged, Terrain');
+  }
 });
 
 Crafty.c('Water', {

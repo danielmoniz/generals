@@ -97,6 +97,9 @@ var Action = {
       unit.pillage();
       Victory.updateWillToFight();
       Output.updateVictoryBar();
+    } else if (action == "start_fire") {
+      var local_terrain = Game.terrain[unit.at().x][unit.at().y];
+      local_terrain.ignite();
     }
 
     unit.performed_actions.push(action);
