@@ -94,6 +94,10 @@ Game = {
       }
     }
 
+    this.weather.nextDay();
+    console.log("this.weather.wind_dir");
+    console.log(this.weather.wind_dir);
+
     Crafty.trigger("NextTurn");
 
     UI.gameInProgress();
@@ -258,6 +262,7 @@ Game = {
     this.player_selected = [];
     // Is this needed?
     this.player_supply_roads = [[], []];
+    this.weather = new Weather();
 
     this.resetStatusVisuals(true);
     Output.clearAll();
