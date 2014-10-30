@@ -49,8 +49,10 @@ var Game = function(io) {
 
     this.game_data = new MapCreator().buildNewMap(settings);
 
-    this.io.to(this.players[0].id).emit("start game", this.id, this.game_name, this.game_data, 0, settings);
-    this.io.to(this.players[1].id).emit("start game", this.id, this.game_name, this.game_data, 1, settings);
+    var random_seed = Math.ceil(Math.random() * 1000000);
+
+    this.io.to(this.players[0].id).emit("start game", this.id, this.game_name, this.game_data, 0, settings, random_seed);
+    this.io.to(this.players[1].id).emit("start game", this.id, this.game_name, this.game_data, 1, settings, random_seed);
   };
 
   this.nextTurn = function(socket, turn_data, turn_count) {

@@ -80,14 +80,14 @@ socket.on('new game', function(game_name, player) {
   UI.prepareGame('online', player);
 });
 
-socket.on('start game', function(game_id, game_name, game_object, player, options) {
+socket.on('start game', function(game_id, game_name, game_object, player, options, random_seed) {
   game_object.player = player;
   my_current_game = game_id;
 
   function sendMoves(moves) {
     socket.emit("next turn", moves, Game.turn_count);
   }
-  Game.start('online', options, game_object, sendMoves);
+  Game.start('online', options, game_object, sendMoves, random_seed);
 });
 
 socket.on('next turn', function (turn_moves, turn_count) {

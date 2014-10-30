@@ -94,9 +94,11 @@ Game = {
       }
     }
 
-    this.weather.nextDay();
-    console.log("this.weather.wind_dir");
-    console.log(this.weather.wind_dir);
+    if (this.turn % 1 == 0) {
+      this.weather.nextDay();
+      console.log("this.weather.wind_dir");
+      console.log(this.weather.wind_dir);
+    }
 
     Crafty.trigger("NextTurn");
 
@@ -208,7 +210,7 @@ Game = {
   },
 
   // initialize and start our game
-  start: function(game_type, options, map, sendMovesCallback) {
+  start: function(game_type, options, map, sendMovesCallback, random_seed) {
     Crafty.timer.FPS(0);
     if (!Game.options) Game.options = {};
     var options_obj = new Options();
@@ -226,6 +228,7 @@ Game = {
     Game.load_game = load_game;
 
     this.sendMovesCallback = sendMovesCallback;
+    if (random_seed !== undefined) Random.setSeed(random_seed);
 
     this.reset();
     if (Game.played_already) {
