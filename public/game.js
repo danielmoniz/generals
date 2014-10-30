@@ -322,11 +322,9 @@ Game = {
       unit.move_target_path_list = unit_data.move_target_path_list;
       for (var i in unit_data.actions) {
         var action = unit_data.actions[i];
-        unit.performAction(action);
+        Action.perform('unit action', unit, action);
       }
     }
-    
-    // perform actions and movements (use nextTurn on units)
   },
 
   /*
