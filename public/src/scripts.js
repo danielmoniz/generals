@@ -114,6 +114,7 @@ UI = {
     $("#options-waiting").hide();
     $("#starting-game").show();
     $("input#play-again").hide();
+    $("#side-info-panel").show();
 
     $("ul").css("min-height", "75px");
   },
@@ -138,6 +139,7 @@ UI = {
     if (typeof window.socket !== 'undefined') {
       $("input#done-playing").show();
     }
+    $("#side-info-panel").hide();
   },
 
   endGame: function() {
@@ -152,6 +154,7 @@ UI = {
     $("input.start").show();
     $("input#done-playing").hide();
     $("input#surrender").hide();
+    $("#side-info-panel").hide();
 
     $("ul").css("min-height", "300px");
 

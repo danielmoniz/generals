@@ -608,6 +608,10 @@ Output = {
     this.addInstructionList('terrain_types');
     this.addSubTitle('Army/Unit Types');
     this.addInstruction('unit_composition');
+    this.addSubTitle('Weather');
+    this.addInstruction('weather');
+    this.addInstruction('wind');
+    this.addInstruction('fire');
 
     this.addTitle('Game Modes');
     this.addInstructionList('game_modes');
@@ -618,8 +622,8 @@ Output = {
     this.addInstruction('selection');
     this.addInstruction('two_armies_better_than_one');
     this.addInstruction('retreat_movement_bonus');
-    this.addInstruction('');
-    this.addInstruction('');
+    this.addInstruction('stopping_fire');
+    this.addInstruction('using_wind');
     this.addInstruction('');
     this.addInstruction('');
   },

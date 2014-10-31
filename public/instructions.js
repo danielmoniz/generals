@@ -9,7 +9,7 @@ var Instructions = {
     "morale",
   ],
 
-  general_instructions: "Select armies by clicking on them and move them by right-clicking where you want them to go. Queue up moves for all of your units and click Next Turn (or hit space bar). Units will sometimes have actions available to perform such as pillaging a farm. Click on the corresponding action button beside your unit's display box below the map.",
+  general_instructions: "Select armies by clicking on them and move them by right-clicking where you want them to go. Queue up moves for all of your units and click Next Turn (or hit space bar). Units will sometimes have actions available to perform such as pillaging a farm or starting a fire. Click on the corresponding action button beside your unit's display box below the map.",
 
   how_to_start_combat: "Moving one of your armies into the same tile as another Army will start a combat. Note that a combat will be started regardless of your intentions if you attempt to move through an opposing army.",
 
@@ -17,7 +17,7 @@ var Instructions = {
 
   unit_types_general: "",
 
-  goal: "The object of the game is to reduce your opponent's morale. This is represented by the colored victory bars at the top of the screen. This is accomplished by defeating your opponent's armies, pillaging their farms, and sacking their cities.",
+  goal: "The object of the game is to reduce your opponent's morale. This is represented by the colored victory bars at the top of the screen. This is accomplished by defeating your opponent's armies, pillaging/burning their farms, and sacking their cities.",
 
   map: "The map itself is divided into thirds and consists of terrain and armies. Anything that starts in your third of the map belongs to you and your faction. If your cities are sacked or your farms pillaged, this will affect your faction's will to fight the war.",
 
@@ -65,6 +65,12 @@ var Instructions = {
 
   unit_composition: "Each faction starts with a set number of armies of different types. For example, the Mongols use primarily cavalry, while the Romans have more total troops but rely on infantry. Cavalry move much faster than infantry, but are otherwise equal.",
 
+  weather: "The game contains a very basic weather simulation. Currently, the only weather factor is wind.",
+
+  wind: "Wind has the effect of spreading fire toward the direction it is blowing. It's direction will change over the course of the game, although it will often remain constant for a number of turns. This allows players to plan around the direction of the wind and start fires strategically.",
+
+  fire: "Armies can start fires on any flammable terrain tile, ie. forests and farms. Every round of play, every burning terrain tile has a chance of spreading in a random direction. It is also affected by the wind; there is a 100% chance that fire will spread in the direction of the wind if that terrain tile is flammable. Although fire spreads slowly initially, it can quickly and engulf areas of farmland and forests, thus permanently modifying the terrain.",
+
   unit_types: [
   ],
 
@@ -83,6 +89,10 @@ var Instructions = {
   two_armies_better_than_one: "Two armies are better than one. Try attacking an enemy army from two different directions. In this way, their supply can be cut while simultaneously prohibiting retreat in certain directions.",
 
   retreat_movement_bonus: "Retreating provides a movement bonus of 1. This represents the fact that your army will do anything to get out of striking range of opposing forces. Use this to retreat just out of range of your pursuer. Be careful, however, because retreating into slow terrain means that you can often be caught!",
+
+  stopping_fire: "The spread of fire can be stopped by pillaging any farms to which it might spread. This can be useful if the fire has to pass through a single form of yours before spreading to other dangerous areas.",
+
+  using_wind: "Try starting a fire in a forest on an opponent's flank. Burnt down forests allow for quicker movement then live ones.",
 
 };
 
