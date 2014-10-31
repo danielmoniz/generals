@@ -43,6 +43,7 @@ Game = {
     Output.clearCounts();
     Output.clearUnitsPanelSelect();
     Output.clearBattlesPanelSelect();
+    Output.clearEnemyUnitsPanel();
     //Output.clearMessage();
     if (this.selected) {
       delete this.selected;

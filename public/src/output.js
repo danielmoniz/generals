@@ -346,8 +346,6 @@ Output = {
   },
 
   printUnitsPresent: function(unit, other_units) {
-    $(this.other_units_panel).empty();
-
     var units = other_units;
     if (unit.side != Game.player) {
       var units = other_units.concat([unit]);
@@ -813,6 +811,10 @@ Output = {
 
   clearNewUnitsInBattle: function() {
     $(".battle .unit.new").removeClass("new");
+  },
+
+  clearEnemyUnitsPanel: function() {
+    $(this.other_units_panel).empty();
   },
 
   notYourMove: function() {
