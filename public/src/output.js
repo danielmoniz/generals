@@ -13,8 +13,11 @@ Output = {
   next_turn_button_id: "#next-turn",
   victory_container_id: "#will-container",
   tool_bar_id: "#tool-bar",
+  side_info_panel: "#side-info-panel",
   battles_id: "#battles",
   battles_container_id: "#battles_container",
+  weather_id: "#weather-panel",
+  wind_id: ".wind-arrow",
 
   buffer: [],
 
@@ -47,6 +50,20 @@ Output = {
     }
     this.reset();
     return this;
+  },
+
+  createWeatherPanel: function(wind) {
+    var weather = this.createDiv("weather sunny");
+    var wind = this.createDiv("wind-arrow");
+    wind.attr('direction', 'none');
+    weather.append(wind);
+    $(this.weather_id).append(weather);
+  },
+
+  updateWeather: function(wind) {
+    if (wind === undefined) wind = 'none';
+    var wind_div = $(this.wind_id);
+    wind_div.attr('direction', wind);
   },
 
   printBattles: function() {
@@ -432,8 +449,8 @@ Output = {
     $(this.tool_bar_id).show();
   },
 
-  setBattlePanel: function() {
-    $(this.battles_id).css("margin-top", Game.board_title.height);
+  setSideInfoPanel: function() {
+    $(this.side_info_panel).css("margin-top", Game.board_title.height);
   },
 
   message: function(message) {

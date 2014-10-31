@@ -11,7 +11,14 @@ var Weather = function() {
 
   this.nextDay = function() {
     this.updateWind();
+
+    this.updateDisplay();
   }
+
+  this.updateDisplay = function() {
+    var wind_str = this.getDirectionFromWindCoord(this.wind_dir);
+    Output.updateWeather(wind_str);
+  };
 
   this.getRandomWindDir = function() {
     var directions = [
@@ -24,6 +31,24 @@ var Weather = function() {
     var random = Math.floor(Random.random() * 4)
     var new_wind = directions[random];
     return new_wind;
+  };
+
+  this.getDirectionFromWindCoord = function(wind_coord) {
+    var map = {
+      '-1': {
+        0: 'left',
+      },
+      0: {
+        '-1': 'up',
+        0: 'none',
+        1: 'down',
+      },
+      1: {
+        0: 'right',
+      },
+    };
+    var direction_str = map[wind_coord[0]][wind_coord[1]];
+    return direction_str;
   };
 
   this.updateWind = function() {

@@ -1,0 +1,13 @@
+.weather { background-color: white; color: black; border: 1px white
+  solid; padding: 3px; display: inline-block;
+  background-repeat:no-repeat; }
+.weather.sunny { background-image:
+  url("assets_test/weather_sunny_92.png"); }
+.wind-arrow { min-height: 92px; min-width: 92px; background-repeat: no-repeat; }
+.wind-arrow[direction=none] { background-image: url("assets_test/no_wind.png"); }
+.wind-arrow[direction=up] { background-image: url("assets_test/wind_arrow_up.png"); }
+.wind-arrow[direction=right] { background-image: url("assets_test/wind_arrow_right.png"); }
+.wind-arrow[direction=down] { background-image:
+  url("assets_test/wind_arrow_down.png"); }
+.wind-arrow[direction=left] { background-image:
+  url("assets_test/wind_arrow_left.png"); }

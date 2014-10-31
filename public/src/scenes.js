@@ -302,7 +302,8 @@ Crafty.scene('Game', function() {
 
   addTitleBar();
   Output.setToolBar();
-  Output.setBattlePanel();
+  Output.setSideInfoPanel();
+  Output.createWeatherPanel();
 
   this.player = Crafty.e('PlayerCharacter');
   this.player.at(0, 0);
