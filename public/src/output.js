@@ -53,6 +53,7 @@ Output = {
   },
 
   createWeatherPanel: function(wind) {
+    $(this.weather_id).empty();
     var weather = this.createDiv("weather sunny");
     var wind = this.createDiv("wind-arrow");
     wind.attr('direction', 'none');

@@ -4,6 +4,7 @@ if (typeof require !== 'undefined') {
 
 var Random = {
   seed: 1,
+  called: 0,
 
   setSeed: function(seed) {
     this.seed = seed;
@@ -11,6 +12,9 @@ var Random = {
   },
 
   random: function() {
+    this.called += 1;
+    console.log("this.called");
+    console.log(this.called);
     var x = Math.sin(10000 * this.seed++) * 10000;
     return x - Math.floor(x);
   },
