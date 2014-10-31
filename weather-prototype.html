@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <style type="text/css">
+      body { background-color: black; color: white; font-size: 16px; }
+      .column { display: inline-block; vertical-align: top; }
+      .icon { height: 32px; width: 32px; }
+
+      .weather { background-color: white; color: black; border: 1px white
+	solid; padding: 3px; display: inline-block;
+	background-repeat:no-repeat; }
+      .weather.sunny { background-image:
+	url("public/assets_test/weather_sunny_92.png"); }
+      .wind-arrow { min-height: 92px; min-width: 92px; background-repeat: no-repeat; }
+      .wind-arrow.none { background-image: url("public/assets_test/no_wind.png"); }
+      .wind-arrow.up { background-image: url("public/assets_test/wind_arrow_up.png"); }
+      .wind-arrow.right { background-image: url("public/assets_test/wind_arrow_right.png"); }
+      .wind-arrow.down { background-image:
+	url("public/assets_test/wind_arrow_down.png"); }
+      .wind-arrow.left { background-image:
+	url("public/assets_test/wind_arrow_left.png"); }
+    </style>
+  </head>
+  <body>
+    <div class="weather sunny">
+      <div class="wind-arrow none"></div>
+    </div>
+    <div class="weather sunny">
+      <div class="wind-arrow up"></div>
+    </div>
+    <div class="weather sunny">
+      <div class="wind-arrow right"></div>
+    </div>
+    <div class="weather sunny">
+      <div class="wind-arrow down"></div>
+    </div>
+    <div class="weather sunny">
+      <div class="wind-arrow left"></div>
+    </div>
+
+  </body>
+</html>
