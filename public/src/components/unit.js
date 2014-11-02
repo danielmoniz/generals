@@ -117,10 +117,11 @@ Crafty.c('Unit', {
 
   pillage: function() {
     var local_terrain = Game.terrain[this.at().x][this.at().y];
+    var total_pillage_ability = this.pillage_ability * this.getActive();
     if (local_terrain.has('Farm')) {
-      var amount = local_terrain.pillage();
+      var amount = local_terrain.pillage(total_pillage_ability);
     } else if (local_terrain.has("City") && !local_terrain.sacked) {
-      var amount = local_terrain.pillage();
+      var amount = local_terrain.pillage(total_pillage_ability);
     } else {
       throw "CannotPillageEntity: {0} not valid type to be pillaged/sacked. At location: ({1}, {2})".format(local_terrain.type, local_terrain.at().x, local_terrain.at().y);
     }

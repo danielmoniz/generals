@@ -27,6 +27,7 @@ var UnitData = function(type, stats) {
       combat_ability: 1,
       movement: 4,
       supply_usage: 1,
+      pillage_ability: 1,
     },
 
     "Cavalry": {

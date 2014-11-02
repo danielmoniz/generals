@@ -50,10 +50,9 @@ var TerrainData = function(type, stats) {
       build_over: 0.01,
       defense_bonus: 1.55,
       supply: 1,
-      supply_to_steal: 9000,
-      //percent_sacked: 0,
       population: 9000,
-      supply_remaining: 6,
+      max_supply_multiplier: 3,
+      supply_steal_factor: 3,
     },
 
     "Road": {

@@ -161,9 +161,19 @@ Crafty.c('City', {
       ;
   },
 
-  pillage: function() {
-    var supply = this.supply_to_steal;
-    this.supply_remaining -= 2;
+  /*
+   * Sets any dynamic stats for the unit that require this.stats to be set
+   * properly.
+   * Note: This MUST be called after a unit is created!
+   */
+  setStats: function() {
+    this.addStat('max_supply', this.population * this.max_supply_multiplier);
+    this.addStat('supply_remaining', this.population * this.max_supply_multiplier);
+  },
+
+  pillage: function(pillage_power) {
+    var supply_to_steal = Math.min(this.supply_steal_factor * pillage_power, this.supply_remaining);
+    this.supply_remaining -= supply_to_steal;
     if (this.supply_remaining <= 0) {
       this.addStats({
         sacked: true,
@@ -179,7 +189,7 @@ Crafty.c('City', {
       this.city_sides[1].destroy();
     }
 
-    return supply;
+    return supply_to_steal;
   },
 });
 

@@ -11,6 +11,16 @@ Pretty = {
     },
   },
 
+  Terrain: {
+    City: {
+      supply: function(city) {
+        var percent_remaining = city.supply_remaining / city.max_supply * 100;
+        var output = "{0}%".format(Math.floor(percent_remaining));
+        return output;
+      },
+    },
+  },
+
   Turn: {
     pretty: function(turn) {
       if (turn !== undefined) return turn + 1;

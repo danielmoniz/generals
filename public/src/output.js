@@ -332,8 +332,19 @@ Output = {
       output.push("(pillaged)");
     }
     if (terrain.has("City")) {
+      output.push("Pop. {0}".format(terrain.population));
       if (terrain.supply_remaining > 0) {
-        output.push("Supply: {0}".format(terrain.supply_remaining));
+        var supply = terrain.supply_remaining;
+        output.push("Supply: {0}".format(supply));
+        /*
+        if (terrain.supply_remaining == terrain.max_supply) {
+          //var supply = "{0}".format('(untouched');
+          //output.push("Supply: {0}".format(terrain.supply_remaining));
+        } else {
+          //var supply = Pretty.Terrain.City.supply(terrain);
+          //output.push("Supply: {0}".format(supply));
+        }
+        */
       } else {
         output.push("Sacked!");
       }
