@@ -80,7 +80,7 @@ Battle = {
   },
 
   calculateTotalLosses: function(battle, attackers, defenders) {
-    var TROOP_LOSS = 0.2;
+    var TROOP_LOSS = 0.12;
     var MORALE_FACTOR = 0.75;
     var terrain_mod = Game.terrain_defense_bonus[battle.at().x][battle.at().y];
 
