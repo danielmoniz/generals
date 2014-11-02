@@ -48,7 +48,7 @@ Victory = {
       var total_standing_forests = this.getStandingForests(i).length;
       var forest_factor = total_standing_forests * this.forest_values[i];
 
-      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor * (1/2 + forest_factor/2);
+      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor * ((2 + forest_factor) / 3);
     }
     Output.updateVictoryBar();
   },
