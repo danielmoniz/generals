@@ -226,7 +226,8 @@ Output = {
   createStandardUnitDiv: function(unit, classes) {
     var name = Pretty.Unit.name(unit);
     var status = Pretty.Unit.status(unit.getActive(), unit.injured);
-    var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
+    var supply_remaining = Pretty.Unit.supplied_turns(unit.supply_remaining, unit.quantity);
+    //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
     var supply_status = 'supplied';
     if (!unit.is_supplied) supply_status = 'unsupplied';
 
@@ -762,8 +763,9 @@ Output = {
 
     var supply_div = unit_div.find("div.supply");
     var unit = Crafty(parseInt(unit_div.attr("unit_id")));
-    var supply = Pretty.Unit.supply(unit.supply_remaining);
-    supply_div.text(supply);
+    var supply_remaining = Pretty.Unit.supplied_turns(unit.supply_remaining, unit.quantity);
+    //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
+    supply_div.text(supply_remaining);
   },
 
   getActionsChoicesDiv: function(unit) {

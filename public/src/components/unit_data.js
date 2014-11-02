@@ -26,6 +26,7 @@ var UnitData = function(type, stats) {
       max_sight: 6,
       combat_ability: 1,
       movement: 4,
+      supply_usage: 1,
     },
 
     "Cavalry": {

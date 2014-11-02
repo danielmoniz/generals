@@ -70,6 +70,11 @@ Pretty = {
       return "{0}".format(supply_remaining);
     },
 
+    supplied_turns: function(supply_remaining, num_troops) {
+      var turns_supplied = Math.floor(supply_remaining / num_troops);
+      return "{0}".format(turns_supplied);
+    },
+
     unsupplied: function(troops_lost) {
       var unsupplied = "Not supplied!";
       if (troops_lost) unsupplied += " {0} troops lost.".format(troops_lost);

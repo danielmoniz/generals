@@ -73,7 +73,6 @@ Crafty.c('Unit', {
 
     if (turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
-      this.injuryAttrition();
       this.takeFireCasualties();
 
       this.reset(); // should happen after every other active effect!
@@ -207,6 +206,7 @@ Crafty.c('Unit', {
   },
 
   handleAttrition: function() {
+    this.injuryAttrition();
     if (this.isSupplied()) {
       this.is_supplied = true;
       this.resupply();
@@ -330,9 +330,10 @@ Crafty.c('Unit', {
   },
 
   sufferAttrition: function() {
+    var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
     this.supply_remaining -= this.quantity;
     if (this.supply_remaining < 0) {
-      var attrition_casualties = this.quantity * Game.attrition_rate;
+      var attrition_casualties = (this.quantity - supplied_units) * Game.attrition_rate;
       var to_kill = Math.floor(attrition_casualties * Game.attrition_death_rate);
       var to_injure = Math.floor(attrition_casualties * (1 - Game.attrition_death_rate));
       this.kill(to_kill);
@@ -545,12 +546,21 @@ Crafty.c('Unit', {
     var num_killed = Math.ceil(Math.min(this.quantity, num_troops));
     this.quantity -= num_killed;
     if (injured) this.injured -= num_killed;
+
+    this.updateMaxSupply();
+  },
+
+  updateMaxSupply: function() {
+    this.max_supply = this.getActive() * this.max_supply_multiplier;
+    this.supply_remaining = Math.min(this.max_supply, this.supply_remaining);
   },
 
   injure: function(num_troops) {
     if (isNaN(num_troops)) throw "NaN: num_troops in unit.injure()";
     if (num_troops === undefined) throw "undefined: num_troops in unit.injure()";
     this.injured += Math.ceil(Math.min(this.quantity, num_troops));
+
+    this.updateMaxSupply();
   },
 
   heal: function(num_to_heal) {
