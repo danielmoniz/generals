@@ -102,7 +102,7 @@ Crafty.c('Unit', {
     if (local_terrain.type == 'City' && local_terrain.side != this.side && !local_terrain.sacked) {
       actions.push("sack");
     }
-    if (local_terrain.flammable) {
+    if (Game.fire && local_terrain.flammable) {
       actions.push('start_fire');
     }
     return actions;
@@ -332,9 +332,12 @@ Crafty.c('Unit', {
 
   sufferAttrition: function() {
     var unsupplied = this.quantity;
-    var local_terrain = Game.terrain[this.at().x][this.at().y];
-    if (local_terrain.provides_supply) {
-      unsupplied = Math.max(0, this.quantity - local_terrain.provides_supply);
+
+    if (Game.live_off_land) {
+      var local_terrain = Game.terrain[this.at().x][this.at().y];
+      if (local_terrain.provides_supply) {
+        unsupplied = Math.max(0, this.quantity - local_terrain.provides_supply);
+      }
     }
 
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
