@@ -37,7 +37,7 @@ Crafty.c('Terrain', {
       on_fire: false,
       burned: true,
 
-      provides_supply: false,
+      supply_to_steal: false,
     };
     this.addStats(burned_stats);
     if (this.pillage) {
@@ -110,12 +110,12 @@ Crafty.c('Farm', {
   },
 
   pillage: function() {
-    var provided_supply = this.provides_supply;
+    var provided_supply = this.supply_to_steal;
     this.addNewComponent("PillagedFarm");
     this.addStats({
         move_difficulty: 1.35,
         pillaged: true,
-        provides_supply: 0,
+        supply_to_steal: 0,
         flammable: false,
       });
     return provided_supply;
@@ -162,12 +162,12 @@ Crafty.c('City', {
   },
 
   pillage: function() {
-    var provided_supply = this.provides_supply;
+    var provided_supply = this.supply_to_steal;
     this.supply_remaining -= 2;
     if (this.supply_remaining <= 0) {
       this.addStats({
         sacked: true,
-        provides_supply: 0,
+        supply_to_steal: 0,
         defense_bonus: 1.1,
         alpha: 0.5,
       });

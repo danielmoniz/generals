@@ -23,6 +23,7 @@ var TerrainData = function(type, stats) {
       move_difficulty: 1, 
       build_over: 1,
       defense_bonus: 1,
+      provides_supply: 1,
     },
 
     "Tree": {
@@ -30,6 +31,7 @@ var TerrainData = function(type, stats) {
       build_over: 3,
       defense_bonus: 1.05,
       flammable: true,
+      provides_supply: 2,
     },
 
     "Farm": {
@@ -37,9 +39,10 @@ var TerrainData = function(type, stats) {
       move_difficulty: 1.2,
       defense_bonus: 1,
       alpha: 0.6,
-      provides_supply: 2,
+      supply_to_steal: 2,
       colour: { r: 196, g: 196, b: 0 },
       flammable: true,
+      provides_supply: 4,
     },
 
     "City": {
@@ -47,7 +50,9 @@ var TerrainData = function(type, stats) {
       build_over: 0.01,
       defense_bonus: 1.55,
       supply: 1,
-      provides_supply: 4,
+      supply_to_steal: 4,
+      //percent_sacked: 0,
+      population: 9000,
       supply_remaining: 6,
     },
 
