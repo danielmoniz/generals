@@ -158,7 +158,13 @@ Crafty.c('City', {
       .attr({
         farms: [],
       })
+      .bind("NextTurn", this.handleSupply)
       ;
+  },
+
+  handleSupply: function() {
+    // @TODO Update city's supply amount depending on whether it is supplied
+    // from a supply route (depends on side, or if it is owned/neutral)
   },
 
   /*
