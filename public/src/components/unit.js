@@ -52,6 +52,7 @@ Crafty.c('Unit', {
    * Note: This MUST be called after a unit is created!
    */
   setStats: function() {
+    this.addStat('max_supply', this.max_supply_multiplier * this.quantity);
     this.addStat('supply_remaining', this.max_supply);
   },
 
@@ -232,7 +233,7 @@ Crafty.c('Unit', {
     if (fill) {
       this.addSupply(this.max_supply);
     } else {
-      this.addSupply(1);
+      this.addSupply(this.quantity);
     }
   },
 
@@ -329,7 +330,7 @@ Crafty.c('Unit', {
   },
 
   sufferAttrition: function() {
-    this.supply_remaining -= 1;
+    this.supply_remaining -= this.quantity;
     if (this.supply_remaining < 0) {
       var attrition_casualties = this.quantity * Game.attrition_rate;
       var to_kill = Math.floor(attrition_casualties * Game.attrition_death_rate);

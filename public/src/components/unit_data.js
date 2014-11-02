@@ -14,7 +14,7 @@ var UnitData = function(type, stats) {
 
     "Unit": {
       z: 100,
-      max_supply: 3,
+      max_supply_multiplier: 3,
       battle: false, 
       side: 0, 
       alive: true,

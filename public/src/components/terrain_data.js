@@ -31,7 +31,7 @@ var TerrainData = function(type, stats) {
       build_over: 3,
       defense_bonus: 1.05,
       flammable: true,
-      provides_supply: 2,
+      provides_supply: 1,
     },
 
     "Farm": {
@@ -39,7 +39,7 @@ var TerrainData = function(type, stats) {
       move_difficulty: 1.2,
       defense_bonus: 1,
       alpha: 0.6,
-      supply_to_steal: 2,
+      supply_to_steal: 6000,
       colour: { r: 196, g: 196, b: 0 },
       flammable: true,
       provides_supply: 4,
@@ -50,7 +50,7 @@ var TerrainData = function(type, stats) {
       build_over: 0.01,
       defense_bonus: 1.55,
       supply: 1,
-      supply_to_steal: 4,
+      supply_to_steal: 9000,
       //percent_sacked: 0,
       population: 9000,
       supply_remaining: 6,

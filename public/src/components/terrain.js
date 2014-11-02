@@ -110,7 +110,7 @@ Crafty.c('Farm', {
   },
 
   pillage: function() {
-    var provided_supply = this.supply_to_steal;
+    var supply = this.supply_to_steal;
     this.addNewComponent("PillagedFarm");
     this.addStats({
         move_difficulty: 1.35,
@@ -118,7 +118,7 @@ Crafty.c('Farm', {
         supply_to_steal: 0,
         flammable: false,
       });
-    return provided_supply;
+    return supply;
   },
 
 });
@@ -162,7 +162,7 @@ Crafty.c('City', {
   },
 
   pillage: function() {
-    var provided_supply = this.supply_to_steal;
+    var supply = this.supply_to_steal;
     this.supply_remaining -= 2;
     if (this.supply_remaining <= 0) {
       this.addStats({
@@ -179,7 +179,7 @@ Crafty.c('City', {
       this.city_sides[1].destroy();
     }
 
-    return provided_supply;
+    return supply;
   },
 });
 
