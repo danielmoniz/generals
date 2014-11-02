@@ -331,10 +331,16 @@ Crafty.c('Unit', {
   },
 
   sufferAttrition: function() {
+    var unsupplied = this.quantity;
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    if (local_terrain.provides_supply) {
+      unsupplied = Math.max(0, this.quantity - local_terrain.provides_supply);
+    }
+
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
-    this.supply_remaining -= this.quantity;
+    this.supply_remaining -= unsupplied;
     if (this.supply_remaining < 0) {
-      var attrition_casualties = (this.quantity - supplied_units) * Game.attrition_rate;
+      var attrition_casualties = Math.max(0, (unsupplied - supplied_units)) * Game.attrition_rate;
       var to_kill = Math.floor(attrition_casualties * Game.attrition_death_rate);
       var to_injure = Math.floor(attrition_casualties * (1 - Game.attrition_death_rate));
       this.kill(to_kill);
