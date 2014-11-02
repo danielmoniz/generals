@@ -15,6 +15,14 @@ Crafty.c('Grid', {
     } else {
       var new_y = Math.max(0, y * Game.map_grid.tile.height) + Game.board_title.height;
       this.attr({ x: x * Game.map_grid.tile.width, y: new_y });
+
+      // move colocated entities, if any
+      if (this.colocated_entities) {
+        for (var i in this.colocated_entities) {
+          var entity = this.colocated_entities[i];
+          entity.at(x, y);
+        }
+      }
       return this;
     }
   },
@@ -273,6 +281,24 @@ Crafty.c('Selected', {
       .color('purple')
     ;
     this.z = 55;
+  },
+});
+
+// A ColourSquare is a box of colour that shows the army's player-owner.
+Crafty.c('ColourSquare', {
+  init: function() {
+    this.requires('Actor')
+    ;
+    this.z = 250;
+  },
+
+  pickSide: function(side) {
+    if (side == 0) {
+      this.addComponent('spr_player_colour_blue');
+    } else if (side == 1) {
+      this.addComponent('spr_player_colour_white');
+    }
+    return this;
   },
 });
 

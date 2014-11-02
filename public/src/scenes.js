@@ -142,9 +142,18 @@ Crafty.scene('Game', function() {
   function buildUnitsFromData(unit_data) {
     createUnitComponents(unit_data);
 
+    var use_colour_indicators = false;
+    if (Game.factions[0] == Game.factions[1]) {
+      use_colour_indicators = true;
+    }
     for (var side=0; side<2; side++) {
       for (var i=0; i<unit_data[side].length; i++) {
         var unit_stats = unit_data[side][i];
+        if (use_colour_indicators) {
+          var colour_square = Crafty.e('ColourSquare');
+          colour_square.pickSide(side);
+          unit_stats.colocated_entities = [colour_square];
+        }
         var unit_object = new UnitData(unit_stats.type, unit_stats);
         var unit = unit_object.render();
       }
@@ -432,7 +441,7 @@ Crafty.scene('Loading', function() {
     }
   });
 
-  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets/city_full.png', 'assets/supply_route.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets/city_full.png', 'assets/supply_route.png', 'assets/player_indicators.png'], function() {
 
     Crafty.sprite(32, 'assets/fire.png', {
       spr_fire: [0, 0],
@@ -443,6 +452,11 @@ Crafty.scene('Loading', function() {
       spr_bush: [1, 0],
       //spr_city: [0, 1],
       spr_player: [1, 1],
+    });
+
+    Crafty.sprite(32, 'assets/player_indicators.png', {
+      spr_player_colour_blue: [0, 0],
+      spr_player_colour_white: [1, 0],
     });
 
     Crafty.sprite(32, 'assets/city_full.png', {

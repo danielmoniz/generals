@@ -6,18 +6,26 @@ LineOfSight = {
     return this;
   },
 
-  makeVisible: function(entities) {
+  changeVisibility: function(entities, value) {
     for (var i=0; i<entities.length; i++) {
-      entities[i].visible = true;
+      entities[i].visible = value;
+
+      // set any colocated entities to match visibility
+      if (entities[i].colocated_entities) {
+        for (var j in entities[i].colocated_entities) {
+          entities[i].colocated_entities[j].visible = value;
+        }
+      }
     }
     return this;
   },
 
+  makeVisible: function(entities) {
+    this.changeVisibility(entities, true);
+  },
+
   makeInvisible: function(entities) {
-    for (var i=0; i<entities.length; i++) {
-      entities[i].visible = false;
-    }
-    return this;
+    this.changeVisibility(entities, false);
   },
 
   allUnitsVisible: function() {
@@ -30,18 +38,12 @@ LineOfSight = {
 
   allEntitiesVisible: function(entity) {
     var entities = Crafty(entity).get();
-    for (var i=0; i<entities.length; i++) {
-      entities[i].visible = true;
-    }
-    return this;
+    return this.makeVisible(entities);
   },
 
   allEntitiesInvisible: function(entity) {
     var entities = Crafty(entity).get();
-    for (var i=0; i<entities.length; i++) {
-      entities[i].visible = false;
-    }
-    return this;
+    return this.makeInvisible(entities);
   },
 
   handleLineOfSight: function(fog_of_war, side) {
