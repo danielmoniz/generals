@@ -63,6 +63,25 @@ Battle = {
     return total;
   },
 
+  getDefensiveAbility: function(units) {
+    var total = 0;
+    var total_troops = 0;
+    for (var i=0; i<units.length; i++) {
+      if (!units[i]) console.log(units[i]);
+      var unit = units[i];
+      if (unit === undefined) {
+        console.log('Unit is not defined!');
+        console.log('Unit number (in tile): {0}'.format(i));
+        continue;
+      }
+      if (unit !== undefined) {
+        total += unit.getActive() * unit.defensive_ability;
+        total_troops += unit.getActive();
+      }
+    }
+    return total / total_troops;
+  },
+
   getRatiosOfTotal: function(units, total) {
     var ratios = [];
     for (var i=0; i<units.length; i++) {
@@ -107,14 +126,20 @@ Battle = {
     var attacker_random_factor = Math.random() * 0.2 + 0.9;
     var defender_random_factor = Math.random() * 0.2 + 0.9;
     */
-    var attacker_random_factor = 1;
-    var defender_random_factor = 1;
 
     var attackers_ability = Battle.getCombatAbility(attackers);
     var defenders_ability = Battle.getCombatAbility(defenders);
 
-    var attacker_losses = attacker_random_factor * defenders_ability * TROOP_LOSS * (terrain_mod * defender_morale_factor * 1/attacker_morale_factor);
-    var defender_losses = defender_random_factor * attackers_ability * TROOP_LOSS * (1/terrain_mod * 1/defender_morale_factor * attacker_morale_factor);
+    var attackers_defensive_ability = Battle.getDefensiveAbility(attackers);
+    var defenders_defensive_ability = Battle.getDefensiveAbility(defenders);
+
+
+    var attacker_attack_power = attackers_ability * (terrain_mod * attacker_morale_factor);
+    var defender_losses = attacker_attack_power * TROOP_LOSS / defenders_defensive_ability / defender_morale_factor;
+
+    var defender_attack_power = defenders_ability * (terrain_mod * defender_morale_factor);
+    var attacker_losses = defender_attack_power * TROOP_LOSS / attackers_defensive_ability / attacker_morale_factor;
+
 
     var losses = {};
     losses[Battle.ATTACKER] = attacker_losses;

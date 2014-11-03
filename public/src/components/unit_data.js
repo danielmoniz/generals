@@ -23,12 +23,12 @@ var UnitData = function(type, stats) {
       is_supplied: true,
       injured: 0,
       happy: true,
-      morale: 0,
       best_morale: 0,
 
       max_supply_multiplier: 3,
       max_sight: 6,
       combat_ability: 1,
+      defensive_ability: 1,
       movement: 4,
       supply_usage: 1,
       pillage_ability: 1,
