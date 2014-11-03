@@ -54,6 +54,7 @@ Crafty.c('Unit', {
   setStats: function() {
     this.addStat('max_supply', this.max_supply_multiplier * this.quantity);
     this.addStat('supply_remaining', this.max_supply);
+    this.addStat('morale', this.best_morale);
   },
 
   nextTurn: function(turn) {
@@ -75,15 +76,30 @@ Crafty.c('Unit', {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.takeFireCasualties();
 
+      this.updateMorale();
       this.reset(); // should happen after every other active effect!
     }
     this.updateStats(); // should happen last!
+  },
+
+  updateMorale: function() {
+    if (this.happy) {
+      this.morale -= 1;
+      this.morale = Math.max(this.morale, this.best_morale);
+    }
+  },
+
+  worsenMorale: function(amount) {
+    if (amount === undefined) amount = 1;
+    this.morale += amount;
+    this.happy = false;
   },
 
   reset: function() {
     this.turn_action = "move";
     this.performed_actions = [];
     this.updateActionChoices();
+    this.happy = true;
   },
 
   getActionChoices: function() {

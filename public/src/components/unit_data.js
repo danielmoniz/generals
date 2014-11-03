@@ -22,7 +22,9 @@ var UnitData = function(type, stats) {
       performed_actions: [],
       is_supplied: true,
       injured: 0,
+      happy: true,
       morale: 0,
+      best_morale: 0,
 
       max_supply_multiplier: 3,
       max_sight: 6,
@@ -47,6 +49,7 @@ var UnitData = function(type, stats) {
 
     "Slave": {
       combat_ability: 0.6,
+      best_morale: 1,
     },
 
     "Scout": {
