@@ -74,7 +74,7 @@ var TerrainData = function(type, stats) {
     },
   };
 
-  this.setUpEntityData(terrain_data, stats);
+  this.setUpEntityData(terrain_data, terrain_data[type], stats);
 
 };
 

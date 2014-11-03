@@ -14,15 +14,16 @@ var UnitData = function(type, stats) {
 
     "Unit": {
       z: 100,
-      max_supply_multiplier: 3,
       battle: false, 
       side: 0, 
       alive: true,
       quantity: 0,
-      injured: 0,
       active: true,
       performed_actions: [],
       is_supplied: true,
+      injured: 0,
+
+      max_supply_multiplier: 3,
       max_sight: 6,
       combat_ability: 1,
       movement: 4,
@@ -31,35 +32,60 @@ var UnitData = function(type, stats) {
     },
 
     "Cavalry": {
-      parent: 'Unit',
-      type: 'Cavalry',
       movement: 8,
     },
 
     "Infantry": {
-      parent: 'Unit',
-      type: 'Infantry',
       movement: 4,
     },
 
     "Jaguar Warrior": {
-      parent: 'Unit',
-      type: 'Jaguar Warrior',
       movement: 5,
       combat_ability: 1.2,
     },
 
+    "Slave": {
+      combat_ability: 0.6,
+    },
+
     "Scout": {
-      parent: 'Unit',
-      type: 'Jaguar Warrior',
-      movement: 6,
+      movement: 5,
       combat_ability: 0.5,
-      max_sight: 9,
+      max_sight: 7,
+    },
+
+    "Raider": {
+      movement: 5,
+      combat_ability: 0.75,
+      pillage_ability: 2,
+    },
+
+    "Ranger": {
+      movement: 5,
+      combat_ability: 1,
+      max_supply_multiplier: 5,
+    },
+
+    "Test": {
+      max_supply_multiplier: 3,
+      max_sight: 6,
+      combat_ability: 1,
+      movement: 4,
+      supply_usage: 1,
+      pillage_ability: 1,
+    },
+
+    "Test2": {
+      movement: 5,
+      combat_ability: 0.5,
+      max_sight: 7,
     },
 
   };
 
-  this.setUpEntityData(unit_data, stats);
+  var base_stats = unit_data[type];
+  base_stats.parent = 'Unit';
+  this.setUpEntityData(unit_data, base_stats, stats);
 
 };
 

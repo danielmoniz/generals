@@ -26,10 +26,11 @@ var DataTools = {
     this.stats.components.push(component);
   },
 
-  setUpEntityData: function(entity_data, stats) {
+  setUpEntityData: function(entity_data, base_stats, stats) {
     var new_stats = {};
-    var base_stats = entity_data[this.type];
     if (base_stats.parent) {
+      console.log("base_stats.parent");
+      console.log(base_stats.parent);
       var parent_stats = entity_data[base_stats.parent];
       Utility.loadDataIntoObject(parent_stats, new_stats);
     }
