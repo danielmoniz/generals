@@ -781,8 +781,9 @@ Output = {
 
   getActionsChoicesDiv: function(unit) {
     var actions_div = this.createDiv("actions");
-    for (var i in unit.action_choices) {
-      var action = unit.action_choices[i];
+    var action_choices = unit.getActionChoices();
+    for (var i in action_choices) {
+      var action = action_choices[i];
       var action_button = document.createElement('input');
       action_button.type = "button";
       var action_name = Utility.capitalizeFirstLetter(action.split('_').join(' '));

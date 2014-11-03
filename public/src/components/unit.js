@@ -77,7 +77,7 @@ Crafty.c('Unit', {
 
       this.reset(); // should happen after every other active effect!
     }
-
+    this.updateActionChoices();
     this.updateStats(); // should happen last!
   },
 
@@ -535,7 +535,7 @@ Crafty.c('Unit', {
   battle_finished: function() {
     this.battle = false;
     delete this.battle_side;
-    //this.report();
+    this.updateActionChoices();
   },
 
   sufferCasualties: function(casualties) {
