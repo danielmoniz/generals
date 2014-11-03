@@ -419,22 +419,37 @@ Output = {
 
     for (var i in units) {
       var unit = units[i];
-      var unit_info_panel = this.createDiv('unit-info-panel', unit.name);
+      var unit_info_panel = this.createDiv('unit-info-panel');
       unit_info_panel.attr('unit_id', unit.getId());
       $(this.units_info_panel).append(unit_info_panel);
-    }
 
-    //$(unit_info_panel).show();
+
+
+      var div = this.createDiv("", unit.type);
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}".format('Attack', unit.combat_ability));
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}".format('Defence', unit.defensive_ability));
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}".format('Speed', unit.movement));
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}".format('Pillage ability', unit.pillage_ability));
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}".format('Supply usage per turn', unit.supply_usage));
+      unit_info_panel.append(div);
+
+
+    }
   },
 
   showUnitInfoPanel: function(unit_id) {
-    console.log("in showUnitInfoPanel");
     $('.unit-info-panel').hide();
     var unit = Crafty(parseInt(unit_id));
     if (unit === undefined) return;
 
     var unit_info_panel = $('.unit-info-panel[unit_id={0}]'.format(unit_id));
-
     $(unit_info_panel).toggle();
   },
 
