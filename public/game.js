@@ -125,6 +125,7 @@ Game = {
     }
 
     Output.updateUnitsPanel();
+    Output.updateUnitInfoPanel();
 
     if (this.type == this.types.HOTSEAT) {
       this.determineSelection();

@@ -4,6 +4,7 @@ Output = {
   units_panel: "#units-panel",
   other_units_panel: "#other-units-panel",
   unit_count_panel: "#unit-count-panel",
+  units_info_panel: "#units-info-panel",
   terrain_panel: "#terrain-panel",
   message_element_id: "#message-bar",
   alerts_element_id: "#alerts-panel",
@@ -216,10 +217,22 @@ Output = {
     } else {
       classes = "unit";
     }
-    var unit_div = this.createDiv(classes)
+    var that = this;
+    var unit_div = this.createDiv(classes);
+    unit_div
       .attr("unit_id", unit_id)
-      .click(this.selectSelf())
+      //.click(this.selectSelf())
+      .single_double_click(function(event) {
+        console.log('single clicked!');
+        this.selectSelf = that.selectSelf();
+        this.selectSelf(event);
+      }, function(event) {
+        console.log('double clicked!');
+        that.showUnitInfoPanel($(this).attr('unit_id'));
+        event.stopPropagation();
+      })
       ;
+
     return unit_div;
   },
 
@@ -241,7 +254,7 @@ Output = {
     first_row.append(img_div);
 
     var main_info_div = this.createDiv('unit-item');
-    var name_div = this.createDiv('', name);
+    var name_div = this.createDiv('unit-name', name);
     var status_div = this.createDiv("status", status);
     if (unit.getActive() < Game.min_troops_for_supply_cut) {
       status_div.addClass("small");
@@ -289,8 +302,8 @@ Output = {
       var entity_id = parseInt($(this).attr(type_id));
       var entity = Crafty(entity_id);
       Game.select(entity);
+      event.stopPropagation();
     }
-    event.stopPropagation();
     return func;
   },
 
@@ -397,6 +410,32 @@ Output = {
     var title = Pretty.Unit.unitsPresentTitle(total.active, total.injured, total.total);
     $(this.unit_count_panel).append("{0}<br />".format(Pretty.Unit.unitsPresentTitle()));
     $(this.unit_count_panel).append(Pretty.Unit.unitsPresent(total.active, total.injured, total.total));
+  },
+
+  updateUnitInfoPanel: function() {
+    $(this.units_info_panel).empty();
+    var units = Unit.getFriendlyUnits(Game.player);
+    if (units[0] === undefined) return;
+
+    for (var i in units) {
+      var unit = units[i];
+      var unit_info_panel = this.createDiv('unit-info-panel', unit.name);
+      unit_info_panel.attr('unit_id', unit.getId());
+      $(this.units_info_panel).append(unit_info_panel);
+    }
+
+    //$(unit_info_panel).show();
+  },
+
+  showUnitInfoPanel: function(unit_id) {
+    console.log("in showUnitInfoPanel");
+    $('.unit-info-panel').hide();
+    var unit = Crafty(parseInt(unit_id));
+    if (unit === undefined) return;
+
+    var unit_info_panel = $('.unit-info-panel[unit_id={0}]'.format(unit_id));
+
+    $(unit_info_panel).toggle();
   },
 
   updateStatusBar: function() {

@@ -1,0 +1,15 @@
+#units-info-panel { position: relative; }
+
+.unit-info-panel {
+  position: absolute; 
+  bottom: 0px;
+  left: 0px;
+  display: none;
+  border: 1px white solid;
+  padding: 5px;
+  min-height: 200px;
+  min-width: 200px;
+  z-index: 2000;
+  background-color: white;
+  color: black;
+}

@@ -22,6 +22,34 @@ $(document).ready(function() {
 
   });
 
+  jQuery.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
+    return this.each(function(){
+      var clicks = 0, self = this;
+      jQuery(this).click(function(event){
+        clicks++;
+        if (clicks == 1) {
+          setTimeout(function(){
+            if(clicks == 1) {
+              single_click_callback.call(self, event);
+            } else {
+              single_click_callback.call(self, event);
+              double_click_callback.call(self, event);
+            }
+            clicks = 0;
+          }, timeout || 300);
+        }
+      });
+    });
+  }
+
+  $("body").click(function() {
+    $('.unit-info-panel').hide();
+  });
+
+  $("#units-info-panel").click(function(event) {
+    event.stopPropagation();
+  });
+
   $("#load-button").click(function() {
     Game.load($("textarea#load-input").val());
     $("#game-container").show();
@@ -83,7 +111,7 @@ $(document).ready(function() {
   //$("#start-hotseat-button").click();
   //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
-  //$("input[name=factions_1][value=mongols]").click();
+  //$("input[name=factions_1][value=aztecs]").click();
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
