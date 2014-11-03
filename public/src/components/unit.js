@@ -332,7 +332,7 @@ Crafty.c('Unit', {
   sufferAttrition: function() {
     var unsupplied = this.quantity;
 
-    if (Game.live_off_land) {
+    if (Game.live_off_land && !this.battle) {
       var local_terrain = Game.terrain[this.at().x][this.at().y];
       if (local_terrain.provides_supply) {
         unsupplied = Math.max(0, this.quantity - local_terrain.provides_supply);
