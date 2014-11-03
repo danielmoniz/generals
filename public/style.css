@@ -1,6 +1,20 @@
-body { font-family: sans-serif, Times, serif; margin: 0; background: black; color:white; }
+body {
+  font-family: sans-serif, Times, serif;
+  margin: 0;
+  background: black;
+  color:white;
+}
 #front-page {}
-#game-container { display: none; width: 100%; }
+#game-container {
+  display: none;
+  width: 100%;
+
+  user-select: none;
+  -o-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+}
 div#battles { display:none; }
 .panel { display: inline-block; vertical-align: top; }
 #info-panel { min-height: 100px; color:white; display:inline-block; }
