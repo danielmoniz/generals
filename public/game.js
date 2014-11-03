@@ -168,6 +168,8 @@ Game = {
 
     } else if ((Game.player + 2 - 0.5) % 2 == Game.turn % 2) {
       this.nextTurn();
+    } else {
+      return false;
     }
     Output.printBattles();
   },
@@ -183,6 +185,7 @@ Game = {
     // Go right to the next player's turn - skip in-between' turn
     this.nextTurn();
 
+    Output.printBattles();
   },
 
   determineSelection: function() {
