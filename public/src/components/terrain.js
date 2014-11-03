@@ -170,6 +170,11 @@ Crafty.c('City', {
   },
 
   pillage: function(pillage_power) {
+    if (this.being_sacked === undefined) {
+      this.being_sacked = Crafty.e('CityBeingSacked');
+      this.being_sacked.at(this.at().x, this.at().y);
+    }
+
     var supply_to_steal = Math.min(this.supply_steal_factor * pillage_power, this.supply_remaining);
     this.supply_remaining -= supply_to_steal;
     if (this.supply_remaining <= 0) {
@@ -185,9 +190,38 @@ Crafty.c('City', {
       // for now, destroy the city sides when the city is sacked
       this.city_sides[0].destroy();
       this.city_sides[1].destroy();
+      this.being_sacked.destroy();
+    } else {
+      this.being_sacked.show();
     }
 
     return supply_to_steal;
+  },
+});
+
+Crafty.c('CityBeingSacked', {
+  init: function() {
+    this.requires('Actor, spr_city_being_sacked')
+      .bind('NextTurn', this.nextTurn)
+    ;
+    this.z = 87;
+    this.visible = false;
+  },
+
+  nextTurn: function() {
+    if (Game.turn == this.turn_started) {
+      this.hide();
+    }
+  },
+
+  show: function() {
+    this.visible = true;
+    this.turn_started = Game.turn;
+  },
+
+  hide: function() {
+    this.visible = false;
+    this.turn_started = undefined;
   },
 });
 
