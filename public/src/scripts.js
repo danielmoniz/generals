@@ -81,9 +81,9 @@ $(document).ready(function() {
 
   // TEST ONLY
   //$("#start-hotseat-button").click();
-  //$("input[name=map_size][value=medium]").click();
+  //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
-  //$("input[name=factions_1][value=romans]").click();
+  //$("input[name=factions_1][value=mongols]").click();
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
@@ -102,6 +102,7 @@ UI = {
     console.log(window.game_type);
 
     $("input.start").hide();
+    $("input.prepare-game").hide();
     //$("#front-page").hide();
   },
 
@@ -144,6 +145,7 @@ UI = {
 
   endGame: function() {
     $("#menu").show();
+    $("input.prepare-game").show();
     $("#menu-toggle-button").hide();
     $("#game-container").hide();
     $("#tool-bar").hide();
