@@ -35,7 +35,7 @@ var Factions = {
       },
     ],
 
-    cities: ['Avarga', 'Karakorum', 'Dadu'],
+    cities: ['Avarga', 'Karakorum', 'Dadu', 'Ikh Khuree'],
   },
 
   romans: {

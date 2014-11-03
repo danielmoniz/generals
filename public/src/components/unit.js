@@ -632,17 +632,6 @@ Crafty.c('Unit', {
     if (side !== undefined) this.side = side;
   },
 
-  /*
-  pick_side: function(side) {
-    if (side !== undefined) this.side = side;
-    if (this.side == 0) {
-      this.addComponent('spr_cavalry_blue');
-    } else {
-      this.addComponent('spr_cavalry');
-    }
-  },
-  */
-
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

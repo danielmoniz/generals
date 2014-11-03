@@ -322,7 +322,9 @@ Output = {
     $(this.terrain_panel).empty();
     var output = [];
     if (terrain.name !== undefined) output.push(terrain.name);
-    output.push(terrain.type);
+    if (terrain.type != 'City' || terrain.name === undefined) {
+      output.push(terrain.type);
+    }
     if (terrain.has('Impassable')) output.push("(Impassable)");
     if (terrain.on_fire) {
       output.push('(burning!)');
@@ -330,6 +332,9 @@ Output = {
       output.push('(ruined)');
     } else if (terrain.pillaged) {
       output.push("(pillaged)");
+    }
+    if (terrain.provides_supply) {
+      output.push("Supports: {0}".format(terrain.provides_supply));
     }
     if (terrain.has("City")) {
       output.push("Pop. {0}".format(terrain.population));
