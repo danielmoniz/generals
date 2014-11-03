@@ -23,7 +23,7 @@ var TerrainData = function(type, stats) {
       move_difficulty: 1, 
       build_over: 1,
       defense_bonus: 1,
-      provides_supply: 2000,
+      provides_supply: 1000,
     },
 
     "Tree": {
