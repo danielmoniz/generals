@@ -581,6 +581,14 @@ Crafty.c('SupplyBlock', {
 });
 */
 
+// Marks a supply route for a player
+Crafty.c('SupplyRoute', {
+  init: function() {
+    this.requires('Actor, spr_supply');
+    this.z = 90;
+  },
+});
+
 // TEST - for debugging purposes only!
 Crafty.c('Supply', {
   init: function() {

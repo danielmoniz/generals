@@ -142,14 +142,6 @@ Crafty.c('Bridge', {
   },
 });
 
-// Grass is just green, passable terrain
-Crafty.c('SupplyRoute', {
-  init: function() {
-    this.requires('Actor, spr_supply');
-    this.z = 70;
-  },
-});
-
 // A city is a tile on the grid that the PC must visit in order to win the
 // game
 Crafty.c('City', {
