@@ -77,7 +77,6 @@ Crafty.c('Unit', {
 
       this.reset(); // should happen after every other active effect!
     }
-    this.updateActionChoices();
     this.updateStats(); // should happen last!
   },
 
@@ -140,9 +139,9 @@ Crafty.c('Unit', {
   },
 
   updateMovementPaths: function() {
-    if (Game.player == this.side && Game.turn == this.side) {
+    if (Game.player == this.side) {
       if (this.move_target_path) {
-        if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
+        if (this.movement_path && Game.turn == this.side) Pathing.destroyMovementPath(this.movement_path);
         this.movement_path = Pathing.colourMovementPath(this.move_target_path, this.movement, this.at());
       }
     }
