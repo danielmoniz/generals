@@ -44,14 +44,19 @@ var DataTools = {
 
   /*
    * Creates a Crafty object based on a COMPLETE set of stats.
-   * Assumes that .type exists.
+   * Assumes that property .type exists.
    */
   render: function() {
-    var entity = Crafty.e(this.stats.type);
+    if (this.stats.parent == 'Unit') {
+      var entity = Crafty.e('Unit');
+    } else {
+      var entity = Crafty.e(this.stats.type);
+    }
     entity.addStats(this.stats);
     if (entity.setStats !== undefined) {
       entity.setStats(); // sets any dynamic stats that require this.stats
     }
+
     for (var i in this.stats.components) {
       entity.addComponent(this.stats.components[i]);
     }

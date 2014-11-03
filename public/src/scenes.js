@@ -140,8 +140,6 @@ Crafty.scene('Game', function() {
   }
 
   function buildUnitsFromData(unit_data) {
-    createUnitComponents(unit_data);
-
     var use_colour_indicators = false;
     if (Game.factions[0] == Game.factions[1]) {
       use_colour_indicators = true;
@@ -156,22 +154,6 @@ Crafty.scene('Game', function() {
         }
         var unit_object = new UnitData(unit_stats.type, unit_stats);
         var unit = unit_object.render();
-      }
-    }
-  }
-
-  function createUnitComponents(unit_data) {
-    var createdComponents = [];
-    for (var i in unit_data) {
-      for (var j in unit_data[i]) {
-        var unit = unit_data[i][j];
-        if (createdComponents.indexOf(unit.type) > -1) continue;
-        createdComponents.push(unit.type);
-        Crafty.c(unit.type, {
-          init: function() {
-            this.requires('Unit, Collision, Targetable, Movable');
-          },
-        });
       }
     }
   }
@@ -245,8 +227,6 @@ Crafty.scene('Game', function() {
 
     buildTerrainFromData(Game.terrain_type);
 
-    console.log("Game.fog_of_war");
-    console.log(Game.fog_of_war);
     if (Game.fog_of_war) {
       shadowHeightMap(Game.location);
       LineOfSight.clearFog();
@@ -420,21 +400,19 @@ Crafty.scene('Loading', function() {
     }
   }
 
-  console.log("---------");
-  console.log("before (pre-) loading sprites");
-  console.log("sprite_files");
-  console.log(sprite_files);
-  console.log("sprite_names");
-  console.log(sprite_names);
-  console.log("---------");
-
   Crafty.load(sprite_files, function() {
+
+    console.log("---------");
+    console.log("inside sprite pre-loader");
+    console.log("sprite_files");
+    console.log(sprite_files);
 
     for (var i in sprite_files) {
       var sprite_name = sprite_names[i];
       var sprite_file_name = sprite_files[i];
       var sprite_map = {};
       sprite_map[sprite_name] = [0, 0];
+      console.log("creating sprite...");
       Crafty.sprite(32, sprite_file_name, sprite_map);
       console.log("sprite_file_name");
       console.log(sprite_file_name);

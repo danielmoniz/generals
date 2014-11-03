@@ -38,7 +38,7 @@ var Unit = {
 //Component.create('Unit', {
 Crafty.c('Unit', {
   init: function() {
-    this.requires('Actor, Targetable')
+    this.requires('Actor, Targetable, Movable')
       .bind("UpdateMovementPaths", this.updateMovementPaths)
       .bind("NextTurn", this.nextTurn)
       .bind("UpdateActionChoices", this.updateActionChoices)
