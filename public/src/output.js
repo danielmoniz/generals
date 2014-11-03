@@ -736,7 +736,7 @@ Output = {
     for (var i in battles) {
       var battle = battles[i];
       var battle_div = this.getBattleDiv(battle);
-      battle_div.addClass('selected');
+      if (battle_div) battle_div.addClass('selected');
     }
   },
 
@@ -759,6 +759,7 @@ Output = {
   },
 
   getBattleDiv: function(battle) {
+    if (battle === undefined) return false;
     var battle_div = $("div.battle[battle_id='{0}']".format(battle.getId()));
     var battle_container = battle_div.parents('.battle');
     return battle_container;
