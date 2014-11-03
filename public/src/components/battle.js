@@ -79,13 +79,27 @@ Battle = {
     return losses;
   },
 
+  calculateSideMorale: function(units) {
+    var total_weighted_morale = 0;
+    var total_troops = 0;
+    for (var i in units) {
+      var unit = units[i];
+      total_troops += unit.getActive();
+      total_weighted_morale += unit.morale * unit.getActive();
+    }
+    return total_weighted_morale / total_troops;
+  },
+
   calculateTotalLosses: function(battle, attackers, defenders) {
-    var TROOP_LOSS = 0.12;
-    var MORALE_FACTOR = 0.75;
+    var TROOP_LOSS = Game.troop_loss_constant;
+    var MORALE_FACTOR = Game.morale_factor;
     var terrain_mod = Game.terrain_defense_bonus[battle.at().x][battle.at().y];
 
-    var attacker_morale = 0;
-    var defender_morale = 0;
+    var attacker_morale = Battle.calculateSideMorale(attackers);
+    var defender_morale = Battle.calculateSideMorale(defenders);
+
+    if (attacker_morale != 0) throw new Error('MoraleNotImplemented');
+    if (defender_morale != 0) throw new Error('MoraleNotImplemented');
 
     var attacker_morale_factor = Math.pow(MORALE_FACTOR, attacker_morale);
     var defender_morale_factor = Math.pow(MORALE_FACTOR, defender_morale);

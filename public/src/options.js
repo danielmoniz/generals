@@ -77,12 +77,17 @@ var Options = function() {
       max_farm_distance: 2,
       farm_probability_factor: 0.8,
 
+      //supply_to_steal_multiplier: 3000,
+      //provided_supply_multiplier: 2000,
+
       // Move to constants file
       FIRST_PLAYER: 0,
       AFTER_FIRST_PLAYER: 0.5,
       SECOND_PLAYER: 1,
       AFTER_SECOND_PLAYER: 1.5,
 
+      troop_loss_constant: 0.12,
+      morale_factor: 0.75,
       battle_death_rate: 1/5,
       attrition_rate: 1/10,
       attrition_death_rate: 1/3,

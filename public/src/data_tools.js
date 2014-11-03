@@ -29,8 +29,6 @@ var DataTools = {
   setUpEntityData: function(entity_data, base_stats, stats) {
     var new_stats = {};
     if (base_stats.parent) {
-      console.log("base_stats.parent");
-      console.log(base_stats.parent);
       var parent_stats = entity_data[base_stats.parent];
       Utility.loadDataIntoObject(parent_stats, new_stats);
     }

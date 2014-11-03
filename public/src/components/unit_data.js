@@ -22,6 +22,7 @@ var UnitData = function(type, stats) {
       performed_actions: [],
       is_supplied: true,
       injured: 0,
+      morale: 0,
 
       max_supply_multiplier: 3,
       max_sight: 6,
