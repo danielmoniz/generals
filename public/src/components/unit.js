@@ -446,8 +446,7 @@ Crafty.c('Unit', {
     }
 
     this.move_target = target;
-    // @TODO Find way to remove this! It is updating the terrain_graph
-    this.getStopPoints(target);
+    this.removeEnemiesFromAvailableMovement(target);
 
     if (queue_move && this.move_target_path) {
       var end_path = this.move_target_path[this.move_target_path.length - 1];
@@ -487,6 +486,18 @@ Crafty.c('Unit', {
     this.updateMoveTargetPath(path);
   },
 
+  removeEnemiesFromAvailableMovement: function(target) {
+    var enemy_units = Unit.getVisibleEnemyUnits(this.side);
+    for (var i in enemy_units) {
+      var enemy = enemy_units[i];
+      if (!enemy.isAtLocation(target)) {
+        var x = enemy.at().x;
+        var y = enemy.at().y;
+        Game.terrain_graph.grid[x][y].weight = 0;
+      }
+    }
+  },
+
   getStopPoints: function(target, current_location) {
     if (current_location === undefined) current_location = this.at();
 
@@ -498,10 +509,6 @@ Crafty.c('Unit', {
       // if enemy is not on path, add adjacent regions as 'stop points'
       var enemy = enemy_units[i];
       if (!enemy.isAtLocation(target)) {
-        var x = enemy.at().x;
-        var y = enemy.at().y;
-        Game.terrain_graph.grid[x][y].weight = 0;
-
         // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
         if (enemy.battle) continue;
         if (Utility.getDistance(current_location, enemy.at()) <= 1) {
