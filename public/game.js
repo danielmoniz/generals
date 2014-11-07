@@ -104,6 +104,9 @@ Game = {
     console.log("-----------------");
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain);
 
+    // line of sight must update before unit turns for proper pathfinding
+    LineOfSight.handleLineOfSight(Game.fog_of_war, this.player);
+
     // ------------------------------------
     Crafty.trigger("NextTurn");
     // ------------------------------------
@@ -132,8 +135,6 @@ Game = {
     } else {
       this.determineSelectionOnline();
     }
-
-    LineOfSight.handleLineOfSight(Game.fog_of_war, this.player);
 
     Output.updateRetreatBlocks();
   },

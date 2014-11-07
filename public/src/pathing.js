@@ -9,13 +9,22 @@ Pathing = {
     return total_cost;
   },
 
-  getPartialPath: function(path, max_cost) {
-    //if (path.length == 1) return path;
+  getPartialPath: function(path, max_cost, stop_points) {
+    if (stop_points === undefined) stop_points = [];
+
     var final_index = 0;
     for (var i=0; i<path.length; i++) {
       var cost = this.totalCost(path.slice(0, i + 1));
       if (cost <= max_cost) {
         final_index = i;
+        var end_pathing = false;
+        for (var j in stop_points) {
+          if (Utility.getDistance(path[i], stop_points[j]) == 0) {
+            end_pathing = true;
+            break;
+          }
+        }
+        if (end_pathing) break;
       } else {
         break;
       }
@@ -52,7 +61,7 @@ Pathing = {
     return movement_path;
   },
 
-  colourMovementPath: function(path, unit_movement, location) {
+  colourMovementPath: function(path, unit_movement, location, stop_points) {
     var turns_required = 1;
     var movement_path = [];
 
@@ -60,7 +69,7 @@ Pathing = {
     var highlighted_square = this.makeMovementPath(location.x, location.y, 1, true);
     movement_path.push([movement_square, highlighted_square]);
     while (path.length > 0) {
-      var next_partial_path = this.getPartialPath(path, unit_movement);
+      var next_partial_path = this.getPartialPath(path, unit_movement, stop_points);
       for (var i=0; i<next_partial_path.length; i++) {
         var movement_spot = this.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
         var highlighted_spot = this.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required, true);

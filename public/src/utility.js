@@ -54,6 +54,30 @@ var Utility = {
     }
   },
 
+  getAdjacentPoints: function(location, map_grid) {
+    var directions = [
+      { x: location.x - 1, y: location.y },
+      { x: location.x + 1, y: location.y },
+      { x: location.x, y: location.y - 1 },
+      { x: location.x, y: location.y + 1 },
+    ];
+    var valid_directions = [];
+    for (var i in directions) {
+      if (directions[i].x < 0 || directions[i].x > map_grid.width - 1) {
+        continue;
+      }
+      if (directions[i].y < 0 || directions[i].y > map_grid.height - 1) {
+        continue;
+      }
+      valid_directions.push(directions[i]);
+    }
+    return valid_directions;
+    //return this.getPointsWithinDistance(1);
+  },
+
+  getPointsWithinDistance: function(distance) {
+  },
+
 }
 
 if (!String.prototype.format) {

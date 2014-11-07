@@ -166,8 +166,11 @@ Crafty.c('Unit', {
   updateMovementPaths: function() {
     if (Game.player == this.side) {
       if (this.move_target_path) {
-        if (this.movement_path && Game.turn == this.side) Pathing.destroyMovementPath(this.movement_path);
-        this.movement_path = Pathing.colourMovementPath(this.move_target_path, this.movement, this.at());
+        if (this.movement_path && Game.turn == this.side) {
+          var stop_points = this.getStopPoints(this.move_target);
+          Pathing.destroyMovementPath(this.movement_path);
+          this.movement_path = Pathing.colourMovementPath(this.move_target_path, this.movement, this.at(), stop_points);
+        }
       }
     }
   },
@@ -439,22 +442,7 @@ Crafty.c('Unit', {
       retreat_constraints.applyToArray(Game.terrain_graph.grid, 'weight');
     }
 
-
-    var enemy_units = Unit.getVisibleEnemyUnits(this.side);
-    for (var i in enemy_units) {
-      // if enemy is on target, ignore
-      // if enemy is on path, disallow moving through enemy
-      // if enemy is not on path, add adjacent regions as 'stop points'
-      var enemy = enemy_units[i];
-      if (enemy.isAtLocation(target)) {
-      } else if (false) {
-      } else {
-        var x = enemy.at().x;
-        var y = enemy.at().y;
-        Game.terrain_graph.grid[x][y].weight = 0;
-      }
-    }
-
+    var stop_points = this.getStopPoints(target);
 
     this.move_target = target;
 
@@ -490,10 +478,35 @@ Crafty.c('Unit', {
     if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
 
     if (!ignore_visuals) {
-      this.movement_path = Pathing.colourMovementPath(path, movement, this.at());
+      this.movement_path = Pathing.colourMovementPath(path, movement, this.at(), stop_points);
     }
 
     this.updateMoveTargetPath(path);
+    this.stop_points = stop_points;
+  },
+
+  getStopPoints: function(target) {
+    var enemy_units = Unit.getVisibleEnemyUnits(this.side);
+    var stop_points = [];
+    for (var i in enemy_units) {
+      // if enemy is on target, ignore
+      // @TODO if enemy is on target, ignore ALL enemies???
+      // if enemy is on path, disallow moving through enemy
+      // if enemy is not on path, add adjacent regions as 'stop points'
+      var enemy = enemy_units[i];
+      if (enemy.isAtLocation(target)) {
+      } else {
+        var x = enemy.at().x;
+        var y = enemy.at().y;
+        Game.terrain_graph.grid[x][y].weight = 0;
+
+        var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
+        // @TODO if in one of the locations, ignore - has already stopped
+        stop_points = stop_points.concat(adjacent_points);
+        // @TODO Ensure only new positions are added to stop_points
+      }
+    }
+    return stop_points;
   },
 
   retreat: function() {
@@ -511,16 +524,46 @@ Crafty.c('Unit', {
     if (is_retreat) movement += 1;
     var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
 
+    // get enemy units not on path
+    var enemy_units = Unit.getEnemyUnits(this.side);
+    var blocking_enemy_units = [];
+    for (var i in enemy_units) {
+      var enemy = enemy_units[i];
+      var ignore_enemy = false;
+      for (var j in partial_path) {
+        if (enemy.isAtLocation(partial_path[j])) {
+          ignore_enemy = true;
+        }
+      }
+      if (!ignore_enemy) blocking_enemy_units.push(enemy);
+    }
+
+    var stop_points = [];
+    for (var i in blocking_enemy_units) {
+      var enemy = blocking_enemy_units[i];
+      var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
+      stop_points = stop_points.concat(adjacent_points);
+    }
+
     // check for enemies that will be bumped into
-    for (var i=0; i<partial_path.length; i++) {
+    for (var i in partial_path) {
       this.last_location = this.at();
-      if (this.battle) break;
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);
       var new_path = this.move_target_path.slice(1, this.move_target_path.length);
       this.updateMoveTargetPath(new_path);
       if (new_path.length == 0) this.updateMoveTargetPath(undefined);
       this.moved();
+
+      if (this.battle) break;
+      var end_movement = false;
+      for (var j in stop_points) {
+        if (this.isAtLocation(stop_points[j])) {
+          end_movement = true;
+          break;
+        }
+      }
+      if (end_movement) break;
     }
   },
 
