@@ -217,6 +217,15 @@ Crafty.c('Clickable', {
   init: function() {
     this.requires('Mouse, Actor')
       // NOTE: 'Click' does not work with right clicking!
+      .bind('MouseUp', function(e) { 
+        console.log("starting mouseup in clickable");
+        if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
+          Action.perform('left click', this, Game.selected);
+        }
+        this.ignoreNextMouseUp = false;
+        this.resetLeftMouseDown();
+        console.log("ending mouseup in clickable");
+      })
       .bind('MouseDown', this.tabletHoldClick)
       .bind('MouseUp', this.tabletClearHoldClick)
       .bind('MouseOut', this.tabletClearHoldClick)
@@ -224,13 +233,6 @@ Crafty.c('Clickable', {
       .bind('MouseUp', this.tabletClearDoubleHoldClick)
       .bind('MouseOut', this.tabletClearDoubleHoldClick)
       .bind('MouseDown', this.setLeftMouseDown)
-      .bind('MouseUp', function(e) { 
-        if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
-          Action.perform('left click', this, Game.selected);
-        }
-        this.ignoreNextMouseUp = false;
-        this.resetLeftMouseDown();
-      })
     ;
   },
 
