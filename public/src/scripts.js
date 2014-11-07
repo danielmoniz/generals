@@ -111,7 +111,7 @@ $(document).ready(function() {
 
   // TEST ONLY
   //$("#start-hotseat-button").click();
-  //$("input[name=map_size][value=small]").click();
+  //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
   //$("input[name=factions_1][value=aztecs]").click();
   //$("#start-game").click();
@@ -133,6 +133,8 @@ UI = {
 
     $("input.start").hide();
     $("input.prepare-game").hide();
+
+    $("#game-container").hide();
     //$("#front-page").hide();
   },
 
@@ -146,6 +148,8 @@ UI = {
     $("#starting-game").show();
     $("input#play-again").hide();
     $("#side-info-panel").show();
+
+    $("#game-container").show();
 
     $("ul").css("min-height", "75px");
   },
@@ -170,7 +174,8 @@ UI = {
     if (typeof window.socket !== 'undefined') {
       $("input#done-playing").show();
     }
-    $("#side-info-panel").hide();
+
+    $("#game-container").hide();
   },
 
   endGame: function() {
@@ -186,7 +191,8 @@ UI = {
     $("input.start").show();
     $("input#done-playing").hide();
     $("input#surrender").hide();
-    $("#side-info-panel").hide();
+
+    $("#game-container").hide();
 
     $("ul").css("min-height", "300px");
 
