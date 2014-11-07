@@ -72,6 +72,7 @@ Crafty.c('Unit', {
     // rebuild movement path for pathfinding from stored data
     //
     this.move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
+    this.first_location = this.at();
 
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
@@ -171,7 +172,7 @@ Crafty.c('Unit', {
         if (this.movement_path && Game.turn == this.side) {
           var stop_points = this.getStopPoints(this.move_target);
           Pathing.destroyMovementPath(this.movement_path);
-          this.movement_path = Pathing.colourMovementPath(this.move_target_path, this.movement, this.at(), stop_points);
+          this.movement_path = Pathing.colourMovementPath(this, this.move_target_path, this.movement, this.at());
         }
       }
     }
@@ -444,9 +445,9 @@ Crafty.c('Unit', {
       retreat_constraints.applyToArray(Game.terrain_graph.grid, 'weight');
     }
 
-    var stop_points = this.getStopPoints(target);
-
     this.move_target = target;
+    // @TODO Find way to remove this! It is updating the terrain_graph
+    this.getStopPoints(target);
 
     if (queue_move && this.move_target_path) {
       var end_path = this.move_target_path[this.move_target_path.length - 1];
@@ -480,19 +481,19 @@ Crafty.c('Unit', {
     if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
 
     if (!ignore_visuals) {
-      this.movement_path = Pathing.colourMovementPath(path, movement, this.at(), stop_points);
+      this.movement_path = Pathing.colourMovementPath(this, path, movement, this.at());
     }
 
     this.updateMoveTargetPath(path);
-    this.stop_points = stop_points;
   },
 
-  getStopPoints: function(target) {
+  getStopPoints: function(target, current_location) {
+    if (current_location === undefined) current_location = this.at();
+
     var enemy_units = Unit.getVisibleEnemyUnits(this.side);
     var stop_points = [];
     for (var i in enemy_units) {
       // if enemy is on target, ignore
-      // @TODO if enemy is on target, ignore ALL enemies???
       // if enemy is on path, disallow moving through enemy
       // if enemy is not on path, add adjacent regions as 'stop points'
       var enemy = enemy_units[i];
@@ -503,6 +504,9 @@ Crafty.c('Unit', {
 
         // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
         if (enemy.battle) continue;
+        if (Utility.getDistance(current_location, enemy.at()) <= 1) {
+          continue;
+        }
 
         var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
         // @TODO if in one of the locations, ignore - has already stopped
@@ -533,7 +537,10 @@ Crafty.c('Unit', {
     var blocking_enemy_units = [];
     for (var i in enemy_units) {
       var enemy = enemy_units[i];
-      if (enemy.isAtLocation(this.at())) continue;
+      if (Utility.getDistance(this.first_location, enemy.at()) <= 1) {
+        continue;
+      }
+
       if (enemy.battle) continue;
       var ignore_enemy = false;
       for (var j in partial_path) {

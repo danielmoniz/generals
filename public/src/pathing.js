@@ -61,14 +61,17 @@ Pathing = {
     return movement_path;
   },
 
-  colourMovementPath: function(path, unit_movement, location, stop_points) {
+  colourMovementPath: function(unit, path, unit_movement, location) {
     var turns_required = 1;
     var movement_path = [];
+    var target = { x: path[path.length - 1].x, y: path[path.length - 1].y };
+    var start_location = unit.first_location;
 
     var movement_square = this.makeMovementPath(location.x, location.y, 1);
     var highlighted_square = this.makeMovementPath(location.x, location.y, 1, true);
     movement_path.push([movement_square, highlighted_square]);
     while (path.length > 0) {
+      var stop_points = unit.getStopPoints(target, start_location);
       var next_partial_path = this.getPartialPath(path, unit_movement, stop_points);
       for (var i=0; i<next_partial_path.length; i++) {
         var movement_spot = this.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
@@ -77,6 +80,7 @@ Pathing = {
       }
       turns_required += 1;
       path = path.slice(next_partial_path.length, path.length);
+      start_location = next_partial_path[next_partial_path.length - 1];
     }
     return movement_path;
   },
