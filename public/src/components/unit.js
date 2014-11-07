@@ -646,6 +646,7 @@ Crafty.c('Unit', {
 
   startBattleIfNeeded: function() {
     if (this.start_battle) {
+      if (this.isBattlePresent()) return;
       this.startBattle();
       this.start_battle = false;
     }
