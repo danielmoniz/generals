@@ -109,6 +109,7 @@ Game = {
 
     // ------------------------------------
     Crafty.trigger("NextTurn");
+    Crafty.trigger("StartBattles");
     // ------------------------------------
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain);

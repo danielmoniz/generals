@@ -103,7 +103,7 @@ LineOfSight = {
       for (var j=0; j<friendly_units.length; j++) {
         var friend = friendly_units[j];
         var distance = Utility.getDistance(friend.at(), entity.at());
-        if (distance < friend.max_sight) {
+        if (distance <= friend.max_sight) {
           in_sight = true;
           break;
         }

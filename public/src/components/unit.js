@@ -51,6 +51,7 @@ Crafty.c('Unit', {
       .bind("UpdateMovementPaths", this.updateMovementPaths)
       .bind("NextTurn", this.nextTurn)
       .bind("UpdateActionChoices", this.updateActionChoices)
+      .bind("StartBattles", this.startBattleIfNeeded)
       ;
     this.lastMoveTarget = undefined;
   },
@@ -67,10 +68,11 @@ Crafty.c('Unit', {
   },
 
   nextTurn: function(turn) {
+    if (turn === undefined) turn = Game.turn;
     // rebuild movement path for pathfinding from stored data
+    //
     this.move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
 
-    if (turn === undefined) turn = Game.turn;
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
         this.retreat();
@@ -494,11 +496,13 @@ Crafty.c('Unit', {
       // if enemy is on path, disallow moving through enemy
       // if enemy is not on path, add adjacent regions as 'stop points'
       var enemy = enemy_units[i];
-      if (enemy.isAtLocation(target)) {
-      } else {
+      if (!enemy.isAtLocation(target)) {
         var x = enemy.at().x;
         var y = enemy.at().y;
         Game.terrain_graph.grid[x][y].weight = 0;
+
+        // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
+        if (enemy.battle) continue;
 
         var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
         // @TODO if in one of the locations, ignore - has already stopped
@@ -529,6 +533,8 @@ Crafty.c('Unit', {
     var blocking_enemy_units = [];
     for (var i in enemy_units) {
       var enemy = enemy_units[i];
+      if (enemy.isAtLocation(this.at())) continue;
+      if (enemy.battle) continue;
       var ignore_enemy = false;
       for (var j in partial_path) {
         if (enemy.isAtLocation(partial_path[j])) {
@@ -554,8 +560,8 @@ Crafty.c('Unit', {
       this.updateMoveTargetPath(new_path);
       if (new_path.length == 0) this.updateMoveTargetPath(undefined);
       this.moved();
+      if (this.start_battle) break;
 
-      if (this.battle) break;
       var end_movement = false;
       for (var j in stop_points) {
         if (this.isAtLocation(stop_points[j])) {
@@ -577,7 +583,7 @@ Crafty.c('Unit', {
       if (battle) {
         this.joinBattle(battle);
       } else {
-        this.startBattle();
+        this.start_battle = true;
       }
     }
   },
@@ -599,6 +605,14 @@ Crafty.c('Unit', {
     this.updateMoveTargetPath('delete');
     delete this.move_target;
   },
+
+  startBattleIfNeeded: function() {
+    if (this.start_battle) {
+      this.startBattle();
+      this.start_battle = false;
+    }
+  },
+
   startBattle: function() {
     this.battle = true;
     this.stop_unit();
