@@ -172,7 +172,7 @@ Crafty.c('Unit', {
         if (this.movement_path && Game.turn == this.side) {
           var stop_points = this.getStopPoints(this.move_target);
           Pathing.destroyMovementPath(this.movement_path);
-          this.movement_path = Pathing.colourMovementPath(this, this.move_target_path, this.movement, this.at());
+          this.movement_path = this.colourMovementPath(this.move_target_path, this.movement, this.at());
         }
       }
     }
@@ -480,10 +480,34 @@ Crafty.c('Unit', {
     if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
 
     if (!ignore_visuals) {
-      this.movement_path = Pathing.colourMovementPath(this, path, movement, this.at());
+      this.movement_path = this.colourMovementPath(path, movement, this.at());
     }
 
     this.updateMoveTargetPath(path);
+  },
+
+  colourMovementPath: function(path, this_movement, location) {
+    var turns_required = 1;
+    var movement_path = [];
+    var target = { x: path[path.length - 1].x, y: path[path.length - 1].y };
+    var start_location = this.first_location;
+
+    var movement_square = Pathing.makeMovementPath(location.x, location.y, 1);
+    var highlighted_square = Pathing.makeMovementPath(location.x, location.y, 1, true);
+    movement_path.push([movement_square, highlighted_square]);
+    while (path.length > 0) {
+      var stop_points = this.getStopPoints(target, start_location);
+      var next_partial_path = Pathing.getPartialPath(path, this_movement, stop_points);
+      for (var i=0; i<next_partial_path.length; i++) {
+        var movement_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
+        var highlighted_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required, true);
+        movement_path.push([movement_spot, highlighted_spot]);
+      }
+      turns_required += 1;
+      path = path.slice(next_partial_path.length, path.length);
+      start_location = next_partial_path[next_partial_path.length - 1];
+    }
+    return movement_path;
   },
 
   removeEnemiesFromAvailableMovement: function(target) {
