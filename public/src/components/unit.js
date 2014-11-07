@@ -1,7 +1,7 @@
 
 var Unit = {
-  getUnitsBySide: function(side) {
-    var units = Entity.get('Unit');
+  getUnitsBySide: function(side, units) {
+    if (units === undefined) units = Entity.get('Unit');
     var friendly_units = [];
     var enemy_units = [];
     for (var i=0; i<units.length; i++) {
@@ -14,12 +14,12 @@ var Unit = {
     return { friendly: friendly_units, enemy: enemy_units, };
   },
 
-  getFriendlyUnits: function(side) {
-    return this.getUnitsBySide(side).friendly;
+  getFriendlyUnits: function(side, units) {
+    return this.getUnitsBySide(side, units).friendly;
   },
 
-  getEnemyUnits: function(side) {
-    return this.getUnitsBySide(side).enemy;
+  getEnemyUnits: function(side, units) {
+    return this.getUnitsBySide(side, units).enemy;
   },
 
   getUnitById: function(id, side) {
@@ -29,6 +29,15 @@ var Unit = {
         return units[i];
       }
     }
+  },
+
+  getVisibleEnemyUnits: function(side) {
+    var units = this.getEnemyUnits(side);
+    var visible = [];
+    for (var i in units) {
+      if (units[i].visible) visible.push(units[i]);
+    }
+    return visible;
   },
 
 }
@@ -429,6 +438,24 @@ Crafty.c('Unit', {
 
       retreat_constraints.applyToArray(Game.terrain_graph.grid, 'weight');
     }
+
+
+    var enemy_units = Unit.getVisibleEnemyUnits(this.side);
+    for (var i in enemy_units) {
+      // if enemy is on target, ignore
+      // if enemy is on path, disallow moving through enemy
+      // if enemy is not on path, add adjacent regions as 'stop points'
+      var enemy = enemy_units[i];
+      if (enemy.isAtLocation(target)) {
+      } else if (false) {
+      } else {
+        var x = enemy.at().x;
+        var y = enemy.at().y;
+        Game.terrain_graph.grid[x][y].weight = 0;
+      }
+    }
+
+
     this.move_target = target;
 
     if (queue_move && this.move_target_path) {
