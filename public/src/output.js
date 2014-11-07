@@ -226,7 +226,7 @@ Output = {
         console.log('single clicked!');
         this.selectSelf = that.selectSelf();
         this.selectSelf(event);
-        if (that.unit_panel_active) {
+        if (window.unit_panel_active) {
           that.showUnitInfoPanel($(this).attr('unit_id'));
           //event.stopPropagation();
         }
@@ -455,7 +455,7 @@ Output = {
 
     var unit_info_panel = $('.unit-info-panel[unit_id={0}]'.format(unit_id));
     $(unit_info_panel).toggle();
-    this.unit_panel_active = true;
+    window.unit_panel_active = true;
   },
 
   updateStatusBar: function() {

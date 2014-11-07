@@ -45,6 +45,7 @@ $(document).ready(function() {
 
   $("body").click(function() {
     $('.unit-info-panel').hide();
+    window.unit_panel_active = false;
   });
 
   $("#units-info-panel").click(function(event) {
@@ -110,7 +111,7 @@ $(document).ready(function() {
 
   // TEST ONLY
   //$("#start-hotseat-button").click();
-  //$("input[name=map_size][value=tiny]").click();
+  //$("input[name=map_size][value=small]").click();
   //$("input[name=factions_0][value=mongols]").click();
   //$("input[name=factions_1][value=aztecs]").click();
   //$("#start-game").click();
