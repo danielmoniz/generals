@@ -217,6 +217,7 @@ Crafty.c('Battle', {
   init: function() {
     this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
       .bind("NextTurn", this.nextTurn)
+      .bind("EndBattles", this.endIfNeeded)
       .attr({ type: "Battle" })
       ;
       this.z = 200;
@@ -287,6 +288,13 @@ Crafty.c('Battle', {
     this.prepareBattle();
   },
 
+  endIfNeeded: function() {
+    if (this.end_battle) {
+      this.end_battle = false;
+      this.end();
+    }
+  },
+
   end: function() {
     var units_in_combat = this.unitsInCombat();
     for (var i=0; i < units_in_combat.length; i++) {
@@ -297,6 +305,7 @@ Crafty.c('Battle', {
   },
 
   join: function(unit) {
+    this.end_battle = false;
     if (unit.side == this.attacking_side) {
       var battle_side = undefined;
       this.attackers.push(unit);
@@ -378,7 +387,7 @@ Crafty.c('Battle', {
 
     unit.battle_finished();
     if (!this.isBattleActive()) {
-      this.end();
+      this.end_battle = true;
     }
     return num_losses;
   },
@@ -392,7 +401,7 @@ Crafty.c('Battle', {
     Battle.killUnits(battle_info.units, battle_info.losses);
 
     if (!this.isBattleActive()) {
-      this.end();
+      this.end_battle = true;
       Victory.updateWillToFight();
     }
   },
