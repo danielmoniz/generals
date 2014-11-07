@@ -270,6 +270,7 @@ Game = {
     }
 
     Output.updateUnitsPanel();
+    Output.updateUnitInfoPanel();
 
   },
 

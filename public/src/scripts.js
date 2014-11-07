@@ -27,12 +27,13 @@ $(document).ready(function() {
       var clicks = 0, self = this;
       jQuery(this).click(function(event){
         clicks++;
+        single_click_callback.call(self, event);
         if (clicks == 1) {
           setTimeout(function(){
             if(clicks == 1) {
-              single_click_callback.call(self, event);
+              //single_click_callback.call(self, event);
             } else {
-              single_click_callback.call(self, event);
+              //single_click_callback.call(self, event);
               double_click_callback.call(self, event);
             }
             clicks = 0;
