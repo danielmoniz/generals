@@ -182,10 +182,8 @@ Crafty.c('City', {
         sacked: true,
         supply_to_steal: 0,
         defense_bonus: 1.1,
-        alpha: 0.5,
       });
-      this.addComponent("Color");
-      this.changeColour("black");
+      this.addComponent("spr_city_sacked");
 
       // for now, destroy the city sides when the city is sacked
       this.city_sides[0].destroy();

@@ -419,7 +419,7 @@ Crafty.scene('Loading', function() {
     }
   });
 
-  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets/city_full.png', 'assets/supply_route.png', 'assets/player_indicators.png'], function() {
+  Crafty.load(['assets/16x16_generals.png', 'assets/Combat2.png', 'assets/road-dirt-32.png', 'assets/Forest-32.png', 'assets_test/road_textured02.png', 'assets_test/farm02.png', 'assets/city_full.png', 'assets/supply_route.png', 'assets/player_indicators.png', 'assets/city_sacked.png'], function() {
 
     Crafty.sprite(32, 'assets/fire.png', {
       spr_fire: [0, 0],
@@ -438,10 +438,8 @@ Crafty.scene('Loading', function() {
       spr_city_left: [0, 0],
       spr_city: [1, 0],
       spr_city_right: [2, 0],
-    });
-
-    Crafty.sprite(32, 'assets/city-being-sacked.png', {
-      spr_city_being_sacked: [0, 0],
+      spr_city_being_sacked: [0, 1],
+      spr_city_sacked: [1, 1],
     });
 
     Crafty.sprite(32, 'assets_test/farm02.png', {
