@@ -23,3 +23,7 @@
 .battle .unit { border: 1px solid transparent; }
 .battle .unit.new { border: 1px solid whitesmoke; }
 .battle_container.selected { border: 2px solid purple; }
+
+.troop_losses {
+  position: absolute;
+}

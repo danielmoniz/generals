@@ -120,8 +120,8 @@ Battle = {
     if (attacker_morale != 0) throw new Error('MoraleNotImplemented');
     if (defender_morale != 0) throw new Error('MoraleNotImplemented');
 
-    var attacker_morale_factor = Math.pow(MORALE_FACTOR, attacker_morale);
-    var defender_morale_factor = Math.pow(MORALE_FACTOR, defender_morale);
+    var attacker_morale_factor = Battle.calculateMoraleFactor(attacker_morale);
+    var defender_morale_factor = Battle.calculateMoraleFactor(defender_morale);
     /*
     var attacker_random_factor = Math.random() * 0.2 + 0.9;
     var defender_random_factor = Math.random() * 0.2 + 0.9;
@@ -205,6 +205,11 @@ Battle = {
     }
   },
 
+  calculateMoraleFactor: function(morale_points) {
+    var morale_factor = Math.pow(Game.morale_factor, morale_points);
+    return morale_factor;
+  },
+
   killUnits: function(units, losses) {
     for (var i=0; i<units.length; i++) {
       units[i].sufferCasualties(losses[i]);
@@ -216,7 +221,8 @@ Battle = {
 Crafty.c('Battle', {
   init: function() {
     this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
-      .bind("NextTurn", this.nextTurn)
+      //.bind("NextTurn", this.nextTurn)
+      .bind("ResolveBattles", this.resolveIfNeeded)
       .bind("EndBattles", this.endIfNeeded)
       .attr({ type: "Battle" })
       ;
@@ -238,7 +244,7 @@ Crafty.c('Battle', {
     Output.selectBattles([this]);
   },
 
-  nextTurn: function() {
+  resolveIfNeeded: function() {
     if (Game.turn % 1 == 0) this.resolve();
   },
 

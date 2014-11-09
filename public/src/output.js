@@ -94,13 +94,15 @@ Output = {
 
     // TITLE DIV CONTENTS
     var title_div = this.createDiv('title');
-    var attacker_div = this.createDiv('attacker container panel');
+    var attacker_div = this.createDiv('attacker title container panel');
     attacker_div.append(this.createDiv('', attacker_name));
     attacker_div.append(this.createDiv('', attacker_active));
+    attacker_div.append(this.createDiv('troops_lost', "-546"));
 
-    var defender_div = this.createDiv('defender container panel');
+    var defender_div = this.createDiv('defender title container panel');
     defender_div.append(this.createDiv('', defender_name));
     defender_div.append(this.createDiv('', defender_active));
+    attacker_div.append(this.createDiv('troops_lost', "-385"));
 
     var battle_icon_div = this.createDiv('square');
     battle_icon_div.attr("battle_id", battle.getId());
@@ -431,8 +433,6 @@ Output = {
 
       var div = this.createDiv("", unit.type);
       unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
-      unit_info_panel.append(div);
       var div = this.createDiv("", "{0}: {1}".format('Attack', unit.combat_ability));
       unit_info_panel.append(div);
       var div = this.createDiv("", "{0}: {1}".format('Defence', unit.defensive_ability));
@@ -444,6 +444,17 @@ Output = {
       var div = this.createDiv("", "{0}: {1}".format('Supply usage per turn', unit.supply_usage));
       unit_info_panel.append(div);
 
+      var div = this.createDiv("", "{0}".format('----------------'));
+      unit_info_panel.append(div);
+
+      var div = this.createDiv("", "{0}".format(unit.name));
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}".format('Morale', Pretty.Unit.morale(unit.morale)));
+      unit_info_panel.append(div);
+      var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
+      unit_info_panel.append(div);
+      //var div = this.createDiv("", "{0}".format(unit.name));
+      //unit_info_panel.append(div);
 
     }
   },

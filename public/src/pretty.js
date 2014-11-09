@@ -120,6 +120,13 @@ Pretty = {
       return status;
     },
 
+    morale: function(morale_points) {
+      var morale_factor = Battle.calculateMoraleFactor(morale_points);
+      var morale_percentage = Math.round(100 * morale_factor);
+      var morale_string = "{0}%".format(morale_percentage);
+      return morale_string;
+    },
+
   },
 
   Victory: {

@@ -110,6 +110,7 @@ Game = {
     // ------------------------------------
     Crafty.trigger("NextTurn");
     Crafty.trigger("StartBattles");
+    Crafty.trigger("ResolveBattles");
     Crafty.trigger("EndBattles");
     // ------------------------------------
 
