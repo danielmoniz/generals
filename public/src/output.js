@@ -437,7 +437,7 @@ Output = {
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}".format('Speed', unit.movement));
     unit_info_panel.append(div);
-    var div = this.createDiv("", "{0}: {1}".format('Pillage ability', unit.pillage_ability));
+    var div = this.createDiv("", "{0}: {1}".format('Pillage ability', unit.pillage_ability * Game.supply_steal_factor));
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}".format('Supply usage per turn', unit.supply_usage));
     unit_info_panel.append(div);

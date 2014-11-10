@@ -52,7 +52,6 @@ var TerrainData = function(type, stats) {
       supply: 1,
       population: 9000,
       max_supply_multiplier: 3,
-      supply_steal_factor: 3,
     },
 
     "Road": {

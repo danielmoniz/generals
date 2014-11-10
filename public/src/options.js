@@ -95,6 +95,7 @@ var Options = function() {
       city_healing_rate: 15/100,
       min_troops_for_supply_cut: 500,
 
+      supply_steal_factor: 3,
     }
 
     return options;

@@ -175,7 +175,7 @@ Crafty.c('City', {
       this.being_sacked.at(this.at().x, this.at().y);
     }
 
-    var supply_to_steal = Math.min(this.supply_steal_factor * pillage_power, this.supply_remaining);
+    var supply_to_steal = Math.min(Game.supply_steal_factor * pillage_power, this.supply_remaining);
     this.supply_remaining -= supply_to_steal;
     if (this.supply_remaining <= 0) {
       this.addStats({
