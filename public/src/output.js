@@ -381,22 +381,20 @@ Output = {
     $(this.terrain_panel).append(output_html);
   },
 
-  printUnitsPresent: function(unit, other_units) {
-    var units = other_units;
+  printUnitsPresent: function(unit, enemy_units) {
+    //$(this.other_units_panel).find(".unit").hide();
+    var units = enemy_units;
     if (unit.side != Game.player) {
-      var units = other_units.concat([unit]);
+      var units = enemy_units.concat([unit]);
     }
-    // sort units by rank for visual consistency
-    units.sort(function(a, b) {
-      return a.rank - b.rank;
-    });
+
     for (var i in units) {
-      var unit_div = this.createStandardUnitDiv(units[i]);
-      $(this.other_units_panel).append(unit_div);
+      var unit_div = $(this.other_units_panel).find("[unit_id={0}]".format(units[i].getId()));
+      unit_div.show();
     }
 
     this.selectUnits([unit]);
-    this.colocateEnemy(other_units);
+    this.colocateEnemy(enemy_units);
     return this;
   },
 
@@ -455,7 +453,7 @@ Output = {
   updateUnitInfoPanel: function() {
     window.unit_panel_active = false;
     $(this.units_info_panel).empty();
-    var units = Unit.getFriendlyUnits(Game.player);
+    var units = Unit.getAllUnits();
     if (units[0] === undefined) return;
 
     for (var i in units) {
@@ -803,6 +801,19 @@ Output = {
       $(this.units_panel).append(unit_div);
     }
 
+    var enemy_units = Unit.getEnemyUnits(side);
+    for (var i in enemy_units) {
+      var unit = enemy_units[i];
+      var unit_div = this.createStandardUnitDiv(unit);
+      if (Game.turn == Game.player) {
+        var actions_div = this.getActionsChoicesDiv(unit);
+      }
+      unit_div.append(actions_div);
+      unit_div.hide();
+
+      $(this.other_units_panel).append(unit_div);
+    }
+
   },
 
   selectUnits: function(units) {
@@ -925,7 +936,8 @@ Output = {
   },
 
   clearEnemyUnitsPanel: function() {
-    $(this.other_units_panel).empty();
+    $(this.other_units_panel).find(".unit").hide();
+    $(this.other_units_panel).find(".unit").removeClass('selected').removeClass('colocated');
   },
 
   notYourMove: function() {

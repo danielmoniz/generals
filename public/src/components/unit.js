@@ -22,6 +22,10 @@ var Unit = {
     return this.getUnitsBySide(side, units).enemy;
   },
 
+  getAllUnits: function() {
+    return Entity.get('Unit');
+  },
+
   getUnitById: function(id, side) {
     var units = this.getFriendlyUnits(side);
     for (var i in units) {

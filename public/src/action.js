@@ -88,6 +88,7 @@ var Action = {
   },
 
   unitAction: function(unit, action) {
+    if (Game.turn != Game.player) return false;
     unit.turn_action = action;
     if (action == "pillage") {
       unit.pillage();
