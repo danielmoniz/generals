@@ -418,7 +418,42 @@ Output = {
     $(this.unit_count_panel).append(Pretty.Unit.unitsPresent(total.active, total.injured, total.total));
   },
 
+  buildUnitInfo: function(unit, unit_info_panel) {
+    var div = this.createDiv("", unit.type);
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}".format('Attack', unit.combat_ability));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}".format('Defence', unit.defensive_ability));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}".format('Speed', unit.movement));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}".format('Pillage ability', unit.pillage_ability));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}".format('Supply usage per turn', unit.supply_usage));
+    unit_info_panel.append(div);
+
+    var div = this.createDiv("", "{0}".format('----------------'));
+    unit_info_panel.append(div);
+
+    var div = this.createDiv("", "{0}".format(unit.name));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}".format('Morale', Pretty.Unit.morale(unit.morale)));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}%".format('Army health', Math.round(unit.getActive() / unit.quantity * 100)));
+    unit_info_panel.append(div);
+  },
+
+  updateUnitInfo: function(unit) {
+    var unit_info_panel = $("div.unit-info-panel[unit_id={0}]".format(unit.getId()));
+    unit_info_panel.empty();
+    this.buildUnitInfo(unit, unit_info_panel);
+    return unit_info_panel;
+  },
+
   updateUnitInfoPanel: function() {
+    window.unit_panel_active = false;
     $(this.units_info_panel).empty();
     var units = Unit.getFriendlyUnits(Game.player);
     if (units[0] === undefined) return;
@@ -429,30 +464,8 @@ Output = {
       unit_info_panel.attr('unit_id', unit.getId());
       $(this.units_info_panel).append(unit_info_panel);
 
+      this.buildUnitInfo(unit, unit_info_panel);
 
-
-      var div = this.createDiv("", unit.type);
-      unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}".format('Attack', unit.combat_ability));
-      unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}".format('Defence', unit.defensive_ability));
-      unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}".format('Speed', unit.movement));
-      unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}".format('Pillage ability', unit.pillage_ability));
-      unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}".format('Supply usage per turn', unit.supply_usage));
-      unit_info_panel.append(div);
-
-      var div = this.createDiv("", "{0}".format('----------------'));
-      unit_info_panel.append(div);
-
-      var div = this.createDiv("", "{0}".format(unit.name));
-      unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}".format('Morale', Pretty.Unit.morale(unit.morale)));
-      unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
-      unit_info_panel.append(div);
       //var div = this.createDiv("", "{0}".format(unit.name));
       //unit_info_panel.append(div);
 
@@ -460,6 +473,7 @@ Output = {
   },
 
   showUnitInfoPanel: function(unit_id) {
+    if (unit_id === undefined) throw new Error('NoUnitId');
     $('.unit-info-panel').hide();
     var unit = Crafty(parseInt(unit_id));
     if (unit === undefined) return;
@@ -866,6 +880,7 @@ Output = {
       action_button.value = action_name;
       action_button = $(action_button);
 
+      var that = this;
       var action_div = this.createDiv("action")
       .val(action)
       .addClass(action)
@@ -875,6 +890,10 @@ Output = {
           var unit = Crafty(unit_id);
           var action = $(this).val();
           Action.perform('unit action', unit, action);
+          if (window.unit_panel_active) {
+            that.showUnitInfoPanel(unit_id);
+          }
+          event.stopPropagation();
           return false;
       });
       action_div.append(action_button);
