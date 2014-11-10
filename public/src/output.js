@@ -795,7 +795,9 @@ Output = {
     for (var i in units) {
       var unit = units[i];
       var unit_div = this.createStandardUnitDiv(unit);
-      var actions_div = this.getActionsChoicesDiv(unit);
+      if (Game.turn == Game.player) {
+        var actions_div = this.getActionsChoicesDiv(unit);
+      }
       unit_div.append(actions_div);
 
       $(this.units_panel).append(unit_div);
