@@ -24,6 +24,16 @@
 .battle .unit.new { border: 1px solid whitesmoke; }
 .battle_container.selected { border: 2px solid purple; }
 
-.troop_losses {
-  position: absolute;
+.troops_lost {
+  z-index: 2500;
+  color: red;
+
+  /*
+  bottom: 0px;
+  left: 0px;
+  */
+  /*
+  min-height: 160px;
+  min-width: 180px;
+  */
 }

@@ -95,14 +95,18 @@ Output = {
     // TITLE DIV CONTENTS
     var title_div = this.createDiv('title');
     var attacker_div = this.createDiv('attacker title container panel');
-    attacker_div.append(this.createDiv('', attacker_name));
-    attacker_div.append(this.createDiv('', attacker_active));
-    attacker_div.append(this.createDiv('troops_lost', "-546"));
+    attacker_div.append(this.createDiv('faction_name', attacker_name));
+    attacker_div.append(this.createDiv('troops', attacker_active));
+    if (battle.units_lost[Battle.ATTACKER]) {
+      attacker_div.append(this.createDiv('popout troops_lost', '-' + battle.units_lost[Battle.ATTACKER]));
+    }
 
     var defender_div = this.createDiv('defender title container panel');
-    defender_div.append(this.createDiv('', defender_name));
-    defender_div.append(this.createDiv('', defender_active));
-    attacker_div.append(this.createDiv('troops_lost', "-385"));
+    defender_div.append(this.createDiv('faction_name', defender_name));
+    defender_div.append(this.createDiv('troops', defender_active));
+    if (battle.units_lost[Battle.DEFENDER]) {
+      defender_div.append(this.createDiv('popout troops_lost', '-' + battle.units_lost[Battle.DEFENDER]));
+    }
 
     var battle_icon_div = this.createDiv('square');
     battle_icon_div.attr("battle_id", battle.getId());
@@ -192,6 +196,14 @@ Output = {
     battle.resetNewUnits();
 
     return this;
+  },
+
+  printLosses: function() {
+    clearTimeout(window.troops_lost_timeout);
+    $(".troops_lost").show();
+    window.troops_lost_timeout = setTimeout(function() {
+      $(".troops_lost").hide();
+    }, 1500);
   },
 
   printRetreat: function(unit, num_losses) {

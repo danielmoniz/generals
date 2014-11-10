@@ -132,6 +132,7 @@ Game = {
 
     Output.updateUnitsPanel();
     Output.updateUnitInfoPanel();
+    if (this.turn % 1 == 0) Output.printLosses();
 
     if (this.type == this.types.HOTSEAT) {
       this.determineSelection();

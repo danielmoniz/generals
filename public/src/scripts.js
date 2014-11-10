@@ -52,6 +52,14 @@ $(document).ready(function() {
     event.stopPropagation();
   });
 
+  $("#battles").on('mouseenter', '.title .title', function() {
+    $(this).find(".troops_lost").show();
+  });
+
+  $("#battles").on('mouseleave', '.title .title', function() {
+    $(this).find(".troops_lost").hide();
+  });
+
   $("#load-button").click(function() {
     Game.load($("textarea#load-input").val());
     $("#game-container").show();
@@ -175,7 +183,7 @@ UI = {
       $("input#done-playing").show();
     }
 
-    $("#game-container").hide();
+    //$("#side-info-panel").hide();
   },
 
   endGame: function() {

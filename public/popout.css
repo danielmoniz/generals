@@ -1,0 +1,11 @@
+
+.popout {
+  position: absolute;
+  display: none;
+  z-index: 2000;
+  background-color: white;
+  color: black;
+
+  border: 1px white solid;
+  padding: 2px;
+}
