@@ -101,6 +101,8 @@ Battle = {
   calculateSideMorale: function(units) {
     var total_weighted_morale = 0;
     var total_troops = 0;
+    // temporary hotfix!
+    return 0;
     for (var i in units) {
       var unit = units[i];
       total_troops += unit.getActive();
@@ -117,8 +119,16 @@ Battle = {
     var attacker_morale = Battle.calculateSideMorale(attackers);
     var defender_morale = Battle.calculateSideMorale(defenders);
 
-    if (attacker_morale != 0) throw new Error('MoraleNotImplemented');
-    if (defender_morale != 0) throw new Error('MoraleNotImplemented');
+    if (attacker_morale != 0) {
+      console.log("attacker_morale");
+      console.log(attacker_morale);
+      throw new Error('MoraleNotImplemented');
+    }
+    if (defender_morale != 0) {
+      console.log("defender_morale");
+      console.log(defender_morale);
+      throw new Error('MoraleNotImplemented');
+    }
 
     var attacker_morale_factor = Battle.calculateMoraleFactor(attacker_morale);
     var defender_morale_factor = Battle.calculateMoraleFactor(defender_morale);

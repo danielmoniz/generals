@@ -100,13 +100,16 @@ Crafty.c('Unit', {
 
   updateMorale: function() {
     if (this.happy) {
-      this.morale -= 1;
+    this.morale = 0;
+    return;
       this.morale = Math.max(this.morale, this.best_morale);
     }
   },
 
   worsenMorale: function(amount) {
     if (amount === undefined) amount = 1;
+    this.morale = 0;
+    return;
     this.morale += amount;
     this.happy = false;
   },
