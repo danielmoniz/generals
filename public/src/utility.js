@@ -75,12 +75,12 @@ var Utility = {
     //return this.getPointsWithinDistance(1);
   },
 
-  getPointsWithinDistance: function(start, distance) {
+  getPointsWithinDistance: function(start, distance, map_grid) {
     if (distance < 0) throw new Error('BadDistance', 'Distance must be positive.');
     var points = [];
     // Count backwards in order to start at outer ring
     for (var i=Math.ceil(distance); i>=0; i--) {
-      points = points.concat(this.getRingAtDistance(start, i));
+      points = points.concat(this.getRingAtDistance(start, i, map_grid));
     }
     return points;
   },
@@ -88,7 +88,7 @@ var Utility = {
   /*
    * Distance must be positive or 0.
    */
-  getRingAtDistance: function(start, distance) {
+  getRingAtDistance: function(start, distance, map_grid) {
     var ring = [];
     if (distance < 0) throw new Error('BadDistance', 'Distance must be positive.');
     if (distance < 1) return [];
@@ -99,8 +99,12 @@ var Utility = {
       { x: start.x - distance, y: start.y },
     ];
     for (var i=0; i<4; i++) {
+      if (map_grid !== undefined) {
+        if (tips[i].x < 0 || tips[i].x > map_grid.width - 1) continue;
+        if (tips[i].y < 0 || tips[i].y > map_grid.height - 1) continue;
+      }
       ring.push(tips[i]);
-      var line_between = this.getLineBetweenPoints(tips[i], tips[(i + 1) % 4]);
+      var line_between = this.getLineBetweenPoints(tips[i], tips[(i + 1) % 4], map_grid);
       if (line_between) {
         ring = ring.concat(line_between);
       }
@@ -113,7 +117,7 @@ var Utility = {
    * Returns a line of generic coordinates between (not including) two
    * end-points.
    */
-  getLineBetweenPoints: function(start, end) {
+  getLineBetweenPoints: function(start, end, map_grid) {
     var points = [];
     var x_diff = end.x - start.x;
     var y_diff = end.y - start.y;
@@ -126,6 +130,10 @@ var Utility = {
         x: Math.round(start.x + x_increment * i),
         y: Math.round(start.y + y_increment * i),
       };
+      if (map_grid) {
+        if (point.x < 0 || point.x > map_grid.width - 1) continue;
+        if (point.y < 0 || point.y > map_grid.height - 1) continue;
+      }
       points.push(point);
     }
 
