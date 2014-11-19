@@ -221,6 +221,19 @@ Crafty.scene('Game', function() {
     }
   }
 
+  function addPossibleMoves() {
+    Game.possible_moves = [];
+    for (var x=0; x < Game.map_grid.width; x++) {
+      Game.possible_moves[x] = [];
+      for (var y=0; y < Game.map_grid.height; y++) {
+        var possible_move = Crafty.e('PossibleMove');
+        possible_move.at(x, y);
+        Game.possible_moves[x][y] = possible_move;
+      }
+    }
+    Game.updatePossibleUnitMoves();
+  }
+
   if (Game.type == Game.types.ONLINE) {
     var map_creator = new MapCreator();
     Game.map_creator = map_creator;
@@ -289,6 +302,7 @@ Crafty.scene('Game', function() {
     startNewGame();
   }
 
+  addPossibleMoves();
   addTitleBar();
   Output.setToolBar();
   Output.setSideInfoPanel();

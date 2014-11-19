@@ -69,6 +69,7 @@ Crafty.c('Unit', {
     this.addStat('max_supply', this.max_supply_multiplier * this.quantity);
     this.addStat('supply_remaining', this.max_supply);
     this.addStat('morale', this.best_morale);
+    this.possible_moves = [];
   },
 
   nextTurn: function(turn) {
@@ -77,6 +78,7 @@ Crafty.c('Unit', {
     //
     this.move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
     this.first_location = this.at();
+    this.possible_moves = [];
 
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
@@ -204,6 +206,11 @@ Crafty.c('Unit', {
     }
     Output.printUnitsPresent(this, enemy_units_present);
     Output.printTotalUnitsPresent(this, other_units_present);
+
+    for (var i in this.possible_moves) {
+      this.possible_moves[i].show();
+      Game.visible_possible_moves.push(this.possible_moves[i]);
+    }
   },
 
   getQuantity: function() {

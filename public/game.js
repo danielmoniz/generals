@@ -44,6 +44,11 @@ Game = {
     Output.clearUnitsPanelSelect();
     Output.clearBattlesPanelSelect();
     Output.clearEnemyUnitsPanel();
+
+    for (var i in this.visible_possible_moves) {
+      this.visible_possible_moves[i].visible = false;
+    }
+
     //Output.clearMessage();
     if (this.selected) {
       delete this.selected;
@@ -61,6 +66,8 @@ Game = {
   supply_route: [],
 
   turns_played_locally: 0,
+
+  visible_possible_moves: [],
 
   nextTurn: function() {
 
@@ -115,6 +122,7 @@ Game = {
     // ------------------------------------
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain);
+    this.updatePossibleUnitMoves();
 
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
@@ -192,6 +200,36 @@ Game = {
     this.nextTurn();
 
     Output.printBattles();
+  },
+
+  updatePossibleUnitMoves: function() {
+    var units = Entity.get('Unit');
+    //var units = Unit.getFriendlyUnits
+    var moves = {};
+    var avoid = {};
+    for (var i in units) {
+      var unit = units[i];
+      var start_location = unit.at();
+      for (var x=0; x < Game.map_grid.width; x++) {
+        for (var y=0; y < Game.map_grid.height; y++) {
+          //if (moves[x] && moves[x].indexOf && moves[x].indexOf(y) > -1) continue;
+          var target = { x: x, y: y };
+          var start = Game.terrain_graph.grid[unit.at().x][unit.at().y];
+          var end = Game.terrain_graph.grid[x][y];
+          var path = Game.pathfind.search(Game.terrain_graph, start, end);
+          if (!path) continue;
+          var stop_points = unit.getStopPoints(target, start_location);
+          var partial_path = Pathing.getPartialPath(path, unit.movement, stop_points);
+          for (var p in partial_path) {
+            var node = partial_path[p];
+            if (moves[node.x] === undefined) moves[node.x] = [];
+            moves[node.x].push(node.y);
+            //if (unit.possible_moves.indexOf[node.x] && unit.possible_moves[node.x].indexOf(node.y) > -1) continue;
+            unit.possible_moves.push(Game.possible_moves[node.x][node.y]);
+          }
+        }
+      }
+    }
   },
 
   determineSelection: function() {

@@ -442,6 +442,28 @@ Crafty.c('MovementPath', {
   },
 });
 
+Crafty.c('PossibleMove', {
+  init: function(turns_left) {
+    this.requires('Actor, ChangeableColor')
+      .bind("NextTurn", this.nextTurn)
+      ;
+    this.z = 105;
+    this.addStats({ 'colour': '#FFFFFF' });
+    this.visible = false;
+    this.alpha = 0.2;
+    return this;
+  },
+
+  nextTurn: function() {
+   this.visible = false;
+  },
+
+  show: function() {
+    this.visible = true;
+  },
+
+});
+
 Crafty.c("HighlightedMovementPath", {
   init: function() {
     this.requires('MovementPath');
