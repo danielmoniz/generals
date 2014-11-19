@@ -205,13 +205,12 @@ Game = {
   },
 
   updatePossibleUnitMoves: function() {
-    console.time('updatePossibleUnitMoves');
     var units = Entity.get('Unit');
     var moves = {};
     for (var i in units) {
       var unit = units[i];
       var start_location = unit.at();
-      var points = Utility.getPointsWithinDistance(start_location, unit.movement * 1.5);
+      var points = Utility.getPointsWithinDistance(start_location, unit.movement * 1.5, Game.map_grid);
 
       for (var j in points) {
         var x = points[j].x;
@@ -225,7 +224,6 @@ Game = {
 
         var target = { x: x, y: y };
 
-        if (Utility.getDistance(unit.at(), target) > 1.5 * unit.movement) continue;
         var start = Game.terrain_graph.grid[unit.at().x][unit.at().y];
         var end = Game.terrain_graph.grid[x][y];
         var path = Game.pathfind.search(Game.terrain_graph, start, end);
@@ -247,7 +245,6 @@ Game = {
       }
 
     }
-    console.timeEnd('updatePossibleUnitMoves');
   },
 
   determineSelection: function() {

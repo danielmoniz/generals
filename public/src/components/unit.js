@@ -36,11 +36,18 @@ var Unit = {
   },
 
   getVisibleEnemyUnits: function(side) {
+    if (this.visible_units && this.visible_units.turn == Game.turn) {
+      return this.visible_units.units;
+    }
     var units = this.getEnemyUnits(side);
     var visible = [];
     for (var i in units) {
       if (units[i].visible) visible.push(units[i]);
     }
+    this.visible_units = {
+      turn: Game.turn,
+      units: visible,
+    };
     return visible;
   },
 
