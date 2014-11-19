@@ -154,6 +154,18 @@ Crafty.c('City', {
       ;
   },
 
+  renderOthers: function() {
+    var city_left = Crafty.e('CitySide').pickSide('left');
+    city_left.at(this.at().x - 1, this.at().y);
+    var city_right = Crafty.e('CitySide').pickSide('right');
+    city_right.at(this.at().x + 1, this.at().y);
+    this.addStat('city_sides', [city_left, city_right]);
+
+    var flag = Crafty.e('Flag').pickSide(this.side);
+    flag.at(this.at().x, this.at().y);
+    this.addStat('flag', flag);
+  },
+
   handleSupply: function() {
     // @TODO Update city's supply amount depending on whether it is supplied
     // from a supply route (depends on side, or if it is owned/neutral)
@@ -189,12 +201,27 @@ Crafty.c('City', {
       this.city_sides[0].destroy();
       this.city_sides[1].destroy();
       this.being_sacked.destroy();
+      this.flag.destroy();
     } else {
       this.being_sacked.show();
     }
 
     return supply_to_steal;
   },
+});
+
+Crafty.c('Flag', {
+  init: function() {
+    this.requires('Actor');
+    this.z = 88;
+    return this;
+  },
+
+  pickSide: function(player) {
+    this.addComponent('spr_city_flag_{0}'.format(player));
+    return this;
+  },
+
 });
 
 Crafty.c('CityBeingSacked', {
