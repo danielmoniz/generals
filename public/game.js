@@ -150,6 +150,7 @@ Game = {
     }
 
     Output.updateRetreatBlocks();
+
     console.timeEnd('nextTurn');
   },
 

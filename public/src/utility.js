@@ -1,4 +1,13 @@
 
+// timing test code
+/*
+timing_test = 0; // PERFORMANCE TEST
+var time_before = performance.now(); // PERFORMANCE TEST
+timing_test += performance.now() - time_before; // PERFORMANCE TEST
+console.log("total time (miliseconds):"); // PERFORMANCE TEST
+console.log(timing_test); // PERFORMANCE TEST
+*/
+
 var Utility = {
   capitalizeFirstLetter: function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
