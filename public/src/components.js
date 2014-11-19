@@ -401,7 +401,7 @@ Crafty.c("Shadow", {
   init: function() {
     this.requires('FakeGrass');
     this.z = 2;
-    this.dim_value = 25;
+    this.dim_value = 35;
     this.type = "Shadow";
   },
 });

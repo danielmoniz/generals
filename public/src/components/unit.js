@@ -70,6 +70,7 @@ Crafty.c('Unit', {
     this.addStat('supply_remaining', this.max_supply);
     this.addStat('morale', this.best_morale);
     this.possible_moves = [];
+    this.possible_moves_data = {};
   },
 
   nextTurn: function(turn) {
@@ -79,6 +80,7 @@ Crafty.c('Unit', {
     this.move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
     this.first_location = this.at();
     this.possible_moves = [];
+    this.possible_moves_data = {};
 
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
@@ -554,7 +556,6 @@ Crafty.c('Unit', {
         }
 
         var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
-        // @TODO if in one of the locations, ignore - has already stopped
         stop_points = stop_points.concat(adjacent_points);
         // @TODO Ensure only new positions are added to stop_points
       }
