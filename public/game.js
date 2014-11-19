@@ -70,6 +70,7 @@ Game = {
   visible_possible_moves: [],
 
   nextTurn: function() {
+    console.time('nextTurn');
 
     // Do nothing if game should be over. Let Victory screen render.
     if (this.player_winner !== undefined) return false;
@@ -149,6 +150,7 @@ Game = {
     }
 
     Output.updateRetreatBlocks();
+    console.timeEnd('nextTurn');
   },
 
   end: function(winner) {
@@ -203,38 +205,49 @@ Game = {
   },
 
   updatePossibleUnitMoves: function() {
+    console.time('updatePossibleUnitMoves');
     var units = Entity.get('Unit');
     var moves = {};
-    var avoid = {};
     for (var i in units) {
       var unit = units[i];
       var start_location = unit.at();
+      var points = Utility.getPointsWithinDistance(start_location, unit.movement * 1.5);
 
-      for (var x=0; x < Game.map_grid.width; x++) {
-        for (var y=0; y < Game.map_grid.height; y++) {
-          var target = { x: x, y: y };
-          if (Utility.getDistance(unit.at(), target) > 1.5 * unit.movement) continue;
-          var start = Game.terrain_graph.grid[unit.at().x][unit.at().y];
-          var end = Game.terrain_graph.grid[x][y];
-          var path = Game.pathfind.search(Game.terrain_graph, start, end);
-          if (!path) continue;
+      for (var j in points) {
+        var x = points[j].x;
+        var y = points[j].y;
 
-          var stop_points = unit.getStopPoints(target, start_location);
-          var partial_path = Pathing.getPartialPath(path, unit.movement, stop_points);
-          for (var p in partial_path) {
-            var node = partial_path[p];
-            if (moves[node.x] === undefined) moves[node.x] = [];
-            moves[node.x].push(node.y);
-            if (unit.possible_moves_data[node.x] && unit.possible_moves_data[node.x].indexOf && unit.possible_moves_data[node.x].indexOf(node.y) > -1) continue;
-            unit.possible_moves.push(Game.possible_moves[node.x][node.y]);
-            if (unit.possible_moves_data[node.x] === undefined) {
-              unit.possible_moves_data[node.x] = [];
-            }
-            unit.possible_moves_data[node.x].push(node.y);
+        if (x < 0 || x >= Game.map_grid.width) continue;
+        if (y < 0 || y >= Game.map_grid.height) continue;
+        if (this.terrain[x][y].has('Impassable')) {
+          continue;
+        }
+
+        var target = { x: x, y: y };
+
+        if (Utility.getDistance(unit.at(), target) > 1.5 * unit.movement) continue;
+        var start = Game.terrain_graph.grid[unit.at().x][unit.at().y];
+        var end = Game.terrain_graph.grid[x][y];
+        var path = Game.pathfind.search(Game.terrain_graph, start, end);
+        if (!path) continue;
+
+        var stop_points = unit.getStopPoints(target, start_location);
+        var partial_path = Pathing.getPartialPath(path, unit.movement, stop_points);
+        for (var p in partial_path) {
+          var node = partial_path[p];
+          if (moves[node.x] === undefined) moves[node.x] = [];
+          moves[node.x].push(node.y);
+          if (unit.possible_moves_data[node.x] && unit.possible_moves_data[node.x].indexOf && unit.possible_moves_data[node.x].indexOf(node.y) > -1) continue;
+          unit.possible_moves.push(Game.possible_moves[node.x][node.y]);
+          if (unit.possible_moves_data[node.x] === undefined) {
+            unit.possible_moves_data[node.x] = [];
           }
+          unit.possible_moves_data[node.x].push(node.y);
         }
       }
+
     }
+    console.timeEnd('updatePossibleUnitMoves');
   },
 
   determineSelection: function() {
