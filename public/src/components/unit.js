@@ -2,7 +2,9 @@
 var Unit = {
   getUnitsBySide: function(side, units) {
     try {
-      if (units === undefined && this.units_by_side[side] !== undefined) {
+      if (units === undefined &&
+          this.units_by_side[side] !== undefined &&
+          this.units_by_side[side].turn == Game.turn) {
         return this.units_by_side[side];
       }
     }
@@ -24,6 +26,7 @@ var Unit = {
     this.units_by_side[side] = {
       friendly: friendly_units,
       enemy: enemy_units,
+      turn: Game.turn,
     };
     return this.units_by_side[side];
   },
@@ -51,7 +54,10 @@ var Unit = {
 
   getVisibleEnemyUnits: function(side) {
     try {
-      return this.visible_enemy_units[side].units;
+      if (this.visible_enemy_units[side] !== undefined &&
+          this.visible_enemy_units[side].turn == Game.turn) {
+        return this.visible_enemy_units[side].units;
+      }
     }
     catch (ex) {
       // continue into function and cache results
@@ -515,6 +521,8 @@ Crafty.c('Unit', {
     } else {
       var path = new_path;
     }
+
+    // @TODO Return false here if the path does not exist or any reason
 
     // provide +1 movement for retreating in order to escape
     var movement = this.movement;
