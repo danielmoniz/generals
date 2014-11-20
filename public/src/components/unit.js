@@ -1,6 +1,15 @@
 
 var Unit = {
   getUnitsBySide: function(side, units) {
+    try {
+      if (units === undefined && this.units_by_side[side] !== undefined) {
+        return this.units_by_side[side];
+      }
+    }
+    catch (ex) {
+      // continue into function and cache results
+    }
+
     if (units === undefined) units = Entity.get('Unit');
     var friendly_units = [];
     var enemy_units = [];
@@ -11,7 +20,12 @@ var Unit = {
         enemy_units.push(units[i]);
       }
     }
-    return { friendly: friendly_units, enemy: enemy_units, };
+    if (this.units_by_side === undefined) this.units_by_side = {};
+    this.units_by_side[side] = {
+      friendly: friendly_units,
+      enemy: enemy_units,
+    };
+    return this.units_by_side[side];
   },
 
   getFriendlyUnits: function(side, units) {
@@ -36,15 +50,20 @@ var Unit = {
   },
 
   getVisibleEnemyUnits: function(side) {
-    if (this.visible_units && this.visible_units.turn == Game.turn) {
-      return this.visible_units.units;
+    try {
+      return this.visible_enemy_units[side].units;
     }
+    catch (ex) {
+      // continue into function and cache results
+    }
+
     var units = this.getEnemyUnits(side);
     var visible = [];
     for (var i in units) {
       if (units[i].visible) visible.push(units[i]);
     }
-    this.visible_units = {
+    if (this.visible_enemy_units === undefined) this.visible_enemy_units = {};
+    this.visible_enemy_units[side] = {
       turn: Game.turn,
       units: visible,
     };
@@ -188,7 +207,6 @@ Crafty.c('Unit', {
     if (Game.player == this.side) {
       if (this.move_target_path) {
         if (this.movement_path && Game.turn == this.side) {
-          var stop_points = this.getStopPoints(this.move_target);
           Pathing.destroyMovementPath(this.movement_path);
           this.movement_path = this.colourMovementPath(this.move_target_path, this.movement, this.at());
         }
@@ -546,6 +564,8 @@ Crafty.c('Unit', {
   },
 
   getStopPoints: function(target, current_location) {
+    // @TODO Cache stop_points and use same set of points for all paths (for
+    // the same side)
     if (current_location === undefined) current_location = this.at();
 
     var enemy_units = Unit.getVisibleEnemyUnits(this.side);
