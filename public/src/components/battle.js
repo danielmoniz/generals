@@ -259,7 +259,7 @@ Crafty.c('Battle', {
   },
 
   unitsInCombat: function() {
-    var units = Crafty('Unit').get();
+    var units = Unit.getAllUnits();
     var units_in_combat = [];
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
@@ -271,16 +271,12 @@ Crafty.c('Battle', {
   prepareBattle: function() {
     var units_in_combat = this.unitsInCombat();
     var attacking_side = this.attacking_side;
-    this.attackers = units_in_combat.filter(function(unit) {
-      return unit.side == attacking_side;
-    });
+    this.attackers = [this.attacker];
+
     this.defenders = units_in_combat.filter(function(unit) {
       return unit.side != attacking_side;
     });
-    for (var i=0; i < this.attackers.length; i++) {
-      var unit = this.attackers[i];
-      unit.notify_of_battle(Battle.ATTACKER);
-    }
+
     for (var i=0; i < this.defenders.length; i++) {
       var unit = this.defenders[i];
       unit.notify_of_battle(Battle.DEFENDER);
@@ -323,8 +319,8 @@ Crafty.c('Battle', {
 
   join: function(unit) {
     this.end_battle = false;
+    var battle_side = undefined;
     if (unit.side == this.attacking_side) {
-      var battle_side = undefined;
       this.attackers.push(unit);
       battle_side = Battle.ATTACKER;
     } else {

@@ -668,9 +668,13 @@ Crafty.c('Unit', {
 
   startBattleIfNeeded: function() {
     if (this.start_battle) {
-      if (this.isBattlePresent()) return;
+      if (this.isBattlePresent()) {
+        var battle = this.isBattlePresent();
+        this.joinBattle(battle);
+        this.start_battle = false;
+        return;
+      }
       this.startBattle();
-      this.start_battle = false;
     }
   },
 
@@ -679,6 +683,7 @@ Crafty.c('Unit', {
     this.stop_unit();
     var battle = Crafty.e('Battle').at(this.at().x, this.at().y);
     var battle_data = new BattleData('Battle', this);
+    this.battle_side = Battle.ATTACKER;
     battle.start(this);
   },
 
