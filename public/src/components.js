@@ -448,7 +448,7 @@ Crafty.c('PossibleMove', {
       .bind("NextTurn", this.nextTurn)
       ;
     this.z = 105;
-    this.addStats({ 'colour': '#FFFFFF' });
+    this.addStats({ 'colour': '#00FFFF' });
     this.visible = false;
     this.alpha = 0.2;
     return this;

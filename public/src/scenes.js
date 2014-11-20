@@ -88,9 +88,9 @@ Crafty.scene('Game', function() {
           var ground = Crafty.e('FakeGrass');
         }
         ground.at(x, y);
-        var r = Math.ceil(location_map.ground.r - height);
-        var g = Math.ceil(location_map.ground.g - height);
-        var b = Math.ceil(location_map.ground.b - height);
+        var r = Math.ceil(location_map.ground.r - (2 / 3 * height));
+        var g = Math.ceil(location_map.ground.g - (2 / 3 * height));
+        var b = Math.ceil(location_map.ground.b - (2 / 3 * height));
         var color_str = 'rgb(' + r + ', ' + g + ', ' + b + ')';
         ground.color('rgb(' + r + ', ' + g + ', ' + b + ')');
         ground.setColour(r, g, b);
