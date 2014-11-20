@@ -302,7 +302,7 @@ Crafty.scene('Game', function() {
     startNewGame();
   }
 
-  addPossibleMoves();
+  if (Game.render_possible_moves) addPossibleMoves();
   addTitleBar();
   Output.setToolBar();
   Output.setSideInfoPanel();

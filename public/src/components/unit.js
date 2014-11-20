@@ -234,9 +234,11 @@ Crafty.c('Unit', {
     Output.printUnitsPresent(this, enemy_units_present);
     Output.printTotalUnitsPresent(this, other_units_present);
 
-    for (var i in this.possible_moves) {
-      this.possible_moves[i].show();
-      Game.visible_possible_moves.push(this.possible_moves[i]);
+    if (Game.render_possible_moves) {
+      for (var i in this.possible_moves) {
+        this.possible_moves[i].show();
+        Game.visible_possible_moves.push(this.possible_moves[i]);
+      }
     }
   },
 
