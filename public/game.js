@@ -120,6 +120,7 @@ Game = {
     Crafty.trigger("StartBattles");
     Crafty.trigger("ResolveBattles");
     Crafty.trigger("EndBattles");
+    Unit.flushCaches(); // run after battles complete for an up-to-date cache
     // ------------------------------------
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain);

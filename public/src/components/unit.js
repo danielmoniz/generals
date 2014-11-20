@@ -1,5 +1,11 @@
 
 var Unit = {
+
+  flushCaches: function() {
+    this.units_by_side = {};
+    this.visible_enemy_units = {};
+  },
+
   getUnitsBySide: function(side, units) {
     try {
       if (units === undefined &&

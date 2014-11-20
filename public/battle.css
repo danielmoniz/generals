@@ -24,7 +24,7 @@
 .battle .unit.new { border: 1px solid whitesmoke; }
 .battle_container.selected { border: 2px solid purple; }
 
-.troops_lost {
+.casualties {
   z-index: 2500;
   color: red;
 

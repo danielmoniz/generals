@@ -102,6 +102,8 @@ var Action = {
       local_terrain.ignite();
     }
 
+    Unit.flushCaches(); // run after unit actions for an up-to-date cache
+
     unit.performed_actions.push(action);
     Crafty.trigger("UpdateActionChoices", unit.at());
     Output.updateUnitInfo(unit);

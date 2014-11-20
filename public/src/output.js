@@ -134,7 +134,6 @@ Output = {
     stats_div.append(defender_ranks_div);
     stats_div.append(defender_types_div);
 
-    var units = battle.unitsInCombat();
     var units = battle.attackers.concat(battle.defenders);
     for (var i=0; i<units.length; i++) {
       var unit = units[i];

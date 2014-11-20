@@ -176,7 +176,19 @@ Battle = {
     var units = attackers.concat(defenders);
     var losses = attacker_losses.concat(defender_losses);
 
-    return { units: units, losses: losses };
+    var total_losses = {};
+    total_losses[this.ATTACKER] = attacker_losses.reduce(function(a, b) {
+      return a + b;
+    });
+    total_losses[this.DEFENDER] = defender_losses.reduce(function(a, b) {
+      return a + b;
+    });
+
+    return {
+      units: units,
+      losses: losses,
+      total_losses: total_losses,
+    };
   },
 
   fakeResolve: function() {
@@ -413,8 +425,8 @@ Crafty.c('Battle', {
     var battle_info = Battle.determineCombatLosses(this);
     Battle.killUnits(battle_info.units, battle_info.losses);
 
-    this.casualties[Battle.ATTACKER] = battle_info.losses[0];
-    this.casualties[Battle.DEFENDER] = battle_info.losses[1];
+    this.casualties[Battle.ATTACKER] = battle_info.total_losses[Battle.ATTACKER];
+    this.casualties[Battle.DEFENDER] = battle_info.total_losses[Battle.DEFENDER];
 
     if (!this.isBattleActive()) {
       this.end_battle = true;
