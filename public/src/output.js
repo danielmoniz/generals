@@ -97,15 +97,15 @@ Output = {
     var attacker_div = this.createDiv('attacker title container panel');
     attacker_div.append(this.createDiv('faction_name', attacker_name));
     attacker_div.append(this.createDiv('troops', attacker_active));
-    if (battle.units_lost[Battle.ATTACKER]) {
-      attacker_div.append(this.createDiv('popout troops_lost', '-' + battle.units_lost[Battle.ATTACKER]));
+    if (battle.casualties[Battle.ATTACKER]) {
+      attacker_div.append(this.createDiv('popout casualties', '-' + battle.casualties[Battle.ATTACKER]));
     }
 
     var defender_div = this.createDiv('defender title container panel');
     defender_div.append(this.createDiv('faction_name', defender_name));
     defender_div.append(this.createDiv('troops', defender_active));
-    if (battle.units_lost[Battle.DEFENDER]) {
-      defender_div.append(this.createDiv('popout troops_lost', '-' + battle.units_lost[Battle.DEFENDER]));
+    if (battle.casualties[Battle.DEFENDER]) {
+      defender_div.append(this.createDiv('popout casualties', '-' + battle.casualties[Battle.DEFENDER]));
     }
 
     var battle_icon_div = this.createDiv('square');
@@ -135,6 +135,7 @@ Output = {
     stats_div.append(defender_types_div);
 
     var units = battle.unitsInCombat();
+    var units = battle.attackers.concat(battle.defenders);
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
 
@@ -199,10 +200,10 @@ Output = {
   },
 
   printLosses: function() {
-    clearTimeout(window.troops_lost_timeout);
-    $(".troops_lost").show();
-    window.troops_lost_timeout = setTimeout(function() {
-      $(".troops_lost").hide();
+    clearTimeout(window.casualties_timeout);
+    $(".casualties").show();
+    window.casualties_timeout = setTimeout(function() {
+      $(".casualties").hide();
     }, 1500);
   },
 

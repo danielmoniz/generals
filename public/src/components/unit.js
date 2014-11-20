@@ -697,6 +697,7 @@ Crafty.c('Unit', {
         return;
       }
       this.startBattle();
+      this.start_battle = false;
     }
   },
 

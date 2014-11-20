@@ -53,11 +53,11 @@ $(document).ready(function() {
   });
 
   $("#battles").on('mouseenter', '.title .title', function() {
-    $(this).find(".troops_lost").show();
+    $(this).find(".casualties").show();
   });
 
   $("#battles").on('mouseleave', '.title .title', function() {
-    $(this).find(".troops_lost").hide();
+    $(this).find(".casualties").hide();
   });
 
   $("#load-button").click(function() {

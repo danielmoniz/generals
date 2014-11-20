@@ -296,7 +296,7 @@ Crafty.c('Battle', {
     this.retreat_constraints[Battle.DEFENDER] = new RetreatConstraints(this.at());
     this.retreat_constraints[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
 
-    this.units_lost = [];
+    this.casualties = [];
     this.new_units = [];
     this.prepareBattle();
   },
@@ -413,8 +413,8 @@ Crafty.c('Battle', {
     var battle_info = Battle.determineCombatLosses(this);
     Battle.killUnits(battle_info.units, battle_info.losses);
 
-    this.units_lost[Battle.ATTACKER] = battle_info.losses[0];
-    this.units_lost[Battle.DEFENDER] = battle_info.losses[1];
+    this.casualties[Battle.ATTACKER] = battle_info.losses[0];
+    this.casualties[Battle.DEFENDER] = battle_info.losses[1];
 
     if (!this.isBattleActive()) {
       this.end_battle = true;
