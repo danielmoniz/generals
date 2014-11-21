@@ -422,23 +422,29 @@ Crafty.c("CityHighlight", {
 
 Crafty.c('MovementPath', {
   init: function(turns_left) {
-    this.requires('Actor, ChangeableColor')
+    this.requires('Actor')
       .bind("NextTurn", this.nextTurn)
       .bind("ResetVisuals", this.destroy)
       ;
-    this.z = 50;
-    this.turns_left = 1;
+    this.z = 110;
+    this.alpha = 0.6;
     return this;
   },
-  remaining: function(turns_left) {
-    this.turns_left = turns_left;
-  },
   nextTurn: function() {
-    /*
-    this.turns_left -= 1;
-    if (this.turns_left <= 0) this.destroy();
-    */
    this.destroy();
+  },
+});
+
+Crafty.c("HighlightedMovementPath", {
+  init: function() {
+    this.requires('MovementPath');
+    this.z = 115;
+    this.bind("DimPaths", this.dim)
+    //this.dimColour(this.dim_value, this.dim_value, this.dim_value);
+  },
+
+  dim: function() {
+    this.visible = false;
   },
 });
 
@@ -462,20 +468,6 @@ Crafty.c('PossibleMove', {
     this.visible = true;
   },
 
-});
-
-Crafty.c("HighlightedMovementPath", {
-  init: function() {
-    this.requires('MovementPath');
-    this.z = 51;
-    this.brightness = 45;
-    this.bind("DimPaths", this.dim)
-    //this.dimColour(this.dim_value, this.dim_value, this.dim_value);
-  },
-
-  dim: function() {
-    this.visible = false;
-  },
 });
 
 var RetreatBlockComponents = {

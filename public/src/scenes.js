@@ -443,6 +443,11 @@ Crafty.scene('Loading', function() {
       spr_player: [1, 1],
     });
 
+    Crafty.sprite(32, 'assets_test/movement_path.png', {
+      spr_green: [0, 0],
+      spr_yellow: [1, 0],
+    });
+
     Crafty.sprite(32, 'assets/player_indicators.png', {
       spr_player_colour_blue: [0, 0],
       spr_player_colour_white: [1, 0],
