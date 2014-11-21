@@ -338,57 +338,55 @@ Crafty.c('Unit', {
     // detect possible lack of supply
     // @TODO: Allow for more than two supply endpoints
     var target_location = Game.supply_route[side];
+
     var target = Game.terrain[target_location.x][target_location.y];
-    if (!this.together(target)) {
-      buildTerrainData(); // reset supply graph to remove old supply block info
-      var start = Game.terrain_supply_graph.grid[this.at().x][this.at().y];
-      var end = Game.terrain_supply_graph.grid[target.at().x][target.at().y];
+    if (this.together(target)) return true;
+    Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
+    var start = Game.terrain_supply_graph.grid[this.at().x][this.at().y];
+    var end = Game.terrain_supply_graph.grid[target.at().x][target.at().y];
 
-      // detect enemies on path
-      var units = Crafty('Unit').get();
-      var enemy_units = [];
-      // could use filter() here, but failed on first attempt
-      for (var i=0; i<units.length; i++) {
-        if (units[i].side != this.side) enemy_units.push(units[i]);
-      }
+    // detect enemies on path
+    var units = Crafty('Unit').get();
+    var enemy_units = [];
+    // could use filter() here, but failed on first attempt
+    for (var i=0; i<units.length; i++) {
+      if (units[i].side != this.side) enemy_units.push(units[i]);
+    }
 
-      var no_supply_objects = Crafty('NoSupply').get();
-      for (var i=0; i<no_supply_objects.length; i++) {
-        no_supply_objects[i].destroy();
-      }
-      // @TODO remove this or comment out! Not using supply blocks yet.
-      var supply_blocks = Crafty('SupplyBlock').get();
-      for (var i=0; i<supply_blocks.length; i++) {
-        var block = supply_blocks[i];
-        Game.terrain_supply_graph.grid[block.at().x][block.at().y].weight = 0;
-        //Crafty.e('NoSupply').at(block.at().x, block.at().y);
-        console.log("FOUND SUPPLY BLOCK! At {0}, {1}".format(block.at().x, block.at().y));
-      }
+    var no_supply_objects = Crafty('NoSupply').get();
+    for (var i=0; i<no_supply_objects.length; i++) {
+      no_supply_objects[i].destroy();
+    }
+    // @TODO remove this or comment out! Not using supply blocks yet.
+    var supply_blocks = Crafty('SupplyBlock').get();
+    for (var i=0; i<supply_blocks.length; i++) {
+      var block = supply_blocks[i];
+      Game.terrain_supply_graph.grid[block.at().x][block.at().y].weight = 0;
+      //Crafty.e('NoSupply').at(block.at().x, block.at().y);
+      console.log("FOUND SUPPLY BLOCK! At {0}, {1}".format(block.at().x, block.at().y));
+    }
 
-      for (var i=0; i<enemy_units.length; i++) {
-        // add enemy units to Game supply graph as blockers of supply lines
-        var unit = enemy_units[i];
-        if (unit.getActive() < Game.min_troops_for_supply_cut) continue;
-        var weight = Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight;
-        Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight = 0;
-        // Uncomment below line for supply overlay
-        //Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
+    for (var i=0; i<enemy_units.length; i++) {
+      // add enemy units to Game supply graph as blockers of supply lines
+      var unit = enemy_units[i];
+      if (unit.getActive() < Game.min_troops_for_supply_cut) continue;
+      var weight = Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight;
+      Game.terrain_supply_graph.grid[unit.at().x][unit.at().y].weight = 0;
+      // Uncomment below line for supply overlay
+      //Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
 
-        var local_terrain = Game.terrain[unit.at().x][unit.at().y];
-        if (local_terrain.has('Transportation')) {
-          // @TODO Re-add supply blocking as a decision later on
-          //Crafty.e('SupplyBlock').at(unit.at().x, unit.at().y);
-        }
+      var local_terrain = Game.terrain[unit.at().x][unit.at().y];
+      if (local_terrain.has('Transportation')) {
+        // @TODO Re-add supply blocking as a decision later on
+        //Crafty.e('SupplyBlock').at(unit.at().x, unit.at().y);
       }
-      
-      if (this.battle) {
-        is_supplied = this.isSuppliedInBattle(end);
-      } else {
-        var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
-        if (supply_route.length == 0) is_supplied = false;
-      }
+    }
+
+    if (this.battle) {
+      is_supplied = this.isSuppliedInBattle(end);
     } else {
-      // Supplied because unit is on supply route end point
+      var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, end);
+      if (supply_route.length == 0) is_supplied = false;
     }
     /*
     if (!is_supplied && side == this.side) {
@@ -490,7 +488,12 @@ Crafty.c('Unit', {
     }
 
     var target = { x: target_x, y: target_y };
-    buildTerrainData();
+    Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
+
+    var graph = Game.terrain_with_roads_graph;
+    console.log("graph");
+    console.log(graph);
+
     if (this.battle) {
       var battle = this.isBattlePresent();
       var retreat_constraints = battle.retreat_constraints[this.battle_side];
@@ -498,7 +501,7 @@ Crafty.c('Unit', {
         return false;
       }
 
-      retreat_constraints.applyToArray(Game.terrain_graph.grid, 'weight');
+      retreat_constraints.applyToArray(graph.grid, 'weight');
     }
 
     this.move_target = target;
@@ -506,13 +509,14 @@ Crafty.c('Unit', {
 
     if (queue_move && this.move_target_path) {
       var end_path = this.move_target_path[this.move_target_path.length - 1];
-      var start = Game.terrain_graph.grid[end_path.x][end_path.y];
-      var end = Game.terrain_graph.grid[target_x][target_y];
+      var start = graph.grid[end_path.x][end_path.y];
+      var end = graph.grid[target_x][target_y];
     } else {
-      var start = Game.terrain_graph.grid[this.at().x][this.at().y];
-      var end = Game.terrain_graph.grid[target_x][target_y];
+      var start = graph.grid[this.at().x][this.at().y];
+      var end = graph.grid[target_x][target_y];
     }
-    var new_path = Game.pathfind.search(Game.terrain_graph, start, end);
+
+    var new_path = Game.pathfind.search(graph, start, end);
     if (!new_path) {
       Output.message("Target impossible to reach!");
       return false;
@@ -528,13 +532,16 @@ Crafty.c('Unit', {
     } else {
       var path = new_path;
     }
+    console.log("path");
+    console.log(path);
+    console.log("Pathing.totalCost(path)");
+    console.log(Pathing.totalCost(path));
 
     // @TODO Return false here if the path does not exist or any reason
 
     // provide +1 movement for retreating in order to escape
     var movement = this.movement;
     if (this.battle) movement += 1;
-    //var path_remaining = Game.pathfind.search(Game.terrain_graph, start, end);
     if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
 
     if (!ignore_visuals) {
@@ -575,7 +582,7 @@ Crafty.c('Unit', {
       if (!enemy.isAtLocation(target)) {
         var x = enemy.at().x;
         var y = enemy.at().y;
-        Game.terrain_graph.grid[x][y].weight = 0;
+        Game.terrain_with_roads_graph.grid[x][y].weight = 0;
       }
     }
   },

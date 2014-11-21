@@ -26,59 +26,6 @@ var MapCreator = function(options) {
   this.map_grid = {};
   this.options = options;
 
-  this.buildNewComposedMap = function(options) {
-    this.Game.height_map = this.generateHeightMap(options, options.location);
-    this.buildEmptyGameData(options, this.Game);
-    this.addWater(options, this.Game, options.location);
-
-    this.Game.section_widths = this.getWidthOfSections(options);
-    this.Game.section_positions = this.getPositionOfSections(this.Game);
-    //var city_locations = this.addCities(options, this.Game, options.num_cities_total, 1);
-    var city_locations = this.addCities(options, this.Game, options.num_cities_total, 1);
-    console.log("city_locations");
-    console.log(city_locations);
-    //var city_locations = this.addCities(options, this.Game, 1, 2);
-    this.addFarms(options, this.Game, city_locations);
-    this.addTrees(options, this.Game, options.location);
-    this.addGrass(options, this.Game);
-
-    //this.updateBuildDifficultyData(options, this.Game.terrain_type);
-    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
-    this.addSupplyRoads(options, this.Game, city_locations, 1);
-
-    var halved_city_locations = [[], []];
-    for (var i in city_locations) {
-      var location = city_locations[i];
-      if (location.y <= options.map_grid.height / 2) {
-        halved_city_locations[0].push(location);
-      } else {
-        halved_city_locations[1].push(location);
-      }
-    }
-
-    this.addRoadsBetweenCities(options, this.Game, halved_city_locations[0]);
-    this.addRoadsBetweenCities(options, this.Game, halved_city_locations[1]);
-    this.addRoadsBetweenCities(options, this.Game, [halved_city_locations[0][0], halved_city_locations[1][0]]);
-    //this.addRoadsBetweenCities(options, this.Game, city_locations);
-
-    this.Game.starting_units = this.addStartingUnits(options, this.Game);
-    /*
-
-    if (Game.fog_of_war) {
-      shadowHeightMap(Game.location);
-      LineOfSight.clearFog();
-    }
-    */
-
-   var map_data = {};
-   map_data.terrain_type = this.Game.terrain_type;
-   map_data.height_map = this.Game.height_map;
-   map_data.player_supply_roads = this.Game.player_supply_roads;
-   map_data.supply_route = this.Game.supply_route;
-
-   return this.Game;
-  };
-
   this.buildNewMap = function(options) {
     this.Game.height_map = this.generateHeightMap(options, options.location);
     this.buildEmptyGameData(options, this.Game);
@@ -96,6 +43,7 @@ var MapCreator = function(options) {
     this.buildTerrainData(options, this.Game, this.Game.terrain_type);
     this.addSupplyRoads(options, this.Game, city_locations, 1);
     this.addRoadsBetweenCities(options, this.Game, city_locations);
+    this.buildTerrainDataWithRoads(options, this.Game, this.Game.terrain_type, this.Game.roads);
 
     this.Game.starting_units = this.addStartingUnits(options, this.Game);
     /*
@@ -119,9 +67,11 @@ var MapCreator = function(options) {
     game.occupied = this.buildOccupied(options);
     game.terrain_type = [];
     game.terrain = [];
+    game.roads = [];
     for (var x=0; x < options.map_grid.width; x++) {
       game.terrain_type[x] = [];
       game.terrain[x] = [];
+      game.roads[x] = [];
     }
   };
 
@@ -398,8 +348,6 @@ var MapCreator = function(options) {
       var entity_obj = {};
 
       if (terrain_type == 'City' || terrain_type.type == "City" || terrain_type.type == 'Town') {
-        console.log("terrain_type");
-        console.log(terrain_type);
         road.push({ x: x, y: y});
         continue;
       }
@@ -418,14 +366,19 @@ var MapCreator = function(options) {
       }
       entity_obj = new TerrainData(entity_obj.type).add(entity_obj).stats;
       road.push({ x: x, y: y});
-      this.Game.terrain_type[x][y] = entity_obj;
+      //this.Game.terrain_type[x][y] = entity_obj;
+      this.Game.roads[x][y] = entity_obj;
     }
-    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
+    this.buildTerrainDataWithRoads(options, this.Game, this.Game.terrain_type, this.Game.roads);
     return road;
   };
 
-  this.addSupplyRoad = function(options, city_locations, left_or_right) {
-    var grid = this.Game.terrain_build_graph.grid;
+  this.addSupplyRoad = function(options, game_object, city_locations, left_or_right) {
+    var graph = this.Game.terrain_build_graph;
+    if (this.Game.terrain_build_with_roads_graph !== undefined) {
+      var graph = this.Game.terrain_build_with_roads_graph;
+    }
+    var grid = graph.grid;
     if (left_or_right === undefined) return false;
     if (left_or_right == "left") {
       var start_city = city_locations[0];
@@ -442,6 +395,7 @@ var MapCreator = function(options) {
         }
       }
     }
+
     if (start_city == undefined) return false;
     // cannot have supply city on end of map
     if (start_city.x == 0) return false;
@@ -456,7 +410,7 @@ var MapCreator = function(options) {
       } else {
         var end = grid[options.map_grid.width - 1][j];
       }
-      var path = Pathfind.search(this.Game.terrain_build_graph, start, end);
+      var path = Pathfind.search(graph, start, end);
       var cost = Pathing.totalCost(path);
       if (best_route === undefined || cost < best_cost) {
         best_route = path;
@@ -477,9 +431,15 @@ var MapCreator = function(options) {
         for (var b = a; b < city_locations.length; b++) {
           if (a == b) continue;
           var end_location = city_locations[b];
-          var start = game_object.terrain_build_graph.grid[start_city.x][start_city.y];
-          var end = game_object.terrain_build_graph.grid[end_location.x][end_location.y];
-          var result = Pathfind.search(game_object.terrain_build_graph, start, end);
+          if (game_object.terrain_build_with_roads_graph !== undefined) {
+            var start = game_object.terrain_build_with_roads_graph.grid[start_city.x][start_city.y];
+            var end = game_object.terrain_build_with_roads_graph.grid[end_location.x][end_location.y];
+            var result = Pathfind.search(game_object.terrain_build_with_roads_graph, start, end);
+          } else {
+            var start = game_object.terrain_build_graph.grid[start_city.x][start_city.y];
+            var end = game_object.terrain_build_graph.grid[end_location.x][end_location.y];
+            var result = Pathfind.search(game_object.terrain_build_graph, start, end);
+          }
           var total_cost = Pathing.totalCost(result);
           if (least_cost === undefined || total_cost < least_cost) {
             closest = result;
@@ -501,14 +461,14 @@ var MapCreator = function(options) {
 
     // @TODO Save the supply end point locations, but nothing else
     for (var i = 0 + offset; i < max_roads; i++) {
-      var new_supply_road = this.addSupplyRoad(options, city_locations, 'left');
+      var new_supply_road = this.addSupplyRoad(options, game_object, city_locations, 'left');
       game_object.player_supply_roads[0].push(new_supply_road);
     }
     var left_supply_route = game_object.player_supply_roads[0][0][game_object.player_supply_roads[0][0].length - 1];
     game_object.supply_route[0] = left_supply_route;
 
     for (var i = city_locations.length - 1 - offset; i > city_locations.length - 1 - max_roads; i--) {
-      var new_supply_road = this.addSupplyRoad(options, city_locations, 'right');
+      var new_supply_road = this.addSupplyRoad(options, game_object, city_locations, 'right');
       game_object.player_supply_roads[1].push(new_supply_road);
     }
     var right_supply_route = game_object.player_supply_roads[1][0][game_object.player_supply_roads[1][0].length - 1];
@@ -592,25 +552,55 @@ var MapCreator = function(options) {
     return game_object.terrain_build_graph;
   };
 
+  this.buildTerrainDataWithRoads = function(options, game_object, terrain_list, roads) {
+    var terrain_difficulty_with_roads = [];
+    var terrain_build_difficulty_with_roads = [];
+    var terrain_supply = [];
+
+    for (var x = 0; x < terrain_list.length; x++) {
+      terrain_difficulty_with_roads[x] = [];
+      terrain_build_difficulty_with_roads[x] = [];
+      terrain_supply[x] = [];
+
+      for (var y = 0; y < terrain_list[x].length; y++) {
+        if (roads[x][y] !== undefined) {
+        }
+        try {
+          terrain_difficulty_with_roads[x][y] = roads[x][y].move_difficulty || terrain_list[x][y].move_difficulty;
+          terrain_build_difficulty_with_roads[x][y] = roads[x][y].build_over;
+          terrain_supply[x][y] = roads[x][y].supply;
+        } catch (ex) {
+          terrain_difficulty_with_roads[x][y] = terrain_list[x][y].move_difficulty;
+          terrain_build_difficulty_with_roads[x][y] = terrain_list[x][y].build_over;
+          terrain_supply[x][y] = terrain_list[x][y].supply ? 1 : 0;
+        }
+      }
+    }
+
+    game_object.terrain_difficulty_with_roads = terrain_difficulty_with_roads;
+    game_object.terrain_build_difficulty_with_roads = terrain_build_difficulty_with_roads;
+    game_object.terrain_supply = terrain_supply;
+
+    game_object.terrain_with_roads_graph = new Graph(terrain_difficulty_with_roads);
+    game_object.terrain_build_with_roads_graph = new Graph(terrain_build_difficulty_with_roads);
+    game_object.terrain_supply_graph = new Graph(terrain_supply);
+  }
+
   this.buildTerrainData = function(options, game_object, terrain_list) {
     // build Game.terrain Graph for pathfinding purposes
     var terrain_difficulty = [];
     var terrain_defense_bonus = [];
     var terrain_build_difficulty = [];
-    var terrain_supply = [];
 
     for (var x = 0; x < terrain_list.length; x++) {
       terrain_defense_bonus[x] = [];
       terrain_difficulty[x] = [];
       terrain_build_difficulty[x] = [];
-      terrain_supply[x] = [];
 
       for (var y = 0; y < terrain_list[x].length; y++) {
         terrain_difficulty[x][y] = terrain_list[x][y].move_difficulty;
         terrain_defense_bonus[x][y] = terrain_list[x][y].defense_bonus;
         terrain_build_difficulty[x][y] = terrain_list[x][y].build_over;
-        var supply_value = terrain_list[x][y].supply ? 1 : 0;
-        terrain_supply[x][y] = supply_value;
       }
     }
 
@@ -618,7 +608,6 @@ var MapCreator = function(options) {
     game_object.terrain_difficulty = terrain_difficulty;
     game_object.terrain_defense_bonus = terrain_defense_bonus;
     game_object.terrain_build_difficulty = terrain_build_difficulty;
-    game_object.terrain_supply = terrain_supply;
 
     // Uncomment below for Supply overlay
     /*
@@ -639,7 +628,6 @@ var MapCreator = function(options) {
     game_object.terrain_graph = new Graph(terrain_difficulty);
     game_object.terrain_defense_bonus_graph = new Graph(terrain_defense_bonus);
     game_object.terrain_build_graph = new Graph(terrain_build_difficulty);
-    game_object.terrain_supply_graph = new Graph(terrain_supply);
   };
 
   this.createUnitFromFaction = function(faction_name, faction, side, location, index) {
@@ -716,6 +704,65 @@ var MapCreator = function(options) {
     unit_object.add({ side: side, location: location, rank: rank });
     return unit_object;
   };
+
+
+
+
+
+  this.buildNewComposedMap = function(options) {
+    this.Game.height_map = this.generateHeightMap(options, options.location);
+    this.buildEmptyGameData(options, this.Game);
+    this.addWater(options, this.Game, options.location);
+
+    this.Game.section_widths = this.getWidthOfSections(options);
+    this.Game.section_positions = this.getPositionOfSections(this.Game);
+    //var city_locations = this.addCities(options, this.Game, options.num_cities_total, 1);
+    var city_locations = this.addCities(options, this.Game, options.num_cities_total, 1);
+    console.log("city_locations");
+    console.log(city_locations);
+    //var city_locations = this.addCities(options, this.Game, 1, 2);
+    this.addFarms(options, this.Game, city_locations);
+    this.addTrees(options, this.Game, options.location);
+    this.addGrass(options, this.Game);
+
+    //this.updateBuildDifficultyData(options, this.Game.terrain_type);
+    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
+    this.addSupplyRoads(options, this.Game, city_locations, 1);
+
+    var halved_city_locations = [[], []];
+    for (var i in city_locations) {
+      var location = city_locations[i];
+      if (location.y <= options.map_grid.height / 2) {
+        halved_city_locations[0].push(location);
+      } else {
+        halved_city_locations[1].push(location);
+      }
+    }
+
+    this.addRoadsBetweenCities(options, this.Game, halved_city_locations[0]);
+    this.addRoadsBetweenCities(options, this.Game, halved_city_locations[1]);
+    this.addRoadsBetweenCities(options, this.Game, [halved_city_locations[0][0], halved_city_locations[1][0]]);
+    //this.addRoadsBetweenCities(options, this.Game, city_locations);
+
+    this.Game.starting_units = this.addStartingUnits(options, this.Game);
+    /*
+
+    if (Game.fog_of_war) {
+      shadowHeightMap(Game.location);
+      LineOfSight.clearFog();
+    }
+    */
+
+   var map_data = {};
+   map_data.terrain_type = this.Game.terrain_type;
+   map_data.height_map = this.Game.height_map;
+   map_data.player_supply_roads = this.Game.player_supply_roads;
+   map_data.supply_route = this.Game.supply_route;
+
+   return this.Game;
+  };
+
+
 
 };
 

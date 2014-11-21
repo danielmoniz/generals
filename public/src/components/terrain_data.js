@@ -12,7 +12,13 @@ var TerrainData = function(type, stats) {
 
   var terrain_data = {
 
+    // Can be used only indirectly, as a parent
+    'Terrain': {
+      z: 80,
+    },
+
     "Water": {
+      z: 80,
       move_difficulty: 0, 
       build_over: 6,
       defense_bonus: 0,
@@ -20,6 +26,7 @@ var TerrainData = function(type, stats) {
     },
 
     "Grass": {
+      z: 80,
       move_difficulty: 1, 
       build_over: 1,
       defense_bonus: 1,
@@ -27,6 +34,7 @@ var TerrainData = function(type, stats) {
     },
 
     "Tree": {
+      z: 82,
       move_difficulty: 2,
       build_over: 3,
       defense_bonus: 1.05,
@@ -35,6 +43,7 @@ var TerrainData = function(type, stats) {
     },
 
     "Farm": {
+      z: 80,
       build_over: 1,
       move_difficulty: 1.2,
       defense_bonus: 1,
@@ -46,6 +55,7 @@ var TerrainData = function(type, stats) {
     },
 
     "Settlement": {
+      z: 80,
       move_difficulty: 0.9,
       build_over: 0.01,
       supply: 1,
@@ -66,6 +76,7 @@ var TerrainData = function(type, stats) {
     },
 
     "Road": {
+      z: 81,
       move_difficulty: 0.75,
       build_over: 0.01,
       defense_bonus: 1,

@@ -357,6 +357,7 @@ Crafty.c('TownBeingSacked', {
 Crafty.c('Road', {
   init: function() {
     this.requires('Terrain, Passable, Transportation');
+    this.z = this.z + 1; // one above other terrain
   },
 
   detect_type: function() {

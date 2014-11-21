@@ -10,6 +10,7 @@ Game = {
   pathfind: astar,
   noise: noise,
 
+  roads: undefined,
   terrain: undefined,
   terrain_type: undefined,
   terrain_supply: undefined,
