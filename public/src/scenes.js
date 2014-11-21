@@ -463,6 +463,12 @@ Crafty.scene('Loading', function() {
       spr_city_sacked: [1, 1],
     });
 
+    Crafty.sprite(32, 'assets/town.png', {
+      spr_town: [0, 0],
+      spr_town_being_sacked: [1, 0],
+      spr_town_sacked: [2, 0],
+    });
+
     Crafty.sprite(32, 'assets/flags.png', {
       spr_city_flag_0: [0, 0],
       spr_city_flag_1: [1, 0],

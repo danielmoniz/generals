@@ -135,18 +135,21 @@ Crafty.c('Water', {
   }
 });
 
-// Grass is just green, passable terrain
+// Grass is just empty passable terrain
 Crafty.c('Bridge', {
   init: function() {
     this.requires('Color, Terrain, Passable, Transportation');
   },
 });
 
-// A city is a tile on the grid that the PC must visit in order to win the
-// game
+Crafty.c('Settlement', {
+  init: function() {
+  },
+});
+
 Crafty.c('City', {
   init: function() {
-    this.requires('spr_city, Terrain, Passable')
+    this.requires('spr_city, Settlement, Passable')
       .attr({
         farms: [],
       })
@@ -174,7 +177,6 @@ Crafty.c('City', {
   /*
    * Sets any dynamic stats for the unit that require this.stats to be set
    * properly.
-   * Note: This MUST be called after a unit is created!
    */
   setStats: function() {
     this.addStat('max_supply', this.population * this.max_supply_multiplier);
@@ -265,6 +267,89 @@ Crafty.c('CitySide', {
       throw new Error('InvalidCitySideValue', "City side value must be 'left' or 'right'.");
     }
     return this;
+  },
+});
+
+Crafty.c('Town', {
+  init: function() {
+    this.requires('spr_town, Settlement, Passable')
+      .attr({
+        farms: [],
+      })
+      .bind("NextTurn", this.handleSupply)
+      ;
+  },
+
+  renderOthers: function() {
+    var flag = Crafty.e('Flag').pickSide(this.side);
+    flag.at(this.at().x, this.at().y);
+    this.addStat('flag', flag);
+  },
+
+  handleSupply: function() {
+    // @TODO Update town's supply amount depending on whether it is supplied
+    // from a supply route (depends on side, or if it is owned/neutral)
+  },
+
+  /*
+   * Sets any dynamic stats for the unit that require this.stats to be set
+   * properly.
+   */
+  setStats: function() {
+    this.addStat('max_supply', this.population * this.max_supply_multiplier);
+    this.addStat('supply_remaining', this.population * this.max_supply_multiplier);
+  },
+
+  pillage: function(pillage_power) {
+    if (this.being_sacked === undefined) {
+      this.being_sacked = Crafty.e('TownBeingSacked');
+      this.being_sacked.at(this.at().x, this.at().y);
+    }
+
+    var supply_to_steal = Math.min(Game.supply_steal_factor * pillage_power, this.supply_remaining);
+    this.supply_remaining -= supply_to_steal;
+    if (this.supply_remaining <= 0) {
+      this.addStats({
+        sacked: true,
+        supply_to_steal: 0,
+        defense_bonus: 1.1,
+      });
+      this.addComponent("spr_town_sacked");
+
+      // for now, destroy the town sides when the town is sacked
+      this.being_sacked.destroy();
+      this.flag.destroy();
+    } else {
+      this.being_sacked.show();
+    }
+
+    return supply_to_steal;
+  },
+});
+
+Crafty.c('TownBeingSacked', {
+  init: function() {
+    this.requires('Actor, spr_town_being_sacked')
+      .bind('NextTurn', this.nextTurn)
+    ;
+    this.z = 87;
+    this.visible = false;
+  },
+
+  nextTurn: function() {
+    if (Game.turn == this.turn_started) {
+      this.hide();
+    }
+  },
+
+  show: function() {
+    this.visible = true;
+    this.turn_started = Game.turn;
+  },
+
+  hide: function() {
+    this.visible = false;
+    this.turn_started = undefined;
   },
 });
 

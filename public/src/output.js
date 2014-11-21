@@ -367,7 +367,7 @@ Output = {
     if (terrain.provides_supply) {
       output.push("Supports: {0}".format(terrain.provides_supply));
     }
-    if (terrain.has("City")) {
+    if (terrain.base_type == "Settlement") {
       output.push("Pop. {0}".format(terrain.population));
       if (terrain.supply_remaining > 0) {
         var supply = terrain.supply_remaining;

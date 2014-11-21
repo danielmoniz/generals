@@ -164,6 +164,7 @@ Crafty.c('Unit', {
   },
 
   getActionChoices: function() {
+    // @TODO This should probably also be filtering by this.side != Game.turn
     if (this.side != Game.player) return [];
     if (this.battle) return [];
     if (this.performed_actions.length > 0) return [];
@@ -175,7 +176,7 @@ Crafty.c('Unit', {
     if (local_terrain.type == 'Farm' && !local_terrain.pillaged) {
       actions.push("pillage");
     }
-    if (local_terrain.type == 'City' && local_terrain.side != this.side && !local_terrain.sacked) {
+    if (local_terrain.base_type == 'Settlement' && local_terrain.side != this.side && !local_terrain.sacked) {
       actions.push("sack");
     }
     if (Game.fire && local_terrain.flammable) {
@@ -196,7 +197,7 @@ Crafty.c('Unit', {
     var total_pillage_ability = this.pillage_ability * this.getActive();
     if (local_terrain.has('Farm')) {
       var amount = local_terrain.pillage(total_pillage_ability);
-    } else if (local_terrain.has("City") && !local_terrain.sacked) {
+    } else if (local_terrain.has("Settlement") && !local_terrain.sacked) {
       var amount = local_terrain.pillage(total_pillage_ability);
     } else {
       throw "CannotPillageEntity: {0} not valid type to be pillaged/sacked. At location: ({1}, {2})".format(local_terrain.type, local_terrain.at().x, local_terrain.at().y);

@@ -87,6 +87,7 @@ var MapCreator = function(options) {
     this.Game.section_widths = this.getWidthOfSections(options);
     this.Game.section_positions = this.getPositionOfSections(this.Game);
     var city_locations = this.addCities(options, this.Game, options.num_cities_total);
+    this.addTownsAroundCities(options, this.Game, city_locations);
     this.addFarms(options, this.Game, city_locations);
     this.addTrees(options, this.Game, options.location);
     this.addGrass(options, this.Game);
@@ -245,6 +246,43 @@ var MapCreator = function(options) {
     }
 
     return cities;
+  };
+
+  this.addTownsAroundCities = function(options, game_object, city_locations) {
+    for (var i in city_locations) {
+      this.addTownsAroundCity(options, game_object, city_locations[i]);
+    }
+  };
+
+  this.addTownsAroundCity = function(options, game_object, city_location) {
+    console.log("adding towns --------------");
+    var max_distance = 4;
+    console.log("city_location");
+    console.log(city_location);
+    var nearby_coords = Utility.getPointsWithinDistance(city_location, max_distance, options.map_grid);
+    console.log("nearby_coords");
+    console.log(nearby_coords);
+    //var nearby_coords = Utility.filterPointsWithinBoundaries(nearby_coords, options.map_grid.width, options.map_grid.height);
+    var prob_of_placement = 1/4;
+    var distance_modifier = function(distance) {
+      return (Math.log(distance)) * prob_of_placement;
+    }
+
+    for (var i in nearby_coords) {
+      console.log("trying to add town");
+      var coord = nearby_coords[i];
+      var distance = Utility.getDistance(city_location, coord);
+      var probability = distance_modifier(distance);
+      if (!game_object.occupied[coord.x][coord.y] && Math.random() < probability) {
+        var town_stats = {
+          side: 0,
+        };
+
+        var town_obj = new TerrainData("Town").add(town_stats).stats;
+        game_object.terrain_type[coord.x][coord.y] = town_obj;
+        game_object.occupied[coord.x][coord.y] = true;
+      }
+    }
   };
 
   this.getWidthOfSections = function(options) {

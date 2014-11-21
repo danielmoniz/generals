@@ -45,13 +45,24 @@ var TerrainData = function(type, stats) {
       provides_supply: 8000,
     },
 
-    "City": {
+    "Settlement": {
       move_difficulty: 0.9,
       build_over: 0.01,
-      defense_bonus: 1.55,
       supply: 1,
-      population: 9000,
       max_supply_multiplier: 3,
+      base_type: 'Settlement',
+    },
+
+    "City": {
+      parent: 'Settlement',
+      defense_bonus: 1.55,
+      population: 9000,
+    },
+
+    "Town": {
+      parent: 'Settlement',
+      defense_bonus: 1.25,
+      population: 2500,
     },
 
     "Road": {

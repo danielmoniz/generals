@@ -94,6 +94,19 @@ var Utility = {
     return points;
   },
 
+  // @TODO This function may not be needed
+  filterPointsWithinBoundaries: function(points, width, height) {
+    var points_within = [];
+    for (var i in points) {
+      var point = points[i];
+      if (point.x < 0 || point.x > width - 1) continue;
+      if (point.y < 0 || point.y > height - 1) continue;
+      points_within.push(point);
+    }
+
+    return points_within;
+  },
+
   /*
    * Distance must be positive or 0.
    */
