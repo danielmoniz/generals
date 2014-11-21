@@ -363,7 +363,7 @@ Crafty.c('Road', {
     // look at adjacent road spaces and determine which component should be
     // added (ie. which sprite is required).
     function hasRoadConnection(tile) {
-      var road_connections = ['Road', 'Bridge', 'City'];
+      var road_connections = ['Road', 'Bridge', 'Settlement'];
       for (var i=0; i<road_connections.length; i++) {
         if (tile.has(road_connections[i])) return true;
       }

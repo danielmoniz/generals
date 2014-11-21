@@ -87,7 +87,7 @@ var MapCreator = function(options) {
     this.Game.section_widths = this.getWidthOfSections(options);
     this.Game.section_positions = this.getPositionOfSections(this.Game);
     var city_locations = this.addCities(options, this.Game, options.num_cities_total);
-    this.addTownsAroundCities(options, this.Game, city_locations);
+    var town_locations = this.addTownsAroundCities(options, this.Game, city_locations);
     this.addFarms(options, this.Game, city_locations);
     this.addTrees(options, this.Game, options.location);
     this.addGrass(options, this.Game);
@@ -249,26 +249,24 @@ var MapCreator = function(options) {
   };
 
   this.addTownsAroundCities = function(options, game_object, city_locations) {
+    var town_locations = [];
     for (var i in city_locations) {
-      this.addTownsAroundCity(options, game_object, city_locations[i]);
+      var new_towns = this.addTownsAroundCity(options, game_object, city_locations[i]);
+      town_locations = town_locations.concat(new_towns);
     }
+    return town_locations;
   };
 
   this.addTownsAroundCity = function(options, game_object, city_location) {
-    console.log("adding towns --------------");
+    var town_locations = [];
     var max_distance = 4;
-    console.log("city_location");
-    console.log(city_location);
     var nearby_coords = Utility.getPointsWithinDistance(city_location, max_distance, options.map_grid);
-    console.log("nearby_coords");
-    console.log(nearby_coords);
     var prob_of_placement = 1/4;
     var distance_modifier = function(x) { // x is distance
       return Math.abs((Math.sin(x-1)) / 8);
     }
 
     for (var i in nearby_coords) {
-      console.log("trying to add town");
       var coord = nearby_coords[i];
       var distance = Utility.getDistance(city_location, coord);
       var probability = distance_modifier(distance);
@@ -280,8 +278,11 @@ var MapCreator = function(options) {
         var town_obj = new TerrainData("Town").add(town_stats).stats;
         game_object.terrain_type[coord.x][coord.y] = town_obj;
         game_object.occupied[coord.x][coord.y] = true;
+        town_locations.push({ x: coord.x, y: coord.y });
       }
     }
+
+    return town_locations;
   };
 
   this.getWidthOfSections = function(options) {
@@ -396,13 +397,16 @@ var MapCreator = function(options) {
 
       var entity_obj = {};
 
-      if (terrain_type == "City" || terrain_type.type == "City") {
+      if (terrain_type == 'City' || terrain_type.type == "City" || terrain_type.type == 'Town') {
+        console.log("terrain_type");
+        console.log(terrain_type);
         road.push({ x: x, y: y});
         continue;
       }
-      if (terrain_type == "Water" || terrain_type.type == "Water") {
 
+      if (terrain_type == "Water" || terrain_type.type == "Water") {
         entity_obj.type = "Bridge";
+
       } else {
         var is_supply_route = false;
         //if (is_supply_route || (is_supply_route_road && i == end - 1)) 
