@@ -38,15 +38,11 @@ Pathing = {
 
   makeMovementPath: function(x, y, remaining, highlight) {
     // green, yellow, orange, purple
-    var turn_colours = [
-      'rgb(0, 128, 0)',
-      'rgb(196, 196, 0)',
-      'rgb(196, 121, 0)',
-      'rgb(128, 0, 128)',
-    ];
     var turn_sprites = [
       'spr_green',
       'spr_yellow',
+      'spr_orange',
+      'spr_purple',
     ];
     remaining_color = (remaining - 1) % turn_sprites.length;
     if (highlight) {
@@ -57,11 +53,6 @@ Pathing = {
     movement_path.at(x, y)
     movement_path.addComponent(turn_sprites[remaining_color])
 
-    if (!highlight) {
-      //movement_path.alpha = .5;
-      //movement_path.colour = Utility.getColoursFromRgb(movement_path.color());
-      //movement_path.brightenColour(movement_path.brightness);
-    }
     return movement_path;
   },
 
