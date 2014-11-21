@@ -262,10 +262,9 @@ var MapCreator = function(options) {
     var nearby_coords = Utility.getPointsWithinDistance(city_location, max_distance, options.map_grid);
     console.log("nearby_coords");
     console.log(nearby_coords);
-    //var nearby_coords = Utility.filterPointsWithinBoundaries(nearby_coords, options.map_grid.width, options.map_grid.height);
     var prob_of_placement = 1/4;
-    var distance_modifier = function(distance) {
-      return (Math.log(distance)) * prob_of_placement;
+    var distance_modifier = function(x) { // x is distance
+      return Math.abs((Math.sin(x-1)) / 8);
     }
 
     for (var i in nearby_coords) {
@@ -275,7 +274,7 @@ var MapCreator = function(options) {
       var probability = distance_modifier(distance);
       if (!game_object.occupied[coord.x][coord.y] && Math.random() < probability) {
         var town_stats = {
-          side: 0,
+          side: this.getMapSide(game_object, coord.x),
         };
 
         var town_obj = new TerrainData("Town").add(town_stats).stats;
