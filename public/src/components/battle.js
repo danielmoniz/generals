@@ -144,7 +144,7 @@ Battle = {
     var defenders_defensive_ability = Battle.getDefensiveAbility(defenders);
 
 
-    var attacker_attack_power = attackers_ability * (terrain_mod * attacker_morale_factor);
+    var attacker_attack_power = attackers_ability * (1/terrain_mod * attacker_morale_factor);
     var defender_losses = attacker_attack_power * TROOP_LOSS / defenders_defensive_ability / defender_morale_factor;
 
     var defender_attack_power = defenders_ability * (terrain_mod * defender_morale_factor);
