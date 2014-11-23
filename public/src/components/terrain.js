@@ -361,6 +361,7 @@ Crafty.c('Road', {
   },
 
   detect_type: function() {
+
     // look at adjacent road spaces and determine which component should be
     // added (ie. which sprite is required).
     function hasRoadConnection(x, y) {
@@ -368,10 +369,11 @@ Crafty.c('Road', {
       var tile = Game.terrain[x][y];
       var road = Game.roads[x][y];
       for (var i=0; i<road_connections.length; i++) {
-        if (tile.has(road_connections[i]) || road !== undefined) return true;
+        if (tile.has(road_connections[i]) || (road !== undefined && road !== null)) return true;
       }
       return false;
     }
+
     function getLeft(road) {
       if (road.getX() == 0) return false;
       return hasRoadConnection(road.getX() - 1, road.getY());
