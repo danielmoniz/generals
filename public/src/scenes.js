@@ -124,8 +124,9 @@ Crafty.scene('Game', function() {
     if (is_terrain === undefined) is_terrain = true;
     for (var x=0; x<terrain_data.length; x++) {
       for (var y=0; y<terrain_data[x].length; y++) {
-        if (terrain_data[x][y] === undefined) continue;
         var terrain_datum = terrain_data[x][y];
+        if (terrain_datum === undefined) continue;
+        if (terrain_datum === null) continue;
         if (typeof terrain_datum == 'string') {
           var terrain = Crafty.e(terrain_datum);
         } else if (typeof terrain_datum == 'object') {
@@ -241,7 +242,7 @@ Crafty.scene('Game', function() {
     Game.map_creator = map_creator;
 
     buildTerrainFromData(Game.terrain_type);
-    buildTerrainFromData(game_data.roads, false);
+    buildTerrainFromData(Game.roads, false);
 
     if (Game.fog_of_war) {
       shadowHeightMap(Game.location);
