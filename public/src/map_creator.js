@@ -201,13 +201,13 @@ var MapCreator = function(options) {
   this.addTownsAroundCities = function(options, game_object, city_locations) {
     var town_locations = [];
     for (var i in city_locations) {
-      var new_towns = this.addTownsAroundCity(options, game_object, city_locations[i]);
+      var new_towns = this.addTownsAroundCity(options, game_object, city_locations[i], town_locations);
       town_locations = town_locations.concat(new_towns);
     }
     return town_locations;
   };
 
-  this.addTownsAroundCity = function(options, game_object, city_location) {
+  this.addTownsAroundCity = function(options, game_object, city_location, other_towns) {
     var town_locations = [];
     var max_distance = 4;
     var nearby_coords = Utility.getPointsWithinDistance(city_location, max_distance, options.map_grid);
@@ -218,6 +218,18 @@ var MapCreator = function(options) {
 
     for (var i in nearby_coords) {
       var coord = nearby_coords[i];
+
+      // skip if coordinate is too close to other towns
+      var is_adjacent = false;
+      var all_towns = other_towns.concat(town_locations);
+      for (var i in all_towns) {
+        if (Utility.getDistance(coord, all_towns[i]) <= 1.5) {
+          is_adjacent = true;
+          break;
+        }
+      }
+      if (is_adjacent) continue;
+
       var distance = Utility.getDistance(city_location, coord);
       var probability = distance_modifier(distance);
       if (!game_object.occupied[coord.x][coord.y] && Math.random() < probability) {
