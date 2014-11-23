@@ -1,14 +1,25 @@
-
-start
-GridNode {x: 16, y: 8, weight: 0.75, f: 0, g: 0…}
-end
-GridNode {x: 16, y: 15, weight: 0.75, f: 7.55, g: 7.55…}
-
 graph
 Graph {nodes: Array[627], diagonal: false, grid: Array[33], neighbors: function, toString: function}
   diagonal: false
   grid: Array[33]
+    0: Array[19]
+    1: Array[19]
+    2: Array[19]
+    3: Array[19]
+    4: Array[19]
+    5: Array[19]
+    6: Array[19]
+    7: Array[19]
+    8: Array[19]
+    9: Array[19]
+    10: Array[19]
+    11: Array[19]
+    12: Array[19]
+    13: Array[19]
+    14: Array[19]
+    15: Array[19]
     16: Array[19]
+      0: GridNode, 1: GridNode, 2: GridNode, 3: GridNode, 4: GridNode, 5: GridNode, 6: GridNode, 7: GridNode, 
 
       8: GridNode
         closed: true
@@ -103,8 +114,11 @@ Graph {nodes: Array[627], diagonal: false, grid: Array[33], neighbors: function,
         x: 16
         y: 15
         __proto__: GridNode
+      
+      16: GridNode, 17: GridNode, 18: GridNode, length: 19__proto__: Array[0]
 
     17: Array[19]
+      0: GridNode, 1: GridNode, 2: GridNode, 3: GridNode, 4: GridNode, 5: GridNode, 6: GridNode, 7: GridNode, 
 
       8: GridNode
         closed: false
@@ -202,7 +216,29 @@ Graph {nodes: Array[627], diagonal: false, grid: Array[33], neighbors: function,
         y: 15
         __proto__: GridNode
 
-    length: 33
-    __proto__: Array[0]
-    nodes: Array[627]
+      16: GridNode, 17: GridNode, 18: GridNode, length: 19__proto__: Array[0]
+
+    18: Array[19]
+    19: Array[19]
+    20: Array[19]
+    21: Array[19]
+    22: Array[19]
+    23: Array[19]
+    24: Array[19]
+    25: Array[19]
+    26: Array[19]
+    27: Array[19]
+    28: Array[19]
+    29: Array[19]
+    30: Array[19]
+    31: Array[19]
+    32: Array[19]
+    length: 33__proto__: Array[0]
+    nodes:
+    Array[627]
     __proto__: Graph
+
+  start
+  GridNode {x: 16, y: 8, weight: 0.75, f: 0, g: 0…} unit.js:539
+  end
+  GridNode {x: 16, y: 15, weight: 0.75, f: 7.55, g: 7.55…} unit.js:541
