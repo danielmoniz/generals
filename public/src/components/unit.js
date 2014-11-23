@@ -28,13 +28,17 @@ var Unit = {
         enemy_units.push(units[i]);
       }
     }
-    if (this.units_by_side === undefined) this.units_by_side = {};
-    this.units_by_side[side] = {
+    var units_by_side = {};
+    units_by_side = {
       friendly: friendly_units,
       enemy: enemy_units,
       turn: Game.turn,
     };
-    return this.units_by_side[side];
+    if (Game.turn_count >= 0) {
+      if (this.units_by_side === undefined) this.units_by_side = {};
+      this.units_by_side[side] = units_by_side;
+    }
+    return units_by_side;
   },
 
   getFriendlyUnits: function(side, units) {
