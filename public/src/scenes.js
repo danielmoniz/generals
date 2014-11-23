@@ -137,7 +137,7 @@ Crafty.scene('Game', function() {
           throw "TerrainInvalid: Must be object or string.";
         }
         //terrain.at(x, y);
-        Game.terrain[x][y] = terrain;
+        if (is_terrain) Game.terrain[x][y] = terrain;
       }
     }
   }

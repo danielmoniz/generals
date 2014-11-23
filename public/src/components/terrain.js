@@ -363,32 +363,30 @@ Crafty.c('Road', {
   detect_type: function() {
     // look at adjacent road spaces and determine which component should be
     // added (ie. which sprite is required).
-    function hasRoadConnection(tile) {
+    function hasRoadConnection(x, y) {
       var road_connections = ['Road', 'Bridge', 'Settlement'];
+      var tile = Game.terrain[x][y];
+      var road = Game.roads[x][y];
       for (var i=0; i<road_connections.length; i++) {
-        if (tile.has(road_connections[i])) return true;
+        if (tile.has(road_connections[i]) || road !== undefined) return true;
       }
       return false;
     }
     function getLeft(road) {
       if (road.getX() == 0) return false;
-      var tile = Game.terrain[road.getX() - 1][road.getY()];
-      return hasRoadConnection(tile);
+      return hasRoadConnection(road.getX() - 1, road.getY());
     }
     function getRight(road) {
       if (road.getX() == Game.map_grid.width - 1) return false;
-      var tile = Game.terrain[road.getX() + 1][road.getY()];
-      return hasRoadConnection(tile);
+      return hasRoadConnection(road.getX() + 1, road.getY());
     }
     function getUp(road) {
       if (road.getY() == 0) return false;
-      var tile = Game.terrain[road.getX()][road.getY() - 1];
-      return hasRoadConnection(tile);
+      return hasRoadConnection(road.getX(), road.getY() - 1);
     }
     function getDown(road) {
       if (road.getY() == Game.map_grid.height - 1) return false;
-      var tile = Game.terrain[road.getX()][road.getY() + 1];
-      return hasRoadConnection(tile);
+      return hasRoadConnection(road.getX(), road.getY() + 1);
     }
 
     this.sprite_key = "";
