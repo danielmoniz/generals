@@ -1,0 +1,96 @@
+graph unit.js:521
+Graph {nodes: Array[627], diagonal: false, grid: Array[33], neighbors:
+  function, toString: function}
+  diagonal: false, grid: Array[33]
+    0: Array[19]
+    1: Array[19]
+    2: Array[19]
+    3: Array[19]
+    4: Array[19]
+    5: Array[19]
+    6: Array[19]
+    7: Array[19]
+    8: Array[19]
+    9: Array[19]
+    10: Array[19]
+    11: Array[19]
+    12: Array[19]
+    13: Array[19]
+    14: Array[19]
+    15: Array[19]
+    16: Array[19]
+      0: GridNode, 1: GridNode, 2: GridNode, 3: GridNode, 4: GridNode, 5: GridNode, 6: GridNode, 7: GridNode, 
+
+      8: GridNode, closed: true, f: 0, g: 0, h: 7parent: nullvisited: false, weight: 0.75x: 16y: 8__proto__: GridNode, 
+
+      9: GridNode, closed: true, f: 7.2g: 1.2h: 6parent: GridNode, visited: true, weight: 1.2x: 16y: 9__proto__: GridNode, 
+
+      10: GridNode, closed: true, f: 7.4g: 2.4h: 5parent: GridNode, visited: true, weight: 1.2x: 16y: 10__proto__: GridNode, 
+
+      11: GridNode, closed: true, f: 7.6g: 3.5999999999999996h: 4parent: GridNode, visited: true, weight: 1.2x: 16y: 11__proto__: GridNode, 
+
+      12: GridNode, closed: true, f: 7.6g: 4.6h: 3parent: GridNode, visited: true, weight: 1x: 16y: 12__proto__: GridNode, 
+
+      13: GridNode, closed: true, f: 7.8g: 5.8h: 2parent: GridNode, visited: true, weight: 1.2x: 16y: 13__proto__: GridNode, 
+
+      14: GridNode, closed: true, f: 7.8g: 6.8h: 1parent: GridNode, visited: true, weight: 1x: 16y: 14__proto__: GridNode, 
+
+      15: GridNode, closed: false, f: 7.55g: 7.55h: 0parent: GridNode, visited: true, weight: 0.75x: 16y: 15__proto__: GridNode, 
+      
+      16: GridNode, 17: GridNode, 18: GridNode, length: 19__proto__: Array[0]
+
+    17: Array[19]
+      0: GridNode, 1: GridNode, 2: GridNode, 3: GridNode, 4: GridNode, 5: GridNode, 6: GridNode, 7: GridNode, 
+
+      8: GridNode, closed: false, f: 8.75g: 0.75h: 8parent: GridNode, visited: true, weight: 0.75x: 17y: 8__proto__: GridNode, 
+
+      9: GridNode, closed: false, f: 8.95g: 1.95h: 7parent: GridNode, visited: true, weight: 0.75x: 17y: 9__proto__: GridNode, 
+
+      10: GridNode, closed: false, f: 9.15g: 3.15h: 6parent: GridNode, visited: true, weight: 0.75x: 17y: 10__proto__: GridNode, 
+
+      11: GridNode, closed: false, f: 9.5g: 4.5h: 5parent: GridNode, visited: true, weight: 0.9x: 17y: 11__proto__: GridNode, 
+
+      12: GridNode, closed: false, f: 9.35g: 5.35h: 4parent: GridNode, visited: true, weight: 0.75x: 17y: 12__proto__: GridNode, 
+
+      13: GridNode, closed: false, f: 9.55g: 6.55h: 3parent: GridNode, visited: true, weight: 0.75x: 17y: 13__proto__: GridNode, 
+
+      14: GridNode, closed: false, f: 9.55g: 7.55h: 2parent: GridNode, visited: true, weight: 0.75x: 17y: 14__proto__: GridNode, 
+
+      15: GridNode, closed: false, f: 0, g: 0, h: 0parent: nullvisited: false, weight: 0.75x: 17y: 15__proto__: GridNode, 
+
+      16: GridNode, 17: GridNode, 18: GridNode, length: 19__proto__: Array[0]
+
+    18: Array[19]
+    19: Array[19]
+    20: Array[19]
+    21: Array[19]
+    22: Array[19]
+    23: Array[19]
+    24: Array[19]
+    25: Array[19]
+    26: Array[19]
+    27: Array[19]
+    28: Array[19]
+    29: Array[19]
+    30: Array[19]
+    31: Array[19]
+    32: Array[19]
+    length: 33__proto__: Array[0]
+    nodes:
+    Array[627]
+    __proto__: Graph unit.js:522
+
+
+  eeeeeeeeeee (divider)
+
+
+
+  start unit.js:538
+  GridNode {x: 16, y: 8, weight: 0.75, f: 0, g: 0…} unit.js:539
+  end unit.js:540
+  GridNode {x: 16, y: 15, weight: 0.75, f: 7.55, g: 7.55…} unit.js:541
+  path unit.js:542
+  [GridNode, GridNode, GridNode, GridNode, GridNode, GridNode, GridNode]
+  unit.js:543
+  Pathing.totalCost(path) unit.js:544
+  7.55 
