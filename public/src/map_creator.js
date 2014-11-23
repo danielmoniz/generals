@@ -362,23 +362,26 @@ var MapCreator = function(options) {
 
       var entity_obj = {};
 
-      if (terrain_type == 'City' || terrain_type.type == "City" || terrain_type.type == 'Town') {
+      if (terrain_type == 'City' || terrain_type.type == "City") {
         road.push({ x: x, y: y});
         continue;
       }
 
       if (terrain_type == "Water" || terrain_type.type == "Water") {
         entity_obj.type = "Bridge";
-
-      } else {
-        var is_supply_route = false;
-        //if (is_supply_route || (is_supply_route_road && i == end - 1)) 
-        if (is_supply_route_road && i == end - 1) {
-          entity_obj.is_supply_route = true;
-        }
-
-        entity_obj.type = "Road";
+        entity_obj = new TerrainData(entity_obj.type).add(entity_obj).stats;
+        road.push({ x: x, y: y});
+        this.Game.terrain_type[x][y] = entity_obj;
+        continue;
       }
+
+      var is_supply_route = false;
+      //if (is_supply_route || (is_supply_route_road && i == end - 1)) 
+      if (is_supply_route_road && i == end - 1) {
+        entity_obj.is_supply_route = true;
+      }
+      entity_obj.type = "Road";
+
       entity_obj = new TerrainData(entity_obj.type).add(entity_obj).stats;
       road.push({ x: x, y: y});
       //this.Game.terrain_type[x][y] = entity_obj;
