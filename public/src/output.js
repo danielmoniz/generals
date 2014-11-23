@@ -356,6 +356,13 @@ Output = {
     if (terrain.type != 'City' || terrain.name === undefined) {
       output.push(terrain.type);
     }
+
+    var x = terrain.getX();
+    var y = terrain.getY();
+    if (Game.roads[x][y]) {
+      output.push('(Road)');
+    }
+
     if (terrain.has('Impassable')) output.push("(Impassable)");
     if (terrain.on_fire) {
       output.push('(burning!)');
