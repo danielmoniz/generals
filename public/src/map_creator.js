@@ -121,7 +121,10 @@ var MapCreator = function(options) {
     if (min_y === undefined) min_y = 0;
     var city_locations = [];
     var num_cities = 0;
-    while (num_cities < estimated_cities) {
+    var num_tries = 0;
+    var max_tries = 20;
+    while (num_cities < estimated_cities && num_tries < max_tries) {
+      num_tries += 1;
       for (var x = min_x; x < max_x; x++) {
         for (var y = min_y; y < max_y; y++) {
           var at_map_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
@@ -137,7 +140,7 @@ var MapCreator = function(options) {
             var current_location = { x: x, y: y };
             var all_cities = other_cities.concat(city_locations);
             for (var i in all_cities) {
-              if (Utility.getDistance(current_location, all_cities[i]) <= 1.5) {
+              if (Utility.getDistance(current_location, all_cities[i]) <= 2.5) {
                 is_adjacent = true;
                 break;
               }
