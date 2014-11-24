@@ -343,6 +343,7 @@ Game = {
     this.updateTurnCount('reset');
     this.selected = undefined;
     this.player_selected = [];
+    this.turn_actions = {};
     // Is this needed?
     this.player_supply_roads = [[], []];
     this.weather = new Weather();
@@ -363,39 +364,45 @@ Game = {
   },
 
   saveOnline: function() {
-    var data = {};
-
-    var this_turn = this.turn;
-    var units = Unit.getFriendlyUnits(this_turn);
+    var move_data = {};
+    var units = Unit.getFriendlyUnits(this.turn);
     for (var i in units) {
       var unit = units[i];
-      var unit_turn = {
-        actions: unit.performed_actions,
+      var unit_move = {
         move_target_path_list: unit.move_target_path_list,
       };
-      data[unit.id] = unit_turn;
+      move_data[unit.id] = unit_move;
     }
 
+    var data = {
+      actions: this.turn_actions[Game.turn_count],
+      moves: move_data,
+    };
     return data;
   },
 
   loadOnline: function(data) {
+
     var previous_turn = Game.turn - 0.5 % 2;
     var current_turn = Game.turn;
-    // get unit actions and movement paths
+    // perform unit actions
     console.log('------------------------------');
     console.log('loading data from online');
     console.log("data");
     console.log(data);
-    for (var id in data) {
-      var unit_data = data[id];
+    for (var i in data.actions) {
+      var action_data = data.actions[i];
+      var unit = Unit.getUnitById(action_data.unit_id, current_turn);
+      Action.perform('unit action', unit, action_data.action);
+    }
+
+    // update unit movement paths
+    for (var id in data.moves) {
+      var unit_data = data.moves[id];
       var unit = Unit.getUnitById(id, current_turn);
       unit.move_target_path_list = unit_data.move_target_path_list;
-      for (var i in unit_data.actions) {
-        var action = unit_data.actions[i];
-        Action.perform('unit action', unit, action);
-      }
     }
+
   },
 
   /*

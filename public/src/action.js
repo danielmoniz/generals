@@ -104,7 +104,17 @@ var Action = {
 
     Unit.flushCaches(); // run after unit actions for an up-to-date cache
 
+    var formatted_action = {
+      action: action,
+      unit_id: unit.id,
+    };
+    if (Game.turn_actions[Game.turn_count] === undefined) {
+      Game.turn_actions[Game.turn_count] = [];
+    }
+    Game.turn_actions[Game.turn_count].push(formatted_action);
+
     unit.performed_actions.push(action);
+
     Crafty.trigger("UpdateActionChoices", unit.at());
     Output.updateUnitInfo(unit);
     Game.select(unit);
