@@ -495,8 +495,6 @@ Crafty.c('Unit', {
     Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
 
     var graph = Game.terrain_with_roads_graph;
-    console.log("graph");
-    console.log(graph);
 
     if (this.battle) {
       var battle = this.isBattlePresent();
@@ -514,11 +512,10 @@ Crafty.c('Unit', {
     if (queue_move && this.move_target_path) {
       var end_path = this.move_target_path[this.move_target_path.length - 1];
       var start = graph.grid[end_path.x][end_path.y];
-      var end = graph.grid[target_x][target_y];
     } else {
       var start = graph.grid[this.at().x][this.at().y];
-      var end = graph.grid[target_x][target_y];
     }
+    var end = graph.grid[target_x][target_y];
 
     var new_path = Game.pathfind.search(graph, start, end);
     if (!new_path) {
@@ -632,6 +629,10 @@ Crafty.c('Unit', {
     var movement = this.movement;
     if (is_retreat) movement += 1;
     var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
+    console.log("partial_path.length");
+    console.log(partial_path.length);
+    console.log("this.move_target_path");
+    console.log(this.move_target_path);
 
     // get enemy units not on path
     var enemy_units = Unit.getEnemyUnits(this.side);
