@@ -258,6 +258,7 @@ Crafty.scene('Game', function() {
 
     // Must rebuild Graph objects for pathfinding
     map_creator.buildTerrainData(Game, Game, Game.terrain_type);
+    map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain_type, Game.roads);
 
     Victory.reset();
     Game.determineSelectionOnline();

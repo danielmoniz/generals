@@ -211,6 +211,8 @@ Game = {
   updatePossibleUnitMoves: function() {
     var units = Entity.get('Unit');
     var moves = {};
+    var graph = Game.terrain_with_roads_graph;
+
     for (var i in units) {
       var unit = units[i];
       var start_location = unit.at();
@@ -228,7 +230,6 @@ Game = {
 
         var target = { x: x, y: y };
 
-        var graph = Game.terrain_with_roads_graph;
         var start = graph.grid[unit.at().x][unit.at().y];
         var end = graph.grid[x][y];
         var path = Game.pathfind.search(graph, start, end);
