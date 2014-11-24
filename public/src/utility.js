@@ -91,7 +91,10 @@ var Utility = {
     for (var i=Math.ceil(distance); i>=0; i--) {
       points = points.concat(this.getRingAtDistance(start, i));
     }
-    return this.filterPointsWithinBoundaries(points, map_grid.width, map_grid.height);
+    if (map_grid !== undefined) {
+      points = this.filterPointsWithinBoundaries(points, map_grid.width, map_grid.height);
+    }
+    return points;
   },
 
   // @TODO This function may not be needed
