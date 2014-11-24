@@ -20,7 +20,7 @@ var TerrainData = function(type, stats) {
     "Water": {
       z: 80,
       move_difficulty: 0, 
-      build_over: 6,
+      build_over: 5,
       defense_bonus: 0,
       colour: { r: 0, g: 128, b: 255 },
     },
