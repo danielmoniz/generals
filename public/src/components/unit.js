@@ -118,11 +118,16 @@ Crafty.c('Unit', {
   nextTurn: function(turn) {
     if (turn === undefined) turn = Game.turn;
     // rebuild movement path for pathfinding from stored data
-    //
+
     this.move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
     this.first_location = this.at();
     this.possible_moves = [];
     this.possible_moves_data = {};
+
+    if (turn == this.side) {
+      // need visible enemy units for detecting stop points when moving
+      this.visible_enemies = Unit.getVisibleEnemyUnits(this.side);
+    }
 
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
@@ -130,6 +135,8 @@ Crafty.c('Unit', {
       } else if (!this.battle && this.move_target_path) {
         this.moveTowardTarget();
       }
+
+      delete this.visible_enemies;
     }
 
     this.updateMovementPaths();
@@ -591,30 +598,49 @@ Crafty.c('Unit', {
     }
   },
 
-  getStopPoints: function(target, current_location) {
+  getStopPoints: function(target, current_location, all_enemies) {
     // @TODO Cache stop_points and use same set of points for all paths (for
     // the same side)
     if (current_location === undefined) current_location = this.at();
+    if (all_enemies === undefined) all_enemies = false;
 
-    var enemy_units = Unit.getVisibleEnemyUnits(this.side);
     var stop_points = [];
+    if (all_enemies) {
+      var enemy_units = Unit.getEnemyUnits(this.side);
+    } else {
+      var enemy_units = Unit.getVisibleEnemyUnits(this.side);
+    }
+
     for (var i in enemy_units) {
       // if enemy is on target, ignore
       // if enemy is on path, disallow moving through enemy
       // if enemy is not on path, add adjacent regions as 'stop points'
       var enemy = enemy_units[i];
-      if (!enemy.isAtLocation(target)) {
-        // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
-        if (enemy.battle) continue;
-        if (Utility.getDistance(current_location, enemy.at()) <= 1) {
-          continue;
+      var enemy_was_visible = false;
+      for (var j in this.visible_enemy_units) {
+        var visible_enemy = this.visible_enemy_units[j];
+        if (enemy.getId() == this.visible_enemy_units[j].getId()) {
+          var enemy_was_visible = true;
         }
-
-        var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
-        stop_points = stop_points.concat(adjacent_points);
-        // @TODO Ensure only new positions are added to stop_points
       }
+
+      if (enemy.isAtLocation(target) && enemy_was_visible) continue;
+      // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
+      if (enemy.battle) continue;
+      if (Utility.getDistance(current_location, enemy.at()) <= 1) {
+        continue;
+      }
+
+      var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
+      stop_points = stop_points.concat(adjacent_points);
+      // @TODO Ensure only new positions are added to stop_points
     }
+
+    var fires = Entity.get('Fire');
+    for (i in fires) {
+      stop_points.push(fires[i].at());
+    }
+
     return stop_points;
   },
 
@@ -624,7 +650,7 @@ Crafty.c('Unit', {
     var num_losses = battle.retreat(this);
     Output.printRetreat(this, num_losses);
     this.battle = false;
-    this.moveTowardTarget(true);
+    this.moveTowardTarget('is_retreat');
   },
 
   moveTowardTarget: function(is_retreat) {
@@ -632,36 +658,11 @@ Crafty.c('Unit', {
     var movement = this.movement;
     if (is_retreat) movement += 1;
     var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
-    console.log("partial_path.length");
-    console.log(partial_path.length);
-    console.log("this.move_target_path");
-    console.log(this.move_target_path);
 
-    // get enemy units not on path
-    var enemy_units = Unit.getEnemyUnits(this.side);
-    var blocking_enemy_units = [];
-    for (var i in enemy_units) {
-      var enemy = enemy_units[i];
-      if (Utility.getDistance(this.first_location, enemy.at()) <= 1) {
-        continue;
-      }
+    var end_node = this.move_target_path[this.move_target_path.length - 1];
+    var target = { x: end_node.x, y: end_node.y };
 
-      if (enemy.battle) continue;
-      var ignore_enemy = false;
-      for (var j in partial_path) {
-        if (enemy.isAtLocation(partial_path[j])) {
-          ignore_enemy = true;
-        }
-      }
-      if (!ignore_enemy) blocking_enemy_units.push(enemy);
-    }
-
-    var stop_points = [];
-    for (var i in blocking_enemy_units) {
-      var enemy = blocking_enemy_units[i];
-      var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
-      stop_points = stop_points.concat(adjacent_points);
-    }
+    var stop_points = this.getStopPoints(target, this.first_location, 'all_enemies');
 
     // check for enemies that will be bumped into
     for (var i in partial_path) {
