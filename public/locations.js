@@ -11,7 +11,7 @@ var locations = {
     },
     trees: {
       size: 1/4,
-      freq: .80,
+      freq: 1,
       noise: 'perlin2',
     },
   },
