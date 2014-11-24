@@ -125,6 +125,24 @@ $(document).ready(function() {
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
+  //
+  $('#test_button').click(function() {
+    var clickable_object = Crafty('Unit').get()[0];
+
+    if (Game.selected) Game.deselect();
+    Game.selected = clickable_object;
+    if (Game.selected.side == Game.turn) Game.player_selected[Game.turn] = clickable_object;
+    Game.select_highlight = Entity.create('Selected');
+    if (!Game.selected.at) return;
+    var spot = Game.selected.at();
+    Game.select_highlight.at(spot.x, spot.y);
+
+    if (Game.selected.select) {
+      Game.selected.select();
+    } else {
+      throw "NotImplementedError: select() for {0}".format(Game.selected.type);
+    }
+  });
 
 });
 
