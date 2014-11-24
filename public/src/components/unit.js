@@ -424,7 +424,10 @@ Crafty.c('Unit', {
     if (Game.live_off_land && !this.battle) {
       var local_terrain = Game.terrain[this.at().x][this.at().y];
       if (local_terrain.provides_supply) {
-        unsupplied = Math.max(0, this.quantity - local_terrain.provides_supply);
+        var supply = local_terrain.remaining_provided_supply;
+        var supply_used = Math.min(this.quantity * this.supply_usage, supply);
+        unsupplied = this.quantity - Math.ceil(supply_used / this.supply_usage);
+        local_terrain.remaining_provided_supply -= supply_used;
       }
     }
 

@@ -31,6 +31,7 @@ var TerrainData = function(type, stats) {
       build_over: 1,
       defense_bonus: 1,
       provides_supply: 1000,
+      remaining_provided_supply: 1000,
     },
 
     "Tree": {
@@ -40,6 +41,7 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1.05,
       flammable: true,
       provides_supply: 2000,
+      remaining_provided_supply: 2000,
     },
 
     "Farm": {
@@ -51,7 +53,8 @@ var TerrainData = function(type, stats) {
       supply_to_steal: 6000,
       colour: { r: 196, g: 196, b: 0 },
       flammable: true,
-      provides_supply: 8000,
+      provides_supply: 4000,
+      remaining_provided_supply: 4000,
     },
 
     "Settlement": {

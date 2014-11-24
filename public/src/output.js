@@ -237,7 +237,6 @@ Output = {
       .attr("unit_id", unit_id)
       //.click(this.selectSelf())
       .single_double_click(function(event) {
-        console.log('single clicked!');
         this.selectSelf = that.selectSelf();
         this.selectSelf(event);
         if (window.unit_panel_active) {
@@ -245,7 +244,6 @@ Output = {
           //event.stopPropagation();
         }
       }, function(event) {
-        console.log('double clicked!');
         that.showUnitInfoPanel($(this).attr('unit_id'));
         event.stopPropagation();
       })

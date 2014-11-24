@@ -6,9 +6,11 @@ Crafty.c('Terrain', {
       .bind("NextTurn", this.nextTurn)
     ;
     this.z = 80;
+
   },
 
   nextTurn: function() {
+    this.remaining_provided_supply = this.provides_supply;
     this.updateStats();
   },
 
@@ -144,6 +146,7 @@ Crafty.c('Bridge', {
 
 Crafty.c('Settlement', {
   init: function() {
+    this.requires('Terrain');
   },
 });
 
