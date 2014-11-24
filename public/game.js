@@ -227,9 +227,10 @@ Game = {
 
         var target = { x: x, y: y };
 
-        var start = Game.terrain_graph.grid[unit.at().x][unit.at().y];
-        var end = Game.terrain_graph.grid[x][y];
-        var path = Game.pathfind.search(Game.terrain_graph, start, end);
+        var graph = Game.terrain_with_roads_graph;
+        var start = graph.grid[unit.at().x][unit.at().y];
+        var end = graph.grid[x][y];
+        var path = Game.pathfind.search(graph, start, end);
         if (!path) continue;
 
         var stop_points = unit.getStopPoints(target, start_location);
