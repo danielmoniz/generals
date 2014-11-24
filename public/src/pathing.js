@@ -75,14 +75,15 @@ Pathing = {
 
   getPathFromPathList: function(path_list, start_pos) {
     if (path_list === undefined || path_list.length == 0) return undefined;
-    var start = Game.terrain_graph.grid[start_pos.x][start_pos.y];
-    var end = Game.terrain_graph.grid[path_list[0].x][path_list[0].y];
-    var move_target_path = Game.pathfind.search(Game.terrain_graph, start, end);
+    var graph = Game.terrain_with_roads_graph;
+    var start = graph.grid[start_pos.x][start_pos.y];
+    var end = graph.grid[path_list[0].x][path_list[0].y];
+    var move_target_path = Game.pathfind.search(graph, start, end);
 
     for (var i in path_list) {
-      var start = Game.terrain_graph.grid[end.x][end.y];
-      var end = Game.terrain_graph.grid[path_list[i].x][path_list[i].y];
-      var small_path = Game.pathfind.search(Game.terrain_graph, start, end);
+      var start = graph.grid[end.x][end.y];
+      var end = graph.grid[path_list[i].x][path_list[i].y];
+      var small_path = Game.pathfind.search(graph, start, end);
       move_target_path = move_target_path.concat(small_path);
     }
     return move_target_path;

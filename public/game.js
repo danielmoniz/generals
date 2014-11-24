@@ -72,6 +72,7 @@ Game = {
 
   nextTurn: function() {
     console.time('nextTurn');
+    console.log("Turn {0} complete.---------".format(this.turn_count));
 
     // Do nothing if game should be over. Let Victory screen render.
     if (this.player_winner !== undefined) return false;
@@ -111,7 +112,7 @@ Game = {
     console.log("spread fire:");
     Crafty.trigger("SpreadFire");
     console.log("-----------------");
-    this.map_creator.updateMovementDifficultyData(this, this, this.terrain);
+    this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);
 
     // line of sight must update before unit turns for proper pathfinding
     LineOfSight.handleLineOfSight(Game.fog_of_war, this.player);
@@ -124,7 +125,7 @@ Game = {
     Unit.flushCaches(); // run after battles complete for an up-to-date cache
     // ------------------------------------
 
-    this.map_creator.updateMovementDifficultyData(this, this, this.terrain);
+    this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);
     if (this.player !== undefined) this.updatePossibleUnitMoves();
 
     var victory = Victory.checkVictoryConditions();
