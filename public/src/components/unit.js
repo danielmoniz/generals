@@ -410,7 +410,7 @@ Crafty.c('Unit', {
       var space = spaces[i];
       var local_terrain = Game.terrain[space.x][space.y];
       if (local_terrain.move_difficulty == 0) continue; // impassible
-      if (!local_terrain.supply) continue; // not a road/bridge/city
+      if (!local_terrain.supply && !Game.roads[space.x][space.y]) continue; // not a road/bridge/city
       var start = Game.terrain_supply_graph.grid[space.x][space.y];
       var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, supply_end_point);
       if (supply_route.length > 0) return true;
