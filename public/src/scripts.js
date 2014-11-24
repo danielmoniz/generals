@@ -278,7 +278,7 @@ UI = {
   },
 
   selectUnit: function(rank) {
-    var unit_divs = $("div.unit[rank={0}]".format(rank));
+    var unit_divs = $("#units-panel div.unit[rank={0}]".format(rank));
     if (unit_divs.length == 0) return false;
 
     var unit_id = parseInt(unit_divs.attr("unit_id"));
