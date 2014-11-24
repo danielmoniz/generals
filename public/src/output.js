@@ -73,6 +73,8 @@ Output = {
     for (var i in battles) {
       this.printBattle(battles[i]);
     }
+
+    this.updateRetreatBlocks();
   },
 
   printBattle: function(battle) {

@@ -152,8 +152,6 @@ Game = {
       this.determineSelectionOnline();
     }
 
-    Output.updateRetreatBlocks();
-
     console.timeEnd('nextTurn');
   },
 
