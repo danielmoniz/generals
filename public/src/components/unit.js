@@ -7,16 +7,7 @@ var Unit = {
   },
 
   getUnitsBySide: function(side, units) {
-    try {
-      if (units === undefined &&
-          this.units_by_side[side] !== undefined &&
-          this.units_by_side[side].turn == Game.turn) {
-        return this.units_by_side[side];
-      }
-    }
-    catch (ex) {
-      // continue into function and cache results
-    }
+    if (side === undefined) throw new Error('MissingParam', 'Must specify a side.');
 
     if (units === undefined) units = Entity.get('Unit');
     var friendly_units = [];
@@ -34,10 +25,6 @@ var Unit = {
       enemy: enemy_units,
       turn: Game.turn,
     };
-    if (Game.turn_count >= 0) {
-      if (this.units_by_side === undefined) this.units_by_side = {};
-      this.units_by_side[side] = units_by_side;
-    }
     return units_by_side;
   },
 
@@ -53,8 +40,9 @@ var Unit = {
     return Entity.get('Unit');
   },
 
-  getUnitById: function(id, side) {
-    var units = this.getFriendlyUnits(side);
+  getUnitById: function(id) {
+    if (id === undefined) throw new Error('MissingParam', 'Must supply an id.');
+    var units = this.getAllUnits();
     for (var i in units) {
       if (units[i].id == id) {
         return units[i];
