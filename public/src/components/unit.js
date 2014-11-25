@@ -573,7 +573,11 @@ Crafty.c('Unit', {
     movement_path.push([movement_square, highlighted_square]);
     while (path.length > 0) {
       var stop_points = this.getStopPoints(target, start_location, false, 'test');
+      console.log("stop_points");
+      console.log(stop_points);
       var next_partial_path = Pathing.getPartialPath(path, this_movement, stop_points);
+      console.log("next_partial_path");
+      console.log(next_partial_path);
       for (var i=0; i<next_partial_path.length; i++) {
         var movement_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
         var highlighted_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required, true);
@@ -663,6 +667,10 @@ Crafty.c('Unit', {
     var target = { x: end_node.x, y: end_node.y };
 
     var stop_points = this.getStopPoints(target, this.first_location, 'all_enemies');
+    console.log("partial_path");
+    console.log(partial_path);
+    console.log("stop_points");
+    console.log(stop_points);
 
     // check for enemies that will be bumped into
     for (var i in partial_path) {
@@ -723,10 +731,12 @@ Crafty.c('Unit', {
     if (this.start_battle) {
       if (this.isBattlePresent()) {
         var battle = this.isBattlePresent();
+        console.log("joining battle: {0}".format(this.name));
         this.joinBattle(battle);
         this.start_battle = false;
         return;
       }
+      console.log('starting battle: {0}'.format(this.name));
       this.startBattle();
       this.start_battle = false;
     }
