@@ -77,7 +77,7 @@ LineOfSight = {
 
   getUnitsInSight: function(side) {
     if (side === undefined) return [];
-    var units = Unit.getUnitsBySide(side);
+    var units = Units.getUnitsBySide(side);
     var friendly_units = units.friendly;
     var enemy_units = units.enemy;
     var enemies_in_sight = this.getEntitiesInSight(enemy_units, friendly_units);
@@ -86,7 +86,7 @@ LineOfSight = {
 
   getGenericEntitiesInSight: function(entity, side) {
     if (side === undefined) return [];
-    var friendly_units = Unit.getFriendlyUnits(side);
+    var friendly_units = Units.getFriendlyUnits(side);
     var entities = Entity.get(entity);
     return this.getEntitiesInSight(entities, friendly_units);
   },

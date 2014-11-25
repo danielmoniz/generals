@@ -474,7 +474,7 @@ Output = {
   updateUnitInfoPanel: function() {
     window.unit_panel_active = false;
     $(this.units_info_panel).empty();
-    var units = Unit.getAllUnits();
+    var units = Units.getAllUnits();
     if (units[0] === undefined) return;
 
     for (var i in units) {
@@ -608,7 +608,7 @@ Output = {
 
     if (Game.turn % 1 != 0) return false;
 
-    var units = Unit.getUnitsBySide(Game.player).friendly;
+    var units = Units.getUnitsBySide(Game.player).friendly;
     var battles = {};
     for (var i in units) {
       var battle = units[i].isBattlePresent();
@@ -810,7 +810,7 @@ Output = {
     $(this.units_panel).empty();
     $(this.other_units_panel).empty();
 
-    var units = Unit.getFriendlyUnits(side);
+    var units = Units.getFriendlyUnits(side);
     for (var i in units) {
       var unit = units[i];
       var unit_div = this.createStandardUnitDiv(unit);
@@ -822,7 +822,7 @@ Output = {
       $(this.units_panel).append(unit_div);
     }
 
-    var enemy_units = Unit.getEnemyUnits(side);
+    var enemy_units = Units.getEnemyUnits(side);
     for (var i in enemy_units) {
       var unit = enemy_units[i];
       var unit_div = this.createStandardUnitDiv(unit);

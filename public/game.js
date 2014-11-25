@@ -175,7 +175,7 @@ Game = {
   },
 
   flushCaches: function() {
-    Unit.flushCaches();
+    Units.flushCaches();
     Entity.flushCaches();
   },
 
@@ -260,7 +260,7 @@ Game = {
     if (this.turn % 1 != 0) {
       return false;
     }
-    var units = Unit.getFriendlyUnits(this.player);
+    var units = Units.getFriendlyUnits(this.player);
     var selected = Game.player_selected;
     if (!selected) {
       this.select(units[0]);
@@ -285,7 +285,7 @@ Game = {
       if (this.player_selected && this.player_selected[this.player]) {
         this.select(this.player_selected[this.player]);
       } else { // select first unit on your team
-        var units = Unit.getFriendlyUnits(this.player);
+        var units = Units.getFriendlyUnits(this.player);
         this.select(units[0]);
       }
     }
@@ -368,7 +368,7 @@ Game = {
 
   saveOnline: function() {
     var move_data = {};
-    var units = Unit.getFriendlyUnits(this.turn);
+    var units = Units.getFriendlyUnits(this.turn);
     for (var i in units) {
       var unit = units[i];
       var unit_move = {
@@ -395,14 +395,14 @@ Game = {
     console.log(data);
     for (var i in data.actions) {
       var action_data = data.actions[i];
-      var unit = Unit.getUnitById(action_data.unit_id, current_turn);
+      var unit = Units.getUnitById(action_data.unit_id, current_turn);
       Action.perform('unit action', unit, action_data.action);
     }
 
     // update unit movement paths
     for (var id in data.moves) {
       var unit_data = data.moves[id];
-      var unit = Unit.getUnitById(id, current_turn);
+      var unit = Units.getUnitById(id, current_turn);
       unit.move_target_path_list = unit_data.move_target_path_list;
     }
 

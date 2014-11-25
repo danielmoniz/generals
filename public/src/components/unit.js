@@ -1,5 +1,5 @@
 
-var Unit = {
+var Units = {
 
   flushCaches: function() {
     this.units_by_side = {};
@@ -114,7 +114,7 @@ Crafty.c('Unit', {
 
     if (turn == this.side) {
       // need visible enemy units for detecting stop points when moving
-      this.visible_enemies = Unit.getVisibleEnemyUnits(this.side);
+      this.visible_enemies = Units.getVisibleEnemyUnits(this.side);
     }
 
     if (turn == (this.side + 0.5) % 2) {
@@ -579,7 +579,7 @@ Crafty.c('Unit', {
   },
 
   removeEnemiesFromAvailableMovement: function(target) {
-    var enemy_units = Unit.getVisibleEnemyUnits(this.side);
+    var enemy_units = Units.getVisibleEnemyUnits(this.side);
     for (var i in enemy_units) {
       var enemy = enemy_units[i];
       if (!enemy.isAtLocation(target)) {
@@ -598,9 +598,9 @@ Crafty.c('Unit', {
 
     var stop_points = [];
     if (all_enemies) {
-      var enemy_units = Unit.getEnemyUnits(this.side);
+      var enemy_units = Units.getEnemyUnits(this.side);
     } else {
-      var enemy_units = Unit.getVisibleEnemyUnits(this.side);
+      var enemy_units = Units.getVisibleEnemyUnits(this.side);
     }
 
     for (var i in enemy_units) {
@@ -856,8 +856,8 @@ Crafty.c('Unit', {
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = Unit;
+  module.exports = Units;
 } else {
-  window.Unit = Unit;
+  window.Units = Units;
 }
 

@@ -271,7 +271,7 @@ Crafty.c('Battle', {
   },
 
   unitsInCombat: function() {
-    var units = Unit.getAllUnits();
+    var units = Units.getAllUnits();
     var units_in_combat = [];
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
