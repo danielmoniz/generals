@@ -13,11 +13,11 @@ var Random = {
 
   random: function() {
     this.called += 1;
-    console.log("random function called: {0}".format(this.called));
+    //console.log("random function called: {0}".format(this.called));
     var x = Math.sin(10000 * this.seed++) * 10000;
     var random = x - Math.floor(x);
-    console.log("random value: {0}".format(random));
-    console.log("-----");
+    //console.log("random value: {0}".format(random));
+    //console.log("-----");
     return random;
   },
 
