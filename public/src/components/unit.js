@@ -572,7 +572,7 @@ Crafty.c('Unit', {
     var highlighted_square = Pathing.makeMovementPath(location.x, location.y, 1, true);
     movement_path.push([movement_square, highlighted_square]);
     while (path.length > 0) {
-      var stop_points = this.getStopPoints(target, start_location);
+      var stop_points = this.getStopPoints(target, start_location, false, 'test');
       var next_partial_path = Pathing.getPartialPath(path, this_movement, stop_points);
       for (var i=0; i<next_partial_path.length; i++) {
         var movement_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
@@ -617,9 +617,9 @@ Crafty.c('Unit', {
       // if enemy is not on path, add adjacent regions as 'stop points'
       var enemy = enemy_units[i];
       var enemy_was_visible = false;
-      for (var j in this.visible_enemy_units) {
-        var visible_enemy = this.visible_enemy_units[j];
-        if (enemy.getId() == this.visible_enemy_units[j].getId()) {
+      for (var j in this.visible_enemies) {
+        var visible_enemy = this.visible_enemies[j];
+        if (enemy.getId() == this.visible_enemies[j].getId()) {
           var enemy_was_visible = true;
         }
       }
