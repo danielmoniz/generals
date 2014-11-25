@@ -162,7 +162,7 @@ var Action = {
    * This function is used for determining which tiles need to be re-rendered.
    */
   debugTerrain: function() {
-    var entities = Crafty("Terrain").get();
+    var entities = Entity.get("Terrain");
     var total = 0;
     for (var i in entities) {
       var entity = entities[i];

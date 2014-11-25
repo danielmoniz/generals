@@ -8,6 +8,10 @@
 var Entity = {
 
   cache: {},
+  special_cache: {},
+  special_caches: [
+    'Unit',
+  ],
 
   /*
    * Takes a string of space separated components and creates a rendered
@@ -21,16 +25,26 @@ var Entity = {
    * Takes a search string of components and returns a list of entities.
    */
   get: function(search) {
+    if (this.special_cache[search] !== undefined && Game.turn_count > 0) {
+      return this.special_cache[search];
+    }
     if (this.cache[search] !== undefined && Game.turn_count > 0) {
       return this.cache[search];
     }
     var result = Crafty(search).get();
     this.cache[search] = result;
+    if (this.special_caches.indexOf(search) > -1) {
+      this.special_cache[search] = result;
+    }
     return result;
   },
 
   flushCaches: function() {
     this.cache = {};
+  },
+
+  flushSpecialCache: function(name) {
+    this.special_cache[name] = {};
   },
 };
 

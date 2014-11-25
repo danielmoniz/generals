@@ -1,7 +1,7 @@
 LineOfSight = {
 
   clearFog: function() {
-    var fog = Crafty('Shadow').get();
+    var fog = Entity.get('Shadow');
     this.makeInvisible(fog);
     return this;
   },
@@ -37,12 +37,12 @@ LineOfSight = {
   },
 
   allEntitiesVisible: function(entity) {
-    var entities = Crafty(entity).get();
+    var entities = Entity.get(entity);
     return this.makeVisible(entities);
   },
 
   allEntitiesInvisible: function(entity) {
-    var entities = Crafty(entity).get();
+    var entities = Entity.get(entity);
     return this.makeInvisible(entities);
   },
 
@@ -87,7 +87,7 @@ LineOfSight = {
   getGenericEntitiesInSight: function(entity, side) {
     if (side === undefined) return [];
     var friendly_units = Unit.getFriendlyUnits(side);
-    var entities = Crafty(entity).get();
+    var entities = Entity.get(entity);
     return this.getEntitiesInSight(entities, friendly_units);
   },
 

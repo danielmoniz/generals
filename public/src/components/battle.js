@@ -471,7 +471,7 @@ Crafty.c('Battle', {
 
   getPresentUnits: function() {
     present_units = [];
-    units = Crafty('Unit').get();
+    units = Entity.get('Unit');
     for (var i=0; i < units.length; i++) {
       if (units[i].together(this, true)) {
         present_units.push(units[i]);

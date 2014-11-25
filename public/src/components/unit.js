@@ -357,19 +357,19 @@ Crafty.c('Unit', {
     var end = Game.terrain_supply_graph.grid[target.at().x][target.at().y];
 
     // detect enemies on path
-    var units = Crafty('Unit').get();
+    var units = Entity.get('Unit');
     var enemy_units = [];
     // could use filter() here, but failed on first attempt
     for (var i=0; i<units.length; i++) {
       if (units[i].side != this.side) enemy_units.push(units[i]);
     }
 
-    var no_supply_objects = Crafty('NoSupply').get();
+    var no_supply_objects = Entity.get('NoSupply');
     for (var i=0; i<no_supply_objects.length; i++) {
       no_supply_objects[i].destroy();
     }
     // @TODO remove this or comment out! Not using supply blocks yet.
-    var supply_blocks = Crafty('SupplyBlock').get();
+    var supply_blocks = Entity.get('SupplyBlock');
     for (var i=0; i<supply_blocks.length; i++) {
       var block = supply_blocks[i];
       Game.terrain_supply_graph.grid[block.at().x][block.at().y].weight = 0;
@@ -468,7 +468,7 @@ Crafty.c('Unit', {
   },
 
   isEntityPresent: function(entity) {
-    var entities = Crafty(Utility.capitalizeFirstLetter(entity)).get();
+    var entities = Entity.get(Utility.capitalizeFirstLetter(entity));
     for (var i=0; i < entities.length; i++) {
       var entity = entities[i];
       var entity_exists = false;
@@ -703,7 +703,7 @@ Crafty.c('Unit', {
 
   getPresentUnits: function(ignore_self) {
     var present_units = [];
-    var units = Crafty('Unit').get();
+    var units = Entity.get('Unit');
     for (var i=0; i < units.length; i++) {
       if (units[i].together(this, ignore_self)) {
         present_units.push(units[i]);
@@ -752,6 +752,7 @@ Crafty.c('Unit', {
     this.stop_unit();
   },
   battle_finished: function() {
+    console.log('battle_finished called for {0}'.format(this.name));
     this.battle = false;
     delete this.battle_side;
     this.updateActionChoices();
@@ -810,6 +811,8 @@ Crafty.c('Unit', {
     var battle = this.isBattlePresent();
     if (battle) battle.unitDead(this);
     this.alive = false;
+
+    Entity.flushSpecialCache('Unit');
     this.destroy();
   },
 
