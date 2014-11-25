@@ -44,7 +44,7 @@ var Entity = {
   },
 
   flushSpecialCache: function(name) {
-    this.special_cache[name] = {};
+    delete this.special_cache[name];
   },
 };
 
