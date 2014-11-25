@@ -102,7 +102,7 @@ var Action = {
       local_terrain.ignite();
     }
 
-    Unit.flushCaches(); // run after unit actions for an up-to-date cache
+    Game.flushCaches(); // run after unit actions for an up-to-date cache
 
     var formatted_action = {
       action: action,

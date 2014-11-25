@@ -122,7 +122,7 @@ Game = {
     Crafty.trigger("StartBattles");
     Crafty.trigger("ResolveBattles");
     Crafty.trigger("EndBattles");
-    Unit.flushCaches(); // run after battles complete for an up-to-date cache
+    this.flushCaches(); // run after battles complete for an up-to-date cache
     // ------------------------------------
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);
@@ -172,6 +172,11 @@ Game = {
     }
     this.turn_count = turn_count;
     this.turn = turn_count % 2;
+  },
+
+  flushCaches: function() {
+    Unit.flushCaches();
+    Entity.flushCaches();
   },
 
   nextTurnOnline: function() {

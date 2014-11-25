@@ -7,6 +7,8 @@
  */
 var Entity = {
 
+  cache: {},
+
   /*
    * Takes a string of space separated components and creates a rendered
    * entity.
@@ -19,7 +21,16 @@ var Entity = {
    * Takes a search string of components and returns a list of entities.
    */
   get: function(search) {
-    return Crafty(search).get();
+    if (this.cache[search] !== undefined && Game.turn_count > 0) {
+      return this.cache[search];
+    }
+    var result = Crafty(search).get();
+    this.cache[search] = result;
+    return result;
+  },
+
+  flushCaches: function() {
+    this.cache = {};
   },
 };
 

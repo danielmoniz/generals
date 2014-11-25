@@ -1,9 +1,11 @@
 
 // timing test code
 /*
-timing_test = 0; // PERFORMANCE TEST
+window.timing_test = 0; // PERFORMANCE TEST
 var time_before = performance.now(); // PERFORMANCE TEST
-timing_test += performance.now() - time_before; // PERFORMANCE TEST
+if (window.timing_test !== undefined) {
+  window.timing_test += performance.now() - time_before; // PERFORMANCE TEST
+}
 console.log("total time (miliseconds):"); // PERFORMANCE TEST
 console.log(timing_test); // PERFORMANCE TEST
 */
