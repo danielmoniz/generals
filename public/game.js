@@ -209,6 +209,7 @@ Game = {
     this.nextTurn();
 
     Output.printBattles();
+    Crafty.trigger('RenderScene');
   },
 
   updatePossibleUnitMoves: function() {
