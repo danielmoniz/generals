@@ -254,4 +254,109 @@ describe('Units', function() {
 
   });
 
+  describe('#getVisibleEnemyUnits()', function() {
+
+    it('should error if no side parameter is provided', function() {
+      assert.throws(function() {
+        Units.getVisibleEnemyUnits();
+      });
+    });
+
+    it('should return only visible enemy units', function() {
+      Entity.get = function(name) {
+        if (name == 'Unit') {
+          var units = [
+            { side: 0, name: 'name0', visible: false, },
+            { side: 0, name: 'name1' },
+            { side: 0, name: 'name2', visible: true, },
+            { side: 0, name: 'name3', visible: true, },
+            { side: 1 },
+            { side: undefined, id: 'id1' },
+          ];
+          return units;
+        }
+        return [];
+      };
+
+      var units = Units.getVisibleEnemyUnits(1);
+      assert.equal(units.length, 2);
+      assert.equal(units[0].name, 'name2');
+      assert.equal(units[1].name, 'name3');
+    });
+
+    it('should not cache results if queried on different turns', function() {
+      // first query
+      Game.turn = 7;
+      Entity.get = function(name) {
+        if (name == 'Unit') {
+          var units = [
+            { side: 0, name: 'name0', visible: false, },
+            { side: 0, name: 'name1' },
+            { side: 0, name: 'name2', visible: true, },
+            { side: 0, name: 'name3', visible: true, },
+            { side: 1 },
+            { side: undefined, id: 'id1' },
+          ];
+          return units;
+        }
+        return [];
+      };
+
+      var units = Units.getVisibleEnemyUnits(1);
+      assert.equal(units.length, 2);
+
+      // second query
+      Game.turn = 7.5;
+      Entity.get = function(name) {
+        if (name == 'Unit') {
+          var units = [
+            { side: 0, name: 'name0', visible: false, },
+            { side: 0, name: 'name1' },
+            { side: 0, name: 'name2', visible: true, },
+            { side: 1 },
+            { side: undefined, id: 'id1' },
+          ];
+          return units;
+        }
+        return [];
+      };
+
+      var units = Units.getVisibleEnemyUnits(1);
+      assert.equal(units.length, 1);
+    });
+
+    it('should cache results if queried on same turn', function() {
+      // first query
+      Game.turn = 7;
+      Entity.get = function(name) {
+        if (name == 'Unit') {
+          var units = [
+            { side: 0, name: 'name2', visible: true, },
+            { side: 0, name: 'name3', visible: true, },
+          ];
+          return units;
+        }
+        return [];
+      };
+
+      var units = Units.getVisibleEnemyUnits(1);
+      assert.equal(units.length, 2);
+
+      // second query
+      Entity.get = function(name) {
+        if (name == 'Unit') {
+          var units = [
+            { side: 0, name: 'name2', visible: true, },
+          ];
+          return units;
+        }
+        return [];
+      };
+
+      var units = Units.getVisibleEnemyUnits(1);
+      assert.equal(units.length, 2); // unchanged value
+    });
+
+  });
+
 });
