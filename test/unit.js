@@ -1,17 +1,7 @@
 
 var assert = require("assert");
 
-Crafty = {};
-Crafty.c = function() {
-  return true;
-};
-
-Entity = {};
-Entity.get = function(name) {
-  return [];
-};
-
-var Units = require("../public/src/components/unit");
+var Units = require("../public/src/units");
 //var Crafty = require("../public/crafty");
 //var Game = require("../public/game");
 

@@ -1,80 +1,6 @@
 
-var Units = {
-
-  flushCaches: function() {
-    this.units_by_side = {};
-    this.visible_enemy_units = {};
-  },
-
-  getUnitsBySide: function(side, units) {
-    if (side === undefined) throw new Error('MissingParam', 'Must specify a side.');
-
-    if (units === undefined) units = Entity.get('Unit');
-    var friendly_units = [];
-    var enemy_units = [];
-    for (var i=0; i<units.length; i++) {
-      if (units[i].side == side) {
-        friendly_units.push(units[i]);
-      } else {
-        enemy_units.push(units[i]);
-      }
-    }
-    var units_by_side = {};
-    units_by_side = {
-      friendly: friendly_units,
-      enemy: enemy_units,
-      turn: Game.turn,
-    };
-    return units_by_side;
-  },
-
-  getFriendlyUnits: function(side, units) {
-    return this.getUnitsBySide(side, units).friendly;
-  },
-
-  getEnemyUnits: function(side, units) {
-    return this.getUnitsBySide(side, units).enemy;
-  },
-
-  getAllUnits: function() {
-    return Entity.get('Unit');
-  },
-
-  getUnitById: function(id) {
-    if (id === undefined) throw new Error('MissingParam', 'Must supply an id.');
-    var units = this.getAllUnits();
-    for (var i in units) {
-      if (units[i].id == id) {
-        return units[i];
-      }
-    }
-  },
-
-  getVisibleEnemyUnits: function(side) {
-    try {
-      if (this.visible_enemy_units[side] !== undefined &&
-          this.visible_enemy_units[side].turn == Game.turn) {
-        return this.visible_enemy_units[side].units;
-      }
-    }
-    catch (ex) {
-      // continue into function and cache results
-    }
-
-    var units = this.getEnemyUnits(side);
-    var visible = [];
-    for (var i in units) {
-      if (units[i].visible) visible.push(units[i]);
-    }
-    if (this.visible_enemy_units === undefined) this.visible_enemy_units = {};
-    this.visible_enemy_units[side] = {
-      turn: Game.turn,
-      units: visible,
-    };
-    return visible;
-  },
-
-}
+var Unit = {
+};
 
 //console.log("Component.create");
 //console.log(Component.create);
@@ -856,8 +782,8 @@ Crafty.c('Unit', {
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = Units;
+  module.exports = Unit;
 } else {
-  window.Units = Units;
+  window.Unit = Unit;
 }
 
