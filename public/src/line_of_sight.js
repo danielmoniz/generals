@@ -75,13 +75,16 @@ LineOfSight = {
     return this;
   },
 
-  getUnitsInSight: function(side) {
+  getUnitsInSight: function(side, enemies_only) {
     if (side === undefined) return [];
     var units = Units.getUnitsBySide(side);
-    var friendly_units = units.friendly;
-    var enemy_units = units.enemy;
-    var enemies_in_sight = this.getEntitiesInSight(enemy_units, friendly_units);
-    return enemies_in_sight.concat(friendly_units);
+    var enemies_in_sight = this.getEntitiesInSight(units.enemy, units.friendly);
+    if (enemies_only) return enemies_in_sight;
+    return enemies_in_sight.concat(units.friendly);
+  },
+
+  getEnemyUnitsInSight: function(side) {
+    return this.getUnitsInSight(side, 'enemies only');
   },
 
   getGenericEntitiesInSight: function(entity, side) {

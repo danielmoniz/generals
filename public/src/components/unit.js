@@ -581,10 +581,6 @@ Crafty.c('Unit', {
     var target = { x: end_node.x, y: end_node.y };
 
     var stop_points = this.getStopPoints(target, this.first_location, 'all_enemies');
-    console.log("partial_path");
-    console.log(partial_path);
-    console.log("stop_points");
-    console.log(stop_points);
 
     // check for enemies that will be bumped into
     for (var i in partial_path) {

@@ -61,11 +61,7 @@ var Units = {
       // continue into function and cache results
     }
 
-    var units = this.getEnemyUnits(side);
-    var visible = [];
-    for (var i in units) {
-      if (units[i].visible) visible.push(units[i]);
-    }
+    var visible = LineOfSight.getEnemyUnitsInSight(side);
     if (this.visible_enemy_units === undefined) this.visible_enemy_units = {};
     this.visible_enemy_units[side] = {
       turn: Game.turn,
