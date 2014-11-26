@@ -61,6 +61,7 @@ var Units = {
       // continue into function and cache results
     }
 
+    if (side === undefined) throw new Error('MissingParam', 'Must supply value for side.');
     var visible = LineOfSight.getEnemyUnitsInSight(side);
     if (this.visible_enemy_units === undefined) this.visible_enemy_units = {};
     this.visible_enemy_units[side] = {

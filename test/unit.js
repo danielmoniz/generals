@@ -14,6 +14,7 @@ describe('Units', function() {
     Entity.get = function(name) {
       return [];
     };
+
   });
 
   describe('#flushCaches()', function() {
@@ -245,6 +246,23 @@ describe('Units', function() {
   });
 
   describe('#getVisibleEnemyUnits()', function() {
+    function getLineOfSightFunction(units) {
+      my_units = units;
+      lineOfSightFunction = function(side) {
+        var units = my_units;
+        var visible = [];
+        for (var i in units) {
+          if (units[i].side != side) visible.push(units[i]);
+        }
+        return visible;
+      };
+
+      return lineOfSightFunction;
+    }
+
+    beforeEach(function() {
+      LineOfSight = {};
+    });
 
     it('should error if no side parameter is provided', function() {
       assert.throws(function() {
@@ -253,63 +271,41 @@ describe('Units', function() {
     });
 
     it('should return only visible enemy units', function() {
-      Entity.get = function(name) {
-        if (name == 'Unit') {
-          var units = [
-            { side: 0, name: 'name0', visible: false, },
-            { side: 0, name: 'name1' },
-            { side: 0, name: 'name2', visible: true, },
-            { side: 0, name: 'name3', visible: true, },
-            { side: 1 },
-            { side: undefined, id: 'id1' },
-          ];
-          return units;
-        }
-        return [];
-      };
+      var units = [
+        { side: 0, name: 'name0' },
+        { side: 0, name: 'name1' },
+        { side: 1 },
+        { side: undefined, id: 'id1' },
+      ];
+      LineOfSight.getEnemyUnitsInSight = getLineOfSightFunction(units);
 
       var units = Units.getVisibleEnemyUnits(1);
-      assert.equal(units.length, 2);
-      assert.equal(units[0].name, 'name2');
-      assert.equal(units[1].name, 'name3');
+      assert.equal(units.length, 3);
+      assert.equal(units[0].name, 'name0');
+      assert.equal(units[1].name, 'name1');
+      assert.equal(units[2].id, 'id1');
     });
 
     it('should not cache results if queried on different turns', function() {
       // first query
       Game.turn = 7;
-      Entity.get = function(name) {
-        if (name == 'Unit') {
-          var units = [
-            { side: 0, name: 'name0', visible: false, },
-            { side: 0, name: 'name1' },
-            { side: 0, name: 'name2', visible: true, },
-            { side: 0, name: 'name3', visible: true, },
-            { side: 1 },
-            { side: undefined, id: 'id1' },
-          ];
-          return units;
-        }
-        return [];
-      };
+      var units = [
+        { side: 0, name: 'name0' },
+        { side: 0, name: 'name1' },
+        { side: 1 },
+      ];
+      LineOfSight.getEnemyUnitsInSight = getLineOfSightFunction(units);
 
       var units = Units.getVisibleEnemyUnits(1);
       assert.equal(units.length, 2);
 
       // second query
       Game.turn = 7.5;
-      Entity.get = function(name) {
-        if (name == 'Unit') {
-          var units = [
-            { side: 0, name: 'name0', visible: false, },
-            { side: 0, name: 'name1' },
-            { side: 0, name: 'name2', visible: true, },
-            { side: 1 },
-            { side: undefined, id: 'id1' },
-          ];
-          return units;
-        }
-        return [];
-      };
+      var units = [
+        { side: 0, name: 'name0' },
+        { side: 1 },
+      ];
+      LineOfSight.getEnemyUnitsInSight = getLineOfSightFunction(units);
 
       var units = Units.getVisibleEnemyUnits(1);
       assert.equal(units.length, 1);
@@ -318,30 +314,22 @@ describe('Units', function() {
     it('should cache results if queried on same turn', function() {
       // first query
       Game.turn = 7;
-      Entity.get = function(name) {
-        if (name == 'Unit') {
-          var units = [
-            { side: 0, name: 'name2', visible: true, },
-            { side: 0, name: 'name3', visible: true, },
-          ];
-          return units;
-        }
-        return [];
-      };
+      var units = [
+        { side: 0, name: 'name0' },
+        { side: 0, name: 'name1' },
+        { side: 1 },
+      ];
+      LineOfSight.getEnemyUnitsInSight = getLineOfSightFunction(units);
 
       var units = Units.getVisibleEnemyUnits(1);
       assert.equal(units.length, 2);
 
       // second query
-      Entity.get = function(name) {
-        if (name == 'Unit') {
-          var units = [
-            { side: 0, name: 'name2', visible: true, },
-          ];
-          return units;
-        }
-        return [];
-      };
+      var units = [
+        { side: 0, name: 'name0' },
+        { side: 1 },
+      ];
+      LineOfSight.getEnemyUnitsInSight = getLineOfSightFunction(units);
 
       var units = Units.getVisibleEnemyUnits(1);
       assert.equal(units.length, 2); // unchanged value
