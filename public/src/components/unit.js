@@ -38,7 +38,7 @@ Crafty.c('Unit', {
     this.possible_moves = [];
     this.possible_moves_data = {};
 
-    if (turn == this.side) {
+    if (turn % 1 == 0) {
       // need visible enemy units for detecting stop points when moving
       this.visible_enemies = Units.getVisibleEnemyUnits(this.side);
     }
@@ -49,7 +49,8 @@ Crafty.c('Unit', {
       } else if (!this.battle && this.move_target_path) {
         this.moveTowardTarget();
       }
-
+    }
+    if (turn % 1 == 0.5) {
       delete this.visible_enemies;
     }
 

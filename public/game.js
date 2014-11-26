@@ -239,7 +239,11 @@ Game = {
         var path = Game.pathfind.search(graph, start, end);
         if (!path) continue;
 
-        var stop_points = unit.getStopPoints(target, start_location);
+        if (unit.side !== Game.player) {
+          var stop_points = unit.getStopPoints(target, start_location, 'all enemies');
+        } else {
+          var stop_points = unit.getStopPoints(target, start_location);
+        }
         var partial_path = Pathing.getPartialPath(path, unit.movement, stop_points);
         for (var p in partial_path) {
           var node = partial_path[p];
