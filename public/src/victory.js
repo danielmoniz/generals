@@ -4,6 +4,7 @@ Victory = {
     this.troop_values = [undefined, undefined];
     this.farm_values = [undefined, undefined];
     this.city_values = [undefined, undefined];
+    this.town_values = [undefined, undefined];
     this.forest_values = [undefined, undefined];
     this.ratio_to_win = 3; // need X times higher will than opponent to win
     this.setWillToFight();
@@ -14,6 +15,7 @@ Victory = {
     this.troop_values = victory_data.troop_values;
     this.farm_values = victory_data.farm_values;
     this.city_values = victory_data.city_values;
+    this.town_values = victory_data.town_values;
     this.forest_values = victory_data.forest_values;
 
     this.ratio_to_win = victory_data.ratio_to_win;
@@ -45,10 +47,13 @@ Victory = {
       var total_unpillaged_cities = this.getUnsackedCities(i).length;
       var city_factor = total_unpillaged_cities * this.city_values[i];
 
+      var total_unpillaged_towns = this.getUnsackedTowns(i).length;
+      var town_factor = total_unpillaged_towns * this.town_values[i];
+
       var total_standing_forests = this.getStandingForests(i).length;
       var forest_factor = total_standing_forests * this.forest_values[i];
 
-      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor * ((2 + forest_factor) / 3);
+      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor * ((1 + town_factor) / 2) * ((2 + forest_factor) / 3);
     }
     Output.updateVictoryBar();
   },
@@ -105,6 +110,15 @@ Victory = {
     return unsacked_cities;
   },
 
+  getUnsackedTowns: function(side) {
+    var towns = this.getTowns(side);
+    var unsacked_towns = [];
+    for (var i in towns) {
+      if (!towns[i].sacked) unsacked_towns.push(towns[i]);
+    }
+    return unsacked_towns;
+  },
+
   getStandingForests: function(side) {
     var forests = this.getForests(side);
     var standing_forests = [];
@@ -121,6 +135,15 @@ Victory = {
       cities_in_sides[cities[i].side].push(cities[i]);
     }
     return cities_in_sides[side];
+  },
+
+  getTowns: function(side) {
+    var towns = Crafty('Town').get();
+    var towns_in_sides = { 0: [], 1: [], undefined: [], };
+    for (var i in towns) {
+      towns_in_sides[towns[i].side].push(towns[i]);
+    }
+    return towns_in_sides[side];
   },
 
   getForests: function(side) {
@@ -146,6 +169,10 @@ Victory = {
       var cities = this.getCities(i);
       var city_value = 1 / cities.length;
       this.city_values[i] = city_value;
+
+      var towns = this.getTowns(i);
+      var town_value = 1 / towns.length;
+      this.town_values[i] = town_value;
 
       var forests = this.getForests(i);
       var forest_value = 1 / forests.length;
