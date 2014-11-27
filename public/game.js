@@ -315,7 +315,11 @@ Game = {
     Game.load_game = load_game;
 
     this.sendMovesCallback = sendMovesCallback;
-    if (random_seed !== undefined) Random.setSeed(random_seed);
+    if (game_type == this.types.ONLINE) {
+      Random.setSeed(random_seed);
+    } else {
+      Random.setSeed(Math.round(Math.random() * 50000));
+    }
 
     this.reset();
     if (Game.played_already) {
