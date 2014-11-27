@@ -354,7 +354,7 @@ Game = {
     this.turn_actions = {};
     // Is this needed?
     this.player_supply_roads = [[], []];
-    this.weather = new Weather();
+    this.weather = new Weather(this.location.climate);
 
     this.resetStatusVisuals(true);
     Output.clearAll();

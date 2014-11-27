@@ -33,6 +33,14 @@ Crafty.c('Terrain', {
     this.addStats(ignite_stats);
   },
 
+  extinguish: function() {
+    var extinguish_stats = {
+      on_fire: false,
+      flammable: true,
+    };
+    this.addStats(extinguish_stats);
+  },
+
   burn: function() {
     var burned_stats = {
       flammable: false,

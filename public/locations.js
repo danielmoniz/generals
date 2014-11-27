@@ -11,10 +11,17 @@ var locations = {
     },
     trees: {
       size: 1/4,
-      freq: 1,
+      freq: .80,
       noise: 'perlin2',
     },
+    climate: {
+      chance_of_rain: .15,
+      rain_duration: .7,
+      chance_of_wind: .5,
+      wind_duration: .85,
+    },
   },
+
   black_forest: {
     height_map: {
       noise: 'perlin2',
@@ -30,7 +37,14 @@ var locations = {
       freq: .80,
       noise: 'perlin2',
     },
+    climate: {
+      chance_of_rain: .15,
+      rain_duration: .7,
+      chance_of_wind: .5,
+      wind_duration: .85,
+    },
   },
+
   northern_ontario: {
     height_map: {
       noise: 'perlin2',
@@ -47,6 +61,7 @@ var locations = {
       noise: 'simplex2',
     },
   },
+
   idaho: {
     water: {
       size: 1/8,

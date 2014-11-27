@@ -4,20 +4,50 @@ if (typeof require !== 'undefined') {
   Random = require("./random");
 }
 
-var Weather = function() {
+var Weather = function(climate) {
   this.wind_dir = [0, 0];
-  this.prob_wind_stays_neutral = .50;
-  this.prob_wind_stays_directed = .85;
+  this.rain = 0;
+
+  this.chance_of_wind = climate.chance_of_wind;
+  this.prob_wind_stays_directed = climate.wind_duration;
+  this.prob_rain_stays_on = climate.rain_duration;
+  this.chance_of_rain = climate.chance_of_rain;
 
   this.nextDay = function() {
     this.updateWind();
+    this.updateRain();
 
     this.updateDisplay();
   }
 
   this.updateDisplay = function() {
     var wind_str = this.getDirectionFromWindCoord(this.wind_dir);
-    Output.updateWeather(wind_str);
+    Output.updateWeather(wind_str, this.rain);
+  };
+
+  this.updateRain = function() {
+    if (this.rain == 0) {
+      if (Random.random() > this.chance_of_rain) {
+        this.rain = 1;
+      }
+    } else {
+      if (Random.random() > this.prob_rain_stays_on) {
+        this.rain = 0;
+      }
+    }
+  };
+
+  this.updateWind = function() {
+    if (this.wind_dir[0] == 0 && this.wind_dir[1] == 0) {
+      if (Random.random() < this.chance_of_wind) {
+        this.wind_dir = this.getRandomWindDir();
+      }
+    } else {
+      if (Random.random() > this.prob_wind_stays_directed) {
+        this.wind_dir = [0, 0];
+      }
+    }
+
   };
 
   this.getRandomWindDir = function() {
@@ -50,40 +80,6 @@ var Weather = function() {
     var direction_str = map[wind_coord[0]][wind_coord[1]];
     return direction_str;
   };
-
-  this.updateWind = function() {
-
-    if (this.wind_dir[0] == 0 && this.wind_dir[1] == 0) {
-      if (Random.random() > this.prob_wind_stays_neutral) {
-        this.wind_dir = this.getRandomWindDir();
-      }
-    } else {
-      if (Random.random() > this.prob_wind_stays_directed) {
-        this.wind_dir = [0, 0];
-      }
-    }
-
-    /*
-    // generate a random coordinate on or adjacent to [0, 0]
-    var wind_dir = this.getRandomWindDir();
-
-    var new_wind = [];
-    for (var i in wind_dir) {
-      new_wind[i] = this.wind_dir[i] + wind_dir[i];
-    }
-
-    // normalize values to prevent high wind values
-    for (var i in new_wind) {
-      if (new_wind[i] == 0) continue;
-      new_wind[i] = new_wind[i] / Math.abs(new_wind[i]);
-    }
-
-    // ensure no diagonal wind direction
-    //this.dirWithoutDiagonal(new_wind);
-
-    this.wind_dir = new_wind;
-    */
-  }
 
   this.dirWithoutDiagonal = function(dir) {
     if (Math.abs(dir[0]) + Math.abs(dir[1]) >= 2) {

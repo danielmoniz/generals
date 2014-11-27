@@ -19,6 +19,7 @@ Output = {
   battles_container_id: "#battles_container",
   weather_id: "#weather-panel",
   wind_id: ".wind-arrow",
+  weather_conditions_id: "#weather-conditions",
 
   buffer: [],
 
@@ -56,16 +57,24 @@ Output = {
   createWeatherPanel: function(wind) {
     $(this.weather_id).empty();
     var weather = this.createDiv("weather sunny");
+    weather.attr('id', this.weather_conditions_id.slice(1));
+
     var wind = this.createDiv("wind-arrow");
     wind.attr('direction', 'none');
     weather.append(wind);
     $(this.weather_id).append(weather);
   },
 
-  updateWeather: function(wind) {
+  updateWeather: function(wind, rain) {
     if (wind === undefined) wind = 'none';
     var wind_div = $(this.wind_id);
     wind_div.attr('direction', wind);
+
+    if (rain) {
+      $('#weather-conditions').removeClass('sunny').addClass('rainy');
+    } else {
+      $('#weather-conditions').removeClass('rainy').addClass('sunny');
+    }
   },
 
   printBattles: function() {

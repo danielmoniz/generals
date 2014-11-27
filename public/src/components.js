@@ -503,12 +503,16 @@ Crafty.c('Fire', {
     this.z = 75;
     this.days_left = 3;
     this.turn_started = Game.turn;
+
+    this.prob_extinguished_by_rain = .1;
+    this.prob_contained_by_rain = .5;
   },
 
   updateFire: function() {
     if (Game.turn != this.turn_started) return false;
 
     this.days_left -= 1;
+    this.handleRain();
     this.spread();
     if (this.days_left <= 0) {
       var local_terrain = Game.terrain[this.at().x][this.at().y];
@@ -517,7 +521,22 @@ Crafty.c('Fire', {
     }
   },
 
+  handleRain: function() {
+    this.will_spread = true;
+    if (Game.weather.rain) {
+      if (Random.random() < this.prob_extinguished_by_rain) {
+        //var local_terrain = Game.terrain[this.at().x][this.at().y];
+        //local_terrain.extinguish();
+        //this.destroy();
+      }
+      if (Random.random() < this.prob_contained_by_rain) {
+        this.will_spread = false;
+      }
+    }
+  },
+
   spread: function() {
+    if (!this.will_spread) return;
     // spread in direction of wind
     var wind_spot = this.getWindSpreadSpot();
     if (wind_spot) {
