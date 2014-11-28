@@ -145,6 +145,7 @@ UI = {
 
     $("input.start").hide();
     $("input.prepare-game").hide();
+    $("input#play-again").hide();
 
     $("#game-container").hide();
     //$("#front-page").hide();
