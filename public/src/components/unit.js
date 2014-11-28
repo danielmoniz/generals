@@ -417,6 +417,8 @@ Crafty.c('Unit', {
     }
 
     var target = { x: target_x, y: target_y };
+    console.log('{0} preparing move:'.format(this.name));
+    console.log(target);
     Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
 
     var graph = Game.terrain_with_roads_graph;
@@ -560,6 +562,18 @@ Crafty.c('Unit', {
       stop_points.push(fires[i].at());
     }
 
+    // remove duplicate points
+    for (var i=stop_points.length - 1; i>0; i--) {
+      var point = stop_points[i];
+      for (var j=i-1; j>=0; j--) {
+        var compare_point = stop_points[j];
+        if (Utility.getDistance(point, compare_point) == 0) {
+          stop_points.splice(i, 1);
+          break;
+        }
+      }
+    }
+
     return stop_points;
   },
 
@@ -581,9 +595,14 @@ Crafty.c('Unit', {
     var end_node = this.move_target_path[this.move_target_path.length - 1];
     var target = { x: end_node.x, y: end_node.y };
 
-    var stop_points = this.getStopPoints(target, this.first_location, 'all_enemies');
     console.log("---");
+    console.log("this.name");
     console.log(this.name);
+    console.log("target");
+    console.log(target);
+    console.log("this.visible_enemies");
+    console.log(this.visible_enemies);
+    var stop_points = this.getStopPoints(target, this.first_location, 'all enemies');
     console.log("stop_points");
     console.log(stop_points);
 
