@@ -29,11 +29,32 @@ Crafty.c('Unit', {
     this.possible_moves_data = {};
   },
 
+  testTargetAndPath: function() {
+    if (this.move_target_path === undefined) return;
+    var path_end = this.move_target_path[this.move_target_path.length - 1];
+    if (path_end.x != this.move_target.x || path_end.y != this.move_target.y) {
+      console.log("---");
+      console.log(this.name);
+      console.log("this.move_target");
+      console.log(this.move_target);
+      console.log("this.move_target_path");
+      console.log(this.move_target_path);
+      throw new Error('BadTargetOrPath', 'Target and path no longer match.');
+    }
+  },
+
   nextTurn: function(turn) {
+
+    this.testTargetAndPath();
+
     if (turn === undefined) turn = Game.turn;
     // rebuild movement path for pathfinding from stored data
 
-    this.move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
+    var updated_move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
+    this.updateMoveTargetPath(updated_move_target_path);
+
+    this.testTargetAndPath();
+
     this.first_location = this.at();
     this.possible_moves = [];
     this.possible_moves_data = {};
@@ -43,6 +64,8 @@ Crafty.c('Unit', {
       this.visible_enemies = Units.getVisibleEnemyUnits(this.side);
     }
 
+    this.testTargetAndPath();
+
     if (turn == (this.side + 0.5) % 2) {
       if (this.battle && this.move_target_path) {
         this.retreat();
@@ -50,11 +73,16 @@ Crafty.c('Unit', {
         this.moveTowardTarget();
       }
     }
+
+    this.testTargetAndPath();
+
     if (turn % 1 == 0.5) {
       delete this.visible_enemies;
     }
 
     this.updateMovementPaths();
+
+    this.testTargetAndPath();
 
     if (turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
@@ -64,6 +92,8 @@ Crafty.c('Unit', {
       this.reset(); // should happen after every other active effect!
     }
     this.updateStats(); // should happen last!
+
+    this.testTargetAndPath();
   },
 
   updateMorale: function() {
@@ -403,17 +433,18 @@ Crafty.c('Unit', {
 
   prepareMove: function(target_x, target_y, ignore_visuals, queue_move, use_last_move) {
 
-    // if double-hold-clicking, update current move to previous and start again
-    if (queue_move && use_last_move) {
-      this.updateMoveTargetPath(this.last_move_target_path);
-      this.prepareMove(target_x, target_y, ignore_visuals, 'queue move', false);
-    }
     if (this.at().x == target_x && this.at().y == target_y) {
       delete this.move_target;
       this.updateMoveTargetPath('delete');
       Pathing.destroyMovementPath(this.movement_path);
       delete this.movement_path;
       return false;
+    }
+
+    // if double-hold-clicking, update current move to previous and start again
+    if (queue_move && use_last_move) {
+      this.updateMoveTargetPath(this.last_move_target_path);
+      this.prepareMove(target_x, target_y, ignore_visuals, 'queue move', false);
     }
 
     var target = { x: target_x, y: target_y };
@@ -449,6 +480,7 @@ Crafty.c('Unit', {
       Output.message("Target impossible to reach!");
       return false;
     }
+    // @TODO The effect being caught here will likely cause the game to freeze
     var partial_path = Pathing.getPartialPath(new_path, this.movement);
     if (!partial_path) {
       Output.message("Cannot move to first square! Movement value too low.");
@@ -477,6 +509,10 @@ Crafty.c('Unit', {
     }
 
     this.updateMoveTargetPath(path);
+
+    // TEST OUTPUT
+    this.testTargetAndPath();
+
   },
 
   colourMovementPath: function(path, this_movement, location) {
@@ -587,24 +623,36 @@ Crafty.c('Unit', {
   },
 
   moveTowardTarget: function(is_retreat) {
+    console.log("---");
+    console.log(this.name);
     if (is_retreat === undefined) is_retreat = false;
     var movement = this.movement;
     if (is_retreat) movement += 1;
     var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
 
     var end_node = this.move_target_path[this.move_target_path.length - 1];
+    if (end_node === undefined) {
+      console.log("end_node");
+      console.log(end_node);
+      console.log("this.move_target_path");
+      console.log(this.move_target_path);
+      console.log("partial_path");
+      console.log(partial_path);
+    }
     var target = { x: end_node.x, y: end_node.y };
+    if (target.x != this.move_target.x || target.y != this.move_target.y) {
+      console.log("target");
+      console.log(target);
+      console.log("this.move_target");
+      console.log(this.move_target);
+      console.log("this.move_target_path");
+      console.log(this.move_target_path);
+      console.log("partial_path");
+      console.log(partial_path);
+      throw new Error('BadTarget', 'Target somehow became inaccurate while moving army.');
+    }
 
-    console.log("---");
-    console.log("this.name");
-    console.log(this.name);
-    console.log("target");
-    console.log(target);
-    console.log("this.visible_enemies");
-    console.log(this.visible_enemies);
     var stop_points = this.getStopPoints(target, this.first_location, 'all enemies');
-    console.log("stop_points");
-    console.log(stop_points);
 
     // check for enemies that will be bumped into
     for (var i in partial_path) {
@@ -789,10 +837,13 @@ Crafty.c('Unit', {
       delete this.move_target_path;
       delete this.move_target_path_list;
       delete this.last_move_target_path;
+      delete this.move_target;
       return;
     }
     this.move_target_path = new_path;
     this.move_target_path_list = Pathing.getPathList(this.move_target_path);
+    //var end_node = this.move_target_path[this.move_target_path.length - 1];
+    //this.move_target = { x: end_node.x, y: end_node.y };
   },
 
   pick_side: function(side) {
