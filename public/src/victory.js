@@ -1,22 +1,33 @@
 Victory = {
+
   reset: function() {
+    // max_effect is the vitory score a player will be at if they have lost or
+    // had compromised all of their relevant entity.
+    // Eg. max_effect: [2, 3] for forests implies that losing all forests will
+    // leave the player with 2/3 victory score, ie. 66.66%.
+    // If there is no max_effect, losing all of that entity (eg. troops) means
+    // a victory score of 0.
+    this.factor_values = [
+      { name: 'troop_values', getFunction: 'getTotalTroops', },
+      { name: 'farm_values', getFunction: 'getUnpillagedFarms', },
+      { name: 'city_values', getFunction: 'getUnsackedCities', },
+      { name: 'town_values', getFunction: 'getUnsackedTowns', max_effect: [1, 2], },
+      { name: 'forest_values', getFunction: 'getStandingForests', max_effect: [2, 3], },
+    ];
+
     this.will_to_fight = [100, 100];
-    this.troop_values = [undefined, undefined];
-    this.farm_values = [undefined, undefined];
-    this.city_values = [undefined, undefined];
-    this.town_values = [undefined, undefined];
-    this.forest_values = [undefined, undefined];
+    for (var i in this.factor_values) {
+      this[this.factor_values[i].name] = [undefined, undefined];
+    }
     this.ratio_to_win = 3; // need X times higher will than opponent to win
-    this.setWillToFight();
+    this.setWillFactorValues();
   },
 
   set: function(victory_data) {
     this.will_to_fight = victory_data.will_to_fight;
-    this.troop_values = victory_data.troop_values;
-    this.farm_values = victory_data.farm_values;
-    this.city_values = victory_data.city_values;
-    this.town_values = victory_data.town_values;
-    this.forest_values = victory_data.forest_values;
+    for (var i in this.factor_values) {
+      this[this.factor_values[i].name] = victory_data[this.factor_values[i].name];
+    }
 
     this.ratio_to_win = victory_data.ratio_to_win;
   },
@@ -38,40 +49,35 @@ Victory = {
 
   updateWillToFight: function() {
     for (var i=0; i<2; i++) {
-      var total_troops = this.getTotalTroops(i);
-      var troop_factor = total_troops * this.troop_values[i];
+      var will_to_fight = 100;
+      for (var j in this.factor_values) {
+        var info = this.factor_values[j];
+        var total = this[info.getFunction](i);
+        if (typeof total == 'object') total = total.length;
+        var factor = total * this[info.name][i];
 
-      var total_unpillaged_farms = this.getUnpillagedFarms(i).length;
-      var farm_factor = total_unpillaged_farms * this.farm_values[i];
-
-      var total_unpillaged_cities = this.getUnsackedCities(i).length;
-      var city_factor = total_unpillaged_cities * this.city_values[i];
-
-      var total_unpillaged_towns = this.getUnsackedTowns(i).length;
-      var town_factor = total_unpillaged_towns * this.town_values[i];
-
-      var total_standing_forests = this.getStandingForests(i).length;
-      var forest_factor = total_standing_forests * this.forest_values[i];
-
-      this.will_to_fight[i] = 100 * troop_factor * farm_factor * city_factor * ((1 + town_factor) / 2) * ((2 + forest_factor) / 3);
+        if (info.max_effect === undefined) {
+          will_to_fight *= factor;
+        } else {
+          will_to_fight *= (factor + info.max_effect[0]) / info.max_effect[1];
+        }
+      }
+      this.will_to_fight[i] = will_to_fight;
     }
+
     Output.updateVictoryBar();
   },
 
-  getUnits: function(side) {
-    var units = Crafty('Unit').get();
-    units = units.filter(function(unit) {
-      return unit.side == side;
-    });
-    return units;
-  },
+  setWillFactorValues: function() {
+    for (var i=0; i<2; i++) {
+      for (var j in this.factor_values) {
+        var info = this.factor_values[j];
+        var total = this[info.getFunction](i);
+        if (typeof total == 'object') total = total.length;
+        this[info.name][i] = 1 / total;
+      }
+    }
 
-  getForests: function(side) {
-    var forests = Crafty('Tree').get();
-    forests = forests.filter(function(forest) {
-      return forest.side == side;
-    });
-    return forests;
   },
 
   getTotalTroops: function(side) {
@@ -83,102 +89,52 @@ Victory = {
     return total_troops;
   },
 
-  getFarms: function(side) {
-    var farms = Crafty('Farm').get();
-    var farms_in_sides = { 0: [], 1: [], undefined: [], };
-    for (var i in farms) {
-      farms_in_sides[farms[i].side].push(farms[i]);
+  getUnits: function(side) {
+    var units = Units.getFriendlyUnits(side);
+    return units;
+  },
+
+  getEntityOnSide: function(entity, side) {
+    var entities = Entity.get(entity);
+    var entities_on_sides = { 0: [], 1: [], undefined: [], };
+    for (var i in entities) {
+      entities_on_sides[entities[i].side].push(entities[i]);
     }
-    return farms_in_sides[side];
+    return entities_on_sides[side];
+  },
+
+  getUnspoiledEntities: function(entity, side) {
+    var entities = this.getEntityOnSide(entity, side);
+    var unspoiled_entities = [];
+    for (var i in entities) {
+      if (entities[i].pillaged) continue;
+      if (entities[i].sacked) continue;
+      if (entities[i].burned) continue;
+      if (entities[i].ruined) continue; // not yet used!
+
+      unspoiled_entities.push(entities[i]);
+    }
+    return unspoiled_entities;
   },
 
   getUnpillagedFarms: function(side) {
-    var farms = this.getFarms(side);
-    var unpillaged_farms = [];
-    for (var i in farms) {
-      if (!farms[i].pillaged) unpillaged_farms.push(farms[i]);
-    }
+    var unpillaged_farms = this.getUnspoiledEntities('Farm', side);
     return unpillaged_farms;
   },
 
   getUnsackedCities: function(side) {
-    var cities = this.getCities(side);
-    var unsacked_cities = [];
-    for (var i in cities) {
-      if (!cities[i].sacked) unsacked_cities.push(cities[i]);
-    }
+    var unsacked_cities = this.getUnspoiledEntities('City', side);
     return unsacked_cities;
   },
 
   getUnsackedTowns: function(side) {
-    var towns = this.getTowns(side);
-    var unsacked_towns = [];
-    for (var i in towns) {
-      if (!towns[i].sacked) unsacked_towns.push(towns[i]);
-    }
+    var unsacked_towns = this.getUnspoiledEntities('Town', side);
     return unsacked_towns;
   },
 
   getStandingForests: function(side) {
-    var forests = this.getForests(side);
-    var standing_forests = [];
-    for (var i in forests) {
-      if (!forests[i].burned) standing_forests.push(forests[i]);
-    }
+    var standing_forests = this.getUnspoiledEntities('Tree', side);
     return standing_forests;
-  },
-
-  getCities: function(side) {
-    var cities = Crafty('City').get();
-    var cities_in_sides = { 0: [], 1: [], undefined: [], };
-    for (var i in cities) {
-      cities_in_sides[cities[i].side].push(cities[i]);
-    }
-    return cities_in_sides[side];
-  },
-
-  getTowns: function(side) {
-    var towns = Crafty('Town').get();
-    var towns_in_sides = { 0: [], 1: [], undefined: [], };
-    for (var i in towns) {
-      towns_in_sides[towns[i].side].push(towns[i]);
-    }
-    return towns_in_sides[side];
-  },
-
-  getForests: function(side) {
-    var forests = Crafty('Tree').get();
-    var forests_in_sides = { 0: [], 1: [], undefined: [], };
-    for (var i in forests) {
-      forests_in_sides[forests[i].side].push(forests[i]);
-    }
-    return forests_in_sides[side];
-  },
-
-  setWillToFight: function() {
-    for (var i=0; i<2; i++) {
-      var units = this.getUnits(i);
-      var total_troops = this.getTotalTroops(i);
-      var troop_value = 1 / total_troops;
-      this.troop_values[i] = troop_value;
-
-      var farms = this.getFarms(i);
-      var farm_value = 1 / farms.length;
-      this.farm_values[i] = farm_value;
-
-      var cities = this.getCities(i);
-      var city_value = 1 / cities.length;
-      this.city_values[i] = city_value;
-
-      var towns = this.getTowns(i);
-      var town_value = 1 / towns.length;
-      this.town_values[i] = town_value;
-
-      var forests = this.getForests(i);
-      var forest_value = 1 / forests.length;
-      this.forest_values[i] = forest_value;
-    }
-
   },
 
 }
