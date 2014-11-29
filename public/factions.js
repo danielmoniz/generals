@@ -16,17 +16,17 @@ var Factions = {
       {
         name: "Genghis Khan",
         type: "Cavalry",
-        quantity: 3500,
+        quantity: 3000,
       },
       {
         name: "Kublai Khan",
         type: "Cavalry",
-        quantity: 3500,
+        quantity: 3000,
       },
       {
         name: "Batu Khan",
         type: "Cavalry",
-        quantity: 3500,
+        quantity: 3000,
       },
       {
         name: "Mandhuhai",
