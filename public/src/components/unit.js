@@ -30,6 +30,7 @@ Crafty.c('Unit', {
   },
 
   testTargetAndPath: function() {
+    /*
     if (this.move_target_path === undefined) return;
     var path_end = this.move_target_path[this.move_target_path.length - 1];
     if (path_end.x != this.move_target.x || path_end.y != this.move_target.y) {
@@ -41,6 +42,7 @@ Crafty.c('Unit', {
       console.log(this.move_target_path);
       throw new Error('BadTargetOrPath', 'Target and path no longer match.');
     }
+    */
   },
 
   nextTurn: function(turn) {
