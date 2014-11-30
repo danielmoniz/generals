@@ -32,7 +32,17 @@ Crafty.c('Unit', {
   testTargetAndPath: function() {
     if (this.move_target_path === undefined) return;
     var path_end = this.move_target_path[this.move_target_path.length - 1];
-    if (path_end.x != this.move_target.x || path_end.y != this.move_target.y) {
+    try {
+      if (path_end.x != this.move_target.x || path_end.y != this.move_target.y) {
+        console.log("---");
+        console.log(this.name);
+        console.log("this.move_target");
+        console.log(this.move_target);
+        console.log("this.move_target_path");
+        console.log(this.move_target_path);
+        throw new Error('BadTargetOrPath', 'Target and path no longer match.');
+      }
+    } catch (ex) {
       console.log("---");
       console.log(this.name);
       console.log("this.move_target");
@@ -639,8 +649,9 @@ Crafty.c('Unit', {
       console.log("partial_path");
       console.log(partial_path);
     }
+
     var target = { x: end_node.x, y: end_node.y };
-    if (target.x != this.move_target.x || target.y != this.move_target.y) {
+    if (this.move_target === undefined || target.x != this.move_target.x || target.y != this.move_target.y) {
       console.log("target");
       console.log(target);
       console.log("this.move_target");
@@ -661,7 +672,7 @@ Crafty.c('Unit', {
       this.at(next_move.x, next_move.y);
       var new_path = this.move_target_path.slice(1, this.move_target_path.length);
       this.updateMoveTargetPath(new_path);
-      if (new_path.length == 0) this.updateMoveTargetPath(undefined);
+      //if (new_path.length == 0) this.updateMoveTargetPath('delete');
       this.moved();
       if (this.start_battle) break;
 
@@ -830,6 +841,8 @@ Crafty.c('Unit', {
   },
 
   updateMoveTargetPath: function(new_path) {
+    if (!new_path || new_path.length == 0) new_path = 'delete';
+    //if (new_path === undefined) throw new Error('BadParam', 'new_path cannot be undefined.');
     if (this.move_target_path) {
       this.last_move_target_path = this.move_target_path.slice(0);
     }
@@ -842,8 +855,15 @@ Crafty.c('Unit', {
     }
     this.move_target_path = new_path;
     this.move_target_path_list = Pathing.getPathList(this.move_target_path);
-    //var end_node = this.move_target_path[this.move_target_path.length - 1];
-    //this.move_target = { x: end_node.x, y: end_node.y };
+    var end_node = this.move_target_path[this.move_target_path.length - 1];
+    this.move_target = { x: end_node.x, y: end_node.y };
+    /*
+    if (end_node === undefined) {
+      delete this.move_target;
+    } else {
+      this.move_target = { x: end_node.x, y: end_node.y };
+    }
+    */
   },
 
   pick_side: function(side) {
