@@ -59,7 +59,7 @@ var TerrainData = function(type, stats) {
 
     "Settlement": {
       z: 82,
-      move_difficulty: 0.9,
+      move_difficulty: 0.75,
       build_over: 0.01,
       supply: 1,
       max_supply_multiplier: 3,
