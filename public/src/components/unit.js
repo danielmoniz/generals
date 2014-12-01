@@ -813,8 +813,7 @@ Crafty.c('Unit', {
     if (battle) battle.unitDead(this);
     this.alive = false;
 
-    Entity.flushSpecialCache('Unit');
-    this.destroy();
+    Entity.destroy(this);
   },
 
   disband: function() {

@@ -24,6 +24,16 @@ var Entity = {
     return entity;
   },
 
+  destroy: function(entity) {
+    for (var i in this.special_caches) {
+      var component = this.special_caches[i];
+      if (entity.has(component)) {
+        this.flushSpecialCache(component);
+      }
+    }
+    entity.destroy();
+  },
+
   /*
    * Takes a search string of components and returns a list of entities.
    */
@@ -48,6 +58,7 @@ var Entity = {
   },
 
   flushSpecialCache: function(name) {
+    //console.log('Flushing special cache: {0}'.format(name));
     delete this.special_cache[name];
   },
 };
