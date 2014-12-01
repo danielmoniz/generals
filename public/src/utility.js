@@ -158,6 +158,19 @@ var Utility = {
 
     return points;
   },
+
+  removeDuplicates: function(list) {
+    for (var i=list.length - 1; i>0; i--) {
+      var point = list[i];
+      for (var j=i-1; j>=0; j--) {
+        var compare_point = list[j];
+        if (Utility.getDistance(point, compare_point) == 0) {
+          list.splice(i, 1);
+          break;
+        }
+      }
+    }
+  },
 }
 
 if (!String.prototype.format) {

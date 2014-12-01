@@ -535,12 +535,16 @@ Crafty.c('Unit', {
     var highlighted_square = Pathing.makeMovementPath(location.x, location.y, 1, true);
     movement_path.push([movement_square, highlighted_square]);
     while (path.length > 0) {
-      var stop_points = this.getStopPoints(target, start_location, false, 'test');
-      console.log("stop_points");
-      console.log(stop_points);
+      var stop_points = this.getStopPoints(target, start_location, false);
       var next_partial_path = Pathing.getPartialPath(path, this_movement, stop_points);
-      console.log("next_partial_path");
-      console.log(next_partial_path);
+
+      // get stop points for both end target and end of this turn's final space
+      var first_move_end_node = next_partial_path[next_partial_path.length - 1];
+      var extra_stop_points = this.getStopPoints(first_move_end_node, start_location, false);
+      stop_points = stop_points.concat(extra_stop_points);
+      Utility.removeDuplicates(stop_points);
+      var next_partial_path = Pathing.getPartialPath(path, this_movement, stop_points);
+
       for (var i=0; i<next_partial_path.length; i++) {
         var movement_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
         var highlighted_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required, true);
@@ -608,18 +612,7 @@ Crafty.c('Unit', {
       stop_points.push(fires[i].at());
     }
 
-    // remove duplicate points
-    for (var i=stop_points.length - 1; i>0; i--) {
-      var point = stop_points[i];
-      for (var j=i-1; j>=0; j--) {
-        var compare_point = stop_points[j];
-        if (Utility.getDistance(point, compare_point) == 0) {
-          stop_points.splice(i, 1);
-          break;
-        }
-      }
-    }
-
+    Utility.removeDuplicates(stop_points);
     return stop_points;
   },
 
@@ -663,7 +656,12 @@ Crafty.c('Unit', {
       throw new Error('BadTarget', 'Target somehow became inaccurate while moving army.');
     }
 
+    // get stop points for both end target and end of this turn's final space
     var stop_points = this.getStopPoints(target, this.first_location, 'all enemies');
+    var first_move_end_node = partial_path[partial_path.length - 1];
+    var extra_stop_points = this.getStopPoints(first_move_end_node, this.first_location, 'all enemies');
+    stop_points = stop_points.concat(extra_stop_points);
+    Utility.removeDuplicates(stop_points);
 
     // check for enemies that will be bumped into
     for (var i in partial_path) {
