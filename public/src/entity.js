@@ -19,7 +19,9 @@ var Entity = {
    * entity.
    */
   create: function(components) {
-    return Crafty.e(components);
+    var entity = Crafty.e(components);
+    this.flushSpecialCache(components);
+    return entity;
   },
 
   /*
@@ -33,9 +35,10 @@ var Entity = {
       return this.cache[search];
     }
     var result = Crafty(search).get();
-    this.cache[search] = result;
     if (this.special_caches.indexOf(search) > -1) {
       this.special_cache[search] = result;
+    } else {
+      this.cache[search] = result;
     }
     return result;
   },
