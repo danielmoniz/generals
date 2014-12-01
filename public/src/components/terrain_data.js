@@ -70,12 +70,14 @@ var TerrainData = function(type, stats) {
       parent: 'Settlement',
       defense_bonus: 1.55,
       population: 9000,
+      provides_supply: 4000,
     },
 
     "Town": {
       parent: 'Settlement',
       defense_bonus: 1.25,
       population: 2500,
+      provides_supply: 2000,
     },
 
     "Road": {
