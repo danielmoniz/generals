@@ -25,13 +25,21 @@ var Entity = {
   },
 
   destroy: function(entity) {
+    var caches_to_flush =[];
     for (var i in this.special_caches) {
       var component = this.special_caches[i];
       if (entity.has(component)) {
+        caches_to_flush.push(component);
         this.flushSpecialCache(component);
       }
     }
+
     entity.destroy();
+
+    for (var i in caches_to_flush) {
+      var cache = caches_to_flush[i];
+      this.flushSpecialCache(cache);
+    }
   },
 
   /*

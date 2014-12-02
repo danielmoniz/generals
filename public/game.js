@@ -59,6 +59,7 @@ Game = {
   clearPlayerSelected: function(side) {
     if (side === undefined) side = this.turn;
     delete this.player_selected[side];
+    this.deselect();
   },
 
   // @TODO generate on load() - currently relying on pathfinding to replicate
