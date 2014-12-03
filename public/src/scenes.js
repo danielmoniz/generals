@@ -527,6 +527,13 @@ Crafty.scene('Loading', function() {
       spr_retreat_block_top_green: [3, 1],
     });
 
+    Crafty.sprite(32, 'assets_test/box_surround_32.png', {
+      spr_box_surround_top: [0, 0],
+      spr_box_surround_right: [1, 0],
+      spr_box_surround_bottom: [2, 0],
+      spr_box_surround_left: [3, 0],
+    });
+
     // Now that are sprites are ready to draw, start the game.
     Crafty.scene('Game');
   })

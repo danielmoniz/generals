@@ -48,17 +48,57 @@ LineOfSight = {
 
   handleLineOfSight: function(fog_of_war, side) {
     if (!fog_of_war) return false;
-    this.unitLineOfSight(side);
-    this.tileLineOfSight(side);
+    var enemy_units_in_sight = this.unitLineOfSight(side);
+    var tiles_in_sight = this.tileLineOfSight(side);
+    //var tiles_in_sight_of_enemy = this.tileLineOfSight(side, enemy_units_in_sight);
+
+    Crafty.trigger("RemoveBoxSurrounds");
+    var coords_in_sight = {};
+    for (var x=0; x<Game.map_grid.width; x++) {
+      coords_in_sight[x] = {};
+    }
+    for (var i in tiles_in_sight) {
+      var tile = tiles_in_sight[i];
+      coords_in_sight[tile.getX()][tile.getY()] = true;
+    }
+
+    for (var x in coords_in_sight) {
+      for (var y in coords_in_sight[x]) {
+        var point = { x: x, y: y };
+        var adjacent_points = Utility.getPointsWithinDistance(point, 1, Game.map_grid);
+        for (var i in adjacent_points) {
+          var adjacent = adjacent_points[i];
+
+          if (!coords_in_sight[adjacent.x][adjacent.y]) {
+            // @TODO Should find a more efficient way than creating every time
+            // Eg. recycle tiles, or build entirely at the start and re-use
+            var new_surround_object = Entity.create('BoxSurround');
+            new_surround_object.at(x, y);
+
+            if (adjacent.x < x) {
+              new_surround_object.addComponent('spr_box_surround_left');
+            } else if (adjacent.x > x) {
+              new_surround_object.addComponent('spr_box_surround_right');
+            } else if (adjacent.y < y) {
+              new_surround_object.addComponent('spr_box_surround_top');
+            } else if (adjacent.y > y) {
+              new_surround_object.addComponent('spr_box_surround_bottom');
+            }
+          }
+        }
+      }
+    }
+
     // Uncomment below if battles should be hidden from in-between turn views
     //this.battleLineOfSight(side);
+
   },
 
   unitLineOfSight: function(side) {
     this.allUnitsInvisible();
     var units_in_sight = this.getUnitsInSight(side);
     this.makeVisible(units_in_sight);
-    return this;
+    return units_in_sight;
   },
 
   battleLineOfSight: function(side) {
@@ -68,11 +108,11 @@ LineOfSight = {
     return this;
   },
 
-  tileLineOfSight: function(side) {
+  tileLineOfSight: function(side, units) {
     this.allEntitiesVisible('Shadow');
-    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side);
+    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side, units);
     this.makeInvisible(tiles_in_sight);
-    return this;
+    return tiles_in_sight;
   },
 
   getUnitsInSight: function(side, enemies_only) {
@@ -87,16 +127,20 @@ LineOfSight = {
     return this.getUnitsInSight(side, 'enemies only');
   },
 
-  getGenericEntitiesInSight: function(entity, side) {
+  getGenericEntitiesInSight: function(entity, side, units) {
     if (side === undefined) return [];
-    var friendly_units = Units.getFriendlyUnits(side);
+    if (units !== undefined) {
+      var friendly_units = units;
+    } else {
+      var friendly_units = Units.getFriendlyUnits(side);
+    }
     var entities = Entity.get(entity);
     return this.getEntitiesInSight(entities, friendly_units);
   },
 
   /*
    * Filters param entities to only those that can be seen by the
-   * seeing_entities.
+   * seeing entities.
    */
   getEntitiesInSight: function(entities, friendly_units) {
     var entities_in_sight = [];

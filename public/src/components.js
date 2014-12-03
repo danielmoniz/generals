@@ -471,6 +471,21 @@ Crafty.c('PossibleMove', {
 
 });
 
+Crafty.c('BoxSurround', {
+  init: function() {
+    this.requires('Actor')
+      .bind("RemoveBoxSurrounds", this.destroy)
+      ;
+    this.z = 300;
+    return this;
+  },
+
+  hide: function() {
+    this.visible = false;
+  },
+
+});
+
 var RetreatBlockComponents = {
   friendly: {
     left: 'spr_retreat_block_left_green',
