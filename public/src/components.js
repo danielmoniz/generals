@@ -427,7 +427,7 @@ Crafty.c('MovementPath', {
       .bind("ResetVisuals", this.destroy)
       ;
     this.z = 210;
-    this.alpha = 0.6;
+    this.alpha = 0.3;
     return this;
   },
   nextTurn: function() {
@@ -441,6 +441,7 @@ Crafty.c("HighlightedMovementPath", {
     this.z = 215;
     this.bind("DimPaths", this.dim)
     //this.dimColour(this.dim_value, this.dim_value, this.dim_value);
+    this.alpha = 1;
   },
 
   dim: function() {
