@@ -48,11 +48,40 @@ LineOfSight = {
 
   handleLineOfSight: function(fog_of_war, side) {
     if (!fog_of_war) return false;
-    var enemy_units_in_sight = this.unitLineOfSight(side);
+    this.unitLineOfSight(side);
+    this.allEntitiesVisible('Shadow');
     var tiles_in_sight = this.tileLineOfSight(side);
-    //var tiles_in_sight_of_enemy = this.tileLineOfSight(side, enemy_units_in_sight);
+    this.makeInvisible(tiles_in_sight);
 
+    // @TODO spies!
+    //var tiles_in_sight_of_enemy = this.tileLineOfSight(side, enemy_units_in_sight);
+    //this.makeInvisible(tiles_in_sight_of_enemy);
+
+    this.handleSightOutlines(side);
+
+    // Uncomment below if battles should be hidden from in-between turn views
+    //this.battleLineOfSight(side);
+
+  },
+
+  handleSightOutlines: function(side) {
+    if (side === undefined) side = Game.player;
+    this.hideSightOutlines();
+    if (Game.sight_outlines) {
+      var enemy_units_in_sight = this.getEnemyUnitsInSight(side);
+      var tiles_in_sight_of_enemy = this.tileLineOfSight(side, enemy_units_in_sight);
+
+      // uncomment to display own side's sight outlines
+      //this.outlineVisibleRegions(tiles_in_sight);
+      this.outlineVisibleRegions(tiles_in_sight_of_enemy, 'enemy');
+    }
+  },
+
+  hideSightOutlines: function() {
     Crafty.trigger("RemoveBoxSurrounds");
+  },
+
+  outlineVisibleRegions: function(tiles_in_sight, enemy) {
     var coords_in_sight = {};
     for (var x=0; x<Game.map_grid.width; x++) {
       coords_in_sight[x] = {};
@@ -72,26 +101,40 @@ LineOfSight = {
           if (!coords_in_sight[adjacent.x][adjacent.y]) {
             // @TODO Should find a more efficient way than creating every time
             // Eg. recycle tiles, or build entirely at the start and re-use
-            var new_surround_object = Entity.create('BoxSurround');
-            new_surround_object.at(x, y);
-
-            if (adjacent.x < x) {
-              new_surround_object.addComponent('spr_box_surround_left');
-            } else if (adjacent.x > x) {
-              new_surround_object.addComponent('spr_box_surround_right');
-            } else if (adjacent.y < y) {
-              new_surround_object.addComponent('spr_box_surround_top');
-            } else if (adjacent.y > y) {
-              new_surround_object.addComponent('spr_box_surround_bottom');
-            }
+            this.renderOutline(point, adjacent, enemy);
           }
         }
       }
     }
+  },
 
-    // Uncomment below if battles should be hidden from in-between turn views
-    //this.battleLineOfSight(side);
+  renderOutline: function(point, adjacent, enemy) {
+    var new_surround_object = Entity.create('BoxSurround');
+    var x = point.x;
+    var y = point.y;
+    new_surround_object.at(x, y);
 
+    if (enemy) {
+      if (adjacent.x < x) {
+        new_surround_object.addComponent('spr_box_surround_enemy_left');
+      } else if (adjacent.x > x) {
+        new_surround_object.addComponent('spr_box_surround_enemy_right');
+      } else if (adjacent.y < y) {
+        new_surround_object.addComponent('spr_box_surround_enemy_top');
+      } else if (adjacent.y > y) {
+        new_surround_object.addComponent('spr_box_surround_enemy_bottom');
+      }
+    } else {
+      if (adjacent.x < x) {
+        new_surround_object.addComponent('spr_box_surround_left');
+      } else if (adjacent.x > x) {
+        new_surround_object.addComponent('spr_box_surround_right');
+      } else if (adjacent.y < y) {
+        new_surround_object.addComponent('spr_box_surround_top');
+      } else if (adjacent.y > y) {
+        new_surround_object.addComponent('spr_box_surround_bottom');
+      }
+    }
   },
 
   unitLineOfSight: function(side) {
@@ -109,9 +152,7 @@ LineOfSight = {
   },
 
   tileLineOfSight: function(side, units) {
-    this.allEntitiesVisible('Shadow');
     var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side, units);
-    this.makeInvisible(tiles_in_sight);
     return tiles_in_sight;
   },
 

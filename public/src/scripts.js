@@ -16,6 +16,8 @@ $(document).ready(function() {
         UI.selectUnit(e.keyCode - 48);
       } else if (shift_num_keys.indexOf(e.keyCode) > -1) { // shift + numeric key
         UI.selectAdditionalUnit(shift_num_keys.indexOf(e.keyCode) + 1);
+      } else if (e.keyCode == 118) { // v
+        UI.toggleSightOutlines();
       }
       return false;
     }
@@ -122,6 +124,7 @@ $(document).ready(function() {
   //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
   //$("input[name=factions_1][value=aztecs]").click();
+  //$('input[name=sight_outlines]').click();
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
@@ -239,6 +242,10 @@ UI = {
       return false;
     }
     buttons.click();
+  },
+
+  toggleSightOutlines: function() {
+    Action.perform('toggle sight outlines');
   },
 
   getOptions: function() {

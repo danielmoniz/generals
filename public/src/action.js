@@ -60,6 +60,15 @@ var Action = {
 
   // Action functions ----------------------------
 
+  toggleOption: function(option) {
+    Game[option] = !Game[option];
+  },
+
+  toggleSightOutlines: function() {
+    this.toggleOption('sight_outlines');
+    LineOfSight.handleSightOutlines();
+  },
+
   leftClick: function(entity, selected) {
     if (!selected || selected != entity) {
       Game.select(entity);

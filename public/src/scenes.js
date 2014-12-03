@@ -534,6 +534,13 @@ Crafty.scene('Loading', function() {
       spr_box_surround_left: [3, 0],
     });
 
+    Crafty.sprite(32, 'assets_test/box_surround_enemy_32.png', {
+      spr_box_surround_enemy_top: [0, 0],
+      spr_box_surround_enemy_right: [1, 0],
+      spr_box_surround_enemy_bottom: [2, 0],
+      spr_box_surround_enemy_left: [3, 0],
+    });
+
     // Now that are sprites are ready to draw, start the game.
     Crafty.scene('Game');
   })
