@@ -29,6 +29,22 @@ describe('Utility', function() {
       assert.equal(points.length, 4);
     });
 
+    it('should return 2 spaces if distance is 1, and corner and map_grid are specified', function() {
+      var start = { x: 0, y: 0 };
+      var distance = 1;
+      var map_grid = { width: 10, height: 10 };
+      var points = Utility.getPointsWithinDistance(start, distance, map_grid);
+      assert.equal(points.length, 2);
+    });
+
+    it('should throw error if strings are passed as coordinate values', function() {
+      var start = { x: 'james', y: 'doug' };
+      var distance = 1;
+      assert.throws(function() {
+        var points = Utility.getPointsWithinDistance(start, distance);
+      });
+    });
+
     it('should return 24 spaces if distance is 3', function() {
       var start = { x: 15, y: 5 };
       var distance = 3;

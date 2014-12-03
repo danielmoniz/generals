@@ -87,6 +87,10 @@ var Utility = {
   },
 
   getPointsWithinDistance: function(start, distance, map_grid) {
+    start.x = parseInt(start.x);
+    start.y = parseInt(start.y);
+    if (isNaN(start.x) || isNaN(start.y)) throw new Error('BadParam', 'start param must be a coordinate with numbers');
+
     if (distance < 0) throw new Error('BadDistance', 'Distance must be positive.');
     var points = [];
     // Count backwards in order to start at outer ring
