@@ -46,7 +46,7 @@ LineOfSight = {
     return this.makeInvisible(entities);
   },
 
-  handleLineOfSight: function(fog_of_war, side) {
+  handleLineOfSight: function(fog_of_war, side, ignore_sight_outlines) {
     if (!fog_of_war) return false;
     this.unitLineOfSight(side);
     this.allEntitiesVisible('Shadow');
@@ -57,7 +57,7 @@ LineOfSight = {
     //var tiles_in_sight_of_enemy = this.tileLineOfSight(side, enemy_units_in_sight);
     //this.makeInvisible(tiles_in_sight_of_enemy);
 
-    this.handleSightOutlines(side);
+    if (!ignore_sight_outlines) this.handleSightOutlines(side);
 
     // Uncomment below if battles should be hidden from in-between turn views
     //this.battleLineOfSight(side);
