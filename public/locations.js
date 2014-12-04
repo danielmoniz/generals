@@ -16,7 +16,7 @@ var locations = {
     },
     climate: {
       chance_of_rain: .10,
-      chance_rain_stops: .4,
+      chance_rain_stops: .35,
       chance_of_wind: .5,
       chance_of_wind_change: .15,
     },
@@ -39,7 +39,7 @@ var locations = {
     },
     climate: {
       chance_of_rain: .10,
-      chance_rain_stops: .4,
+      chance_rain_stops: .35,
       chance_of_wind: .5,
       chance_of_wind_change: .15,
     },
