@@ -9,8 +9,8 @@ var Weather = function(climate) {
   this.rain = 0;
 
   this.chance_of_wind = climate.chance_of_wind;
-  this.prob_wind_stays_directed = climate.wind_duration;
-  this.prob_rain_stays_on = climate.rain_duration;
+  this.prob_wind_changes = climate.chance_of_wind_change;
+  this.prob_rain_stops = climate.chance_rain_stops;
   this.chance_of_rain = climate.chance_of_rain;
 
   this.nextDay = function() {
@@ -27,11 +27,12 @@ var Weather = function(climate) {
 
   this.updateRain = function() {
     if (this.rain == 0) {
-      if (Random.random() > this.chance_of_rain) {
+      var random = Random.random();
+      if (random < this.chance_of_rain) {
         this.rain = 1;
       }
     } else {
-      if (Random.random() > this.prob_rain_stays_on) {
+      if (Random.random() < this.prob_rain_stops) {
         this.rain = 0;
       }
     }
@@ -43,7 +44,7 @@ var Weather = function(climate) {
         this.wind_dir = this.getRandomWindDir();
       }
     } else {
-      if (Random.random() > this.prob_wind_stays_directed) {
+      if (Random.random() < this.prob_wind_changes) {
         this.wind_dir = [0, 0];
       }
     }
@@ -78,15 +79,11 @@ var Weather = function(climate) {
       },
     };
     var direction_str = map[wind_coord[0]][wind_coord[1]];
+
+    if (direction_str === undefined) throw new Error('BadParam', 'wind_coord must be a cardinal coordinate.');
     return direction_str;
   };
 
-  this.dirWithoutDiagonal = function(dir) {
-    if (Math.abs(dir[0]) + Math.abs(dir[1]) >= 2) {
-      var i = Math.floor(Random.random() * 2);
-      dir[i] = 0;
-    }
-  }
 };
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

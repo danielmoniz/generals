@@ -15,10 +15,10 @@ var locations = {
       noise: 'perlin2',
     },
     climate: {
-      chance_of_rain: .15,
-      rain_duration: .7,
+      chance_of_rain: .10,
+      chance_rain_stops: .4,
       chance_of_wind: .5,
-      wind_duration: .85,
+      chance_of_wind_change: .15,
     },
   },
 
@@ -38,10 +38,10 @@ var locations = {
       noise: 'perlin2',
     },
     climate: {
-      chance_of_rain: .15,
-      rain_duration: .7,
+      chance_of_rain: .10,
+      chance_rain_stops: .4,
       chance_of_wind: .5,
-      wind_duration: .85,
+      chance_of_wind_change: .15,
     },
   },
 
