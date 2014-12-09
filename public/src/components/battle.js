@@ -302,6 +302,7 @@ Crafty.c('Battle', {
     this.attacking_side = attacker.side;
     this.defending_side = 1 - attacker.side;
 
+    this.unit_updates = [];
     this.retreat_constraints = {};
     this.retreat_constraints[Battle.ATTACKER] = new RetreatConstraints(this.at());
     this.retreat_constraints[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
@@ -325,8 +326,10 @@ Crafty.c('Battle', {
     var units_in_combat = this.unitsInCombat();
     for (var i=0; i < units_in_combat.length; i++) {
       units_in_combat[i].battle_finished();
+      this.winning_side = units_in_combat[i].side;
     }
     this.finished = true;
+    Game.battleEnded(this);
     Entity.destroy(this);
   },
 
@@ -375,6 +378,9 @@ Crafty.c('Battle', {
   },
 
   unitDead: function(unit) {
+    var unit_stats = this.getUnitUpdate(unit, 'killed');
+    this.unit_updates.push(unit_stats);
+
     this.removeUnit(unit);
   },
 
@@ -409,6 +415,9 @@ Crafty.c('Battle', {
       }
     }
 
+    var unit_stats = this.getUnitUpdate(unit, 'retreated');
+    this.unit_updates.push(unit_stats);
+
     this.removeUnit(unit);
 
     unit.battle_finished();
@@ -416,6 +425,24 @@ Crafty.c('Battle', {
       this.end_battle = true;
     }
     return num_losses;
+  },
+
+  getUnitUpdate: function(unit, event) {
+    var unit_stats = {
+      name: unit.name,
+      alive: unit.isAlive(),
+      quantity: unit.quantity,
+      injured: unit.injured,
+      active: unit.getActive(),
+      battle_side: unit.battle_side,
+      side: unit.side,
+      battle_id: this.getId(),
+      event: event,
+    };
+    unit_stats[event] = true;
+    console.log("unit_stats");
+    console.log(unit_stats);
+    return unit_stats;
   },
 
   resolve: function() {
@@ -433,6 +460,10 @@ Crafty.c('Battle', {
       this.end_battle = true;
       Victory.updateWillToFight();
     }
+  },
+
+  resetUnitUpdates: function() {
+    this.unit_updates = [];
   },
 
   isBattleActive: function() {

@@ -139,7 +139,7 @@ Game = {
     Output.updateStatusBar();
 
     if (this.type == this.types.HOTSEAT) {
-      Output.printBattles();
+      Output.printBattles(this.finished_battles);
     }
 
     if (this.type == this.types.HOTSEAT) {
@@ -198,7 +198,7 @@ Game = {
     } else {
       return false;
     }
-    Output.printBattles();
+    Output.printBattles(this.finished_battles);
   },
 
   updateOnlineGame: function(moves, turn_count) {
@@ -212,8 +212,21 @@ Game = {
     // Go right to the next player's turn - skip in-between' turn
     this.nextTurn();
 
-    Output.printBattles();
+    Output.printBattles(this.finished_battles);
     Crafty.trigger('RenderScene');
+  },
+
+  battleEnded: function(battle) {
+    var battle_stats = {
+      id: battle.getId(),
+      unit_updates: battle.unit_updates,
+      location: battle.at(),
+      attacking_side: battle.attacking_side,
+      defending_side: battle.defending_side,
+      winning_side: battle.winning_side,
+    };
+    if (this.finished_battles === undefined) this.finished_battles = [];
+    this.finished_battles.push(battle_stats);
   },
 
   updatePossibleUnitMoves: function() {

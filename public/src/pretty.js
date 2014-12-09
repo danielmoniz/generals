@@ -3,7 +3,7 @@ Pretty = {
   Player: {
     name: function(player_side) {
       if (player_side === undefined) player_side = Game.turn;
-      var names = { 0: "Blue", 1: "White", };
+      //var names = { 0: "Blue", 1: "White", };
       var first_player_name = Utility.capitalizeFirstLetter(Game.factions[0]);
       var second_player_name = Utility.capitalizeFirstLetter(Game.factions[1]);
       var names = { 0: first_player_name, 1: second_player_name };
@@ -127,6 +127,14 @@ Pretty = {
       return morale_string;
     },
 
+  },
+
+  Battle: {
+
+    getUnitUpdateText: function(update_info) {
+      var update_text = '{0} {1}!'.format(update_info.name, update_info.event);
+      return update_text;
+    },
   },
 
   Victory: {

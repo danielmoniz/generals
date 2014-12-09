@@ -77,13 +77,48 @@ Output = {
     }
   },
 
-  printBattles: function() {
+  printBattles: function(finished_battles) {
     var battles = Crafty("Battle").get();
     for (var i in battles) {
       this.printBattle(battles[i]);
     }
 
+    this.printFinishedBattles(finished_battles);
+
     this.updateRetreatBlocks();
+  },
+
+  printFinishedBattles: function(finished_battles) {
+    $(this.battles_id).css('display', 'inline-block');
+    console.log("finished_battles");
+    console.log(finished_battles);
+    for (var i in finished_battles) {
+      var battle_info = finished_battles[i];
+      var battle_div = this.createDiv('battle battle_finished');
+      var winning_faction = Pretty.Player.name(battle_info.winning_side);
+      var winner_text = 'The {0} won!'.format(winning_faction);
+      var winner = this.createDiv('winner', winner_text);
+      battle_div.append(winner);
+      console.log("battle_info.unit_updates");
+      console.log(battle_info.unit_updates);
+      for (var j in battle_info.unit_updates) {
+        var update_div = this.buildUnitUpdate(battle_info.unit_updates[j]);
+        battle_div.append(update_div);
+      }
+
+      /*
+      id: battle.getId(),
+      unit_updates: battle.unit_updates,
+      location: battle.at(),
+      attacking_side: battle.attacking_side,
+      defending_side: battle.defending_side,
+      winning_side: battle.winning_side,
+      */
+
+      $(this.battles_container_id).append(battle_div);
+
+      Game.finished_battles = [];
+    }
   },
 
   printBattle: function(battle) {
@@ -204,9 +239,21 @@ Output = {
 
     total_stats_div.append(space_div).append(attacker_bar_div).append(defender_bar_div);
 
+    for (var i in battle.unit_updates) {
+      var div = this.buildUnitUpdate(battle.unit_updates[i]);
+      battle_div.append(div);
+    }
+
     battle.resetNewUnits();
+    battle.resetUnitUpdates();
 
     return this;
+  },
+
+  buildUnitUpdate: function(update) {
+    var update_text = Pretty.Battle.getUnitUpdateText(update);
+    var div = this.createDiv('unit_update', update_text);
+    return div;
   },
 
   printLosses: function() {
@@ -351,7 +398,6 @@ Output = {
     $(this.alerts_element_id).empty();
     $(this.alerts_container_element_id).hide();
     $(this.message_element_id).empty();
-    $(this.battles_id).hide();
     $(this.battles_id).hide();
     $(this.battles_container_id).empty();
     $(this.unit_count_panel).empty();
@@ -906,8 +952,8 @@ Output = {
     unit_div.append(new_actions_div);
 
     var supply_div = unit_div.find("div.supply");
-    var unit = Crafty(parseInt(unit_div.attr("unit_id")));
-    var supply_remaining = Pretty.Unit.supplied_turns(unit.supply_remaining, unit.quantity);
+    var supply = unit.supply_remaining;
+    var supply_remaining = Pretty.Unit.supplied_turns(supply, unit.quantity);
     //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
     supply_div.text(supply_remaining);
   },
