@@ -405,6 +405,10 @@ Crafty.c('Battle', {
       units: defenders,
       ratios: defender_ratios,
     }
+
+    var unit_stats = this.getUnitUpdate(unit, 'retreated');
+    this.unit_updates.push(unit_stats);
+
     var units = side[unit.battle_side].units;
 
     for (var i=0; i<units.length; i++) {
@@ -414,9 +418,6 @@ Crafty.c('Battle', {
         break;
       }
     }
-
-    var unit_stats = this.getUnitUpdate(unit, 'retreated');
-    this.unit_updates.push(unit_stats);
 
     this.removeUnit(unit);
 

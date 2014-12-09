@@ -809,9 +809,9 @@ Crafty.c('Unit', {
     if (selected && selected.getId && selected.getId() == this.getId()) {
       Game.clearPlayerSelected(this.side);
     }
+    this.alive = false;
     var battle = this.isBattlePresent();
     if (battle) battle.unitDead(this);
-    this.alive = false;
 
     Entity.destroy(this);
   },
