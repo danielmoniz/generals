@@ -78,47 +78,63 @@ Output = {
   },
 
   printBattles: function(finished_battles) {
+    $(this.battles_id).css('display', 'inline-block');
+
     var battles = Crafty("Battle").get();
+    var battles_data = [];
     for (var i in battles) {
-      this.printBattle(battles[i]);
+      battles_data.push(
+        { id: battles[i].getId(), object: battles[i], type: 'battle' }
+      );
     }
 
-    this.printFinishedBattles(finished_battles);
+    for (var i in finished_battles) {
+      battles_data.push(
+        { id: finished_battles[i].id, object: finished_battles[i], type: 'finished battle' }
+      );
+    }
+
+    battles_data.sort(function(a, b) {
+      return a.id - b.id;
+    });
+
+    for (var i in battles_data) {
+      var battle = battles_data[i];
+      if (battle.type == 'battle') {
+        this.printBattle(battle.object);
+      } else if (battle.type == 'finished battle') {
+        this.printFinishedBattle(battle.object);
+      }
+    }
+
+    Game.finished_battles = [];
 
     this.updateRetreatBlocks();
   },
 
-  printFinishedBattles: function(finished_battles) {
-    $(this.battles_id).css('display', 'inline-block');
-    console.log("finished_battles");
-    console.log(finished_battles);
-    for (var i in finished_battles) {
-      var battle_info = finished_battles[i];
-      var battle_div = this.createDiv('battle battle_finished');
-      var winning_faction = Pretty.Player.name(battle_info.winning_side);
-      var winner_text = 'The {0} won!'.format(winning_faction);
-      var winner = this.createDiv('winner', winner_text);
-      battle_div.append(winner);
-      console.log("battle_info.unit_updates");
-      console.log(battle_info.unit_updates);
-      for (var j in battle_info.unit_updates) {
-        var update_div = this.buildUnitUpdate(battle_info.unit_updates[j]);
-        battle_div.append(update_div);
-      }
-
-      /*
-      id: battle.getId(),
-      unit_updates: battle.unit_updates,
-      location: battle.at(),
-      attacking_side: battle.attacking_side,
-      defending_side: battle.defending_side,
-      winning_side: battle.winning_side,
-      */
-
-      $(this.battles_container_id).append(battle_div);
-
-      Game.finished_battles = [];
+  printFinishedBattle: function(battle_info) {
+    var battle_div = this.createDiv('battle battle_finished');
+    var winning_faction = Pretty.Player.name(battle_info.winning_side);
+    var winner_text = 'The {0} won!'.format(winning_faction);
+    var winner = this.createDiv('winner', winner_text);
+    battle_div.append(winner);
+    console.log("battle_info.unit_updates");
+    console.log(battle_info.unit_updates);
+    for (var j in battle_info.unit_updates) {
+      var update_div = this.buildUnitUpdate(battle_info.unit_updates[j]);
+      battle_div.append(update_div);
     }
+
+    /*
+    id: battle.getId(),
+    unit_updates: battle.unit_updates,
+    location: battle.at(),
+    attacking_side: battle.attacking_side,
+    defending_side: battle.defending_side,
+    winning_side: battle.winning_side,
+    */
+
+    $(this.battles_container_id).append(battle_div);
   },
 
   printBattle: function(battle) {
