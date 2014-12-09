@@ -128,6 +128,7 @@ Game = {
 
     // re-update line of sight after battles may have been cleared
     LineOfSight.handleLineOfSight(Game.fog_of_war, this.player, 'ignore sight outlines');
+    EnemyMoves.displayEnemyMoves(this.player, this.turn);
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);
     if (this.player !== undefined) this.updatePossibleUnitMoves();

@@ -449,6 +449,15 @@ Crafty.c("HighlightedMovementPath", {
   },
 });
 
+Crafty.c('MovementArrow', {
+  init: function() {
+    this.requires('Actor');
+    this.bind('NextTurn', this.destroy);
+    this.z = 250;
+  },
+
+});
+
 Crafty.c('PossibleMove', {
   init: function(turns_left) {
     this.requires('Actor, ChangeableColor')

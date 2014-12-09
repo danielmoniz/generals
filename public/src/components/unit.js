@@ -67,6 +67,7 @@ Crafty.c('Unit', {
     this.testTargetAndPath();
 
     this.first_location = this.at();
+    if (this.last_moves === undefined) this.last_moves = [];
     this.possible_moves = [];
     this.possible_moves_data = {};
 
@@ -78,6 +79,8 @@ Crafty.c('Unit', {
     this.testTargetAndPath();
 
     if (turn == (this.side + 0.5) % 2) {
+      this.start_location = this.at();
+      this.last_moves = [];
       if (this.battle && this.move_target_path) {
         this.retreat();
       } else if (!this.battle && this.move_target_path) {
@@ -725,6 +728,7 @@ Crafty.c('Unit', {
       this.last_location = this.at();
       var next_move = partial_path[i];
       this.at(next_move.x, next_move.y);
+      this.last_moves.push({ x: next_move.x, y: next_move.y });
       var new_path = this.move_target_path.slice(1, this.move_target_path.length);
       this.updateMoveTargetPath(new_path);
       //if (new_path.length == 0) this.updateMoveTargetPath('delete');

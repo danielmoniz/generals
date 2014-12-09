@@ -203,4 +203,19 @@ LineOfSight = {
     return entities_in_sight;
   },
 
+  entityInSight: function(entity, seeing_entities) {
+    return this.positionInSight(entity.at(), seeing_entities);
+  },
+
+  positionInSight: function(position, seeing_entities) {
+    for (var i=0; i<seeing_entities.length; i++) {
+      var unit = seeing_entities[i];
+      var distance = Utility.getDistance(unit.at(), position);
+      if (distance <= unit.max_sight) {
+        return true;
+      }
+    }
+    return false;
+  },
+
 }

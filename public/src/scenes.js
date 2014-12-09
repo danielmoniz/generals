@@ -512,6 +512,13 @@ Crafty.scene('Loading', function() {
       spr_road_all: [0, 2],
     });
 
+    Crafty.sprite(32, 'assets_test/movement_arrows_32.png', {
+      spr_movement_arrow_left: [0, 0],
+      spr_movement_arrow_up: [1, 0],
+      spr_movement_arrow_right: [2, 0],
+      spr_movement_arrow_down: [3, 0],
+    });
+
     Crafty.sprite(32, 'assets/supply_route.png', {
       spr_supply: [0, 0],
     });
