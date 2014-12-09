@@ -109,7 +109,11 @@ var Action = {
     } else if (action == "start_fire") {
       var local_terrain = Game.terrain[unit.at().x][unit.at().y];
       local_terrain.ignite();
+    } else {
+      throw new Error('InvalidAction');
     }
+
+    unit.actionPerformed(action);
 
     Game.flushCaches(); // run after unit actions for an up-to-date cache
 

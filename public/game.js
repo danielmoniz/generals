@@ -231,50 +231,10 @@ Game = {
 
   updatePossibleUnitMoves: function() {
     var units = Entity.get('Unit');
-    var moves = {};
-    var graph = Game.terrain_with_roads_graph;
 
     for (var i in units) {
       var unit = units[i];
-      var start_location = unit.at();
-      var points = Utility.getPointsWithinDistance(start_location, unit.movement * 1.5, Game.map_grid);
-
-      for (var j in points) {
-        var x = points[j].x;
-        var y = points[j].y;
-
-        if (x < 0 || x >= Game.map_grid.width) continue;
-        if (y < 0 || y >= Game.map_grid.height) continue;
-        if (this.terrain[x][y].has('Impassable')) {
-          continue;
-        }
-
-        var target = { x: x, y: y };
-
-        var start = graph.grid[unit.at().x][unit.at().y];
-        var end = graph.grid[x][y];
-        var path = Game.pathfind.search(graph, start, end);
-        if (!path) continue;
-
-        if (unit.side !== Game.player) {
-          var stop_points = unit.getStopPoints(target, start_location, 'all enemies');
-        } else {
-          var stop_points = unit.getStopPoints(target, start_location);
-        }
-        var partial_path = Pathing.getPartialPath(path, unit.movement, stop_points);
-        for (var p in partial_path) {
-          var node = partial_path[p];
-          if (moves[node.x] === undefined) moves[node.x] = [];
-          moves[node.x].push(node.y);
-          if (unit.possible_moves_data[node.x] && unit.possible_moves_data[node.x].indexOf && unit.possible_moves_data[node.x].indexOf(node.y) > -1) continue;
-          unit.possible_moves.push(Game.possible_moves[node.x][node.y]);
-          if (unit.possible_moves_data[node.x] === undefined) {
-            unit.possible_moves_data[node.x] = [];
-          }
-          unit.possible_moves_data[node.x].push(node.y);
-        }
-      }
-
+      unit.updatePossibleMoves();
     }
   },
 

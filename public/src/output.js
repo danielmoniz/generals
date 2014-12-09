@@ -513,8 +513,14 @@ Output = {
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}".format('Defence', unit.defensive_ability));
     unit_info_panel.append(div);
-    var div = this.createDiv("", "{0}: {1}".format('Speed', unit.movement));
+
+    if (unit.movement == unit.max_movement) {
+      var div = this.createDiv("", "{0}: {1}".format('Speed', unit.movement));
+    } else {
+      var div = this.createDiv("", "{0}: {1} (max. {2})".format('Speed', unit.movement, unit.max_movement));
+    }
     unit_info_panel.append(div);
+
     var div = this.createDiv("", "{0}: {1}".format('Sight radius', unit.max_sight));
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}".format('Pillage ability', unit.pillage_ability * Game.supply_steal_factor));

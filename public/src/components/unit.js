@@ -25,6 +25,7 @@ Crafty.c('Unit', {
     this.addStat('max_supply', this.max_supply_multiplier * this.quantity);
     this.addStat('supply_remaining', this.max_supply);
     this.addStat('morale', this.best_morale);
+    this.addStat('max_movement', this.movement);
     this.possible_moves = [];
     this.possible_moves_data = {};
   },
@@ -123,6 +124,7 @@ Crafty.c('Unit', {
   },
 
   reset: function() {
+    this.movement = this.max_movement;
     this.turn_action = "move";
     this.performed_actions = [];
     this.updateActionChoices();
@@ -149,6 +151,58 @@ Crafty.c('Unit', {
       actions.push('start_fire');
     }
     return actions;
+  },
+
+  actionPerformed: function(action) {
+    var new_movement = this.movement - this.max_movement / 2;
+    this.movement = Math.max(new_movement, 0);
+    this.possible_moves = [];
+    this.possible_moves_data = {};
+    this.updatePossibleMoves();
+  },
+
+  updatePossibleMoves: function() {
+    var start_location = this.at();
+    var moves = {};
+    var points = Utility.getPointsWithinDistance(start_location, this.movement * 1.5, Game.map_grid);
+    var graph = Game.terrain_with_roads_graph;
+
+    for (var j in points) {
+      var x = points[j].x;
+      var y = points[j].y;
+
+      if (x < 0 || x >= Game.map_grid.width) continue;
+      if (y < 0 || y >= Game.map_grid.height) continue;
+      if (Game.terrain[x][y].has('Impassable')) {
+        continue;
+      }
+
+      var target = { x: x, y: y };
+
+      var start = graph.grid[this.at().x][this.at().y];
+      var end = graph.grid[x][y];
+      var path = Game.pathfind.search(graph, start, end);
+      if (!path) continue;
+
+      if (this.side !== Game.player) {
+        var stop_points = this.getStopPoints(target, start_location, 'all enemies');
+      } else {
+        var stop_points = this.getStopPoints(target, start_location);
+      }
+      var partial_path = Pathing.getPartialPath(path, this.movement, stop_points);
+      for (var p in partial_path) {
+        var node = partial_path[p];
+        if (moves[node.x] === undefined) moves[node.x] = [];
+        moves[node.x].push(node.y);
+        if (this.possible_moves_data[node.x] && this.possible_moves_data[node.x].indexOf && this.possible_moves_data[node.x].indexOf(node.y) > -1) continue;
+
+        this.possible_moves.push(Game.possible_moves[node.x][node.y]);
+        if (this.possible_moves_data[node.x] === undefined) {
+          this.possible_moves_data[node.x] = [];
+        }
+        this.possible_moves_data[node.x].push(node.y);
+      }
+    }
   },
 
   updateActionChoices: function(location) {
