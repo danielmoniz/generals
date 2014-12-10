@@ -24,7 +24,7 @@ var Action = {
     }
 
     this.action = action;
-    var action_words = action.split(' ');
+    var action_words = action.split('_');
     var function_name = "";
     for (var i in action_words) {
       if (i == 0) {
@@ -40,6 +40,8 @@ var Action = {
       func.apply(this, args_to_pass);
       this.postAction();
     } else {
+      console.log("function_name");
+      console.log(function_name);
       throw new Error('ActionDoesNotExist', 'Relevant action function does not exist for {0}'.format(function_name));
     }
   },
@@ -64,9 +66,24 @@ var Action = {
     Game[option] = !Game[option];
   },
 
-  toggleSightOutlines: function() {
-    this.toggleOption('sight_outlines');
+  toggleEnemySightLines: function(name) {
+    this.toggleOption(name);
     LineOfSight.handleSightOutlines();
+  },
+
+  toggleAllySightLines: function(name) {
+    this.toggleOption(name);
+    LineOfSight.handleSightOutlines();
+  },
+
+  toggleShowUnits: function(name) {
+    this.toggleOption(name);
+    LineOfSight.unitLineOfSight(Game.player);
+  },
+
+  toggleEnemyMovement: function(name) {
+    this.toggleOption(name);
+    EnemyMoves.displayEnemyMoves(Game.player, Game.turn);
   },
 
   leftClick: function(entity, selected) {

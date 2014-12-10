@@ -32,6 +32,7 @@
     <script type="text/javascript" src="src/weather.js"></script>
     <script type="text/javascript" src="src/utility.js"></script>
     <script type="text/javascript" src="src/output.js"></script>
+    <script type="text/javascript" src="src/menus.js"></script>
     <script type="text/javascript" src="src/pretty.js"></script>
     <script type="text/javascript" src="src/victory.js"></script>
     <script type="text/javascript" src="src/line_of_sight.js"></script>
@@ -79,7 +80,10 @@
 
       <div id="tool-bar">
 	<input type="button" id="next-turn" value="Start Turn" />
+	<input type="button" id="overlays" value="Overlays" />
 	<div id="message-bar"></div>
+	<div id="menus" class="">
+	</div>
       </div>
 
       <div id="units-info-panel" class="">
@@ -104,43 +108,48 @@
     </div>
 
     <div id="input-container">
-      <form id="options">
-	<h2>Game Options</h2>
-	<div class="option_set">
-	  <div class="option">
-	    <input type="checkbox" name="fog_of_war" checked>Fog of war</input>
+      <div id="options">
+	<h3>Game Options</h2>
+	<form id="checkbox_options">
+	  <div class="option_set">
+	    <div class="option">
+	      <input type="checkbox" name="fog_of_war" checked />Fog of war</input>
+	    </div>
+	    <div class="option">
+	      <input type="checkbox" name="fire" checked>Fire</input>
+	    </div>
+	    <div class="option">
+	      <input type="checkbox" name="live_off_land" checked>Armies can (partially) live off the land</input>
+	    </div>
+	    <div class="option">
+	      <input type="checkbox" name="render_possible_moves" checked>Render
+	      possible moves (uncheck for performance)</input>
+	    </div>
+	    <div class="option">
+	      <input type="checkbox" name="enemy_sight_lines" checked>Render
+	      outlines of army sight</input>
+	    </div>
 	  </div>
-	  <div class="option">
-	    <input type="checkbox" name="fire" checked>Fire</input>
+	</form>
+	<form id="other_options">
+	  <div class="option_set">
+	    <div class="option">
+	      Map size:
+	      <input type="radio" name="map_size" value="large">Large</input>
+	      <input type="radio" name="map_size" value="medium" checked>Medium</input>
+	      <input type="radio" name="map_size" value="small">Small</input>
+	      <input type="radio" name="map_size" value="tiny">Tiny</input>
+	      <!--
+	      <input type="radio" name="map_size" value="miniature">Miniature
+	      (not recommended)</input>
+	      -->
+	    </div>
 	  </div>
-	  <div class="option">
-	    <input type="checkbox" name="live_off_land" checked>Armies can (partially) live off the land</input>
-	  </div>
-	  <div class="option">
-	    <input type="checkbox" name="render_possible_moves" checked>Render
-	    possible moves (uncheck for performance)</input>
-	  </div>
-	  <div class="option">
-	    <input type="checkbox" name="sight_outlines" checked>Render
-	    outlines of army sight</input>
-	  </div>
+	  <div id="faction_selection"></div>
+	  <input type="button" id="start-game" class="start-game" value="Start!" />
 
-	  <div class="option">
-	    Map size:
-	    <input type="radio" name="map_size" value="large">Large</input>
-	    <input type="radio" name="map_size" value="medium" checked>Medium</input>
-	    <input type="radio" name="map_size" value="small">Small</input>
-	    <input type="radio" name="map_size" value="tiny">Tiny</input>
-	    <!--
-	    <input type="radio" name="map_size" value="miniature">Miniature
-	    (not recommended)</input>
-	    -->
-	  </div>
-	</div>
-	<div id="faction_selection"></div>
-	<input type="button" id="start-game" class="start-game" value="Start!" />
-
-      </form>
+	</form>
+      </div>
 
       <div id="starting-game">
 	<h1>Starting game...</h1>

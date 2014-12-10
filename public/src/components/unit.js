@@ -165,6 +165,7 @@ Crafty.c('Unit', {
   },
 
   updatePossibleMoves: function() {
+    if (!Game.render_possible_moves) return;
     var start_location = this.at();
     var moves = {};
     var points = Utility.getPointsWithinDistance(start_location, this.movement * 1.5, Game.map_grid);

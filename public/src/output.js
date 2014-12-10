@@ -311,6 +311,7 @@ Output = {
       .attr("unit_id", unit_id)
       //.click(this.selectSelf())
       .single_double_click(function(event) {
+        $('body').click(); // close all popouts
         this.selectSelf = that.selectSelf();
         this.selectSelf(event);
         if (window.unit_panel_active) {
@@ -1000,7 +1001,7 @@ Output = {
           var unit_id = parseInt($(this).closest(".unit").attr("unit_id"));
           var unit = Crafty(unit_id);
           var action = $(this).val();
-          Action.perform('unit action', unit, action);
+          Action.perform('unit_action', unit, action);
           if (window.unit_panel_active) {
             that.showUnitInfoPanel(unit_id);
           }

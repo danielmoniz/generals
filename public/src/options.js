@@ -96,6 +96,10 @@ var Options = function() {
       min_troops_for_supply_cut: 500,
 
       supply_steal_factor: 3,
+
+      // Overlay options - handle defaults if necessary
+      show_units: true,
+      show_enemy_movement: true,
     }
 
     return options;

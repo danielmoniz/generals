@@ -127,7 +127,7 @@ Game = {
     // ------------------------------------
 
     // re-update line of sight after battles may have been cleared
-    LineOfSight.handleLineOfSight(Game.fog_of_war, this.player, 'ignore sight outlines');
+    LineOfSight.handleLineOfSight(Game.fog_of_war, this.player, 'ignore enemy sight lines');
     EnemyMoves.displayEnemyMoves(this.player, this.turn);
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);
@@ -311,6 +311,7 @@ Game = {
     Output.updateStatusBar();
     Output.updateVictoryBar(true);
     Output.updateNextTurnButton(this.turn);
+    Menus.buildMenus();
 
     if (this.type == this.types.ONLINE) {
       var message = "Review the map and your opponent";
@@ -383,7 +384,7 @@ Game = {
     for (var i in data.actions) {
       var action_data = data.actions[i];
       var unit = Units.getUnitById(action_data.unit_id, current_turn);
-      Action.perform('unit action', unit, action_data.action);
+      Action.perform('unit_action', unit, action_data.action);
     }
 
     // update unit movement paths

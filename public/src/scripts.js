@@ -16,8 +16,8 @@ $(document).ready(function() {
         UI.selectUnit(e.keyCode - 48);
       } else if (shift_num_keys.indexOf(e.keyCode) > -1) { // shift + numeric key
         UI.selectAdditionalUnit(shift_num_keys.indexOf(e.keyCode) + 1);
-      } else if (e.keyCode == 118) { // v
-        UI.toggleSightOutlines();
+      } else if (e.keyCode == 111) { // o
+        $("input#overlays").click();
       }
       return false;
     }
@@ -48,9 +48,25 @@ $(document).ready(function() {
   $("body").click(function() {
     $('.unit-info-panel').hide();
     window.unit_panel_active = false;
+
+    $('.overlays.popout').hide();
   });
 
   $("#units-info-panel").click(function(event) {
+    event.stopPropagation();
+  });
+
+  $("input#overlays").click(function(event) {
+    var popout = $('.overlays.popout');
+    var visible = popout.is(':visible');
+    $('body').click(); // close all popouts
+    popout.hide();
+    if (!visible) popout.show();
+    $(this).blur();
+    event.stopPropagation();
+  });
+
+  $('div#menus').click(function(event) {
     event.stopPropagation();
   });
 
@@ -107,9 +123,8 @@ $(document).ready(function() {
   });
 
   $("#next-turn").click(function() {
-    Action.perform('next turn');
+    Action.perform('next_turn');
     $(this).blur();
-    return false;
   });
 
   if (typeof socket === 'undefined') {
@@ -164,6 +179,7 @@ UI = {
     $("#starting-game").show();
     $("input#play-again").hide();
     $("#side-info-panel").show();
+    $(".overlays.popout").hide();
 
     $("#game-container").show();
 
@@ -244,13 +260,9 @@ UI = {
     buttons.click();
   },
 
-  toggleSightOutlines: function() {
-    Action.perform('toggle sight outlines');
-  },
-
   getOptions: function() {
     var options = {};
-    var options_form = document.getElementById("options");
+    var options_form = document.getElementById("other_options");
     var form_values = $(options_form).serializeArray()
     var factions = [];
 
@@ -263,6 +275,12 @@ UI = {
       }
     }
     options.factions = factions;
+
+    var checkboxes_form = document.getElementById("checkbox_options");
+    var inputs = $(checkboxes_form).find('input');
+    inputs.each(function() {
+      options[this.name] = $(this).is(':checked');
+    });
 
     return options;
   },

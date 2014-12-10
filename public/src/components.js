@@ -219,7 +219,7 @@ Crafty.c('Clickable', {
       // NOTE: 'Click' does not work with right clicking!
       .bind('MouseUp', function(e) { 
         if (e.mouseButton == Crafty.mouseButtons.LEFT && !this.ignore_next_mouse_up && this.mouse_went_down_here) {
-          Action.perform('left click', this, Game.selected);
+          Action.perform('left_click', this, Game.selected);
         }
         this.ignoreNextMouseUp = false;
         this.resetLeftMouseDown();
@@ -323,7 +323,7 @@ Crafty.c('Receivable', {
   },
 
   rightClick: function(e, double_hold) {
-    Action.perform('right click', this, e, double_hold);
+    Action.perform('right_click', this, e, double_hold);
   },
 
   setRightMouseDown: function() {
@@ -453,7 +453,18 @@ Crafty.c('MovementArrow', {
   init: function() {
     this.requires('Actor');
     this.bind('NextTurn', this.destroy);
-    this.z = 250;
+    this.bind('HideEnemyMovement', this.hide);
+    this.bind('ShowEnemyMovement', this.show);
+    this.z = 95;
+    this.visible = false;
+  },
+
+  hide: function() {
+    this.visible = false;
+  },
+
+  show: function() {
+    this.visible = true;
   },
 
 });

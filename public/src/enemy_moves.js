@@ -4,8 +4,8 @@ var EnemyMoves = {
   displayEnemyMoves: function(player, turn) {
     if (player % 1 != 0 || player != turn) return;
 
-    var units = Units.getEnemyUnits(player);
     var friendly_units = Units.getFriendlyUnits(player);
+    var units = Units.getEnemyUnits(player);
     for (var i in units) {
       var unit = units[i];
       if (unit.last_moves.length == 0) continue;
@@ -15,6 +15,12 @@ var EnemyMoves = {
         var node = path[j];
         this.createMovementArrows(path[j-1], path[j], friendly_units);
       }
+    }
+
+    if (Game.enemy_movement) {
+      Crafty.trigger('ShowEnemyMovement');
+    } else {
+      Crafty.trigger('HideEnemyMovement');
     }
   },
 

@@ -9,3 +9,11 @@
   border: 1px white solid;
   padding: 2px;
 }
+
+.overlays.popout {
+  bottom: 36px;
+  right: 0px;
+  display: none;
+  padding: 5px;
+  min-width: 183px;
+}
