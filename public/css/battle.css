@@ -5,7 +5,7 @@
 .battle .title .winning { border: 1px solid green; }
 .battle .title .losing { border: 1px solid red; }
 .battle .title .container { width: 67px; height: 34px; text-align: center; }
-.battle .battle.square { background-image:url("assets/Combat2.png"); }
+.battle .battle.square { background-image:url("../assets/Combat2.png"); }
 .battle .icon { display: block; width: 32px; height:32px; vertical-align:top; }
 .battle .square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
 
@@ -17,8 +17,8 @@
 .battle .attacker .bar { border-right: 0; }
 .battle .defender .bar {}
 .battle .bar { height: 100%; width: 9px; }
-.battle .active { background-image:url("assets/green-supply.png"); }
-.battle .injured.bar { border-top: 0; background-image:url("assets/colour_bar-yellow.png"); }
+.battle .active { background-image:url("../assets/green-supply.png"); }
+.battle .injured.bar { border-top: 0; background-image:url("../assets/colour_bar-yellow.png"); }
 
 .battle .unit { border: 1px solid transparent; }
 .battle .unit.new { border: 1px solid whitesmoke; }

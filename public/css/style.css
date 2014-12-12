@@ -41,11 +41,11 @@ div#battles { display:none; }
   height: 10px;
 }
 .will.blue {
-  background-image:url("assets/colour_bar-blue.png");
+  background-image:url("../assets/colour_bar-blue.png");
   float: right;
 }
 .will.white {
-  background-image:url("assets/colour_bar-white.png");
+  background-image:url("../assets/colour_bar-white.png");
   float: left;
 }
 
@@ -81,16 +81,16 @@ div#instructions ul { list-style-type: disc; }
 .unit .unit-item { display: inline-block; margin-right: 0px; }
 .unit .square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
 .unit .supply { vertical-align:top; color: black; }
-.unit .supplied { background-image:url("assets/green-supply.png"); }
-.unit .unsupplied { background-image:url("assets/red-supply.png"); }
-.unit .battle.square { background-image:url("assets/Combat2.png"); }
+.unit .supplied { background-image:url("../assets/green-supply.png"); }
+.unit .unsupplied { background-image:url("../assets/red-supply.png"); }
+.unit .battle.square { background-image:url("../assets/Combat2.png"); }
 .unit .status.small { color: red; }
 
-.rank_1 { background-image:url("assets/star_gold.png"); }
-.rank_2 { background-image:url("assets/star_silver.png"); }
-.rank_3 { background-image:url("assets/chevron_3.png"); }
-.rank_4 { background-image:url("assets/chevron_2.png"); }
-.rank_5 { background-image:url("assets/chevron_1.png"); }
+.rank_1 { background-image:url("../assets/star_gold.png"); }
+.rank_2 { background-image:url("../assets/star_silver.png"); }
+.rank_3 { background-image:url("../assets/chevron_3.png"); }
+.rank_4 { background-image:url("../assets/chevron_2.png"); }
+.rank_5 { background-image:url("../assets/chevron_1.png"); }
 
 .battle { cursor: pointer; }
 .report { display:inline-block; padding-bottom: 5px; width: 100%; }
