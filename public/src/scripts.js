@@ -132,9 +132,9 @@ $(document).ready(function() {
   }
 
   Output.generatePlayableFactions();
-  Output.generateInstructions();
+  InstructionsBuilder.generateInstructions();
 
-  // TEST ONLY
+  // TEST ONLY -----------------
   //$("#start-hotseat-button").click();
   //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
