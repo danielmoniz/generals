@@ -260,8 +260,7 @@ Output = {
       battle_div.append(div);
     }
 
-    battle.resetNewUnits();
-    battle.resetUnitUpdates();
+    battle.printed();
 
     return this;
   },

@@ -353,10 +353,6 @@ Crafty.c('Battle', {
     }
   },
 
-  resetNewUnits: function() {
-    this.new_units = [];
-  },
-
   removeUnit: function(unit) {
     if (unit.battle_side == Battle.ATTACKER) {
       var units = this.attackers;
@@ -465,6 +461,15 @@ Crafty.c('Battle', {
 
   resetUnitUpdates: function() {
     this.unit_updates = [];
+  },
+
+  resetNewUnits: function() {
+    this.new_units = [];
+  },
+
+  printed: function() {
+    this.resetNewUnits();
+    this.resetUnitUpdates();
   },
 
   isBattleActive: function() {
