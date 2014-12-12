@@ -4,8 +4,8 @@ if (typeof require !== 'undefined') {
   Graph = astar.Graph;
   astar = astar.astar;
   
-  locations = require("../locations.js");
-  Factions = require("../factions");
+  locations = require("../data/locations.js");
+  Factions = require("../data/factions");
 
 } else {
   window.astar = astar;
