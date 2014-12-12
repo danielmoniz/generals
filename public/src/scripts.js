@@ -135,12 +135,12 @@ $(document).ready(function() {
   InstructionsBuilder.generateInstructions();
 
   // TEST ONLY -----------------
-  $("#start-hotseat-button").click();
-  $("input[name=map_size][value=tiny]").click();
+  //$("#start-hotseat-button").click();
+  //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
   //$("input[name=factions_1][value=aztecs]").click();
   //$('input[name=sight_outlines]').click();
-  $("#start-game").click();
+  //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
   //
