@@ -28,6 +28,21 @@ Output = {
     return this;
   },
 
+  clearCounts: function() {
+    $(this.unit_count_panel).empty();
+  },
+
+  clearAll: function() {
+    $(this.main_element_id).empty();
+    $(this.alerts_element_id).empty();
+    $(this.alerts_container_element_id).hide();
+    $(this.message_element_id).empty();
+    $(this.battles_id).hide();
+    $(this.battles_container_id).empty();
+    $(this.unit_count_panel).empty();
+    return this;
+  },
+
   makeReport: function(divs, title, conclusion, inline) {
     var info_panel = $(this.element_id);
     var classes = "";
@@ -405,21 +420,6 @@ Output = {
     return img;
   },
 
-  clearCounts: function() {
-    $(this.unit_count_panel).empty();
-  },
-
-  clearAll: function() {
-    $(this.main_element_id).empty();
-    $(this.alerts_element_id).empty();
-    $(this.alerts_container_element_id).hide();
-    $(this.message_element_id).empty();
-    $(this.battles_id).hide();
-    $(this.battles_container_id).empty();
-    $(this.unit_count_panel).empty();
-    return this;
-  },
-
   printTerrain: function(terrain) {
     $(this.terrain_panel).empty();
     var output = [];
@@ -450,15 +450,6 @@ Output = {
       if (terrain.supply_remaining > 0) {
         var supply = terrain.supply_remaining;
         output.push("Supply: {0}".format(supply));
-        /*
-        if (terrain.supply_remaining == terrain.max_supply) {
-          //var supply = "{0}".format('(untouched');
-          //output.push("Supply: {0}".format(terrain.supply_remaining));
-        } else {
-          //var supply = Pretty.Terrain.City.supply(terrain);
-          //output.push("Supply: {0}".format(supply));
-        }
-        */
       } else {
         output.push("Sacked!");
       }
