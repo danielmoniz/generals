@@ -27,7 +27,7 @@ var TerrainData = function(type, stats) {
 
     "Grass": {
       z: 80,
-      move_difficulty: 1, 
+      move_difficulty: 1.25,
       build_over: 1,
       defense_bonus: 1,
       provides_supply: 1000,
@@ -36,7 +36,7 @@ var TerrainData = function(type, stats) {
 
     "Tree": {
       z: 82,
-      move_difficulty: 2,
+      move_difficulty: 2.5,
       build_over: 3,
       defense_bonus: 1.05,
       flammable: true,
@@ -47,7 +47,7 @@ var TerrainData = function(type, stats) {
     "Farm": {
       z: 80,
       build_over: 1,
-      move_difficulty: 1.2,
+      move_difficulty: 1.6,
       defense_bonus: 1,
       alpha: 0.6,
       supply_to_steal: 6000,
@@ -59,7 +59,7 @@ var TerrainData = function(type, stats) {
 
     "Settlement": {
       z: 82,
-      move_difficulty: 0.75,
+      move_difficulty: 1,
       build_over: 0.01,
       supply: 1,
       max_supply_multiplier: 3,
@@ -82,7 +82,7 @@ var TerrainData = function(type, stats) {
 
     "Road": {
       z: 81,
-      move_difficulty: 0.75,
+      move_difficulty: 1,
       build_over: 0.01,
       defense_bonus: 1,
       is_supply_route: false,

@@ -29,21 +29,21 @@ var UnitData = function(type, stats) {
       max_sight: 6,
       combat_ability: 1,
       defensive_ability: 1,
-      movement: 4,
+      //movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
     },
 
     "Cavalry": {
-      movement: 8,
+      movement: 10,
     },
 
     "Infantry": {
-      movement: 4,
+      movement: 5,
     },
 
     "Jaguar Warrior": {
-      movement: 5,
+      movement: 6,
       combat_ability: 1.2,
     },
 
@@ -53,19 +53,19 @@ var UnitData = function(type, stats) {
     },
 
     "Scout": {
-      movement: 5,
+      movement: 6,
       combat_ability: 0.5,
       max_sight: 7,
     },
 
     "Raider": {
-      movement: 5,
+      movement: 6,
       combat_ability: 0.75,
       pillage_ability: 2,
     },
 
     "Ranger": {
-      movement: 5,
+      movement: 6,
       combat_ability: 1,
       max_supply_multiplier: 5,
     },
@@ -74,13 +74,13 @@ var UnitData = function(type, stats) {
       max_supply_multiplier: 3,
       max_sight: 6,
       combat_ability: 1,
-      movement: 4,
+      movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
     },
 
     "Test2": {
-      movement: 5,
+      movement: 6,
       combat_ability: 0.5,
       max_sight: 7,
     },
