@@ -43,6 +43,11 @@ Output = {
     return this;
   },
 
+  clearMessage: function() {
+    $(this.message_element_id).empty();
+    return this;
+  },
+
   makeReport: function(divs, title, conclusion, inline) {
     var info_panel = $(this.element_id);
     var classes = "";
@@ -642,11 +647,6 @@ Output = {
 
   message: function(message) {
     $(this.message_element_id).text(message);
-    return this;
-  },
-
-  clearMessage: function() {
-    $(this.message_element_id).empty();
     return this;
   },
 
