@@ -185,14 +185,13 @@ Crafty.c('Unit', {
 
       var start = graph.grid[this.at().x][this.at().y];
       var end = graph.grid[x][y];
-      var path = Game.pathfind.search(graph, start, end);
+      var all_enemies = false;
+      if (this.side !== Game.player) all_enemies = 'all enemies';
+      var stop_points = this.getStopPoints(target, start_location, all_enemies);
+
+      var path = Game.pathfind.search(graph, start, end, this.movement, stop_points);
       if (!path) continue;
 
-      if (this.side !== Game.player) {
-        var stop_points = this.getStopPoints(target, start_location, 'all enemies');
-      } else {
-        var stop_points = this.getStopPoints(target, start_location);
-      }
       var partial_path = Pathing.getPartialPath(path, this.movement, stop_points);
       for (var p in partial_path) {
         var node = partial_path[p];
@@ -545,8 +544,10 @@ Crafty.c('Unit', {
       var start = graph.grid[this.at().x][this.at().y];
     }
     var end = graph.grid[target_x][target_y];
+    var stop_points = this.getStopPoints(end, start, false);
 
-    var new_path = Game.pathfind.search(graph, start, end);
+    var new_path = Game.pathfind.search(graph, start, end, this.movement, stop_points);
+
     if (!new_path) {
       Output.message("Target impossible to reach!");
       return false;
