@@ -62,6 +62,9 @@ var astar = {
     search: function(graph, start, end, max_per_turn, stop_points, options) {
         astar.init(graph);
 
+        // @TODO Allow for two values of max_per_turn (one for first turn, the
+        // other for the rest)
+
         if (!stop_points) stop_points = [];
         for (var i in stop_points) {
           var point = stop_points[i];
@@ -104,6 +107,9 @@ var astar = {
                     continue;
                 }
 
+                // @TODO Ensure nodes that are impossible to reach are removed
+                // (or waited for if they can be reahed later)
+
                 // The g score is the shortest distance from start to current node.
                 // We need to check if the path we have arrived at this neighbor is the shortest one we have seen yet.
                 if (currentNode.g == 0) {
@@ -120,6 +126,18 @@ var astar = {
                     neighbor.h = neighbor.h || new Score(heuristic(neighbor, end), max_per_turn);
                     neighbor.g = gScore;
                     neighbor.f = neighbor.g.add(neighbor.h);
+
+                    /*
+                    if (window.testing1) {
+                      console.log("currentNode");
+                      console.log(currentNode);
+                      console.log(currentNode.g);
+                      console.log("neighbor.g");
+                      console.log(neighbor.g);
+                      console.log(neighbor);
+                      console.log("------");
+                    }
+                    */
 
                     if (closest) {
                         // If the neighbour is closer than the current closestNode or if it's equally close but has
@@ -166,18 +184,59 @@ var astar = {
 };
 
 function Score(score, max_per_turn, stop_point) {
+  if ((typeof score != 'number' && typeof score != 'object') || score === undefined) {
+    throw new Error('BadParam', 'score value must be a number or another score object.');
+  }
   this.huge_num = 1000000;
   if (!max_per_turn) max_per_turn = this.huge_num;
-
   this.max_per_turn = max_per_turn;
-  this.stop_point = stop_point;
 
-  this.turns = Math.floor(score / this.huge_num);
+  var turns = Math.floor(score / this.huge_num);
   var extra_weight = score % this.huge_num;
-  if (stop_point && extra_weight < max_per_turn) extra_weight = max_per_turn;
-  var added_turns = Math.max(Math.ceil(extra_weight / max_per_turn), 1) - 1;
-  this.turns += added_turns;
-  this.extra_weight = extra_weight - added_turns * max_per_turn;
+
+  if (typeof max_per_turn == 'object') {
+    var first_turn_max = max_per_turn[0];
+    var future_turns_max = max_per_turn[1];
+    if (turns >= 1) {
+      // use the max_per_turn value corresponding to the 1+ turns
+      var new_score = new Score(score, future_turns_max, stop_point);
+      this.max_per_turn = future_turns_max;
+      this.turns = new_score.turns;
+      this.extra_weight = new_score.extra_weight;
+      return;
+    }
+
+    if (first_turn_max < extra_weight) {
+      // can spend entire first turn on the extra weight available
+      extra_weight -= first_turn_max;
+      turns += 1;
+      var value = this.valueOf(turns, extra_weight);
+      var new_score = new Score(value, future_turns_max, stop_point);
+      this.max_per_turn = future_turns_max;
+      this.turns = new_score.turns;
+      this.extra_weight = new_score.extra_weight;
+      return;
+
+    } else {
+      if (stop_point && extra_weight < first_turn_max) extra_weight = first_turn_max;
+      this.turns = turns;
+      this.extra_weight = extra_weight;
+      this.max_per_turn = max_per_turn;
+      return;
+    }
+
+    // otherwise, build score object as normal
+  } else if (typeof max_per_turn == 'number') {
+    var added_turns = Math.max(Math.ceil(extra_weight / max_per_turn), 1) - 1;
+    turns += added_turns;
+    extra_weight = extra_weight - added_turns * max_per_turn;
+    if (stop_point && extra_weight < max_per_turn) extra_weight = max_per_turn;
+    this.turns = turns;
+    this.extra_weight = extra_weight;
+  } else {
+    throw new Error('BadParam', 'max_per_turn must be an array or a number.');
+  }
+
 }
 
 Score.prototype.valueOf = function(turns, extra_weight) {
@@ -196,12 +255,18 @@ Score.prototype.add = function(addition, stop_point) {
   var new_score = new Score(addition, this.max_per_turn);
   var total_extra_weight = this.extra_weight + new_score.extra_weight;
 
-  if (total_extra_weight > this.max_per_turn) {
+  if (new_score.turns < 1) {
+    var max_per_turn = this.max_per_turn[0];
+  } else {
+    var max_per_turn = this.max_per_turn[1];
+  }
+  if (total_extra_weight > max_per_turn) {
     // carry over the entire addition as extra weight (new turn)
+    var max_per_turn = this.max_per_turn[1];
     var turns = this.turns + new_score.turns + 1;
     var extra_weight = new_score.extra_weight;
     var value = this.valueOf(turns, extra_weight);
-    var result_score = new Score(value, this.max_per_turn, stop_point);
+    var result_score = new Score(value, max_per_turn, stop_point);
     return result_score;
 
   } else {

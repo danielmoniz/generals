@@ -546,7 +546,9 @@ Crafty.c('Unit', {
     var end = graph.grid[target_x][target_y];
     var stop_points = this.getStopPoints(end, start, false);
 
-    var new_path = Game.pathfind.search(graph, start, end, this.movement, stop_points);
+    var movement = this.getMovementArray(this.movement);
+
+    var new_path = Game.pathfind.search(graph, start, end, movement, stop_points);
 
     if (!new_path) {
       Output.message("Target impossible to reach!");
@@ -574,6 +576,9 @@ Crafty.c('Unit', {
     // provide +1 movement for retreating in order to escape
     var movement = this.movement;
     if (this.battle) movement += 1;
+    movement = this.getMovementArray(movement);
+    console.log("movement");
+    console.log(movement);
     if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
 
     if (!ignore_visuals) {
@@ -587,6 +592,13 @@ Crafty.c('Unit', {
 
   },
 
+  getMovementArray: function(movement) {
+    if (movement != this.max_movement) {
+      movement = [movement, this.max_movement];
+    }
+    return movement;
+  },
+
   colourMovementPath: function(path, this_movement, location) {
     var turns_required = 1;
     var movement_path = [];
@@ -598,14 +610,17 @@ Crafty.c('Unit', {
     movement_path.push([movement_square, highlighted_square]);
     while (path.length > 0) {
       var stop_points = this.getStopPoints(target, start_location, false);
-      var next_partial_path = Pathing.getPartialPath(path, this_movement, stop_points);
+      var movement_amount = this_movement;
+      if (this_movement.length) movement_amount = this_movement[0];
+
+      var next_partial_path = Pathing.getPartialPath(path, movement_amount, stop_points);
 
       // get stop points for both end target and end of this turn's final space
       var first_move_end_node = next_partial_path[next_partial_path.length - 1];
       var extra_stop_points = this.getStopPoints(first_move_end_node, start_location, false);
       stop_points = stop_points.concat(extra_stop_points);
       Utility.removeDuplicates(stop_points);
-      var next_partial_path = Pathing.getPartialPath(path, this_movement, stop_points);
+      var next_partial_path = Pathing.getPartialPath(path, movement_amount, stop_points);
 
       for (var i=0; i<next_partial_path.length; i++) {
         var movement_spot = Pathing.makeMovementPath(next_partial_path[i].x, next_partial_path[i].y, turns_required);
@@ -615,6 +630,11 @@ Crafty.c('Unit', {
       turns_required += 1;
       path = path.slice(next_partial_path.length, path.length);
       start_location = next_partial_path[next_partial_path.length - 1];
+
+      // update movement to latest value
+      if (this_movement.length && this_movement.length > 1) {
+        this_movement = this_movement.slice(1);
+      }
     }
     return movement_path;
   },
