@@ -162,6 +162,7 @@ Crafty.c('Unit', {
     this.possible_moves = [];
     this.possible_moves_data = {};
     this.updatePossibleMoves();
+    this.updateMovementPaths();
   },
 
   updatePossibleMoves: function() {
@@ -244,7 +245,8 @@ Crafty.c('Unit', {
       if (this.move_target_path) {
         if (this.movement_path && Game.turn == this.side) {
           Pathing.destroyMovementPath(this.movement_path);
-          this.movement_path = this.colourMovementPath(this.move_target_path, this.movement, this.at());
+          var movement = this.getMovementArray(this.movement);
+          this.movement_path = this.colourMovementPath(this.move_target_path, movement, this.at());
         }
       }
     }
@@ -518,8 +520,6 @@ Crafty.c('Unit', {
     }
 
     var target = { x: target_x, y: target_y };
-    console.log('{0} preparing move:'.format(this.name));
-    console.log(target);
     Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
 
     var graph = Game.terrain_with_roads_graph;
@@ -566,10 +566,6 @@ Crafty.c('Unit', {
     } else {
       var path = new_path;
     }
-    console.log("path");
-    console.log(path);
-    console.log("Pathing.totalCost(path)");
-    console.log(Pathing.totalCost(path));
 
     // @TODO Return false here if the path does not exist or any reason
 
@@ -577,8 +573,6 @@ Crafty.c('Unit', {
     var movement = this.movement;
     if (this.battle) movement += 1;
     movement = this.getMovementArray(movement);
-    console.log("movement");
-    console.log(movement);
     if (this.movement_path) Pathing.destroyMovementPath(this.movement_path);
 
     if (!ignore_visuals) {
