@@ -749,7 +749,7 @@ Crafty.c('Unit', {
       this.updateMoveTargetPath(new_path);
       //if (new_path.length == 0) this.updateMoveTargetPath('delete');
       this.moved();
-      if (this.start_battle) break;
+      if (this.battle) break;
 
       var end_movement = false;
       for (var j in stop_points) {
