@@ -172,6 +172,11 @@ Crafty.c('Unit', {
     var points = Utility.getPointsWithinDistance(start_location, this.movement * 1.5, Game.map_grid);
     var graph = Game.terrain_with_roads_graph;
 
+    Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
+
+    var graph = Game.terrain_with_roads_graph;
+    this.updateTerrainGraphWithRetreatBlocks(graph);
+
     for (var j in points) {
       var x = points[j].x;
       var y = points[j].y;
@@ -207,6 +212,9 @@ Crafty.c('Unit', {
         this.possible_moves_data[node.x].push(node.y);
       }
     }
+
+    Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
+
   },
 
   updateActionChoices: function(location) {
@@ -250,6 +258,20 @@ Crafty.c('Unit', {
         }
       }
     }
+  },
+
+  updateTerrainGraphWithRetreatBlocks: function(graph, target) {
+    if (this.battle) {
+      var battle = this.isBattlePresent();
+      var retreat_constraints = battle.retreat_constraints[this.battle_side];
+      if (!retreat_constraints.isMoveTargetValid(target)) {
+        return false;
+      }
+
+      retreat_constraints.applyToArray(graph.grid, 'weight');
+    }
+
+    return graph;
   },
 
   customSelect: function() {
@@ -524,14 +546,8 @@ Crafty.c('Unit', {
 
     var graph = Game.terrain_with_roads_graph;
 
-    if (this.battle) {
-      var battle = this.isBattlePresent();
-      var retreat_constraints = battle.retreat_constraints[this.battle_side];
-      if (!retreat_constraints.isMoveTargetValid(target)) {
-        return false;
-      }
-
-      retreat_constraints.applyToArray(graph.grid, 'weight');
+    if (!this.updateTerrainGraphWithRetreatBlocks(graph, target)) {
+      return false;
     }
 
     this.move_target = target;
