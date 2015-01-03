@@ -169,7 +169,9 @@ Crafty.c('Unit', {
     if (!Game.render_possible_moves) return;
     var start_location = this.at();
     var moves = {};
-    var points = Utility.getPointsWithinDistance(start_location, this.movement * 1.5, Game.map_grid);
+    var movement = this.movement;
+    if (this.battle && this.side == Game.turn) movement += 1;
+    var points = Utility.getPointsWithinDistance(start_location, movement * 1.5, Game.map_grid);
     var graph = Game.terrain_with_roads_graph;
 
     Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
@@ -195,10 +197,10 @@ Crafty.c('Unit', {
       if (this.side !== Game.player) all_enemies = 'all enemies';
       var stop_points = this.getStopPoints(target, start_location, all_enemies);
 
-      var path = Game.pathfind.search(graph, start, end, this.movement, stop_points);
+      var path = Game.pathfind.search(graph, start, end, movement, stop_points);
       if (!path) continue;
 
-      var partial_path = Pathing.getPartialPath(path, this.movement, stop_points);
+      var partial_path = Pathing.getPartialPath(path, movement, stop_points);
       for (var p in partial_path) {
         var node = partial_path[p];
         if (moves[node.x] === undefined) moves[node.x] = [];
