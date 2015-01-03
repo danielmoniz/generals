@@ -64,6 +64,12 @@ Crafty.c('Terrain', {
       }
     }
   },
+
+  destroyTerrain: function(unit) {
+    this.destroyed = true;
+    Victory.entityDestroyed(this, unit);
+  },
+
 });
 
 // A Transportation object is one meant to carry people/items, eg. a road,
@@ -119,7 +125,7 @@ Crafty.c('Farm', {
     this.requires('Terrain, Passable, Color, spr_farm');
   },
 
-  pillage: function() {
+  pillage: function(unit) {
     var supply = this.supply_to_steal;
     this.addNewComponent("PillagedFarm");
     this.addStats({
@@ -128,6 +134,7 @@ Crafty.c('Farm', {
         supply_to_steal: 0,
         flammable: false,
       });
+    this.destroyTerrain(unit);
     return supply;
   },
 
@@ -156,6 +163,16 @@ Crafty.c('Settlement', {
   init: function() {
     this.requires('Terrain');
   },
+
+  /*
+   * Sets any dynamic stats for the unit that require this.stats to be set
+   * properly.
+   */
+  setStats: function() {
+    this.addStat('max_supply', this.population * this.max_supply_multiplier);
+    this.addStat('supply_remaining', this.population * this.max_supply_multiplier);
+  },
+
 });
 
 Crafty.c('City', {
@@ -185,16 +202,7 @@ Crafty.c('City', {
     // from a supply route (depends on side, or if it is owned/neutral)
   },
 
-  /*
-   * Sets any dynamic stats for the unit that require this.stats to be set
-   * properly.
-   */
-  setStats: function() {
-    this.addStat('max_supply', this.population * this.max_supply_multiplier);
-    this.addStat('supply_remaining', this.population * this.max_supply_multiplier);
-  },
-
-  pillage: function(pillage_power) {
+  pillage: function(unit, pillage_power) {
     if (this.being_sacked === undefined) {
       this.being_sacked = Crafty.e('CityBeingSacked');
       this.being_sacked.at(this.at().x, this.at().y);
@@ -215,6 +223,7 @@ Crafty.c('City', {
       this.city_sides[1].destroy();
       this.being_sacked.destroy();
       this.flag.destroy();
+      this.destroyTerrain(unit);
     } else {
       this.being_sacked.show();
     }
@@ -302,16 +311,7 @@ Crafty.c('Town', {
     // from a supply route (depends on side, or if it is owned/neutral)
   },
 
-  /*
-   * Sets any dynamic stats for the unit that require this.stats to be set
-   * properly.
-   */
-  setStats: function() {
-    this.addStat('max_supply', this.population * this.max_supply_multiplier);
-    this.addStat('supply_remaining', this.population * this.max_supply_multiplier);
-  },
-
-  pillage: function(pillage_power) {
+  pillage: function(unit, pillage_power) {
     if (this.being_sacked === undefined) {
       this.being_sacked = Crafty.e('TownBeingSacked');
       this.being_sacked.at(this.at().x, this.at().y);
@@ -330,6 +330,7 @@ Crafty.c('Town', {
       // for now, destroy the town sides when the town is sacked
       this.being_sacked.destroy();
       this.flag.destroy();
+      this.destroyTerrain(unit);
     } else {
       this.being_sacked.show();
     }

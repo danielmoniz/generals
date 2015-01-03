@@ -90,6 +90,9 @@ Game = {
 
     Output.updateNextTurnButton(this.turn);
 
+    if (this.turn == 0) {
+      Victory.nextDay(this.turn);
+    }
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
     if (victory !== false) {
@@ -107,12 +110,9 @@ Game = {
     }
 
     if (this.turn % 2 == 0) {
-      console.log("next day:");
       this.weather.nextDay();
     }
-    console.log("spread fire:");
     Crafty.trigger("SpreadFire");
-    console.log("-----------------");
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);
 
     // line of sight must update before unit turns for proper pathfinding

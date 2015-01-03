@@ -36,6 +36,13 @@ var Factions = {
     ],
 
     cities: ['Avarga', 'Karakorum', 'Dadu', 'Ikh Khuree'],
+    goal: {
+      'aggressive': {
+        aggression_increase: 5,
+        turn_decrease: 4,
+      },
+      'defensive': false,
+    },
   },
 
   romans: {

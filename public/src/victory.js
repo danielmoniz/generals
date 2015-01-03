@@ -13,12 +13,17 @@ Victory = {
       { name: 'city_values', getFunction: 'getUnsackedCities', },
       { name: 'town_values', getFunction: 'getUnsackedTowns', max_effect: [1, 2], },
       { name: 'forest_values', getFunction: 'getStandingForests', max_effect: [2, 3], },
+      { name: 'time_values', getFunction: 'getTimeLeft' },
     ];
 
     this.will_to_fight = [100, 100];
     for (var i in this.factor_values) {
       this[this.factor_values[i].name] = [undefined, undefined];
     }
+
+    this.aggression = [1, 1];
+    this.time_left = [100, 100];
+
     this.ratio_to_win = 3; // need X times higher will than opponent to win
     this.setWillFactorValues();
   },
@@ -30,6 +35,19 @@ Victory = {
     }
 
     this.ratio_to_win = victory_data.ratio_to_win;
+  },
+
+  nextDay: function(side) {
+    for (var side=0; side<2; side++) {
+      var faction = Factions[Game.factions[side]];
+      console.log(faction);
+      if (faction.goal && faction.goal.aggressive) {
+        this.aggression[side] = Math.max(this.aggression[side] - 1, 1);
+        this.time_left[side] -= faction.goal.aggressive.turn_decrease / this.aggression[side];
+      } else { // automatically drop Willpower if no goal specified
+        this.time_left[side] -= 2;
+      }
+    }
   },
   
   checkVictoryConditions: function() {
@@ -78,6 +96,26 @@ Victory = {
       }
     }
 
+  },
+
+  entityDestroyed: function(entity, unit) {
+    // handle victory effects of entity being destroyed
+
+    // handle victory effects of destroying entity
+    if (unit === undefined) return;
+    console.log("testing ---");
+    console.log(this.aggression[unit.side]);
+    if (entity.side !== undefined && entity.side != unit.side) {
+      var faction = Factions[Game.factions[unit.side]];
+      console.log(faction);
+      this.aggression[unit.side] += faction.goal.aggressive.aggression_increase;
+      console.log("this.aggression[unit.side]");
+      console.log(this.aggression[unit.side]);
+    }
+  },
+
+  getTimeLeft: function(side) {
+    return this.time_left[side];
   },
 
   getTotalTroops: function(side) {
