@@ -675,9 +675,9 @@ Crafty.c('Unit', {
     }
 
     for (var i in enemy_units) {
-      // if enemy is on target, ignore
-      // if enemy is on path, disallow moving through enemy
-      // if enemy is not on path, add adjacent regions as 'stop points'
+      // add visible enemies as stop points
+      // if enemy is on target, ignore adjacent stop points
+      // otherwise, add enemy adjacent regions as 'stop points'
       var enemy = enemy_units[i];
       var enemy_was_visible = false;
       for (var j in this.visible_enemies) {
@@ -687,6 +687,7 @@ Crafty.c('Unit', {
         }
       }
 
+      if (enemy_was_visible) stop_points.push(enemy.at());
       if (enemy.isAtLocation(target) && enemy_was_visible) continue;
       // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
       if (enemy.battle) continue;
