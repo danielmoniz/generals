@@ -25,14 +25,14 @@ describe('Action', function() {
     });
 
     it('should throw error when given a non-existant action', function() {
-      var action = 'do something impossible';
+      var action = 'do_something_impossible';
       assert.throws(function() {
         Action.perform(action);
       }, 'ActionDoesNotExist');
     });
 
     it('should determine correct function to call based on action name', function() {
-      var action = 'temporary test action';
+      var action = 'temporary_test_action';
       Action.temporaryTestAction = function() {
       };
 
@@ -42,7 +42,15 @@ describe('Action', function() {
     });
 
     it('should throw error when given action name with capital letters', function() {
-      var action = 'Temporary test action';
+      var action = 'Temporary_test_action';
+      Action.temporaryTestAction = function() {
+      };
+
+      assert.throws(function() {
+        Action.perform(action);
+      }, 'BadActionName');
+
+      var action = 'temporary_test_acTion';
       Action.temporaryTestAction = function() {
       };
 
@@ -52,7 +60,7 @@ describe('Action', function() {
     });
 
     it('should send all parameters except action to the action function', function() {
-      var action = 'temporary test action';
+      var action = 'temporary_test_action';
       Action.temporaryTestAction = function() {
         if (arguments[0] !== 'arg0' || arguments[1] !== 'arg1') {
           throw new Error('NotPassingArguments');
@@ -64,7 +72,7 @@ describe('Action', function() {
     });
 
     it('should call preAction before action and postAction afterward', function() {
-      var action = 'temporary test action';
+      var action = 'temporary_test_action';
       preActionCalled = 0;
       postActionCalled = 0;
       Action.temporaryTestAction = function() {
@@ -82,7 +90,7 @@ describe('Action', function() {
     });
 
     it('should trigger RenderScene event after action is called', function() {
-      var action = 'temporary test action';
+      var action = 'temporary_test_action';
       Crafty = {};
       eventsTriggered = [];
       Crafty.trigger = function(event) {
