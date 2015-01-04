@@ -41,9 +41,15 @@ Victory = {
     for (var side=0; side<2; side++) {
       var faction = Factions[Game.factions[side]];
       console.log(faction);
-      if (faction.goal && faction.goal.aggressive) {
-        this.aggression[side] = Math.max(this.aggression[side] - 1, 1);
-        this.time_left[side] -= faction.goal.aggressive.turn_decrease / this.aggression[side];
+      var goal = faction.goal;
+      if (goal && goal.aggressive) {
+        var new_aggression = this.aggression[side] - goal.aggressive.aggression_decrease;
+        this.aggression[side] = Math.max(new_aggression, 1);
+        this.time_left[side] -= goal.aggressive.turn_decrease / this.aggression[side];
+        console.log("this.aggression[side]");
+        console.log(this.aggression[side]);
+        console.log("this.time_left[side]");
+        console.log(this.time_left[side]);
       } else { // automatically drop Willpower if no goal specified
         this.time_left[side] -= 2;
       }
@@ -104,12 +110,24 @@ Victory = {
     // handle victory effects of destroying entity
     if (unit === undefined) return;
     console.log("testing ---");
+    console.log("aggression before:");
     console.log(this.aggression[unit.side]);
     if (entity.side !== undefined && entity.side != unit.side) {
       var faction = Factions[Game.factions[unit.side]];
+      console.log("faction");
       console.log(faction);
-      this.aggression[unit.side] += faction.goal.aggressive.aggression_increase;
-      console.log("this.aggression[unit.side]");
+      if (!faction.goal || !faction.goal.aggressive) return;
+
+      var type = entity.type.toLowerCase();
+      var value_name = '{0}_values'.format(type);
+      var value_array = this[value_name];
+      console.log("value_array");
+      console.log(value_array);
+      var value = value_array[unit.side];
+      var factor = 3;
+      var increase = faction.goal.aggressive.aggression_increase * factor * value;
+      this.aggression[unit.side] += increase;
+      console.log("aggression after:");
       console.log(this.aggression[unit.side]);
     }
   },

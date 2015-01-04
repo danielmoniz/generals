@@ -39,6 +39,7 @@ var Factions = {
     goal: {
       'aggressive': {
         aggression_increase: 5,
+        aggression_decrease: 0.5,
         turn_decrease: 4,
       },
       'defensive': false,
