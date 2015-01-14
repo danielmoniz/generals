@@ -141,6 +141,7 @@ $(document).ready(function() {
   //$("input[name=factions_1][value=aztecs]").click();
   //$('input[name=sight_outlines]').click();
   //$('input[name=fog_of_war]').click();
+  //$("input[name=advanced_victory]").click();
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
