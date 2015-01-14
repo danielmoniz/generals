@@ -94,6 +94,8 @@ var Instructions = {
 
   using_wind: "Try starting a fire in a forest on an opponent's flank. Burnt down forests allow for quicker movement then live ones.",
 
+  retreat_possible_moves: "When in battle, the game displays the retreat movement bonus only to the army whose turn it is currently."
+
 };
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

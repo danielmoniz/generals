@@ -51,9 +51,9 @@ var InstructionsBuilder = {
     this.addInstruction('selection');
     this.addInstruction('two_armies_better_than_one');
     this.addInstruction('retreat_movement_bonus');
+    this.addInstruction('retreat_possible_moves');
     this.addInstruction('stopping_fire');
     this.addInstruction('using_wind');
-    this.addInstruction('');
     this.addInstruction('');
   },
 
