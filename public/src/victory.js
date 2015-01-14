@@ -43,9 +43,10 @@ Victory = {
       console.log(faction);
       var goal = faction.goal;
       if (goal && goal.aggressive) {
+        this.time_left[side] -= goal.aggressive.turn_decrease / this.aggression[side];
+
         var new_aggression = this.aggression[side] - goal.aggressive.aggression_decrease;
         this.aggression[side] = Math.max(new_aggression, 1);
-        this.time_left[side] -= goal.aggressive.turn_decrease / this.aggression[side];
         console.log("this.aggression[side]");
         console.log(this.aggression[side]);
         console.log("this.time_left[side]");
