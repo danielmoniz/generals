@@ -184,8 +184,6 @@ UI = {
     $(".overlays.popout").hide();
 
     $("#game-container").show();
-
-    $("ul").css("min-height", "75px");
   },
 
   gameStarted: function() {

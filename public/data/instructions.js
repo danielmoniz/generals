@@ -84,17 +84,19 @@ var Instructions = {
   online: "In Online play, the player that invites an opponent becomes the host. The host gets to select a number of options after creating a game. Once the host hits 'Start', both players get a full look at the map before beginning. Once the first player hits 'Begin Game', they simply take turns placing moves, as no secrecy is required.",
 
   // Tips
-  selection: "Armies can be selected at the bottom display by clicking on their display box. ",
+  tips: [
+    "Armies can be selected at the bottom display by clicking on their display box. ",
 
-  two_armies_better_than_one: "Two armies are better than one. Try attacking an enemy army from two different directions. In this way, their supply can be cut while simultaneously prohibiting retreat in certain directions.",
+    "Two armies are better than one. Try attacking an enemy army from two different directions. In this way, their supply can be cut while simultaneously prohibiting retreat in certain directions.",
 
-  retreat_movement_bonus: "Retreating provides a movement bonus of 1. This represents the fact that your army will do anything to get out of striking range of opposing forces. Use this to retreat just out of range of your pursuer. Be careful, however, because retreating into slow terrain means that you can often be caught!",
+    "Retreating provides a movement bonus of 1. This represents the fact that your army will do anything to get out of striking range of opposing forces. Use this to retreat just out of range of your pursuer. Be careful, however, because retreating into slow terrain means that you can often be caught!",
 
-  stopping_fire: "The spread of fire can be stopped by pillaging any farms to which it might spread. This can be useful if the fire has to pass through a single form of yours before spreading to other dangerous areas.",
+    "The spread of fire can be stopped by pillaging any farms to which it might spread. This can be useful if the fire has to pass through a single form of yours before spreading to other dangerous areas.",
 
-  using_wind: "Try starting a fire in a forest on an opponent's flank. Burnt down forests allow for quicker movement then live ones.",
+    "Try starting a fire in a forest on an opponent's flank. Burnt down forests allow for quicker movement then live ones.",
 
-  retreat_possible_moves: "When in battle, the game displays the retreat movement bonus only to the army whose turn it is currently."
+    "When in battle, the game displays the retreat movement bonus only to the army whose turn it is currently."
+  ],
 
 };
 

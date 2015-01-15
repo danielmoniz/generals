@@ -391,8 +391,15 @@ Crafty.scene('Victory', function() {
 Crafty.scene('Loading', function() {
   // Draw some text for the player to see in case the file takes a noticeable
   // amount of time to load
+
+  var loading = "Tip:<br />{0}<br /><br />Loading...";
+  var tips = Instructions.tips;
+  var rand = Math.floor(Math.random() * tips.length);
+  var tip = Instructions.tips[rand];
+  var loading_message = loading.format(tip);
+
   Crafty.e('2D, DOM, Text')
-    .text('Loading...')
+    .text(loading_message)
     .attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
     .css($text_css)
     ;
