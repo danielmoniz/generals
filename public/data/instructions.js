@@ -87,7 +87,7 @@ var Instructions = {
   tips: [
     "Armies can be selected at the bottom display by clicking on their display box. ",
 
-    "Two armies are better than one. Try attacking an enemy army from two different directions. In this way, their supply can be cut while simultaneously prohibiting retreat in certain directions.",
+    "Two armies are better than one. Try attacking an enemy army from two different directions. Their supply can be cut while simultaneously prohibiting retreat in certain directions.",
 
     "Retreating provides a movement bonus of 1. This represents the fact that your army will do anything to get out of striking range of opposing forces. Use this to retreat just out of range of your pursuer. Be careful, however, because retreating into slow terrain means that you can often be caught!",
 
@@ -95,7 +95,25 @@ var Instructions = {
 
     "Try starting a fire in a forest on an opponent's flank. Burnt down forests allow for quicker movement then live ones.",
 
-    "When in battle, the game displays the retreat movement bonus only to the army whose turn it is currently."
+    "When in battle, the game displays the retreat movement bonus only to the army whose turn it is currently.",
+
+    "Armies can move farther than they can see. Avoid doing so when your opponent might be waiting to ambush!",
+
+    "Armies cannot march into an enemy they could not see - they will be stopped one space early. Use this to wait beside roads and stage ambushes!",
+
+    "Protect your home cities at all cost. Losing even one of three cities will drop your faction's morale by at least 33%.",
+
+    "Sacked cities provide very little defensive protection.",
+
+    "Bridges provide the largest defensive bonus. Ignore them at your peril.",
+
+    "Fires follow the wind. Start one in favourable conditions to wreak havoc in enemy territory.",
+
+    "Large armies sack cities and towns faster than small ones.",
+
+    "Having an army's supply cut at a bad time can be devastating. Use this by getting between your opponent and their source of supply.",
+
+    "Most terrain features such as trees, grass, and farms automatically provide some supply to present armies.",
   ],
 
 };
