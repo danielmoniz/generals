@@ -153,6 +153,19 @@ Crafty.c('Unit', {
     if (Game.fire && local_terrain.flammable) {
       actions.push('start_fire');
     }
+
+    // if enemy unit adjacent and in city
+    var enemy_units = Units.getEnemyUnits(this.side);
+    for (var i in enemy_units) {
+      // @TODO Handle situation where multiple cities are adjacent
+      var unit = enemy_units[i];
+      var location = Game.terrain[unit.at().x][unit.at().y];
+      if (Utility.getDistance(this.at(), unit.at()) <= 1 && location.has('Settlement')) {
+        actions.push('siege');
+        break;
+      }
+    }
+
     return actions;
   },
 
