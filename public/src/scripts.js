@@ -145,7 +145,7 @@ $(document).ready(function() {
   //$("#start-game").click();
   //$("#start-email-button").click();
   //$("#start-online-button").click();
-  //
+
   $('#test_button').click(function() {
     Crafty.trigger('RenderScene');
   });
