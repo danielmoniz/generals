@@ -48,6 +48,86 @@ var astar = {
         }
     },
 
+    findReachablePoints: function(graph, start, max_per_turn, stop_points, turns) {
+        astar.init(graph);
+
+        if (!stop_points) stop_points = [];
+        if (!turns) turns = 1;
+        for (var i in stop_points) {
+          var point = stop_points[i];
+          var node = graph.grid[point.x][point.y];
+          node.stop_point = true;
+        }
+
+        var reachable = [];
+        var openHeap = new BinaryHeap(function(node) {
+            return node.g;
+        });
+        openHeap.push(start);
+
+        var max_distance = new Score(0, max_per_turn);
+        for (var i=0; i<turns; i++) {
+          max_distance = max_distance.addSingleSpace(1, 'stop point');
+        }
+
+        while(openHeap.size() > 0) {
+
+            // Grab the lowest f(x) to process next.  Heap keeps this sorted for us.
+            var currentNode = openHeap.pop();
+
+            // Normal case -- move currentNode from open to closed, process each of its neighbors.
+            currentNode.closed = true;
+
+            if (currentNode != start) reachable.push(currentNode);
+
+            // Find all neighbors for the current node.
+            var neighbors = graph.neighbors(currentNode);
+
+            for (var i = 0, il = neighbors.length; i < il; ++i) {
+                var neighbor = neighbors[i];
+
+                if (neighbor.closed || neighbor.isWall()) {
+                    // Not a valid node to process, skip to next neighbor.
+                    continue;
+                }
+
+                // The g score is the shortest distance from start to current node.
+                // We need to check if the path we have arrived at this neighbor is the shortest one we have seen yet.
+                if (currentNode.g == 0) {
+                  if (currentNode == start) {
+                    currentNode.g = new Score(0, max_per_turn);
+                  } else {
+                    currentNode.g = new Score(0, max_per_turn, currentNode.stop_point);
+                  }
+                }
+                var gScore = currentNode.g.addSingleSpace(neighbor.getCost(currentNode), neighbor.stop_point),
+                    beenVisited = neighbor.visited;
+
+                if (gScore === false) continue;
+                if (gScore > max_distance) continue;
+
+                if (!beenVisited || gScore < neighbor.g) {
+
+                    // Found an optimal (so far) path to this node.  Take score for node to see how good it is.
+                    neighbor.visited = true;
+                    neighbor.parent = currentNode;
+                    neighbor.g = gScore;
+
+                    if (!beenVisited) {
+                        // Pushing to heap will put it in proper place based on the 'g' value.
+                        openHeap.push(neighbor);
+                    }
+                    else {
+                        // Already seen the node, but since it has been rescored we need to reorder it in the heap
+                        openHeap.rescoreElement(neighbor);
+                    }
+                }
+            }
+        }
+
+        return reachable;
+    },
+
     /**
     * Perform an A* Search on a graph given a start and end node.
     * @param {Graph} graph
@@ -105,12 +185,16 @@ var astar = {
                 }
 
                 // @TODO Ensure nodes that are impossible to reach are removed
-                // (or waited for if they can be reahed later)
+                // (or waited for if they can be reached later)
 
                 // The g score is the shortest distance from start to current node.
                 // We need to check if the path we have arrived at this neighbor is the shortest one we have seen yet.
                 if (currentNode.g == 0) {
-                  currentNode.g = new Score(0, max_per_turn, currentNode.stop_point);
+                  if (currentNode == start) {
+                    currentNode.g = new Score(0, max_per_turn);
+                  } else {
+                    currentNode.g = new Score(0, max_per_turn, currentNode.stop_point);
+                  }
                 }
                 var gScore = currentNode.g.addSingleSpace(neighbor.getCost(currentNode), neighbor.stop_point),
                     beenVisited = neighbor.visited;
@@ -125,6 +209,7 @@ var astar = {
                     neighbor.h = neighbor.h || new Score(heuristic(neighbor, end), max_per_turn);
                     neighbor.g = gScore;
                     neighbor.f = neighbor.g.add(neighbor.h);
+                    neighbor.turns = gScore.turns;
 
                     if (closest) {
                         // If the neighbour is closer than the current closestNode or if it's equally close but has

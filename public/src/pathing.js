@@ -29,6 +29,7 @@ Pathing = {
         break;
       }
     }
+
     var partial_path = path.slice(0, final_index + 1);
     for (var i=0; i<partial_path.length; i++) {
     }
