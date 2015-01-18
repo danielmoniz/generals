@@ -48,7 +48,21 @@ var astar = {
         }
     },
 
+    /**
+    * Perform an A* Search on a graph given a start node.
+    * Finds all reachable locations from the start point given a max_per_turn
+    * value and a number of allowed turns.
+    * Note: This function is currently limited to orthogonal (non-diagonal)
+    * movement only.
+    * @param {Graph} graph
+    * @param {GridNode} start
+    * @param {Array} max_per_turn The maximum movement per turn allowed by the
+    * entity.
+    * @param {Array} stop_points A list of points at which the entity must
+    * stop for the turn.
+    */
     findReachablePoints: function(graph, start, max_per_turn, stop_points, turns) {
+        if (!max_per_turn) return [];
         astar.init(graph);
 
         if (!stop_points) stop_points = [];
@@ -65,10 +79,15 @@ var astar = {
         });
         openHeap.push(start);
 
+        // set a max_distance for comparing path lengths
         var max_distance = new Score(0, max_per_turn);
-        for (var i=0; i<turns; i++) {
-          max_distance = max_distance.addSingleSpace(1, 'stop point');
+        var extra_weight_value = max_per_turn;
+        if (max_per_turn.length >= turns - 1) {
+          extra_weight_value = max_per_turn[turns - 1];
+        } else if (max_per_turn.length < turns - 1) {
+          extra_weight_value = max_per_turn[max_per_turn.length - 1];
         }
+        max_distance.setValues(turns - 1, extra_weight_value, max_per_turn);
 
         while(openHeap.size() > 0) {
 
@@ -133,6 +152,10 @@ var astar = {
     * @param {Graph} graph
     * @param {GridNode} start
     * @param {GridNode} end
+    * @param {Array} max_per_turn The maximum movement per turn allowed by the
+    * entity.
+    * @param {Array} stop_points A list of points at which the entity must
+    * stop for the turn.
     * @param {Object} [options]
     * @param {bool} [options.closest] Specifies whether to return the
                path to the closest node if the target is unreachable.
@@ -209,7 +232,7 @@ var astar = {
                     neighbor.h = neighbor.h || new Score(heuristic(neighbor, end), max_per_turn);
                     neighbor.g = gScore;
                     neighbor.f = neighbor.g.add(neighbor.h);
-                    neighbor.turns = gScore.turns;
+                    //neighbor.turns = gScore.turns;
 
                     if (closest) {
                         // If the neighbour is closer than the current closestNode or if it's equally close but has
