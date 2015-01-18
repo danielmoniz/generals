@@ -553,6 +553,8 @@ Crafty.c('Siege', {
     var adjacent_points = Utility.getPointsWithinDistance(this.at(), 1, Game.map_grid);
     for (var i in adjacent_points) {
       var point = adjacent_points[i];
+      var terrain = Game.terrain[point.x][point.y];
+      if (!terrain.has('Passable')) continue;
       var siege_adjacent = Entity.create('SiegeAdjacent').at(point.x, point.y);
       this.affected_tiles.push(siege_adjacent);
     }

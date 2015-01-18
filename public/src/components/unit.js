@@ -135,6 +135,36 @@ Crafty.c('Unit', {
     this.happy = true;
   },
 
+  canSiege: function() {
+    if (this.sieging || this.besieged) return false;
+
+    var can_siege = false;
+    var terrain;
+    var adjacent_points = Utility.getPointsWithinDistance(this.at(), 1, Game.map_grid);
+    for (var i in adjacent_points) {
+      var point = adjacent_points[i];
+      terrain = Game.terrain[point.x][point.y];
+      if (terrain.has('City')) {
+        var enemy_units = Units.getPresentEnemyUnits(terrain.at(), this.side);
+        if (enemy_units.length > 0) {
+          can_siege = true;
+          break;
+        }
+      }
+    }
+    if (!can_siege) return false;
+
+    var city_adjacent_tiles = Utility.getPointsWithinDistance(terrain.at(), 1, Game.map_grid);
+    for (var i in city_adjacent_tiles) {
+      var point = city_adjacent_tiles[i];
+      var enemy_units = Units.getPresentEnemyUnits(point, this.side);
+      if (enemy_units.length > 0) {
+        return false;
+      }
+    }
+    return true;
+  },
+
   getActionChoices: function() {
     // @TODO This should probably also be filtering by this.side != Game.turn
     if (this.side != Game.player) return [];
@@ -155,19 +185,7 @@ Crafty.c('Unit', {
       actions.push('start_fire');
     }
 
-    if (!this.sieging && !this.besieged) {
-      // if enemy unit adjacent and in city
-      var enemy_units = Units.getEnemyUnits(this.side);
-      for (var i in enemy_units) {
-        // @TODO Handle situation where multiple cities are adjacent
-        var unit = enemy_units[i];
-        var location = Game.terrain[unit.at().x][unit.at().y];
-        if (Utility.getDistance(this.at(), unit.at()) <= 1 && location.has('City')) {
-          actions.push('siege');
-          break;
-        }
-      }
-    }
+    if (this.canSiege()) actions.push('siege');
 
     return actions;
   },

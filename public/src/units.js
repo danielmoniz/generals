@@ -52,6 +52,11 @@ var Units = {
     return present_units;
   },
 
+  getPresentEnemyUnits: function(location, side) {
+    var present_units = this.getPresentUnits(location);
+    return this.getEnemyUnits(side, present_units);
+  },
+
   getUnitById: function(id) {
     if (id === undefined) throw new Error('MissingParam', 'Must supply an id.');
     var units = this.getAllUnits();
