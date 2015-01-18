@@ -12,6 +12,7 @@ Crafty.c('Unit', {
       .bind("NextTurn", this.nextTurn)
       .bind("UpdateActionChoices", this.updateActionChoices)
       .bind("StartBattles", this.startBattleIfNeeded)
+      .bind("SiegeLifted", this.siegeLifted)
       ;
     this.lastMoveTarget = undefined;
   },
@@ -154,15 +155,17 @@ Crafty.c('Unit', {
       actions.push('start_fire');
     }
 
-    // if enemy unit adjacent and in city
-    var enemy_units = Units.getEnemyUnits(this.side);
-    for (var i in enemy_units) {
-      // @TODO Handle situation where multiple cities are adjacent
-      var unit = enemy_units[i];
-      var location = Game.terrain[unit.at().x][unit.at().y];
-      if (Utility.getDistance(this.at(), unit.at()) <= 1 && location.has('Settlement')) {
-        actions.push('siege');
-        break;
+    if (!this.sieging && !this.besieged) {
+      // if enemy unit adjacent and in city
+      var enemy_units = Units.getEnemyUnits(this.side);
+      for (var i in enemy_units) {
+        // @TODO Handle situation where multiple cities are adjacent
+        var unit = enemy_units[i];
+        var location = Game.terrain[unit.at().x][unit.at().y];
+        if (Utility.getDistance(this.at(), unit.at()) <= 1 && location.has('City')) {
+          actions.push('siege');
+          break;
+        }
       }
     }
 
@@ -248,6 +251,42 @@ Crafty.c('Unit', {
       var amount_pillaged = this.supply_remaining - old_supply;
       var message = "Pillaged {0} supply!".format(amount_pillaged);
       Output.message(message);
+    }
+  },
+
+  siege: function() {
+    // if enemy unit adjacent and in city
+    // @TODO Make more efficient. Look only at adjacent tiles
+    var enemy_units = Units.getEnemyUnits(this.side);
+    var siege;
+    for (var i in enemy_units) {
+      // @TODO Handle situation where multiple cities are adjacent
+      var unit = enemy_units[i];
+      var location = Game.terrain[unit.at().x][unit.at().y];
+      if (Utility.getDistance(this.at(), unit.at()) <= 1 && location.has('Settlement')) {
+        siege = Entity.create('Siege').at(location.at().x, location.at().y);
+        siege.setAffectedRegion();
+        siege.setInitiator(this.side);
+        break;
+      }
+    }
+
+    this.movement = 0;
+    this.sieging = true;
+    this.siege_id = siege.getId();
+  },
+
+  besiege: function(siege_id) {
+    this.besieged = true;
+    this.siege_id = siege_id;
+  },
+
+  siegeLifted: function(siege_id) {
+    if (this.siege_id == siege_id) {
+      this.sieging = false;
+      this.siege_id = undefined;
+      this.besieged = false;
+      this.siege_id = undefined;
     }
   },
 
@@ -494,6 +533,19 @@ Crafty.c('Unit', {
     return 0;
   },
 
+  getPresentUnits: function(ignore_self, location) {
+    if (location === undefined) location = this.at();
+    var present_units = [];
+    var units = Entity.get('Unit');
+    for (var i=0; i < units.length; i++) {
+      //if (units[i].isAtLocation(location)) {
+      if (units[i].together(this, ignore_self)) {
+        present_units.push(units[i]);
+      }
+    }
+    return present_units;
+  },
+
   isEnemyPresent: function() {
     var present_units = this.getPresentUnits();
     if (present_units.length < 1) return false;
@@ -520,6 +572,15 @@ Crafty.c('Unit', {
 
   isBattlePresent: function() {
     return this.isEntityPresent('Battle');
+  },
+
+  isSiegePresent: function() {
+    var sieges = Entity.get('Siege');
+    for (var i in sieges) {
+      var siege = sieges[i];
+      if (Utility.getDistance(siege.at(), this.at()) <= 1) return true;
+    }
+    return false;
   },
 
   isCityPresent: function() {
@@ -707,22 +768,12 @@ Crafty.c('Unit', {
   },
 
   moveTowardTarget: function(is_retreat) {
-    console.log("---");
-    console.log(this.name);
     if (is_retreat === undefined) is_retreat = false;
     var movement = this.movement;
     if (is_retreat) movement += 1;
     var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
 
     var end_node = this.move_target_path[this.move_target_path.length - 1];
-    if (end_node === undefined) {
-      console.log("end_node");
-      console.log(end_node);
-      console.log("this.move_target_path");
-      console.log(this.move_target_path);
-      console.log("partial_path");
-      console.log(partial_path);
-    }
 
     var target = { x: end_node.x, y: end_node.y };
     if (this.move_target === undefined || target.x != this.move_target.x || target.y != this.move_target.y) {
@@ -765,6 +816,17 @@ Crafty.c('Unit', {
       }
       if (end_movement) break;
     }
+
+    var sieges = Entity.get('Siege');
+    for (var i in sieges) {
+      var siege = sieges[i];
+      if (Utility.getDistance(this.at(), siege.at()) <= 1) {
+        if (siege.sieging_side == this.side) {
+          this.sieging = true;
+          this.siege_id = siege.getId();
+        }
+      }
+    }
   },
 
 
@@ -780,17 +842,6 @@ Crafty.c('Unit', {
         this.start_battle = true;
       }
     }
-  },
-
-  getPresentUnits: function(ignore_self) {
-    var present_units = [];
-    var units = Entity.get('Unit');
-    for (var i=0; i < units.length; i++) {
-      if (units[i].together(this, ignore_self)) {
-        present_units.push(units[i]);
-      }
-    }
-    return present_units;
   },
 
   stop_unit: function() {

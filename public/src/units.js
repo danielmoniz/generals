@@ -40,6 +40,18 @@ var Units = {
     return Entity.get('Unit');
   },
 
+  getPresentUnits: function(location) {
+    if (location === undefined) location = this.at();
+    var present_units = [];
+    var units = Entity.get('Unit');
+    for (var i=0; i < units.length; i++) {
+      if (units[i].isAtLocation(location)) {
+        present_units.push(units[i]);
+      }
+    }
+    return present_units;
+  },
+
   getUnitById: function(id) {
     if (id === undefined) throw new Error('MissingParam', 'Must supply an id.');
     var units = this.getAllUnits();

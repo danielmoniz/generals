@@ -511,7 +511,7 @@ Crafty.c('Battle', {
     present_units = [];
     units = Entity.get('Unit');
     for (var i=0; i < units.length; i++) {
-      if (units[i].together(this, true)) {
+      if (units[i].isAtLocation(this.at())) {
         present_units.push(units[i]);
       }
     }
@@ -533,5 +533,80 @@ Crafty.c('Battle', {
     return total;
   },
 
+});
+
+Crafty.c('Siege', {
+  init: function() {
+    this.requires('Color, Actor, Targetable, Clickable')
+      .bind("ResolveSieges", this.resolveIfNeeded)
+      .color('Red');
+    this.z = 95;
+    this.affected_tiles = [];
+  },
+
+  setInitiator: function(side) {
+    this.sieging_side = side;
+    this.besieged_side = 1 - side;
+  },
+
+  setAffectedRegion: function() {
+    var adjacent_points = Utility.getPointsWithinDistance(this.at(), 1, Game.map_grid);
+    for (var i in adjacent_points) {
+      var point = adjacent_points[i];
+      var siege_adjacent = Entity.create('SiegeAdjacent').at(point.x, point.y);
+      this.affected_tiles.push(siege_adjacent);
+    }
+
+    var units_present = Units.getPresentUnits(this.at());
+    for (var i in units_present) {
+      var unit = units_present[i];
+      unit.besiege(this.getId());
+    }
+
+    return this;
+  },
+
+  resolveIfNeeded: function() {
+    var end_siege = true;
+    for (var i in this.affected_tiles) {
+      var tile = this.affected_tiles[i];
+      var units_present = Units.getPresentUnits(tile.at());
+      var hostile_units = false;
+      for (var j in units_present) {
+        var unit = units_present[j];
+        if (unit.side == this.sieging_side) {
+          hostile_units = true;
+          break;
+        }
+      }
+      if (hostile_units) {
+        end_siege = false;
+        break;
+      }
+    }
+
+    if (end_siege) {
+      this.liftSiege();
+    }
+  },
+
+  liftSiege: function() {
+    for (var i in this.affected_tiles) {
+      var tile = this.affected_tiles[i];
+      Entity.destroy(tile);
+    }
+    Entity.destroy(this);
+    Crafty.trigger('SiegeLifted', this.getId());
+  },
+
+});
+
+Crafty.c('SiegeAdjacent', {
+  init: function() {
+    this.requires('Color, Actor')
+      .color('Yellow');
+    this.z = 95;
+    this.alpha = 60;
+  },
 });
 

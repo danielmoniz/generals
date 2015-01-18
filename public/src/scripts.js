@@ -12,6 +12,8 @@ $(document).ready(function() {
         UI.sack();
       } else if (e.keyCode == 70 || e.keyCode == 102) { // F or f
         UI.startFire();
+      } else if (e.keyCode == 71 || e.keyCode == 103) { // G or g
+        UI.siege();
       } else if (e.keyCode >= 49 && e.keyCode <= 58) { // numeric key
         UI.selectUnit(e.keyCode - 48);
       } else if (shift_num_keys.indexOf(e.keyCode) > -1) { // shift + numeric key
@@ -250,6 +252,10 @@ UI = {
 
   startFire: function() {
     this.performAction('start_fire');
+  },
+
+  siege: function() {
+    this.performAction('siege');
   },
 
   performAction: function(action) {
