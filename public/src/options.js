@@ -94,6 +94,7 @@ var Options = function() {
       healing_rate: 1/30,
       city_healing_rate: 15/100,
       min_troops_for_supply_cut: 500,
+      min_troops_for_siege: 500,
 
       supply_steal_factor: 3,
 

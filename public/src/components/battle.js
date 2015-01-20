@@ -570,6 +570,7 @@ Crafty.c('Siege', {
 
   resolveIfNeeded: function() {
     var end_siege = true;
+    var sieging_troops = 0;
     for (var i in this.affected_tiles) {
       var tile = this.affected_tiles[i];
       var units_present = Units.getPresentUnits(tile.at());
@@ -578,10 +579,10 @@ Crafty.c('Siege', {
         var unit = units_present[j];
         if (unit.side == this.sieging_side) {
           hostile_units = true;
-          break;
+          sieging_troops += unit.getActive();
         }
       }
-      if (hostile_units) {
+      if (hostile_units && sieging_troops >= Game.min_troops_for_siege) {
         end_siege = false;
         break;
       }
