@@ -33,17 +33,17 @@ var MapCreator = function(options) {
 
     this.Game.section_widths = this.getWidthOfSections(options);
     this.Game.section_positions = this.getPositionOfSections(this.Game);
-    var city_locations = this.addCities(options, this.Game, options.num_cities_total);
-    var town_locations = this.addTownsAroundCities(options, this.Game, city_locations);
-    this.addFarms(options, this.Game, city_locations);
+    var cities = this.addCities(options, this.Game, options.num_cities_total);
+    var town_locations = this.addTownsAroundCities(options, this.Game, cities);
+    this.addFarms(options, this.Game, cities);
     this.addTrees(options, this.Game, options.location);
     this.addGrass(options, this.Game);
 
     //this.updateBuildDifficultyData(options, this.Game.terrain_type);
 
     this.buildTerrainData(options, this.Game, this.Game.terrain_type);
-    this.addSupplyRoads(options, this.Game, city_locations, 1);
-    this.addRoadsBetweenCities(options, this.Game, city_locations);
+    this.addSupplyRoads(options, this.Game, cities, 1);
+    this.addRoadsBetweenCities(options, this.Game, cities);
     this.buildTerrainDataWithRoads(options, this.Game, this.Game.terrain_type, this.Game.roads);
 
     // call again to ensure bridge values are set
@@ -123,7 +123,7 @@ var MapCreator = function(options) {
   this.addCitiesToSection = function(options, game_object, estimated_cities, other_cities, min_x, max_x, min_y, max_y) {
     if (max_y === undefined) max_y = options.map_grid.height;
     if (min_y === undefined) min_y = 0;
-    var city_locations = [];
+    var cities = [];
     var num_cities = 0;
     var num_tries = 0;
     var max_tries = 20;
@@ -142,7 +142,7 @@ var MapCreator = function(options) {
             // if there is another city adjacent, try again
             var is_adjacent = false;
             var current_location = { x: x, y: y };
-            var all_cities = other_cities.concat(city_locations);
+            var all_cities = other_cities.concat(cities);
             for (var i in all_cities) {
               if (Utility.getDistance(current_location, all_cities[i]) <= 2.5) {
                 is_adjacent = true;
@@ -155,7 +155,6 @@ var MapCreator = function(options) {
             var color = Math.ceil(game_object.height_map[x][y] * 255);
 
             game_object.occupied[x][y] = true;
-            city_locations.push(current_location);
 
             var side = this.getMapSide(game_object, x);
             var stats = {
@@ -170,14 +169,17 @@ var MapCreator = function(options) {
             }
 
             var city_obj = new TerrainData("City").add(stats).stats;
+            city_obj.x = x;
+            city_obj.y = y;
+            cities.push(city_obj);
             game_object.terrain_type[x][y] = city_obj;
 
-            if (num_cities >= 1 + estimated_cities) return city_locations;
+            if (num_cities >= 1 + estimated_cities) return cities;
           }
         }
       }
     }
-    return city_locations;
+    return cities;
   };
 
   this.addCities = function(options, game_object, estimated_cities, vertical_sections) {
@@ -205,10 +207,10 @@ var MapCreator = function(options) {
     return cities;
   };
 
-  this.addTownsAroundCities = function(options, game_object, city_locations) {
+  this.addTownsAroundCities = function(options, game_object, cities) {
     var town_locations = [];
-    for (var i in city_locations) {
-      var new_towns = this.addTownsAroundCity(options, game_object, city_locations[i], town_locations);
+    for (var i in cities) {
+      var new_towns = this.addTownsAroundCity(options, game_object, cities[i], town_locations);
       town_locations = town_locations.concat(new_towns);
     }
     return town_locations;
@@ -299,10 +301,10 @@ var MapCreator = function(options) {
     return 1;
   },
 
-  this.addFarms = function(options, game_object, city_locations) {
+  this.addFarms = function(options, game_object, cities) {
 
-    for (var i in city_locations) {
-      var city = city_locations[i];
+    for (var i in cities) {
+      var city = cities[i];
       var center = city;
       var max_distance = options.max_farm_distance;
       var factor = options.farm_probability_factor;
@@ -392,7 +394,7 @@ var MapCreator = function(options) {
     return road;
   };
 
-  this.addSupplyRoad = function(options, game_object, city_locations, left_or_right) {
+  this.addSupplyRoad = function(options, game_object, cities, left_or_right) {
     var graph = this.Game.terrain_build_graph;
     if (this.Game.terrain_build_with_roads_graph !== undefined) {
       var graph = this.Game.terrain_build_with_roads_graph;
@@ -400,17 +402,17 @@ var MapCreator = function(options) {
     var grid = graph.grid;
     if (left_or_right === undefined) return false;
     if (left_or_right == "left") {
-      var start_city = city_locations[0];
-      for (var i in city_locations) {
-        if (city_locations[i].x < start_city.x) {
-          start_city = city_locations[i];
+      var start_city = cities[0];
+      for (var i in cities) {
+        if (cities[i].x < start_city.x) {
+          start_city = cities[i];
         }
       }
     } else {
-      var start_city = city_locations[city_locations.length - 1];
-      for (var i in city_locations) {
-        if (city_locations[i].x > start_city.x) {
-          start_city = city_locations[i];
+      var start_city = cities[cities.length - 1];
+      for (var i in cities) {
+        if (cities[i].x > start_city.x) {
+          start_city = cities[i];
         }
       }
     }
@@ -441,15 +443,15 @@ var MapCreator = function(options) {
   };
 
 
-  this.addRoadsBetweenCities = function(options, game_object, city_locations) {
-    if (city_locations.length >= 2) {
-      for (var a = 0; a < city_locations.length; a++) {
-        var start_city = city_locations[a];
+  this.addRoadsBetweenCities = function(options, game_object, cities) {
+    if (cities.length >= 2) {
+      for (var a = 0; a < cities.length; a++) {
+        var start_city = cities[a];
         var closest = undefined;
         var least_cost = undefined;
-        for (var b = a; b < city_locations.length; b++) {
+        for (var b = a; b < cities.length; b++) {
           if (a == b) continue;
-          var end_location = city_locations[b];
+          var end_location = cities[b];
           if (game_object.terrain_build_with_roads_graph !== undefined) {
             var start = game_object.terrain_build_with_roads_graph.grid[start_city.x][start_city.y];
             var end = game_object.terrain_build_with_roads_graph.grid[end_location.x][end_location.y];
@@ -472,7 +474,7 @@ var MapCreator = function(options) {
     }
   };
 
-  this.addSupplyRoads = function(options, game_object, city_locations, max_roads, offset) { // <-- requires refactor
+  this.addSupplyRoads = function(options, game_object, cities, max_roads, offset) { // <-- requires refactor
     // Entities are placed left to right, so the first will be on the left.
     if (max_roads === undefined) max_roads = 1;
     if (offset === undefined) offset = 0;
@@ -480,14 +482,14 @@ var MapCreator = function(options) {
 
     // @TODO Save the supply end point locations, but nothing else
     for (var i = 0 + offset; i < max_roads; i++) {
-      var new_supply_road = this.addSupplyRoad(options, game_object, city_locations, 'left');
+      var new_supply_road = this.addSupplyRoad(options, game_object, cities, 'left');
       game_object.player_supply_roads[0].push(new_supply_road);
     }
     var left_supply_route = game_object.player_supply_roads[0][0][game_object.player_supply_roads[0][0].length - 1];
     game_object.supply_route[0] = left_supply_route;
 
-    for (var i = city_locations.length - 1 - offset; i > city_locations.length - 1 - max_roads; i--) {
-      var new_supply_road = this.addSupplyRoad(options, game_object, city_locations, 'right');
+    for (var i = cities.length - 1 - offset; i > cities.length - 1 - max_roads; i--) {
+      var new_supply_road = this.addSupplyRoad(options, game_object, cities, 'right');
       game_object.player_supply_roads[1].push(new_supply_road);
     }
     var right_supply_route = game_object.player_supply_roads[1][0][game_object.player_supply_roads[1][0].length - 1];
