@@ -772,10 +772,14 @@ Crafty.c('Unit', {
       stop_points.push(fires[i].at());
     }
 
+    // @TODO Take all_enemies (out of sight or not) into account.
+    // This will not likely be necessary for now because each siege will be
+    // visible by both sides for the foreseeable future.
     var sieges = Entity.get('Siege');
     for (var i in sieges) {
       var siege = sieges[i];
       if (siege.sieging_side == this.side) continue;
+      stop_points.push(siege.at());
       for (var j in siege.affected_tiles) {
         var tile = siege.affected_tiles[j];
         stop_points.push(tile.at());
