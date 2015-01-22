@@ -120,8 +120,8 @@ Game = {
 
     // ------------------------------------
     Crafty.trigger("NextTurn");
-    Crafty.trigger("ResolveSieges");
     Crafty.trigger("StartBattles");
+    Crafty.trigger("ResolveSieges");
     Crafty.trigger("ResolveBattles");
     Crafty.trigger("EndBattles");
     this.flushCaches(); // run after battles complete for an up-to-date cache
