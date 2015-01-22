@@ -577,7 +577,7 @@ Crafty.c('Siege', {
       var hostile_units = false;
       for (var j in units_present) {
         var unit = units_present[j];
-        if (unit.side == this.sieging_side) {
+        if (unit.side == this.sieging_side && unit.battle == false) {
           hostile_units = true;
           sieging_troops += unit.getActive();
         }
