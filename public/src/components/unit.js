@@ -772,6 +772,16 @@ Crafty.c('Unit', {
       stop_points.push(fires[i].at());
     }
 
+    var sieges = Entity.get('Siege');
+    for (var i in sieges) {
+      var siege = sieges[i];
+      if (siege.sieging_side == this.side) continue;
+      for (var j in siege.affected_tiles) {
+        var tile = siege.affected_tiles[j];
+        stop_points.push(tile.at());
+      }
+    }
+
     Utility.removeDuplicates(stop_points);
     return stop_points;
   },
