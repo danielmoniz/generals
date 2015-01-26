@@ -574,17 +574,35 @@ Crafty.c('Siege', {
     for (var i in this.affected_tiles) {
       var tile = this.affected_tiles[i];
       var units_present = Units.getPresentUnits(tile.at());
-      var hostile_units = false;
-      for (var j in units_present) {
-        var unit = units_present[j];
-        if (unit.side == this.sieging_side && unit.battle == false) {
-          hostile_units = true;
-          sieging_troops += unit.getActive();
+      if (units_present.length > 0) {
+        var unit = units_present[0];
+        var battle = unit.isBattlePresent();
+        if (battle) {
+          var new_unit = false;
+          for (var k in battle.attackers) {
+            var attacker = battle.attackers[k];
+            if (!attacker.besieged) {
+              // units at this tile no longer considered sieging - they are
+              // distracted by a non-besieged army
+              new_unit = true;
+              break;
+            }
+          }
+          if (new_unit) continue;
         }
-      }
-      if (hostile_units && sieging_troops >= Game.min_troops_for_siege) {
-        end_siege = false;
-        break;
+
+        var hostile_units = false;
+        for (var j in units_present) {
+          var unit = units_present[j];
+          if (unit.side == this.sieging_side) {
+            hostile_units = true;
+            sieging_troops += unit.getActive();
+          }
+        }
+        if (hostile_units && sieging_troops >= Game.min_troops_for_siege) {
+          end_siege = false;
+          break;
+        }
       }
     }
 
