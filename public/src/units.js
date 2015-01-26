@@ -57,6 +57,20 @@ var Units = {
     return this.getEnemyUnits(side, present_units);
   },
 
+  getTotalTroops: function(units) {
+    var total = {
+      0: { active: 0, injured: 0, total: 0 },
+      1: { active: 0, injured: 0, total: 0 },
+    };
+    for (var i in units) {
+      var unit = units[i];
+      total[unit.side]['active'] += unit.getActive();
+      total[unit.side]['injured'] += unit.quantity - unit.getActive();
+      total[unit.side]['total'] += unit.quantity;
+    }
+    return total;
+  },
+
   getUnitById: function(id) {
     if (id === undefined) throw new Error('MissingParam', 'Must supply an id.');
     var units = this.getAllUnits();

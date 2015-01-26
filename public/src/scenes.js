@@ -195,7 +195,7 @@ Crafty.scene('Game', function() {
     var units = Crafty('Unit').get();
     for (var i=0; i<battles.length; i++) {
       var battle = battles[i];
-      var new_battle = Crafty.e('Battle');
+      var new_battle = Entity.create('Battle');
       new_battle.attacking_side = battle.attacking_side;
       new_battle.at(battle.location.x, battle.location.y);
       if (battle.attacker_name) {

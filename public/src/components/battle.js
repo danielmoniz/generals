@@ -270,14 +270,21 @@ Crafty.c('Battle', {
     if (Game.turn % 1 == 0) this.resolve();
   },
 
-  unitsInCombat: function() {
-    var units = Units.getAllUnits();
-    var units_in_combat = [];
-    for (var i=0; i<units.length; i++) {
-      var unit = units[i];
-      if (unit.together(this)) units_in_combat.push(unit);
+  resolve: function() {
+    this.num_turns += 1;
+
+    //Battle.determineEventualWinner(this);
+
+    var battle_info = Battle.determineCombatLosses(this);
+    Battle.killUnits(battle_info.units, battle_info.losses);
+
+    this.casualties[Battle.ATTACKER] = battle_info.total_losses[Battle.ATTACKER];
+    this.casualties[Battle.DEFENDER] = battle_info.total_losses[Battle.DEFENDER];
+
+    if (!this.isBattleActive()) {
+      this.end_battle = true;
+      Victory.updateWillToFight();
     }
-    return units_in_combat;
   },
 
   prepareBattle: function() {
@@ -311,7 +318,7 @@ Crafty.c('Battle', {
 
     this.casualties = [];
     this.new_units = [];
-    Entity.flushSpecialCache('Battle');
+    Entity.flushSpecialCache('SimpleBattle');
     this.prepareBattle();
   },
 
@@ -323,6 +330,7 @@ Crafty.c('Battle', {
   },
 
   end: function() {
+    // @TODO Should use attackers and defenders, not unitsInCombat()
     var units_in_combat = this.unitsInCombat();
     for (var i=0; i < units_in_combat.length; i++) {
       units_in_combat[i].battle_finished();
@@ -442,23 +450,6 @@ Crafty.c('Battle', {
     return unit_stats;
   },
 
-  resolve: function() {
-    this.num_turns += 1;
-
-    //Battle.determineEventualWinner(this);
-
-    var battle_info = Battle.determineCombatLosses(this);
-    Battle.killUnits(battle_info.units, battle_info.losses);
-
-    this.casualties[Battle.ATTACKER] = battle_info.total_losses[Battle.ATTACKER];
-    this.casualties[Battle.DEFENDER] = battle_info.total_losses[Battle.DEFENDER];
-
-    if (!this.isBattleActive()) {
-      this.end_battle = true;
-      Victory.updateWillToFight();
-    }
-  },
-
   resetUnitUpdates: function() {
     this.unit_updates = [];
   },
@@ -507,19 +498,25 @@ Crafty.c('Battle', {
   report: function() {
   },
 
-  getPresentUnits: function() {
-    present_units = [];
-    units = Entity.get('Unit');
-    for (var i=0; i < units.length; i++) {
-      if (units[i].isAtLocation(this.at())) {
-        present_units.push(units[i]);
-      }
+});
+
+Crafty.c('SimpleBattle', {
+  init: function() {
+    this.requires('Battle');
+  },
+
+  unitsInCombat: function() {
+    var units = Units.getAllUnits();
+    var units_in_combat = [];
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      if (unit.together(this)) units_in_combat.push(unit);
     }
-    return present_units;
+    return units_in_combat;
   },
 
   getTotalTroops: function() {
-    var units = this.getPresentUnits();
+    var units = Units.getPresentUnits(this.at());
     var total = {
       0: { active: 0, injured: 0, total: 0 },
       1: { active: 0, injured: 0, total: 0 },
@@ -535,6 +532,48 @@ Crafty.c('Battle', {
 
 });
 
+Crafty.c('SiegeBattle', {
+  init: function() {
+    this.requires('Battle');
+  },
+
+  setSiegeBattleData: function(siege) {
+    this.sieging_side = siege.sieging_side;
+    this.besieged_side = siege.besieged_side;
+    this.centre = siege.at();
+    this.affected_tiles = siege.affected_tiles;
+  },
+
+  unitsInCombat: function() {
+    var units = Units.getAllUnits();
+    var units_in_combat = [];
+    var locations = this.getAllSiegeAreas();
+    for (var i=0; i<units.length; i++) {
+      var unit = units[i];
+      for (var j in locations) {
+        var location = locations[j];
+        if (!unit.isAtLocation(location)) continue;
+        units_in_combat.push(unit);
+      }
+    }
+    return units_in_combat;
+  },
+
+  getAllSiegeAreas: function() {
+    var locations = [this.centre];
+    for (var i in this.affected_tiles) {
+      locations.push(this.affected_tiles[i].at());
+    }
+    return locations;
+  },
+
+  getTotalTroops: function() {
+    var units = this.unitsInCombat();
+    return Units.getTotalTroops(units);
+  },
+
+});
+
 Crafty.c('Siege', {
   init: function() {
     this.requires('Color, Actor, Targetable, Clickable')
@@ -544,7 +583,7 @@ Crafty.c('Siege', {
     this.affected_tiles = [];
   },
 
-  setInitiator: function(side) {
+  setSides: function(side) {
     this.sieging_side = side;
     this.besieged_side = 1 - side;
   },

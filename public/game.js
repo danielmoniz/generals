@@ -456,7 +456,8 @@ Game = {
       saved_game.units.push(unit.stats);
     }
 
-    var battles = Crafty('Battle').get();
+    // @TODO Ensure all types of battles are saved properly (eg. siege)
+    var battles = Entity.get('Battle');
     for (var i=0; i<battles.length; i++) {
       var battle = battles[i];
       var new_battle = {};
@@ -470,7 +471,7 @@ Game = {
 
     // handle all terrain data
     saved_game.terrain_type = [];
-    var terrain = Crafty('Terrain').get();
+    var terrain = Entity.get('Terrain');
     for (var i in terrain) {
       var x = terrain[i].at().x;
       var y = terrain[i].at().y;

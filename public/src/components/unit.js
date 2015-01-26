@@ -284,7 +284,7 @@ Crafty.c('Unit', {
       if (Utility.getDistance(this.at(), unit.at()) <= 1 && location.has('Settlement')) {
         siege = Entity.create('Siege').at(location.at().x, location.at().y);
         siege.setAffectedRegion();
-        siege.setInitiator(this.side);
+        siege.setSides(this.side);
         break;
       }
     }
@@ -589,7 +589,7 @@ Crafty.c('Unit', {
   },
 
   isBattlePresent: function() {
-    return this.isEntityPresent('Battle');
+    return this.isEntityPresent('SimpleBattle');
   },
 
   isSiegePresent: function() {
@@ -914,7 +914,7 @@ Crafty.c('Unit', {
   startBattle: function() {
     this.battle = true;
     this.stop_unit();
-    var battle = Entity.create('Battle').at(this.at().x, this.at().y);
+    var battle = Entity.create('SimpleBattle').at(this.at().x, this.at().y);
     this.battle_side = Battle.ATTACKER;
     battle.start(this);
   },

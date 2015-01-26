@@ -12,6 +12,8 @@ var Entity = {
   special_caches: [
     'Unit',
     'Battle',
+    'SimpleBattle',
+    'SiegeBattle',
   ],
 
   /*
