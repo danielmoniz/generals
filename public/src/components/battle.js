@@ -179,10 +179,10 @@ Battle = {
     var total_losses = {};
     total_losses[this.ATTACKER] = attacker_losses.reduce(function(a, b) {
       return a + b;
-    });
+    }, 0);
     total_losses[this.DEFENDER] = defender_losses.reduce(function(a, b) {
       return a + b;
-    });
+    }, 0);
 
     return {
       units: units,
