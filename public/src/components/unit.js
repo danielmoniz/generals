@@ -740,6 +740,7 @@ Crafty.c('Unit', {
     } else {
       var enemy_units = Units.getVisibleEnemyUnits(this.side);
     }
+    var friendly_units = Units.getFriendlyUnits(this.side);
 
     for (var i in enemy_units) {
       // add visible enemies as stop points
@@ -763,7 +764,21 @@ Crafty.c('Unit', {
       }
 
       var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
-      stop_points = stop_points.concat(adjacent_points);
+      var valid_adjacent_points = [];
+      for (var j in adjacent_points) {
+        var point = adjacent_points[j];
+        // if there is a friendly unit on that location, ignore stop point
+        var ignore = false;
+        for (var k in friendly_units) {
+          var friendly_unit = friendly_units[k];
+          if (friendly_unit.isAtLocation(point)) {
+            ignore = true;
+            break;
+          }
+        }
+        if (!ignore) valid_adjacent_points.push(point);
+      }
+      stop_points = stop_points.concat(valid_adjacent_points);
       // @TODO Ensure only new positions are added to stop_points
     }
 
