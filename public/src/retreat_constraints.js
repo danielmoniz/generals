@@ -4,23 +4,25 @@ var RetreatConstraints = function(location) {
     throw new Error("BadLocation", "Must specify a location.");
   }
   this.location = location;
-  this.area = this.setAdjacentSpaces(location);
+  this.area = {};
+  this.area['attacker'] = this.setAdjacentSpaces(location);
+  this.area['defender'] = this.setAdjacentSpaces(location);
+  this.setAdjacentSpaces();
 };
 
 RetreatConstraints.prototype.setAdjacentSpaces = function() {
-  var area = [[], [], []];
-  var centre = { x: 1, y: 1 };
-  for (var x in area) {
-    area[x] = [[], [], []];
-    for (var y in area[x]) {
-      area[x][y] = 1;
-      if (x == centre.x) area[x][y] = 0;
-      if (y == centre.y) area[x][y] = 0;
-      if (x == centre.x && y == centre.y) area[x][y] = 1;
-    }
-  }
+  this.area['attacker'] = [
+    [1, 0, 1],
+    [0, 1, 0],
+    [1, 0, 1],
+  ];
+  this.area['defender'] = [
+    [1, 1, 1],
+    [1, 1, 1],
+    [1, 1, 1],
+  ];
 
-  return area;
+  return this.area;
 };
 
 RetreatConstraints.prototype.getArrayDirection = function(direction) {
@@ -34,68 +36,25 @@ RetreatConstraints.prototype.getArrayDirection = function(direction) {
   return { x: x, y: y };
 };
 
-RetreatConstraints.prototype.setSide = function(side, move_direction) {
-  this.side = side;
-  if (side.toLowerCase() == 'attacker') {
-    return this.setAttacker(move_direction);
-  } else if (side.toLowerCase() == 'defender') {
-    return this.setDefender(move_direction);
-  }
-};
-
-RetreatConstraints.prototype.setAttacker = function(attacker_direction) {
-  var attacker_direction = this.getArrayDirection(attacker_direction);
-  for (var x in this.area) {
-    for (var y in this.area[x]) {
-      if (x == attacker_direction.x && y == attacker_direction.y) {
-        this.area[x][y] = 1;
-      } else {
-        this.area[x][y] = 0;
-      }
-    }
-  }
-
-  this.resetCornersAndCentre();
-  return this.area;
-};
-
-RetreatConstraints.prototype.setDefender = function(attacker_direction) {
-  var attacker_direction = this.getArrayDirection(attacker_direction);
-  for (var x in this.area) {
-    for (var y in this.area[x]) {
-      if (x == attacker_direction.x && y == attacker_direction.y) {
-        this.area[x][y] = 0;
-      } else {
-        this.area[x][y] = 1;
-      }
-    }
-  }
-
-  this.resetCornersAndCentre();
-  return this.area;
-};
-
 RetreatConstraints.prototype.addUnit = function(side, move_direction) {
   var move_direction = this.getArrayDirection(move_direction);
-  var value = 0;
-  if (this.side.toLowerCase() == side) {
-    value = 1;
-  }
-  this.area[move_direction.x][move_direction.y] = value;
+  var opposite_side = this.getOppositeSide(side);
+  this.area[side][move_direction.x][move_direction.y] = 1;
+  this.area[opposite_side][move_direction.x][move_direction.y] = 0;
 };
 
-RetreatConstraints.prototype.applyToArray = function(array, property) {
-  for (var x=0; x<this.area.length; x++) {
+RetreatConstraints.prototype.applyToArray = function(side, array, property) {
+  for (var x=0; x<this.area[side].length; x++) {
     var real_x = x + parseInt(this.location.x) - 1;
     if (array[real_x] === undefined) continue;
 
-    for (var y=0; y<this.area[x].length; y++) {
+    for (var y=0; y<this.area[side][x].length; y++) {
       var real_y = y + parseInt(this.location.y) - 1;
       if (array[real_x][real_y] === undefined) continue;
       if (property) {
-        array[real_x][real_y][property] *= this.area[x][y];
+        array[real_x][real_y][property] *= this.area[side][x][y];
       } else {
-        array[real_x][real_y] *= this.area[x][y];
+        array[real_x][real_y] *= this.area[side][x][y];
       }
     }
   }
@@ -121,19 +80,19 @@ RetreatConstraints.prototype.relativeToCardinalDirection = function(relative) {
   throw new Error("BadDirection");
 };
 
-RetreatConstraints.prototype.isMoveTargetValid = function(location) {
+RetreatConstraints.prototype.isMoveTargetValid = function(side, location) {
   try {
     var target = this.getArrayDirection(location);
   } catch (ex) {
     return true;
   }
-  return Boolean(this.area[target.x][target.y]);
+  return Boolean(this.area[side][target.x][target.y]);
 };
 
 /*
  * Return actual map positions of unblocked spaces.
  */
-RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function(map_grid) {
+RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function(side, map_grid) {
   var spaces = [
     { x: 0, y: 1 },
     { x: 1, y: 0 },
@@ -143,7 +102,7 @@ RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function(map_grid) {
 
   var unblocked = [];
   for (var i in spaces) {
-    if (this.area[spaces[i].x][spaces[i].y]) {
+    if (this.area[side][spaces[i].x][spaces[i].y]) {
       var actual = this.convertToActual(spaces[i]);
       if (actual.x < 0 || actual.x > map_grid.width - 1 || actual.y < 0 || actual.y > map_grid.height - 1) {
         continue;
@@ -154,6 +113,32 @@ RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function(map_grid) {
   return unblocked;
 };
 
+/*
+ * Return actual map positions of unblocked spaces.
+ */
+/*
+RetreatConstraints.prototype.getAdjacentBlockedSpaces = function(side, map_grid) {
+  var spaces = [
+    { x: 0, y: 1 },
+    { x: 1, y: 0 },
+    { x: 1, y: 2 },
+    { x: 2, y: 1 },
+  ];
+
+  var blocked = [];
+  for (var i in spaces) {
+    if (!this.area[side][spaces[i].x][spaces[i].y]) {
+      var actual = this.convertToActual(spaces[i]);
+      if (actual.x < 0 || actual.x > map_grid.width - 1 || actual.y < 0 || actual.y > map_grid.height - 1) {
+        continue;
+      }
+      blocked.push(actual);
+    }
+  }
+  return blocked;
+};
+*/
+
 RetreatConstraints.prototype.resetCornersAndCentre = function() {
   this.area[0][0] = 1;
   this.area[0][2] = 1;
@@ -161,6 +146,11 @@ RetreatConstraints.prototype.resetCornersAndCentre = function() {
   this.area[2][2] = 1;
 
   this.area[1][1] = 1;
+};
+
+RetreatConstraints.prototype.getOppositeSide = function(side) {
+  if (side == 'attacker') return 'defender';
+  if (side == 'defender') return 'attacker';
 };
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
