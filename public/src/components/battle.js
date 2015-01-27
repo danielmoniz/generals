@@ -335,6 +335,7 @@ Crafty.c('Battle', {
     this.finished = true;
     Game.battleEnded(this);
     Entity.destroy(this);
+    if (this.siege_battle) Crafty.trigger('EndSiegeBattle', this);
     console.log('BATTLE ENDED');
   },
 
@@ -557,11 +558,10 @@ Crafty.c('SiegeBattle', {
   unitsInCombat: function() {
     var units = Units.getAllUnits();
     var units_in_combat = [];
-    var locations = this.getAllSiegeAreas();
     for (var i=0; i<units.length; i++) {
       var unit = units[i];
-      for (var j in locations) {
-        var location = locations[j];
+      for (var j in this.affected_tiles) {
+        var location = this.affected_tiles[j].at();
         if (!unit.isAtLocation(location)) continue;
         units_in_combat.push(unit);
       }
@@ -623,6 +623,7 @@ Crafty.c('Siege', {
   init: function() {
     this.requires('Color, Actor, Targetable, Clickable')
       .bind("ResolveSieges", this.resolveIfNeeded)
+      .bind("EndSiegeBattle", this.endSiegeBattleIfNeeded)
       .color('Red');
     this.z = 95;
     this.affected_tiles = [];
@@ -701,6 +702,13 @@ Crafty.c('Siege', {
 
     if (end_siege) {
       this.liftSiege();
+    }
+  },
+
+  endSiegeBattleIfNeeded: function(battle) {
+    if (this.battle == battle) {
+      console.log('ending battle in siege');
+      this.battle = undefined;
     }
   },
 
