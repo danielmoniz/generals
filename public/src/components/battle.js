@@ -351,8 +351,9 @@ Crafty.c('Battle', {
     }
     unit.notify_of_battle(battle_side);
 
-    this.retreat_constraints[Battle.ATTACKER].addUnit(battle_side, unit.last_location);
-    this.retreat_constraints[Battle.DEFENDER].addUnit(battle_side, unit.last_location);
+    var retreat_constraints = this.getRetreatConstraints(unit.at());
+    // @TODO Is this updating the retreat constraints in this object?
+    retreat_constraints.addUnit(battle_side, unit.last_location);
 
     if (this.num_turns > 0) {
       this.new_units.push(unit);
@@ -494,6 +495,13 @@ Crafty.c('Battle', {
   report: function() {
   },
 
+  getBattleSideFromPlayer: function(player) {
+    var battle_sides = {};
+    battle_sides[this.attacking_side] = Battle.ATTACKER;
+    battle_sides[this.defending_side] = Battle.DEFENDER;
+    return battle_sides[player];
+  },
+
 });
 
 Crafty.c('SimpleBattle', {
@@ -528,16 +536,12 @@ Crafty.c('SimpleBattle', {
 
   setRetreatConstraints: function(attacker_direction) {
     this.retreat_constraints = {};
-    this.retreat_constraints[Battle.ATTACKER] = new RetreatConstraints(this.at());
-    this.retreat_constraints[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
-    this.retreat_constraints[Battle.DEFENDER] = new RetreatConstraints(this.at());
-    this.retreat_constraints[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
+    this.retreat_constraints = new RetreatConstraints(this.at());
+    this.retreat_constraints.addUnit(Battle.ATTACKER, attacker_direction);
   },
 
-  getRetreatConstraints: function(side, location) {
-    console.log("this.retreat_constraints[side]");
-    console.log(this.retreat_constraints[side]);
-    return this.retreat_constraints[side];
+  getRetreatConstraints: function(location) {
+    return this.retreat_constraints;
   },
 
 });
@@ -584,37 +588,23 @@ Crafty.c('SiegeBattle', {
 
   setRetreatConstraints: function(attacker_direction, location) {
     this.retreat_constraints = {};
-    this.retreat_constraints[Battle.ATTACKER] = {};
-    this.retreat_constraints[Battle.DEFENDER] = {};
     for (var i in this.affected_tiles) {
       var point = this.affected_tiles[i].at();
-      if (!this.retreat_constraints[Battle.ATTACKER][point.x]) this.retreat_constraints[Battle.ATTACKER][point.x] = {};
-      if (!this.retreat_constraints[Battle.DEFENDER][point.x]) this.retreat_constraints[Battle.DEFENDER][point.x] = {};
-      var retreat = {};
-      retreat['attacker'] = new RetreatConstraints(point);
-      //retreat[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
-      retreat['defender'] = new RetreatConstraints(point);
-      //retreat[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
+      if (this.retreat_constraints[point.x] === undefined) this.retreat_constraints[point.x] = {};
+      var retreat = new RetreatConstraints(point);
 
-      this.retreat_constraints[Battle.ATTACKER][point.x][point.y] = retreat['attacker'];
-      this.retreat_constraints[Battle.DEFENDER][point.x][point.y] = retreat['defender'];
+      this.retreat_constraints[point.x][point.y] = retreat;
     }
     // @TODO This might not be the centre tile. Perform this on centre instead.
-    this.retreat_constraints[Battle.ATTACKER][location.x] = {};
-    this.retreat_constraints[Battle.DEFENDER][location.x] = {};
+      if (this.retreat_constraints[point.x] === undefined) this.retreat_constraints[location.x] = {};
 
-    this.retreat_constraints[Battle.ATTACKER][location.x][location.y] = new RetreatConstraints(location);
-    this.retreat_constraints[Battle.ATTACKER][location.x][location.y].setSide(Battle.ATTACKER, attacker_direction);
-
-    this.retreat_constraints[Battle.DEFENDER][location.x][location.y] = new RetreatConstraints(location);
-    this.retreat_constraints[Battle.DEFENDER][location.x][location.y].setSide(Battle.DEFENDER, attacker_direction);
+    this.retreat_constraints[location.x][location.y] = new RetreatConstraints(location);
+    this.retreat_constraints[location.x][location.y].addUnit(Battle.ATTACKER, attacker_direction);
   },
 
-  getRetreatConstraints: function(side, location) {
-    console.log("this.retreat_constraints[side]");
-    console.log(this.retreat_constraints[side]);
-    if (location === undefined) return this.retreat_constraints[side];
-    return this.retreat_constraints[side][location.x][location.y];
+  getRetreatConstraints: function(location) {
+    if (location === undefined) return this.retreat_constraints;
+    return this.retreat_constraints[location.x][location.y];
   },
 
 });
@@ -663,6 +653,7 @@ Crafty.c('Siege', {
   },
 
   resolveIfNeeded: function() {
+    if (this.battle) return;
     var end_siege = true;
     var sieging_troops = 0;
     for (var i in this.affected_tiles) {
@@ -670,6 +661,8 @@ Crafty.c('Siege', {
       var units_present = Units.getPresentUnits(tile.at());
       if (units_present.length > 0) {
         var unit = units_present[0];
+
+        /*
         var battle = unit.isBattlePresent();
         if (battle) {
           var new_unit = false;
@@ -678,12 +671,13 @@ Crafty.c('Siege', {
             if (!attacker.besieged) {
               // units at this tile no longer considered sieging - they are
               // distracted by a non-besieged army
-              //new_unit = true;
+              new_unit = true;
               break;
             }
           }
           if (new_unit) continue;
         }
+        */
 
         var hostile_units = false;
         for (var j in units_present) {
@@ -713,6 +707,8 @@ Crafty.c('Siege', {
   },
 
   liftSiege: function() {
+    console.log("this.battle");
+    console.log(this.battle);
     console.log('siege lifted!');
     for (var i in this.affected_tiles) {
       var tile = this.affected_tiles[i];

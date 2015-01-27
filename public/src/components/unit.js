@@ -328,12 +328,12 @@ Crafty.c('Unit', {
   updateTerrainGraphWithRetreatBlocks: function(graph, target) {
     if (this.battle) {
       var battle = this.isBattlePresent();
-      var retreat_constraints = battle.getRetreatConstraints(this.battle_side, this.at());
-      if (!retreat_constraints.isMoveTargetValid(target)) {
+      var retreat_constraints = battle.getRetreatConstraints(this.at());
+      if (!retreat_constraints.isMoveTargetValid(this.battle_side, target)) {
         return false;
       }
 
-      retreat_constraints.applyToArray(graph.grid, 'weight');
+      retreat_constraints.applyToArray(this.battle_side, graph.grid, 'weight');
     }
 
     return graph;
@@ -504,8 +504,9 @@ Crafty.c('Unit', {
 
   isSuppliedInBattle: function(supply_end_point) {
     var battle = this.isBattlePresent();
-    var retreat_constraints = battle.getRetreatConstraints(this.battle_side, this.at());
-    var spaces = retreat_constraints.getAdjacentUnblockedSpaces(Game.map_grid);
+    var retreat_constraints = battle.getRetreatConstraints(this.at());
+
+    var spaces = retreat_constraints.getAdjacentUnblockedSpaces(this.battle_side, Game.map_grid);
     var route_cost = undefined;
 
     for (var i in spaces) {

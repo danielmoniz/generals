@@ -693,7 +693,7 @@ Output = {
   updateRetreatBlocks: function() {
     var retreat_blocks = Crafty('RetreatBlock').get();
     for (var i in retreat_blocks) {
-      retreat_blocks[i].destroy();
+      Entity.destroy(retreat_blocks[i]);
     }
 
     if (Game.turn % 1 != 0) return false;
@@ -710,31 +710,33 @@ Output = {
     for (var key in battles) {
       var battle = Crafty(parseInt(key));
       var side = battles[key];
-      var retreat_constraints = battle.getRetreatConstraints(side);
+      var retreat_constraints = battle.getRetreatConstraints();
       if (retreat_constraints instanceof RetreatConstraints) {
         retreat_constraints = [[retreat_constraints]];
       }
       for (var i in retreat_constraints) {
         for (var j in retreat_constraints[i]) {
-          this.createRetreatBlocksForBattle(retreat_constraints[i][j]);
+          var battle_side = battle.getBattleSideFromPlayer(Game.player);
+          this.createRetreatBlocksForBattle(battle_side, retreat_constraints[i][j]);
         }
       }
     }
   },
 
-  createRetreatBlocksForBattle: function(retreat_constraints) {
+  createRetreatBlocksForBattle: function(side, retreat_constraints) {
     var spaces = [
       { x: 0, y: 1 },
       { x: 1, y: 0 },
       { x: 1, y: 2 },
       { x: 2, y: 1 },
     ];
+    //var spaces = retreat_constraints.getAdjacentBlockedSpaces(side, Game.map_grid);
 
     for (var i in spaces) {
-      var blocked = !retreat_constraints.area[spaces[i].x][spaces[i].y];
+      var blocked = !retreat_constraints.area[side][spaces[i].x][spaces[i].y];
       if (blocked) {
         var real_location = retreat_constraints.convertToActual(spaces[i]);
-        var block = Crafty.e('RetreatBlock');
+        var block = Entity.create('RetreatBlock');
         block.at(real_location.x, real_location.y);
         var cardinal_direction = retreat_constraints.relativeToCardinalDirection(spaces[i]);
         block.setSide('enemy', cardinal_direction);
