@@ -310,11 +310,7 @@ Crafty.c('Battle', {
     this.defending_side = 1 - attacker.side;
 
     this.unit_updates = [];
-    this.retreat_constraints = {};
-    this.retreat_constraints[Battle.ATTACKER] = new RetreatConstraints(this.at());
-    this.retreat_constraints[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
-    this.retreat_constraints[Battle.DEFENDER] = new RetreatConstraints(this.at());
-    this.retreat_constraints[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
+    this.setRetreatConstraints(attacker_direction, attacker.at());
 
     this.casualties = [];
     this.new_units = [];
@@ -339,6 +335,7 @@ Crafty.c('Battle', {
     this.finished = true;
     Game.battleEnded(this);
     Entity.destroy(this);
+    console.log('BATTLE ENDED');
   },
 
   join: function(unit) {
@@ -530,11 +527,24 @@ Crafty.c('SimpleBattle', {
     return total;
   },
 
+  setRetreatConstraints: function(attacker_direction) {
+    this.retreat_constraints = {};
+    this.retreat_constraints[Battle.ATTACKER] = new RetreatConstraints(this.at());
+    this.retreat_constraints[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
+    this.retreat_constraints[Battle.DEFENDER] = new RetreatConstraints(this.at());
+    this.retreat_constraints[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
+  },
+
+  getRetreatConstraints: function(side, location) {
+    return this.retreat_constraints[side];
+  },
+
 });
 
 Crafty.c('SiegeBattle', {
   init: function() {
     this.requires('Battle');
+    this.siege_battle = true;
   },
 
   setSiegeBattleData: function(siege) {
@@ -572,6 +582,33 @@ Crafty.c('SiegeBattle', {
     return Units.getTotalTroops(units);
   },
 
+  setRetreatConstraints: function(attacker_direction, location) {
+    this.retreat_constraints = {};
+    for (var i in this.affected_tiles) {
+      var point = this.affected_tiles[i].at();
+      if (!this.retreat_constraints[point.x]) this.retreat_constraints[point.x] = {};
+      var retreat = {};
+      retreat[Battle.ATTACKER] = new RetreatConstraints(point);
+      //retreat[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
+      retreat[Battle.DEFENDER] = new RetreatConstraints(point);
+      //retreat[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
+
+      this.retreat_constraints[point.x][point.y] = retreat;
+    }
+    this.retreat_constraints[location.x] = {};
+    this.retreat_constraints[location.x][location.y] = {};
+
+    this.retreat_constraints[location.x][location.y][Battle.ATTACKER] = new RetreatConstraints(location);
+    this.retreat_constraints[location.x][location.y][Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
+
+    this.retreat_constraints[location.x][location.y][Battle.DEFENDER] = new RetreatConstraints(location);
+    this.retreat_constraints[location.x][location.y][Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
+  },
+
+  getRetreatConstraints: function(side, location) {
+    return this.retreat_constraints[location.x][location.y][side];
+  },
+
 });
 
 Crafty.c('Siege', {
@@ -586,6 +623,15 @@ Crafty.c('Siege', {
   setSides: function(side) {
     this.sieging_side = side;
     this.besieged_side = 1 - side;
+  },
+
+  startSiegeBattle: function(attacker) {
+    var battle = Entity.create('SiegeBattle');
+    battle.at(this.at().x, this.at().y);
+    battle.setSiegeBattleData(this);
+    battle.start(attacker);
+
+    this.battle = battle;
   },
 
   setAffectedRegion: function() {
@@ -623,7 +669,7 @@ Crafty.c('Siege', {
             if (!attacker.besieged) {
               // units at this tile no longer considered sieging - they are
               // distracted by a non-besieged army
-              new_unit = true;
+              //new_unit = true;
               break;
             }
           }
@@ -651,6 +697,7 @@ Crafty.c('Siege', {
   },
 
   liftSiege: function() {
+    console.log('siege lifted!');
     for (var i in this.affected_tiles) {
       var tile = this.affected_tiles[i];
       Entity.destroy(tile);
@@ -664,7 +711,8 @@ Crafty.c('Siege', {
 Crafty.c('SiegeAdjacent', {
   init: function() {
     this.requires('Color, Actor')
-      .color('Yellow');
+      //.color('Yellow');
+      ;
     this.z = 95;
     this.alpha = 60;
   },

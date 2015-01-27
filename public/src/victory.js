@@ -82,11 +82,14 @@ Victory = {
         var total = this[info.getFunction](i);
         if (typeof total == 'object') total = total.length;
         var factor = total * this[info.name][i];
+
+        /*
         console.log(info.name);
         console.log("this[info.name][i]");
         console.log(this[info.name][i]);
         console.log("factor");
         console.log(factor);
+        */
 
         if (info.max_effect === undefined) {
           will_to_fight *= factor;

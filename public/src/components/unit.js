@@ -12,6 +12,7 @@ Crafty.c('Unit', {
       .bind("NextTurn", this.nextTurn)
       .bind("UpdateActionChoices", this.updateActionChoices)
       .bind("StartBattles", this.startBattleIfNeeded)
+      .bind("StartSiegeBattles", this.startSiegeBattleIfNeeded)
       .bind("SiegeLifted", this.siegeLifted)
       ;
     this.lastMoveTarget = undefined;
@@ -327,7 +328,7 @@ Crafty.c('Unit', {
   updateTerrainGraphWithRetreatBlocks: function(graph, target) {
     if (this.battle) {
       var battle = this.isBattlePresent();
-      var retreat_constraints = battle.retreat_constraints[this.battle_side];
+      var retreat_constraints = battle.getRetreatConstraints(this.battle_side, this.at());
       if (!retreat_constraints.isMoveTargetValid(target)) {
         return false;
       }
@@ -503,7 +504,7 @@ Crafty.c('Unit', {
 
   isSuppliedInBattle: function(supply_end_point) {
     var battle = this.isBattlePresent();
-    var retreat_constraints = battle.retreat_constraints[this.battle_side];
+    var retreat_constraints = battle.getRetreatConstraints(this.battle_side, this.at());
     var spaces = retreat_constraints.getAdjacentUnblockedSpaces(Game.map_grid);
     var route_cost = undefined;
 
@@ -589,14 +590,26 @@ Crafty.c('Unit', {
   },
 
   isBattlePresent: function() {
-    return this.isEntityPresent('SimpleBattle');
+    var simple_battle = this.isEntityPresent('SimpleBattle');
+    if (simple_battle) return simple_battle;
+    var siege = this.isSiegePresent();
+    if (siege) {
+      console.log('unit.js --------');
+      console.log(this.name);
+      console.log("siege");
+      console.log(siege);
+      console.log("siege.battle");
+      console.log(siege.battle);
+    }
+    if (siege && siege.battle) return siege.battle;
+    return false;
   },
 
   isSiegePresent: function() {
     var sieges = Entity.get('Siege');
     for (var i in sieges) {
       var siege = sieges[i];
-      if (Utility.getDistance(siege.at(), this.at()) <= 1) return true;
+      if (Utility.getDistance(siege.at(), this.at()) <= 1) return siege;
     }
     return false;
   },
@@ -881,12 +894,18 @@ Crafty.c('Unit', {
     // detect combat
     var present_units = this.getPresentUnits();
     var enemy_present = this.isEnemyPresent();
+    var siege = this.isSiegePresent();
     if (enemy_present) {
       var battle = this.isBattlePresent();
       if (battle) {
         this.joinBattle(battle);
       } else {
         this.start_battle = true;
+      }
+    } else if (siege) {
+      if (siege.battle) this.joinBattle(siege.battle);
+      else if (siege.besieged_side == this.side && !siege.battle) {
+        this.start_siege_battle = true;
       }
     }
   },
@@ -911,12 +930,37 @@ Crafty.c('Unit', {
     }
   },
 
+  startSiegeBattleIfNeeded: function() {
+    if (this.start_siege_battle) {
+      var siege = this.isSiegePresent();
+      if (siege) {
+        if (siege.battle) {
+          this.joinBattle(siege.battle);
+        } else {
+          siege.startSiegeBattle(this);
+        }
+        this.start_siege_battle = false;
+        this.battle = true;
+        this.battle_side = Battle.ATTACKER;
+      } else {
+        throw new Error('BadSiegeStart', 'Trying to start siege battle without siege');
+      }
+    }
+  },
+
   startBattle: function() {
     this.battle = true;
     this.stop_unit();
     var battle = Entity.create('SimpleBattle').at(this.at().x, this.at().y);
     this.battle_side = Battle.ATTACKER;
     battle.start(this);
+  },
+
+  startSiegeBattle: function() {
+    this.battle = true;
+    this.stop_unit();
+    this.battle_side = Battle.ATTACKER;
+    siege.startSiegeBattle(this);
   },
 
   joinBattle: function(battle) {

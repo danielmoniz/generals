@@ -381,6 +381,27 @@ Output = {
     var battle_div = this.createDiv('square');
     if (unit.battle) {
       var battle = unit.isBattlePresent();
+      console.log('output.js -------');
+      console.log(unit.name);
+      console.log("battle");
+      console.log(battle);
+
+      // TEST OUTPUT
+      var sieges = Entity.get('Siege');
+      var sieges = Crafty('Siege').get();
+      console.log('all sieges:');
+      console.log(sieges.length);
+      for (var i in sieges) {
+        console.log(sieges[i].battle);
+      }
+      var battles = Entity.get('Battle');
+      var battles = Crafty('Battle').get();
+      console.log('all battles:');
+      console.log(battles.length);
+      for (var i in battles) {
+        console.log(battles[i]);
+      }
+
       battle_div.attr("battle_id", battle.getId());
       battle_div.addClass("battle");
     }
@@ -688,8 +709,13 @@ Output = {
     for (var key in battles) {
       var battle = Crafty(parseInt(key));
       var side = battles[key];
-      var retreat_constraints = battle.retreat_constraints[side];
-      this.createRetreatBlocksForBattle(retreat_constraints);
+      var retreat_constraints = battle.getRetreatConstraints(side);
+      if (!Array.isArray(retreat_constraints)) {
+        retreat_constraints = [retreat_constraints];
+      }
+      for (var i in retreat_constraints) {
+        this.createRetreatBlocksForBattle(retreat_constraints[i]);
+      }
     }
   },
 
