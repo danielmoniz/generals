@@ -442,8 +442,6 @@ Crafty.c('Battle', {
       event: event,
     };
     unit_stats[event] = true;
-    console.log("unit_stats");
-    console.log(unit_stats);
     return unit_stats;
   },
 
@@ -536,6 +534,8 @@ Crafty.c('SimpleBattle', {
   },
 
   getRetreatConstraints: function(side, location) {
+    console.log("this.retreat_constraints[side]");
+    console.log(this.retreat_constraints[side]);
     return this.retreat_constraints[side];
   },
 
@@ -584,29 +584,37 @@ Crafty.c('SiegeBattle', {
 
   setRetreatConstraints: function(attacker_direction, location) {
     this.retreat_constraints = {};
+    this.retreat_constraints[Battle.ATTACKER] = {};
+    this.retreat_constraints[Battle.DEFENDER] = {};
     for (var i in this.affected_tiles) {
       var point = this.affected_tiles[i].at();
-      if (!this.retreat_constraints[point.x]) this.retreat_constraints[point.x] = {};
+      if (!this.retreat_constraints[Battle.ATTACKER][point.x]) this.retreat_constraints[Battle.ATTACKER][point.x] = {};
+      if (!this.retreat_constraints[Battle.DEFENDER][point.x]) this.retreat_constraints[Battle.DEFENDER][point.x] = {};
       var retreat = {};
-      retreat[Battle.ATTACKER] = new RetreatConstraints(point);
+      retreat['attacker'] = new RetreatConstraints(point);
       //retreat[Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
-      retreat[Battle.DEFENDER] = new RetreatConstraints(point);
+      retreat['defender'] = new RetreatConstraints(point);
       //retreat[Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
 
-      this.retreat_constraints[point.x][point.y] = retreat;
+      this.retreat_constraints[Battle.ATTACKER][point.x][point.y] = retreat['attacker'];
+      this.retreat_constraints[Battle.DEFENDER][point.x][point.y] = retreat['defender'];
     }
-    this.retreat_constraints[location.x] = {};
-    this.retreat_constraints[location.x][location.y] = {};
+    // @TODO This might not be the centre tile. Perform this on centre instead.
+    this.retreat_constraints[Battle.ATTACKER][location.x] = {};
+    this.retreat_constraints[Battle.DEFENDER][location.x] = {};
 
-    this.retreat_constraints[location.x][location.y][Battle.ATTACKER] = new RetreatConstraints(location);
-    this.retreat_constraints[location.x][location.y][Battle.ATTACKER].setSide(Battle.ATTACKER, attacker_direction);
+    this.retreat_constraints[Battle.ATTACKER][location.x][location.y] = new RetreatConstraints(location);
+    this.retreat_constraints[Battle.ATTACKER][location.x][location.y].setSide(Battle.ATTACKER, attacker_direction);
 
-    this.retreat_constraints[location.x][location.y][Battle.DEFENDER] = new RetreatConstraints(location);
-    this.retreat_constraints[location.x][location.y][Battle.DEFENDER].setSide(Battle.DEFENDER, attacker_direction);
+    this.retreat_constraints[Battle.DEFENDER][location.x][location.y] = new RetreatConstraints(location);
+    this.retreat_constraints[Battle.DEFENDER][location.x][location.y].setSide(Battle.DEFENDER, attacker_direction);
   },
 
   getRetreatConstraints: function(side, location) {
-    return this.retreat_constraints[location.x][location.y][side];
+    console.log("this.retreat_constraints[side]");
+    console.log(this.retreat_constraints[side]);
+    if (location === undefined) return this.retreat_constraints[side];
+    return this.retreat_constraints[side][location.x][location.y];
   },
 
 });

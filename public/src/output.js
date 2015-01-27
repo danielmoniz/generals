@@ -138,8 +138,7 @@ Output = {
     var winner_text = 'The {0} won!'.format(winning_faction);
     var winner = this.createDiv('winner', winner_text);
     battle_div.append(winner);
-    console.log("battle_info.unit_updates");
-    console.log(battle_info.unit_updates);
+
     for (var j in battle_info.unit_updates) {
       var update_div = this.buildUnitUpdate(battle_info.unit_updates[j]);
       battle_div.append(update_div);
@@ -381,12 +380,13 @@ Output = {
     var battle_div = this.createDiv('square');
     if (unit.battle) {
       var battle = unit.isBattlePresent();
+      /*
+      // TEST OUTPUT
       console.log('output.js -------');
       console.log(unit.name);
       console.log("battle");
       console.log(battle);
 
-      // TEST OUTPUT
       var sieges = Entity.get('Siege');
       var sieges = Crafty('Siege').get();
       console.log('all sieges:');
@@ -401,6 +401,7 @@ Output = {
       for (var i in battles) {
         console.log(battles[i]);
       }
+      */
 
       battle_div.attr("battle_id", battle.getId());
       battle_div.addClass("battle");
@@ -710,11 +711,13 @@ Output = {
       var battle = Crafty(parseInt(key));
       var side = battles[key];
       var retreat_constraints = battle.getRetreatConstraints(side);
-      if (!Array.isArray(retreat_constraints)) {
-        retreat_constraints = [retreat_constraints];
+      if (retreat_constraints instanceof RetreatConstraints) {
+        retreat_constraints = [[retreat_constraints]];
       }
       for (var i in retreat_constraints) {
-        this.createRetreatBlocksForBattle(retreat_constraints[i]);
+        for (var j in retreat_constraints[i]) {
+          this.createRetreatBlocksForBattle(retreat_constraints[i][j]);
+        }
       }
     }
   },

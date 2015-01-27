@@ -593,6 +593,7 @@ Crafty.c('Unit', {
     var simple_battle = this.isEntityPresent('SimpleBattle');
     if (simple_battle) return simple_battle;
     var siege = this.isSiegePresent();
+    /*
     if (siege) {
       console.log('unit.js --------');
       console.log(this.name);
@@ -601,6 +602,7 @@ Crafty.c('Unit', {
       console.log("siege.battle");
       console.log(siege.battle);
     }
+    */
     if (siege && siege.battle) return siege.battle;
     return false;
   },
@@ -974,7 +976,6 @@ Crafty.c('Unit', {
     this.stop_unit();
   },
   battle_finished: function() {
-    console.log('battle_finished called for {0}'.format(this.name));
     this.battle = false;
     delete this.battle_side;
     this.updateActionChoices();
