@@ -56,9 +56,7 @@ Battle = {
         console.log('Unit number (in tile): {0}'.format(i));
         continue;
       }
-      if (unit !== undefined) {
-        total += unit.getActive() * unit.combat_ability;
-      }
+      total += unit.getActive() * unit.combat_ability;
     }
     return total;
   },
@@ -111,10 +109,56 @@ Battle = {
     return total_weighted_morale / total_troops;
   },
 
+  getAttackPower: function(units) {
+    var total_attack_power = 0;
+    for (var i in units) {
+      var unit = units[i];
+      //var terrain_defense = Game.terrain_defense_bonus[unit.at().x][unit.at().y];
+      var morale_factor = Battle.calculateMoraleFactor(unit.morale);
+      var combat_ability = Battle.getCombatAbility([unit]);
+      var attack_power = combat_ability * morale_factor;
+      total_attack_power += attack_power;
+    }
+    return total_attack_power;
+  },
+
+  getDefensivePower: function(units, ignore_terrain) {
+    var total_defensive_power = 0;
+    for (var i in units) {
+      var unit = units[i];
+      var terrain_defense = 1;
+      if (!ignore_terrain) {
+        var terrain_defense = Game.terrain_defense_bonus[unit.at().x][unit.at().y];
+      }
+      var morale_factor = Battle.calculateMoraleFactor(unit.morale);
+      var defensive_ability = Battle.getDefensiveAbility([unit]);
+      var defensive_power = defensive_ability * terrain_defense * morale_factor;
+      total_defensive_power += defensive_power;
+    }
+    return total_defensive_power;
+  },
+
   calculateTotalLosses: function(battle, attackers, defenders) {
     var TROOP_LOSS = Game.troop_loss_constant;
-    var MORALE_FACTOR = Game.morale_factor;
-    var terrain_mod = Game.terrain_defense_bonus[battle.at().x][battle.at().y];
+    var MORALE_FACTOR = Game.morale_factor; // not yet used in this function
+    // @TODO Calculate ranged attacker damage first
+
+    var attacker_attack_power = Battle.getAttackPower(attackers);
+    console.log("attacker_attack_power");
+    console.log(attacker_attack_power);
+    var defender_attack_power = Battle.getAttackPower(defenders);
+
+    var ignore_terrain = true;
+    //if (battle.siege_battle) ignore_terrain = false;
+    var attacker_defensive_ability = Battle.getDefensivePower(attackers, ignore_terrain);
+    var defender_defensive_ability = Battle.getDefensivePower(defenders);
+
+    var attacker_troops = Units.getTotalTroops(attackers)[battle.attacking_side].active;
+    var defender_troops = Units.getTotalTroops(defenders)[battle.defending_side].active;
+
+    var attacker_losses = (TROOP_LOSS * defender_attack_power) / attacker_defensive_ability;
+    var defender_losses = (TROOP_LOSS * attacker_attack_power) / defender_defensive_ability;
+
 
     var attacker_morale = Battle.calculateSideMorale(attackers);
     var defender_morale = Battle.calculateSideMorale(defenders);
@@ -129,26 +173,6 @@ Battle = {
       console.log(defender_morale);
       throw new Error('MoraleNotImplemented');
     }
-
-    var attacker_morale_factor = Battle.calculateMoraleFactor(attacker_morale);
-    var defender_morale_factor = Battle.calculateMoraleFactor(defender_morale);
-    /*
-    var attacker_random_factor = Math.random() * 0.2 + 0.9;
-    var defender_random_factor = Math.random() * 0.2 + 0.9;
-    */
-
-    var attackers_ability = Battle.getCombatAbility(attackers);
-    var defenders_ability = Battle.getCombatAbility(defenders);
-
-    var attackers_defensive_ability = Battle.getDefensiveAbility(attackers);
-    var defenders_defensive_ability = Battle.getDefensiveAbility(defenders);
-
-
-    var attacker_attack_power = attackers_ability * (1/terrain_mod * attacker_morale_factor);
-    var defender_losses = attacker_attack_power * TROOP_LOSS / defenders_defensive_ability / defender_morale_factor;
-
-    var defender_attack_power = defenders_ability * (terrain_mod * defender_morale_factor);
-    var attacker_losses = defender_attack_power * TROOP_LOSS / attackers_defensive_ability / attacker_morale_factor;
 
 
     var losses = {};
