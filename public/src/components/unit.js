@@ -61,6 +61,7 @@ Crafty.c('Unit', {
     this.testTargetAndPath();
 
     if (turn === undefined) turn = Game.turn;
+    //this.stop = false;
     // rebuild movement path for pathfinding from stored data
 
     var updated_move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
@@ -892,24 +893,29 @@ Crafty.c('Unit', {
     }
   },
 
-
   moved: function() {
     // detect combat
     var present_units = this.getPresentUnits();
     var enemy_present = this.isEnemyPresent();
     var siege = this.isSiegePresent();
-    if (enemy_present) {
-      var battle = this.isBattlePresent();
-      if (battle) {
-        this.joinBattle(battle);
-      } else {
-        this.start_battle = true;
-      }
-    } else if (siege) {
-      if (siege.battle) this.joinBattle(siege.battle);
-      else if (siege.besieged_side == this.side && !siege.battle) {
+    var battle = this.isBattlePresent();
+    if (battle) {
+      this.joinBattle(battle);
+    }
+    if (siege) {
+      if (siege.besieged_side == this.side && !siege.battle) {
         this.start_siege_battle = true;
       }
+    } else {
+      if (enemy_present && !battle) {
+        this.start_battle = true;
+      }
+    }
+  },
+
+  enterSiege: function(siege) {
+    if (siege.battle) {
+      this.start_siege_battle = true;
     }
   },
 
@@ -918,6 +924,7 @@ Crafty.c('Unit', {
     delete this.movement_path;
     this.updateMoveTargetPath('delete');
     delete this.move_target;
+    //this.stop = true;
   },
 
   startBattleIfNeeded: function() {
