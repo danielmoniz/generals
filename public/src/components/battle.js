@@ -676,49 +676,38 @@ Crafty.c('Siege', {
     return this;
   },
 
+  getAllSiegeAreas: function() {
+    var locations = [this.at()];
+    for (var i in this.affected_tiles) {
+      locations.push(this.affected_tiles[i].at());
+    }
+    return locations;
+  },
+
   resolveIfNeeded: function() {
     if (this.battle) return;
-    var end_siege = true;
     var sieging_troops = 0;
-    for (var i in this.affected_tiles) {
-      var tile = this.affected_tiles[i];
-      var units_present = Units.getPresentUnits(tile.at());
+    var besieged_troops = 0;
+    var points = this.getAllSiegeAreas();
+
+    for (var i in points) {
+      var tile = points[i];
+      var units_present = Units.getPresentUnits(tile);
       if (units_present.length > 0) {
         var unit = units_present[0];
 
-        /*
-        var battle = unit.isBattlePresent();
-        if (battle) {
-          var new_unit = false;
-          for (var k in battle.attackers) {
-            var attacker = battle.attackers[k];
-            if (!attacker.besieged) {
-              // units at this tile no longer considered sieging - they are
-              // distracted by a non-besieged army
-              new_unit = true;
-              break;
-            }
-          }
-          if (new_unit) continue;
-        }
-        */
-
-        var hostile_units = false;
         for (var j in units_present) {
           var unit = units_present[j];
           if (unit.side == this.sieging_side) {
-            hostile_units = true;
             sieging_troops += unit.getActive();
+          } else if (unit.side != this.sieging_side && unit.besieged) {
+            besieged_troops += unit.getActive();
           }
-        }
-        if (hostile_units && sieging_troops >= Game.min_troops_for_siege) {
-          end_siege = false;
-          break;
         }
       }
     }
 
-    if (end_siege) {
+    if (besieged_troops <= 0 || sieging_troops < Game.min_troops_for_siege) {
       this.liftSiege();
     }
   },
