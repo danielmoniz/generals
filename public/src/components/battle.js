@@ -657,6 +657,21 @@ Crafty.c('Siege', {
     this.battle = battle;
   },
 
+  isSiegeBattleAt: function(location) {
+    if (!this.battle) return false;
+    // no siege battle in centre (will be a 'storm the city' battle
+    if (location.x == this.at().x && location.y == this.at().y) {
+      return false;
+    }
+    for (var i in this.affected_tiles) {
+      var tile = this.affected_tiles[i];
+      if (tile.at().x == location.x && tile.at().y == location.y) {
+        return this.battle;
+      }
+    }
+    return false;
+  },
+
   setAffectedRegion: function() {
     var adjacent_points = Utility.getPointsWithinDistance(this.at(), 1, Game.map_grid);
     for (var i in adjacent_points) {

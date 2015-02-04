@@ -605,7 +605,10 @@ Crafty.c('Unit', {
       console.log(siege.battle);
     }
     */
-    if (siege && siege.battle) return siege.battle;
+    if (siege) {
+      var battle = siege.isSiegeBattleAt(this.at());
+      return battle;
+    }
     return false;
   },
 
@@ -902,6 +905,7 @@ Crafty.c('Unit', {
     if (battle) {
       this.joinBattle(battle);
     }
+
     if (siege) {
       if (siege.besieged_side == this.side && !siege.battle) {
         this.start_siege_battle = true;
