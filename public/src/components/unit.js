@@ -187,7 +187,7 @@ Crafty.c('Unit', {
       actions.push('start_fire');
     }
 
-    if (this.canSiege()) actions.push('siege');
+    if (Game.siege && this.canSiege()) actions.push('siege');
 
     return actions;
   },
