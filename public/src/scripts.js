@@ -145,8 +145,6 @@ $(document).ready(function() {
   //$('input[name=fog_of_war]').click();
   //$("input[name=advanced_victory]").click();
   //$("#start-game").click();
-  //$("#start-email-button").click();
-  //$("#start-online-button").click();
 
   $('#test_button').click(function() {
     Crafty.trigger('RenderScene');

@@ -451,9 +451,11 @@ Crafty.c('Unit', {
     // detect possible lack of supply
     // @TODO: Allow for more than two supply endpoints
     var target_location = Game.supply_route[side];
-
     var target = Game.terrain[target_location.x][target_location.y];
-    if (this.together(target)) return true;
+    if (this.isAtLocation(target.at())) {
+      return this.isSuppliedAtSupplyRoute();
+    }
+
     var graph = new Graph(Game.terrain_supply);
     var start = graph.grid[this.at().x][this.at().y];
     var end = graph.grid[target.at().x][target.at().y];
@@ -477,7 +479,6 @@ Crafty.c('Unit', {
       // add enemy units to Game supply graph as blockers of supply lines
       var unit = enemy_units[i];
       if (unit.getActive() < Game.min_troops_for_supply_cut) continue;
-      var weight = graph.grid[unit.at().x][unit.at().y].weight;
       graph.grid[unit.at().x][unit.at().y].weight = 0;
       // Uncomment below line for supply overlay
       //Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
@@ -489,21 +490,27 @@ Crafty.c('Unit', {
       }
     }
 
-    if (this.battle) {
-      is_supplied = this.isSuppliedInBattle(end);
-    } else {
-      var supply_route = Game.pathfind.search(graph, start, end);
-      if (supply_route.length == 0) is_supplied = false;
+    // @TODO Add fire entities as supply blocks
+    var fires = Entity.get('Fire');
+    for (var i in fires) {
+      var fire = fires[i];
+      graph.grid[fire.at().x][fire.at().y].weight = 0;
     }
-    /*
-    if (!is_supplied && side == this.side) {
-      return this.isSupplied(1 - this.side);
+
+    var supply_route = Game.pathfind.search(graph, start, end);
+    if (supply_route.length == 0) is_supplied = false;
+    if (is_supplied && this.battle) {
+      return this.isSuppliedInBattle(graph, end);
     }
-    */
+
     return is_supplied;
   },
 
-  isSuppliedInBattle: function(supply_end_point) {
+  /*
+   * Assumes that the location with the army can be supplied (ie. that this has
+   * already been checked).
+   */
+  isSuppliedInBattle: function(graph, supply_end_point) {
     var battle = this.isBattlePresent();
     var retreat_constraints = battle.getRetreatConstraints(this.at());
 
@@ -515,11 +522,29 @@ Crafty.c('Unit', {
       var local_terrain = Game.terrain[space.x][space.y];
       if (local_terrain.move_difficulty == 0) continue; // impassible
       if (!local_terrain.supply && !Game.roads[space.x][space.y]) continue; // not a road/bridge/city
-      var start = Game.terrain_supply_graph.grid[space.x][space.y];
-      var supply_route = Game.pathfind.search(Game.terrain_supply_graph, start, supply_end_point);
+      var start = graph.grid[space.x][space.y];
+      var supply_route = Game.pathfind.search(graph, start, supply_end_point);
+
       if (supply_route.length > 0) return true;
     }
     return false;
+  },
+
+  /*
+   * If a unit is on its own supply route, a battle can still prevent its
+   * supply. Checks for all such factors.
+   */
+  isSuppliedAtSupplyRoute: function() {
+      var battle = this.isBattlePresent();
+      if (!battle) return true;
+      var retreat_constraints = battle.getRetreatConstraints(this.at());
+      var retreat_info = retreat_constraints.area[this.battle_side];
+      var direction_map = {
+        0: { x: 0, y: 1 },
+        1: { x: 2, y: 1 },
+      };
+      var my_supply_route = direction_map[this.side];
+      return retreat_info[my_supply_route.x][my_supply_route.y];
   },
 
   sufferAttrition: function() {
