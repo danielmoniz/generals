@@ -87,6 +87,10 @@ var Instructions = {
   tips: [
     "Armies can be selected at the bottom display by clicking on their display box. ",
 
+    "Double-clicking the information at the bottom for an army will display the stats for that army.",
+
+    "Injured troops can't carry food, but they still need to eat. An army with a large amount of injured soldiers will have harder time keeping itself supplied.",
+
     "Two armies are better than one. Try attacking an enemy army from two different directions. Their supply can be cut while simultaneously prohibiting retreat in certain directions.",
 
     "Retreating provides a movement bonus of 1. This represents the fact that your army will do anything to get out of striking range of opposing forces. Use this to retreat just out of range of your pursuer. Be careful, however, because retreating into slow terrain means that you can often be caught!",
