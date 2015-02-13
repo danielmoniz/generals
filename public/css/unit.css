@@ -1,0 +1,31 @@
+.unit-panel { margin: 0 0 10px 0; }
+.unit-panel .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
+#alerts-panel .unit { max-width: 350px; margin: 2px 2px 5px 0px; padding: 2px; display:inline-block; border: 2px solid white; cursor: pointer; vertical-align:top; }
+.unit-panel .unit.colocated { border: 2px solid green; }
+.unit-panel .unit.colocatedEnemy { border: 2px solid red; }
+.unit-panel .unit.selected { border: 2px solid purple; }
+
+/*
+#other-units-panel { margin: 0 0 10px 0; }
+*/
+
+.unit .unit-item { display: inline-block; margin-right: 0px; }
+.unit .square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
+.unit .supply { vertical-align:top; color: black; }
+.unit .supplied { background-image:url("../assets/green-supply.png"); }
+.unit .unsupplied { background-image:url("../assets/red-supply.png"); }
+.unit .battle.square { background-image:url("../assets/Combat2.png"); }
+.unit .status.small { color: red; }
+
+.unit-morale { margin-top: 1px; }
+.unit-morale .bar_container { height: 3px; background-image:url("../assets/colour_bar-yellow.png"); border: 1px solid black; }
+.unit-morale .bar { width: 100%; height: 3px; margin-bottom: 2px; }
+.unit-morale .bar_container .bar { margin: 0; padding: 0; border-right: 1px solid black; }
+.unit-morale .morale.bar { background-image:url("../assets/green-supply.png"); }
+
+.rank_1 { background-image:url("../assets/star_gold.png"); }
+.rank_2 { background-image:url("../assets/star_silver.png"); }
+.rank_3 { background-image:url("../assets/chevron_3.png"); }
+.rank_4 { background-image:url("../assets/chevron_2.png"); }
+.rank_5 { background-image:url("../assets/chevron_1.png"); }
+

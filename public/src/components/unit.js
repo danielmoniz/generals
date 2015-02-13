@@ -104,6 +104,7 @@ Crafty.c('Unit', {
     if (turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.takeFireCasualties();
+      this.handleWeatherOnMorale();
 
       this.updateMorale();
       this.reset(); // should happen after every other active effect!
@@ -115,18 +116,9 @@ Crafty.c('Unit', {
 
   updateMorale: function() {
     if (this.happy) {
-    this.morale = 0;
-    return;
-      this.morale = Math.max(this.morale, this.best_morale);
+      Morale.improve(this);
+      return;
     }
-  },
-
-  worsenMorale: function(amount) {
-    if (amount === undefined) amount = 1;
-    this.morale = 0;
-    return;
-    this.morale += amount;
-    this.happy = false;
   },
 
   reset: function() {
@@ -165,6 +157,12 @@ Crafty.c('Unit', {
       }
     }
     return true;
+  },
+
+  handleWeatherOnMorale: function() {
+    if (!Game.weather.rain) return;
+    var local_terrain = Game.terrain[this.at().x][this.at().y];
+    if (!local_terrain.has('City')) Morale.degrade(this, 'rain');
   },
 
   getActionChoices: function() {
@@ -393,7 +391,7 @@ Crafty.c('Unit', {
   injuryAttrition: function() {
     var succumb_rate = 1/20;
     var num_to_kill = this.injured * succumb_rate;
-    this.kill(num_to_kill, true);
+    this.kill(num_to_kill, 'injury_attrition', true);
 
     var num_to_heal = Game.healing_rate * this.injured;
     this.heal(num_to_heal);
@@ -421,11 +419,11 @@ Crafty.c('Unit', {
     if (local_terrain.on_fire) {
       var fire_casualty_rate_injured = 0.95;
       var injured_to_kill = Math.ceil(fire_casualty_rate_injured * this.injured);
-      this.kill(injured_to_kill, true);
+      this.kill(injured_to_kill, 'fire', true, 'ignore morale');
 
       var fire_casualty_rate = 0.75;
       var casualties = Math.ceil(fire_casualty_rate * this.getActive());
-      this.sufferCasualties(casualties);
+      this.sufferCasualties(casualties, 'fire');
     }
   },
 
@@ -561,13 +559,15 @@ Crafty.c('Unit', {
       }
     }
 
+    if (unsupplied > 0) Morale.degrade(this, 'unsupplied');
+
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
     this.supply_remaining -= unsupplied;
     if (this.supply_remaining < 0) {
       var attrition_casualties = Math.max(0, (unsupplied - supplied_units)) * Game.attrition_rate;
       var to_kill = Math.floor(attrition_casualties * Game.attrition_death_rate);
       var to_injure = Math.floor(attrition_casualties * (1 - Game.attrition_death_rate));
-      this.kill(to_kill);
+      this.kill(to_kill, 'supply_attrition');
       this.injure(to_injure);
       this.supply_remaining = Math.max(0, this.supply_remaining);
 
@@ -1018,24 +1018,27 @@ Crafty.c('Unit', {
     this.updateActionChoices();
   },
 
-  sufferCasualties: function(casualties) {
+  sufferCasualties: function(casualties, reason) {
     var deaths = Math.round(casualties * Game.battle_death_rate);
     var injuries = Math.round(casualties * (1 - Game.battle_death_rate));
-    this.kill(deaths);
-    this.injure(injuries);
+    this.kill(deaths, reason);
+    this.injure(injuries, false, reason);
     this.updateStatus();
 
     if (!this.isAlive()) this.die();
     if (this.getActive() <= 0) this.disband();
   },
 
-  kill: function(num_troops, injured) {
+  kill: function(num_troops, reason, injured, ignore_morale) {
+    if (num_troops == 0) return;
     if (isNaN(num_troops)) throw "NaN: num_troops in unit.kill()";
     if (num_troops === undefined) throw "undefined: num_troops in unit.kill()";
     if (injured === undefined) injured = false;
     var num_killed = Math.ceil(Math.min(this.quantity, num_troops));
     this.quantity -= num_killed;
     if (injured) this.injured -= num_killed;
+
+    if (!ignore_morale) Morale.takeCasualties(this, 'kill', num_troops, reason);
 
     this.updateMaxSupply();
   },
@@ -1045,10 +1048,12 @@ Crafty.c('Unit', {
     this.supply_remaining = Math.min(this.max_supply, this.supply_remaining);
   },
 
-  injure: function(num_troops) {
+  injure: function(num_troops, reason) {
     if (isNaN(num_troops)) throw "NaN: num_troops in unit.injure()";
     if (num_troops === undefined) throw "undefined: num_troops in unit.injure()";
     this.injured += Math.ceil(Math.min(this.quantity, num_troops));
+
+    //Morale.takeCasualties(this, 'injure', num_troops, reason);
 
     this.updateMaxSupply();
   },

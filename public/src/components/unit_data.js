@@ -32,6 +32,8 @@ var UnitData = function(type, stats) {
       //movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
+      morale_improvement: 0.3,
+      morale_degrade_factor: 1,
     },
 
     "Cavalry": {

@@ -99,8 +99,6 @@ Battle = {
   calculateSideMorale: function(units) {
     var total_weighted_morale = 0;
     var total_troops = 0;
-    // temporary hotfix!
-    return 0;
     for (var i in units) {
       var unit = units[i];
       total_troops += unit.getActive();
@@ -115,6 +113,9 @@ Battle = {
       var unit = units[i];
       //var terrain_defense = Game.terrain_defense_bonus[unit.at().x][unit.at().y];
       var morale_factor = Battle.calculateMoraleFactor(unit.morale);
+      if (morale_factor != 1) {
+        console.log("{0}'s morale is {1} (MF of {2}".format(unit.name, unit.morale, morale_factor));
+      }
       var combat_ability = Battle.getCombatAbility([unit]);
       var attack_power = combat_ability * morale_factor;
       total_attack_power += attack_power;
@@ -131,6 +132,9 @@ Battle = {
         var terrain_defense = Game.terrain_defense_bonus[unit.at().x][unit.at().y];
       }
       var morale_factor = Battle.calculateMoraleFactor(unit.morale);
+      if (morale_factor != 1) {
+        console.log("{0}'s morale is {1} (MF of {2}".format(unit.name, unit.morale, morale_factor));
+      }
       var defensive_ability = Battle.getDefensiveAbility([unit]);
       var defensive_power = defensive_ability * terrain_defense * morale_factor;
       total_defensive_power += defensive_power;
@@ -144,8 +148,6 @@ Battle = {
     // @TODO Calculate ranged attacker damage first
 
     var attacker_attack_power = Battle.getAttackPower(attackers);
-    console.log("attacker_attack_power");
-    console.log(attacker_attack_power);
     var defender_attack_power = Battle.getAttackPower(defenders);
 
     var ignore_terrain = true;
@@ -158,22 +160,6 @@ Battle = {
 
     var attacker_losses = (TROOP_LOSS * defender_attack_power) / attacker_defensive_ability;
     var defender_losses = (TROOP_LOSS * attacker_attack_power) / defender_defensive_ability;
-
-
-    var attacker_morale = Battle.calculateSideMorale(attackers);
-    var defender_morale = Battle.calculateSideMorale(defenders);
-
-    if (attacker_morale != 0) {
-      console.log("attacker_morale");
-      console.log(attacker_morale);
-      throw new Error('MoraleNotImplemented');
-    }
-    if (defender_morale != 0) {
-      console.log("defender_morale");
-      console.log(defender_morale);
-      throw new Error('MoraleNotImplemented');
-    }
-
 
     var losses = {};
     losses[Battle.ATTACKER] = attacker_losses;
@@ -258,7 +244,7 @@ Battle = {
 
   killUnits: function(units, losses) {
     for (var i=0; i<units.length; i++) {
-      units[i].sufferCasualties(losses[i]);
+      units[i].sufferCasualties(losses[i], 'battle');
     }
   },
 
@@ -441,7 +427,8 @@ Crafty.c('Battle', {
     for (var i=0; i<units.length; i++) {
       if (units[i].getId() == unit.getId()) {
         var num_losses = Math.ceil(losses[unit.battle_side] * side[unit.battle_side].ratios[i]);
-        unit.sufferCasualties(num_losses);
+        // @TODO Should use killUnits method and pass along reason
+        unit.sufferCasualties(num_losses, 'retreat');
         break;
       }
     }

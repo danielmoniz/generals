@@ -380,35 +380,23 @@ Output = {
     var battle_div = this.createDiv('square');
     if (unit.battle) {
       var battle = unit.isBattlePresent();
-      /*
-      // TEST OUTPUT
-      console.log('output.js -------');
-      console.log(unit.name);
-      console.log("battle");
-      console.log(battle);
-
-      var sieges = Entity.get('Siege');
-      var sieges = Crafty('Siege').get();
-      console.log('all sieges:');
-      console.log(sieges.length);
-      for (var i in sieges) {
-        console.log(sieges[i].battle);
-      }
-      var battles = Entity.get('Battle');
-      var battles = Crafty('Battle').get();
-      console.log('all battles:');
-      console.log(battles.length);
-      for (var i in battles) {
-        console.log(battles[i]);
-      }
-      */
 
       battle_div.attr("battle_id", battle.getId());
       battle_div.addClass("battle");
     }
     second_row.append(battle_div);
 
-    unit_div.append(first_row).append(second_row);
+    var morale_div = this.createDiv('unit-morale');
+    var morale_bar_container = this.createDiv('bar_container');
+    var morale_bar = this.createDiv('morale bar');
+
+    var morale_percent = Morale.calculateMoraleFactor(unit.morale) * 100;
+    morale_bar.css('width', '{0}%'.format(morale_percent));
+
+    morale_div.append(morale_bar_container);
+    morale_bar_container.append(morale_bar);
+
+    unit_div.append(first_row).append(second_row).append(morale_div);
 
     return unit_div;
   },
@@ -556,6 +544,10 @@ Output = {
     var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}%".format('Army health', Math.round(unit.getActive() / unit.quantity * 100)));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}".format('Morale losses', unit.morale));
+    unit_info_panel.append(div);
+    var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Morale.calculateMoralePercentage(unit.morale)));
     unit_info_panel.append(div);
   },
 

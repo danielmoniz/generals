@@ -175,6 +175,11 @@ var Utility = {
       }
     }
   },
+
+  roundTo2Decimals: function(number) {
+    return Math.round(number * 100) / 100;
+  },
+
 }
 
 if (!String.prototype.format) {
