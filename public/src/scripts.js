@@ -124,6 +124,56 @@ $(document).ready(function() {
 
   });
 
+  // Select 'Custom' when a user selects a checkbox option
+  $("form#checkbox_options input[type=checkbox]").click(function() {
+    $("input[name=experience][value=custom]").click();
+  });
+
+  // (De)Select the relevant checkboxes when a user chooses a preset
+  $("input[name=experience]").click(function() {
+    if (this.value == 'custom') return;
+
+    var presets = {
+      'beginner': [
+        'fog_of_war',
+        'render_possible_moves',
+        'enemy_movement',
+      ],
+      'intermediate': [
+        'fire',
+        'live_off_land',
+        'enemy_sight_lines',
+      ],
+      'advanced': [
+        'morale',
+      ],
+    };
+    var preset_rank = ['beginner', 'intermediate', 'advanced'];
+
+    var relevant_options = [];
+    var other_options = [];
+    var matching = true;
+    for (var i in preset_rank) {
+      var preset = preset_rank[i];
+      if (matching) {
+        relevant_options = relevant_options.concat(presets[preset]);
+      } else {
+        other_options = other_options.concat(presets[preset]);
+      }
+      if (preset == this.value) matching = false;
+    }
+
+    for (var i in relevant_options) {
+      var name = relevant_options[i];
+      $('input[name={0}]'.format(name)).prop('checked', true);
+    }
+    for (var i in other_options) {
+      var name = other_options[i];
+      $('input[name={0}]'.format(name)).prop('checked', false);
+    }
+
+  });
+
   $("#next-turn").click(function() {
     Action.perform('next_turn');
     $(this).blur();
@@ -135,6 +185,7 @@ $(document).ready(function() {
 
   Output.generatePlayableFactions();
   InstructionsBuilder.generateInstructions();
+  $("input[name=experience][value=advanced]").click();
 
   // TEST ONLY -----------------
   //$("#start-hotseat-button").click();
@@ -153,6 +204,7 @@ $(document).ready(function() {
 });
 
 UI = {
+
   prepareGame: function(game_type, player) {
     if (player === undefined || player == 0) {
       $("#options").show();

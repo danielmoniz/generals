@@ -113,10 +113,34 @@
     <div id="input-container">
       <div id="options">
 	<h3>Game Options</h2>
+
+	<div class="option_set">
+	  <div class="option">
+	    Option presets:
+	    <input type="radio" name="experience" value="beginner">Beginner</input>
+	    <input type="radio" name="experience" value="intermediate"
+	      checked>Intermediate</input>
+	    <input type="radio" name="experience" value="advanced">Advanced</input>
+	    <input type="radio" name="experience" value="custom">Custom</input>
+	    <!--
+	    <input type="radio" name="map_size" value="miniature">Miniature
+	    (not recommended)</input>
+	    -->
+	  </div>
+	</div>
+
 	<form id="checkbox_options">
 	  <div class="option_set">
 	    <div class="option">
 	      <input type="checkbox" name="fog_of_war" checked />Fog of war</input>
+	    </div>
+	    <div class="option">
+	      <input type="checkbox" name="render_possible_moves" checked>Render
+	      possible moves (uncheck for performance)</input>
+	    </div>
+	    <div class="option">
+	      <input type="checkbox" name="enemy_movement" checked>Show enemy moves
+	      within sight</input>
 	    </div>
 	    <div class="option">
 	      <input type="checkbox" name="fire" checked>Fire</input>
@@ -125,17 +149,13 @@
 	      <input type="checkbox" name="live_off_land" checked>Armies can (partially) live off the land</input>
 	    </div>
 	    <div class="option">
-	      <input type="checkbox" name="render_possible_moves" checked>Render
-	      possible moves (uncheck for performance)</input>
-	    </div>
-	    <div class="option">
 	      <input type="checkbox" name="enemy_sight_lines" checked>Render
 	      outlines of army sight</input>
 	    </div>
 	    <div class="option">
-	      <input type="checkbox" name="enemy_movement" checked>Show enemy moves
-	      within sight</input>
+	      <input type="checkbox" name="morale" checked>Morale</input>
 	    </div>
+
 	    --- In development ---
 	    <div class="option">
 	      <input type="checkbox" name="advanced_victory">Use

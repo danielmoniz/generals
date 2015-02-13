@@ -23,6 +23,28 @@ var Morale = {
     //'injury_attrition': 0.02,
   },
 
+  improve: function(unit) {
+    if (!Game.morale) return 0;
+    var old_morale = unit.morale;
+    unit.morale -= unit.morale_improvement;
+    unit.morale = Math.max(unit.best_morale, unit.morale);
+    if (unit.morale < old_morale) {
+      console.log('improving morale for {0} by {1}'.format(unit.name, unit.morale_improvement));
+    }
+    return unit.morale;
+  },
+
+  degrade: function(unit, reason) {
+    if (!Game.morale) return 0;
+    if (this.values[reason] === undefined) return 0;
+    var degradation = this.values[reason] * unit.morale_degrade_factor;
+    unit.happy = false;
+    unit.morale += degradation;
+    unit.addMoraleDropReason(this.reasons[reason]);
+    console.log('degrading morale for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
+    return degradation;
+  },
+
   levels: {
     0: 'High spirits',
     1: 'Discontent',
@@ -46,26 +68,6 @@ var Morale = {
   calculateMoralePercentage: function(morale_points) {
     var actual_percentage = this.calculateMoraleFactor(morale_points) * 100;
     return Utility.roundTo2Decimals(actual_percentage);
-  },
-
-  improve: function(unit) {
-    var old_morale = unit.morale;
-    unit.morale -= unit.morale_improvement;
-    unit.morale = Math.max(unit.best_morale, unit.morale);
-    if (unit.morale < old_morale) {
-      console.log('improving morale for {0} by {1}'.format(unit.name, unit.morale_improvement));
-    }
-    return unit.morale;
-  },
-
-  degrade: function(unit, reason) {
-    if (this.values[reason] === undefined) return 0;
-    var degradation = this.values[reason] * unit.morale_degrade_factor;
-    unit.happy = false;
-    unit.morale += degradation;
-    unit.addMoraleDropReason(this.reasons[reason]);
-    console.log('degrading morale for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
-    return degradation;
   },
 
 
