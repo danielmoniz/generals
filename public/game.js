@@ -134,7 +134,9 @@ Game = {
     EnemyMoves.displayEnemyMoves(this.player, this.turn);
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);
-    if (this.player !== undefined) this.updatePossibleUnitMoves();
+    if (Game.render_possible_moves && this.player !== undefined) {
+      this.updatePossibleUnitMoves();
+    }
 
     var victory = Victory.checkVictoryConditions();
     Output.updateVictoryBar();
