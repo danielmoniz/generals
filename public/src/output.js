@@ -390,7 +390,10 @@ Output = {
     var morale_bar_container = this.createDiv('bar_container');
     var morale_bar = this.createDiv('morale bar');
 
-    var morale_percent = Morale.calculateMoraleFactor(unit.morale) * 100;
+    var morale_percent = Pretty.Morale.moralePercentage(unit.morale);
+    if (morale_percent != 0 && morale_percent != 99) {
+      morale_bar.addClass('add_marker');
+    }
     morale_bar.css('width', '{0}%'.format(morale_percent));
 
     morale_div.append(morale_bar_container);
@@ -539,18 +542,17 @@ Output = {
 
     var div = this.createDiv("", "{0}".format(unit.name));
     unit_info_panel.append(div);
-    var div = this.createDiv("", "{0}: {1}".format('Morale', Pretty.Unit.morale(unit.morale)));
-    unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}%".format('Army health', Math.round(unit.getActive() / unit.quantity * 100)));
     unit_info_panel.append(div);
-    var div = this.createDiv("", "{0}: {1}".format('Morale losses', Utility.roundTo2Decimals(unit.morale)));
+    var div = this.createDiv("", "{0}: {1}".format('Morale issues', Utility.roundTo2Decimals(unit.morale)));
     unit_info_panel.append(div);
-    var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Morale.calculateMoralePercentage(unit.morale)));
+    var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Pretty.Morale.moralePercentage(unit.morale)));
     unit_info_panel.append(div);
 
-    var text = "{0}: {1}".format('Mood', Morale.getStatus(unit.morale));
+    var morale_improvement = Pretty.Morale.getImprovementText(unit.morale, unit.previous_morale_reasons);
+    var text = "{0}: {1}{2}".format('Mood', Morale.getStatus(unit.morale), morale_improvement);
     unit_info_panel.append(this.createDiv("", text));
   },
 

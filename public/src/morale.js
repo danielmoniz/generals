@@ -1,6 +1,15 @@
 
 var Morale = {
 
+  reasons: {
+    fire: 'fire',
+    retreat: 'retreat',
+    battle: 'battle',
+    supply_attrition: 'supply attrition',
+    rain: 'rain',
+    unsupplied: 'unsupplied',
+  },
+
   values: {
     'fire': 1.5,
     'retreat': 1,
@@ -54,6 +63,7 @@ var Morale = {
     var degradation = this.values[reason] * unit.morale_degrade_factor;
     unit.happy = false;
     unit.morale += degradation;
+    unit.addMoraleDropReason(this.reasons[reason]);
     console.log('degrading morale for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
     return degradation;
   },

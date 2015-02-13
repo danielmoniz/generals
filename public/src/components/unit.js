@@ -30,6 +30,7 @@ Crafty.c('Unit', {
     this.addStat('max_movement', this.movement);
     this.possible_moves = [];
     this.possible_moves_data = {};
+    this.morale_drop_reasons = [];
   },
 
   testTargetAndPath: function() {
@@ -127,6 +128,8 @@ Crafty.c('Unit', {
     this.performed_actions = [];
     this.updateActionChoices();
     this.happy = true;
+    this.previous_morale_reasons = this.morale_drop_reasons;
+    this.morale_drop_reasons = [];
   },
 
   canSiege: function() {
@@ -162,7 +165,7 @@ Crafty.c('Unit', {
   handleWeatherOnMorale: function() {
     if (!Game.weather.rain) return;
     var local_terrain = Game.terrain[this.at().x][this.at().y];
-    if (!local_terrain.has('City')) Morale.degrade(this, 'rain');
+    if (!local_terrain.has('City')) Morale.degrade(this, Morale.reasons.rain);
   },
 
   getActionChoices: function() {
@@ -559,7 +562,7 @@ Crafty.c('Unit', {
       }
     }
 
-    if (unsupplied > 0) Morale.degrade(this, 'unsupplied');
+    if (unsupplied > 0) Morale.degrade(this, Morale.reasons.unsupplied);
 
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
     this.supply_remaining -= unsupplied;
@@ -1038,7 +1041,7 @@ Crafty.c('Unit', {
     this.quantity -= num_killed;
     if (injured) this.injured -= num_killed;
 
-    if (!ignore_morale) Morale.takeCasualties(this, 'kill', num_troops, reason);
+    if (!ignore_morale) Morale.takeCasualties(this, Morale.reasons.kill, num_troops, reason);
 
     this.updateMaxSupply();
   },
@@ -1053,7 +1056,7 @@ Crafty.c('Unit', {
     if (num_troops === undefined) throw "undefined: num_troops in unit.injure()";
     this.injured += Math.ceil(Math.min(this.quantity, num_troops));
 
-    //Morale.takeCasualties(this, 'injure', num_troops, reason);
+    //Morale.takeCasualties(this, Morale.reasons.injure, num_troops, reason);
 
     this.updateMaxSupply();
   },
@@ -1083,6 +1086,10 @@ Crafty.c('Unit', {
   disband: function() {
     console.log("{0}'s army disbanded!".format(this.name));
     this.die();
+  },
+
+  addMoraleDropReason: function(reason) {
+    this.morale_drop_reasons.push(reason);
   },
 
   is: function(unit) {

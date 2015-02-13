@@ -120,13 +120,6 @@ Pretty = {
       return status;
     },
 
-    morale: function(morale_points) {
-      var morale_factor = Battle.calculateMoraleFactor(morale_points);
-      var morale_percentage = Math.round(100 * morale_factor);
-      var morale_string = "{0}%".format(morale_percentage);
-      return morale_string;
-    },
-
   },
 
   Battle: {
@@ -196,6 +189,21 @@ Pretty = {
         text = faction.loss_message.format(winner_name);
       }
       return text;
+    },
+  },
+
+  Morale: {
+
+    moralePercentage: function(morale_points) {
+      return Math.floor(Morale.calculateMoraleFactor(morale_points) * 100);
+    },
+
+    getImprovementText: function(morale, morale_drop_reasons) {
+      if (!morale_drop_reasons || morale_drop_reasons.length == 0) {
+        if (morale == 0) return '';
+        return ', Improving';
+      }
+      return ' ({0})'.format(morale_drop_reasons.join(', '));
     },
   },
 

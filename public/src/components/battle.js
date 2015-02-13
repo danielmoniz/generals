@@ -244,7 +244,7 @@ Battle = {
 
   killUnits: function(units, losses) {
     for (var i=0; i<units.length; i++) {
-      units[i].sufferCasualties(losses[i], 'battle');
+      units[i].sufferCasualties(losses[i], Morale.reasons.battle);
     }
   },
 
@@ -428,7 +428,7 @@ Crafty.c('Battle', {
       if (units[i].getId() == unit.getId()) {
         var num_losses = Math.ceil(losses[unit.battle_side] * side[unit.battle_side].ratios[i]);
         // @TODO Should use killUnits method and pass along reason
-        unit.sufferCasualties(num_losses, 'retreat');
+        unit.sufferCasualties(num_losses, Morale.reasons.retreat);
         break;
       }
     }
