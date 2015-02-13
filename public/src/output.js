@@ -545,10 +545,13 @@ Output = {
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}%".format('Army health', Math.round(unit.getActive() / unit.quantity * 100)));
     unit_info_panel.append(div);
-    var div = this.createDiv("", "{0}: {1}".format('Morale losses', unit.morale));
+    var div = this.createDiv("", "{0}: {1}".format('Morale losses', Utility.roundTo2Decimals(unit.morale)));
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Morale.calculateMoralePercentage(unit.morale)));
     unit_info_panel.append(div);
+
+    var text = "{0}: {1}".format('Mood', Morale.getStatus(unit.morale));
+    unit_info_panel.append(this.createDiv("", text));
   },
 
   updateUnitInfo: function(unit) {

@@ -9,9 +9,24 @@ var Morale = {
     'rain': 0.1,
     'unsupplied': 0.05,
 
-    'full_movement': 0.05,
-    'siege': 0.4,
+    //'full_movement': 0.05,
+    //'siege': 0.4,
     //'injury_attrition': 0.02,
+  },
+
+  levels: {
+    0: 'High spirits',
+    1: 'Discontent',
+    2: 'Demoralized',
+    3: 'Devastated',
+    4: 'Mutinous',
+    5: '[should disband!]',
+  },
+
+  getStatus: function(morale_points) {
+    var status_level = Math.floor(morale_points);
+    status_level = Math.min(status_level, Object.keys(this.levels).length - 1);
+    return this.levels[status_level];
   },
 
   calculateMoraleFactor: function(morale_points) {
