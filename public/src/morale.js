@@ -16,8 +16,8 @@ var Morale = {
     'battle': 0.25,
     'supply_attrition': 0.5,
     'rain': 0.1,
-    'unsupplied': 0.05,
 
+    //'unsupplied': 0.05,
     //'full_movement': 0.05,
     //'siege': 0.4,
     //'injury_attrition': 0.02,
