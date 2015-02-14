@@ -7,6 +7,7 @@ var Instructions = {
     "pillaging",
     "injuries/deaths",
     "morale",
+    "troop dissent",
   ],
 
   general_instructions: "Select armies by clicking on them and move them by right-clicking where you want them to go. Queue up moves for all of your units and click Next Turn (or hit space bar). Units will sometimes have actions available to perform such as pillaging a farm or starting a fire. Click on the corresponding action button beside your unit's display box below the map.",

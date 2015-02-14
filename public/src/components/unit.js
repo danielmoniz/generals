@@ -30,7 +30,7 @@ Crafty.c('Unit', {
     this.addStat('max_movement', this.movement);
     this.possible_moves = [];
     this.possible_moves_data = {};
-    this.dissent_drop_reasons = [];
+    this.dissent_reasons = [];
   },
 
   testTargetAndPath: function() {
@@ -128,8 +128,8 @@ Crafty.c('Unit', {
     this.performed_actions = [];
     this.updateActionChoices();
     this.happy = true;
-    this.previous_dissent_reasons = this.dissent_drop_reasons;
-    this.dissent_drop_reasons = [];
+    this.previous_dissent_reasons = this.dissent_reasons;
+    this.dissent_reasons = [];
   },
 
   canSiege: function() {
@@ -1089,7 +1089,7 @@ Crafty.c('Unit', {
   },
 
   addDissentDropReason: function(reason) {
-    this.dissent_drop_reasons.push(reason);
+    this.dissent_reasons.push(reason);
   },
 
   is: function(unit) {

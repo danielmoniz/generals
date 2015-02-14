@@ -198,12 +198,12 @@ Pretty = {
       return Math.floor(Morale.calculateDissentFactor(dissent_points) * 100);
     },
 
-    getImprovementText: function(dissent, dissent_drop_reasons) {
-      if (!dissent_drop_reasons || dissent_drop_reasons.length == 0) {
+    getImprovementText: function(dissent, dissent_reasons) {
+      if (!dissent_reasons || dissent_reasons.length == 0) {
         if (dissent == 0) return '';
         return ', improving';
       }
-      return ' ({0})'.format(dissent_drop_reasons.join(', '));
+      return ' ({0})'.format(dissent_reasons.join(', '));
     },
   },
 
