@@ -96,15 +96,15 @@ Battle = {
     return losses;
   },
 
-  calculateSideMorale: function(units) {
-    var total_weighted_morale = 0;
+  calculateSideDissent: function(units) {
+    var total_weighted_dissent = 0;
     var total_troops = 0;
     for (var i in units) {
       var unit = units[i];
       total_troops += unit.getActive();
-      total_weighted_morale += unit.morale * unit.getActive();
+      total_weighted_dissent += unit.dissent * unit.getActive();
     }
-    return total_weighted_morale / total_troops;
+    return total_weighted_dissent / total_troops;
   },
 
   getAttackPower: function(units) {
@@ -112,12 +112,12 @@ Battle = {
     for (var i in units) {
       var unit = units[i];
       //var terrain_defense = Game.terrain_defense_bonus[unit.at().x][unit.at().y];
-      var morale_factor = Battle.calculateMoraleFactor(unit.morale);
-      if (morale_factor != 1) {
-        console.log("{0}'s morale is {1} (MF of {2}".format(unit.name, unit.morale, morale_factor));
+      var dissent_factor = Battle.calculateDissentFactor(unit.dissent);
+      if (dissent_factor != 1) {
+        console.log("{0}'s dissent is {1} (MF of {2})".format(unit.name, unit.dissent, dissent_factor));
       }
       var combat_ability = Battle.getCombatAbility([unit]);
-      var attack_power = combat_ability * morale_factor;
+      var attack_power = combat_ability * dissent_factor;
       total_attack_power += attack_power;
     }
     return total_attack_power;
@@ -131,12 +131,12 @@ Battle = {
       if (!ignore_terrain) {
         var terrain_defense = Game.terrain_defense_bonus[unit.at().x][unit.at().y];
       }
-      var morale_factor = Battle.calculateMoraleFactor(unit.morale);
-      if (morale_factor != 1) {
-        console.log("{0}'s morale is {1} (MF of {2}".format(unit.name, unit.morale, morale_factor));
+      var dissent_factor = Battle.calculateDissentFactor(unit.dissent);
+      if (dissent_factor != 1) {
+        console.log("{0}'s dissent is {1} (MF of {2}".format(unit.name, unit.dissent, dissent_factor));
       }
       var defensive_ability = Battle.getDefensiveAbility([unit]);
-      var defensive_power = defensive_ability * terrain_defense * morale_factor;
+      var defensive_power = defensive_ability * terrain_defense * dissent_factor;
       total_defensive_power += defensive_power;
     }
     return total_defensive_power;
@@ -144,7 +144,7 @@ Battle = {
 
   calculateTotalLosses: function(battle, attackers, defenders) {
     var TROOP_LOSS = Game.troop_loss_constant;
-    var MORALE_FACTOR = Game.morale_factor; // not yet used in this function
+    var DISSENT_FACTOR = Game.dissent_factor; // not yet used in this function
     // @TODO Calculate ranged attacker damage first
 
     var attacker_attack_power = Battle.getAttackPower(attackers);
@@ -237,9 +237,9 @@ Battle = {
     }
   },
 
-  calculateMoraleFactor: function(morale_points) {
-    var morale_factor = Math.pow(Game.morale_factor, morale_points);
-    return morale_factor;
+  calculateDissentFactor: function(dissent_points) {
+    var dissent_factor = Math.pow(Game.dissent_factor, dissent_points);
+    return dissent_factor;
   },
 
   killUnits: function(units, losses) {
@@ -398,7 +398,6 @@ Crafty.c('Battle', {
   },
 
   retreat: function(unit) {
-    //unit.morale += 1;
     var attackers = this.attackers;
     var defenders = this.defenders;
     var losses = Battle.calculateTotalLosses(this, attackers, defenders);

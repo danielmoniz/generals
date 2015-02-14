@@ -87,7 +87,7 @@ var Options = function() {
       AFTER_SECOND_PLAYER: 1.5,
 
       troop_loss_constant: 0.12,
-      morale_factor: 0.8,
+      dissent_factor: 0.8,
       battle_death_rate: 1/5,
       attrition_rate: 1/10,
       attrition_death_rate: 1/3,

@@ -23,7 +23,7 @@ var UnitData = function(type, stats) {
       is_supplied: true,
       injured: 0,
       happy: true,
-      best_morale: 0,
+      best_dissent: 0,
 
       max_supply_multiplier: 3,
       max_sight: 6,
@@ -32,8 +32,8 @@ var UnitData = function(type, stats) {
       //movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
-      morale_improvement: 0.3,
-      morale_degrade_factor: 1,
+      dissent_improvement: 0.3,
+      dissent_degrade_factor: 1,
     },
 
     "Cavalry": {
@@ -51,7 +51,7 @@ var UnitData = function(type, stats) {
 
     "Slave": {
       combat_ability: 0.6,
-      best_morale: 1,
+      best_dissent: 1,
     },
 
     "Scout": {

@@ -194,16 +194,16 @@ Pretty = {
 
   Morale: {
 
-    moralePercentage: function(morale_points) {
-      return Math.floor(Morale.calculateMoraleFactor(morale_points) * 100);
+    moralePercentage: function(dissent_points) {
+      return Math.floor(Morale.calculateDissentFactor(dissent_points) * 100);
     },
 
-    getImprovementText: function(morale, morale_drop_reasons) {
-      if (!morale_drop_reasons || morale_drop_reasons.length == 0) {
-        if (morale == 0) return '';
-        return ', Improving';
+    getImprovementText: function(dissent, dissent_drop_reasons) {
+      if (!dissent_drop_reasons || dissent_drop_reasons.length == 0) {
+        if (dissent == 0) return '';
+        return ', improving';
       }
-      return ' ({0})'.format(morale_drop_reasons.join(', '));
+      return ' ({0})'.format(dissent_drop_reasons.join(', '));
     },
   },
 

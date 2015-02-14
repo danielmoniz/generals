@@ -26,11 +26,11 @@ Crafty.c('Unit', {
   setStats: function() {
     this.addStat('max_supply', this.max_supply_multiplier * this.quantity);
     this.addStat('supply_remaining', this.max_supply);
-    this.addStat('morale', this.best_morale);
+    this.addStat('dissent', this.best_dissent);
     this.addStat('max_movement', this.movement);
     this.possible_moves = [];
     this.possible_moves_data = {};
-    this.morale_drop_reasons = [];
+    this.dissent_drop_reasons = [];
   },
 
   testTargetAndPath: function() {
@@ -105,9 +105,9 @@ Crafty.c('Unit', {
     if (turn == this.side) {
       if (Game.turn_count >= 2) this.handleAttrition();
       this.takeFireCasualties();
-      this.handleWeatherOnMorale();
+      this.handleWeatherOnDissent();
 
-      this.updateMorale();
+      this.updateDissent();
       this.reset(); // should happen after every other active effect!
     }
     this.updateStats(); // should happen last!
@@ -115,7 +115,7 @@ Crafty.c('Unit', {
     this.testTargetAndPath();
   },
 
-  updateMorale: function() {
+  updateDissent: function() {
     if (this.happy) {
       Morale.improve(this);
       return;
@@ -128,8 +128,8 @@ Crafty.c('Unit', {
     this.performed_actions = [];
     this.updateActionChoices();
     this.happy = true;
-    this.previous_morale_reasons = this.morale_drop_reasons;
-    this.morale_drop_reasons = [];
+    this.previous_dissent_reasons = this.dissent_drop_reasons;
+    this.dissent_drop_reasons = [];
   },
 
   canSiege: function() {
@@ -162,7 +162,7 @@ Crafty.c('Unit', {
     return true;
   },
 
-  handleWeatherOnMorale: function() {
+  handleWeatherOnDissent: function() {
     if (!Game.weather.rain) return;
     var local_terrain = Game.terrain[this.at().x][this.at().y];
     if (!local_terrain.has('City')) Morale.degrade(this, Morale.reasons.rain);
@@ -422,7 +422,7 @@ Crafty.c('Unit', {
     if (local_terrain.on_fire) {
       var fire_casualty_rate_injured = 0.95;
       var injured_to_kill = Math.ceil(fire_casualty_rate_injured * this.injured);
-      this.kill(injured_to_kill, 'fire', true, 'ignore morale');
+      this.kill(injured_to_kill, 'fire', true, 'ignore dissent');
 
       var fire_casualty_rate = 0.75;
       var casualties = Math.ceil(fire_casualty_rate * this.getActive());
@@ -1032,7 +1032,7 @@ Crafty.c('Unit', {
     if (this.getActive() <= 0) this.disband();
   },
 
-  kill: function(num_troops, reason, injured, ignore_morale) {
+  kill: function(num_troops, reason, injured, ignore_dissent) {
     if (num_troops == 0) return;
     if (isNaN(num_troops)) throw "NaN: num_troops in unit.kill()";
     if (num_troops === undefined) throw "undefined: num_troops in unit.kill()";
@@ -1041,7 +1041,7 @@ Crafty.c('Unit', {
     this.quantity -= num_killed;
     if (injured) this.injured -= num_killed;
 
-    if (!ignore_morale) Morale.takeCasualties(this, Morale.reasons.kill, num_troops, reason);
+    if (!ignore_dissent) Morale.takeCasualties(this, Morale.reasons.kill, num_troops, reason);
 
     this.updateMaxSupply();
   },
@@ -1088,8 +1088,8 @@ Crafty.c('Unit', {
     this.die();
   },
 
-  addMoraleDropReason: function(reason) {
-    this.morale_drop_reasons.push(reason);
+  addDissentDropReason: function(reason) {
+    this.dissent_drop_reasons.push(reason);
   },
 
   is: function(unit) {

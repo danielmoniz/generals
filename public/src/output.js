@@ -393,7 +393,7 @@ Output = {
       var morale_bar_container = this.createDiv('bar_container');
       var morale_bar = this.createDiv('morale bar');
 
-      var morale_percent = Pretty.Morale.moralePercentage(unit.morale);
+      var morale_percent = Pretty.Morale.moralePercentage(unit.dissent);
       if (morale_percent != 0 && morale_percent != 99) {
         morale_bar.addClass('add_marker');
       }
@@ -556,13 +556,13 @@ Output = {
     // MORALE -----------
     if (Game.morale) {
       /*
-      var div = this.createDiv("", "{0}: {1}".format('Dissent', Utility.roundTo2Decimals(unit.morale)));
+      var div = this.createDiv("", "{0}: {1}".format('Dissent', Utility.roundTo2Decimals(unit.dissent)));
       unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Pretty.Morale.moralePercentage(unit.morale)));
+      var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Pretty.Morale.moralePercentage(unit.dissent)));
       unit_info_panel.append(div);
       */
-      var morale_improvement = Pretty.Morale.getImprovementText(unit.morale, unit.previous_morale_reasons);
-      var text = "{0}: {1}{2}".format('Mood', Morale.getStatus(unit.morale), morale_improvement);
+      var morale_improvement = Pretty.Morale.getImprovementText(unit.dissent, unit.previous_dissent_reasons);
+      var text = "{0}: {1}{2}".format('Mood', Morale.getStatus(unit.dissent), morale_improvement);
       unit_info_panel.append(this.createDiv("", text));
     }
   },

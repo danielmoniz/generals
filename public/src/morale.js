@@ -25,23 +25,23 @@ var Morale = {
 
   improve: function(unit) {
     if (!Game.morale) return 0;
-    var old_morale = unit.morale;
-    unit.morale -= unit.morale_improvement;
-    unit.morale = Math.max(unit.best_morale, unit.morale);
-    if (unit.morale < old_morale) {
-      console.log('improving morale for {0} by {1}'.format(unit.name, unit.morale_improvement));
+    var old_dissent = unit.dissent;
+    unit.dissent -= unit.dissent_improvement;
+    unit.dissent = Math.max(unit.best_dissent, unit.dissent);
+    if (unit.dissent < old_dissent) {
+      console.log('improving dissent for {0} by {1}'.format(unit.name, unit.dissent_improvement));
     }
-    return unit.morale;
+    return unit.dissent;
   },
 
   degrade: function(unit, reason) {
     if (!Game.morale) return 0;
     if (this.values[reason] === undefined) return 0;
-    var degradation = this.values[reason] * unit.morale_degrade_factor;
+    var degradation = this.values[reason] * unit.dissent_degrade_factor;
     unit.happy = false;
-    unit.morale += degradation;
-    unit.addMoraleDropReason(this.reasons[reason]);
-    console.log('degrading morale for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
+    unit.dissent += degradation;
+    unit.addDissentDropReason(this.reasons[reason]);
+    console.log('degrading dissent for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
     return degradation;
   },
 
@@ -54,19 +54,19 @@ var Morale = {
     5: '[should disband!]',
   },
 
-  getStatus: function(morale_points) {
-    var status_level = Math.floor(morale_points);
+  getStatus: function(dissent_points) {
+    var status_level = Math.floor(dissent_points);
     status_level = Math.min(status_level, Object.keys(this.levels).length - 1);
     return this.levels[status_level];
   },
 
-  calculateMoraleFactor: function(morale_points) {
-    var morale_factor = Math.pow(Game.morale_factor, morale_points);
-    return morale_factor;
+  calculateDissentFactor: function(dissent_points) {
+    var dissent_factor = Math.pow(Game.dissent_factor, dissent_points);
+    return dissent_factor;
   },
 
-  calculateMoralePercentage: function(morale_points) {
-    var actual_percentage = this.calculateMoraleFactor(morale_points) * 100;
+  calculateDissentPercentage: function(dissent_points) {
+    var actual_percentage = this.calculateDissentFactor(dissent_points) * 100;
     return Utility.roundTo2Decimals(actual_percentage);
   },
 
@@ -83,7 +83,7 @@ var Morale = {
     // @TODO Consider using quantity/percentage of units lost to damage morale
     // proportionally
     var degradation = this.degrade(unit, reason);
-    return unit.morale;
+    return unit.dissent;
   },
 
 };
