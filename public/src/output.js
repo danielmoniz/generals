@@ -555,10 +555,12 @@ Output = {
 
     // MORALE -----------
     if (Game.morale) {
-      var div = this.createDiv("", "{0}: {1}".format('Morale issues', Utility.roundTo2Decimals(unit.morale)));
+      /*
+      var div = this.createDiv("", "{0}: {1}".format('Dissent', Utility.roundTo2Decimals(unit.morale)));
       unit_info_panel.append(div);
       var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Pretty.Morale.moralePercentage(unit.morale)));
       unit_info_panel.append(div);
+      */
       var morale_improvement = Pretty.Morale.getImprovementText(unit.morale, unit.previous_morale_reasons);
       var text = "{0}: {1}{2}".format('Mood', Morale.getStatus(unit.morale), morale_improvement);
       unit_info_panel.append(this.createDiv("", text));
