@@ -24,7 +24,7 @@ var Morale = {
   },
 
   improve: function(unit) {
-    if (!Game.morale) return 0;
+    if (!Game.dissent) return 0;
     var old_dissent = unit.dissent;
     unit.dissent -= unit.dissent_improvement;
     unit.dissent = Math.max(unit.best_dissent, unit.dissent);
@@ -35,7 +35,7 @@ var Morale = {
   },
 
   degrade: function(unit, reason) {
-    if (!Game.morale) return 0;
+    if (!Game.dissent) return 0;
     if (this.values[reason] === undefined) return 0;
     var degradation = this.values[reason] * unit.dissent_degrade_factor;
     unit.happy = false;

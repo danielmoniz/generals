@@ -145,7 +145,7 @@ $(document).ready(function() {
         'enemy_sight_lines',
       ],
       'advanced': [
-        'morale',
+        'dissent',
       ],
     };
     var preset_rank = ['beginner', 'intermediate', 'advanced'];

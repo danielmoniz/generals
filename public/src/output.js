@@ -388,7 +388,7 @@ Output = {
 
     var third_row = this.createDiv();
 
-    if (Game.morale) {
+    if (Game.dissent) {
       var morale_div = this.createDiv('unit-morale');
       var morale_bar_container = this.createDiv('bar_container');
       var morale_bar = this.createDiv('morale bar');
@@ -554,7 +554,7 @@ Output = {
     unit_info_panel.append(div);
 
     // MORALE -----------
-    if (Game.morale) {
+    if (Game.dissent) {
       /*
       var div = this.createDiv("", "{0}: {1}".format('Dissent', Utility.roundTo2Decimals(unit.dissent)));
       unit_info_panel.append(div);
