@@ -859,7 +859,6 @@ Crafty.c('Unit', {
     var num_losses = battle.retreat(this);
     Output.printRetreat(this, num_losses);
     this.battle = false;
-    this.retreat = true;
     this.moveTowardTarget('is_retreat');
   },
 
