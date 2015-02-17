@@ -120,6 +120,7 @@ Game = {
 
     // ------------------------------------
     Crafty.trigger("NextTurn");
+    Crafty.trigger("RetreatUnits");
     Crafty.trigger("StartSiegeBattles");
     Crafty.trigger("StartBattles");
     Crafty.trigger("ResolveSieges");

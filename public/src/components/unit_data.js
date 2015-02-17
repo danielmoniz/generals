@@ -29,6 +29,8 @@ var UnitData = function(type, stats) {
       max_sight: 6,
       combat_ability: 1,
       defensive_ability: 1,
+      pursuit_ability: 1,
+      retreat_ability: 1,
       //movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
@@ -38,6 +40,8 @@ var UnitData = function(type, stats) {
 
     "Cavalry": {
       movement: 10,
+      pursuit_ability: 2,
+      retreat_ability: 2,
     },
 
     "Infantry": {
@@ -58,18 +62,22 @@ var UnitData = function(type, stats) {
       movement: 6,
       combat_ability: 0.5,
       max_sight: 7,
+      retreat_ability: 1.5,
     },
 
     "Raider": {
       movement: 6,
       combat_ability: 0.75,
       pillage_ability: 2,
+      pursuit_ability: 1.4,
+      retreat_ability: 1.4,
     },
 
     "Ranger": {
       movement: 6,
       combat_ability: 1,
       max_supply_multiplier: 5,
+      retreat_ability: 1.5,
     },
 
     "Test": {
@@ -79,6 +87,8 @@ var UnitData = function(type, stats) {
       movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
+      pursuit_ability: 1,
+      retreat_ability: 1,
     },
 
     "Test2": {

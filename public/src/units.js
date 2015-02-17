@@ -70,6 +70,16 @@ var Units = {
     return total;
   },
 
+  countTroops: function(units, type) {
+    var total = 0;
+    for (var i in units) {
+      var unit = units[i];
+      if (type) total += unit[type];
+      else total += unit.quantity;
+    }
+    return total;
+  },
+
   getUnitById: function(id) {
     if (id === undefined) throw new Error('MissingParam', 'Must supply an id.');
     var units = this.getAllUnits();
@@ -99,6 +109,14 @@ var Units = {
       units: visible,
     };
     return visible;
+  },
+
+  removeUnitFromList: function(unit_id, units) {
+    for (var i=units.length - 1; i>=0; i--) {
+      if (!units[i] || units[i].getId() == unit_id) {
+        units.splice(i, 1);
+      }
+    }
   },
 
 }

@@ -107,7 +107,7 @@ Battle = {
     return total_weighted_dissent / total_troops;
   },
 
-  getAttackPower: function(units) {
+  getAttackPower: function(units, is_retreat) {
     var total_attack_power = 0;
     for (var i in units) {
       var unit = units[i];
@@ -118,6 +118,7 @@ Battle = {
       }
       var combat_ability = Battle.getCombatAbility([unit]);
       var attack_power = combat_ability * dissent_factor;
+      if (is_retreat) attack_power *= unit.pursuit_ability;
       total_attack_power += attack_power;
     }
     return total_attack_power;
@@ -140,6 +141,35 @@ Battle = {
       total_defensive_power += defensive_power;
     }
     return total_defensive_power;
+  },
+
+  calculateRetreatLosses: function(battle, attackers, defenders, unit) {
+    var TROOP_LOSS = Game.troop_loss_constant;
+    // @TODO Calculate ranged attacker damage first
+
+    var attacker_attack_power = Battle.getAttackPower(attackers, 'retreat');
+    var defender_attack_power = Battle.getAttackPower(defenders, 'retreat');
+
+    var side = {};
+    var all_units = attackers.concat(defenders);
+    side[Battle.ATTACKER] = {
+      enemy_units: defenders,
+      enemy_attack_power: defender_attack_power,
+      total_troops: Units.getTotalTroops(all_units)[unit.side].active,
+    }
+    side[Battle.DEFENDER] = {
+      enemy_units: attackers,
+      enemy_attack_power: attacker_attack_power,
+      total_troops: Units.getTotalTroops(all_units)[unit.side].active,
+    }
+
+    var data = side[unit.battle_side];
+    var ratio = unit.getActive() / data.total_troops;
+
+    var unit_losses = (TROOP_LOSS * data.enemy_attack_power) * ratio / unit.retreat_ability;
+    var unit_losses = Math.ceil(unit_losses);
+
+    return unit_losses;
   },
 
   calculateTotalLosses: function(battle, attackers, defenders) {
@@ -254,12 +284,14 @@ Crafty.c('Battle', {
   init: function() {
     this.requires('Actor, Collision, Targetable, spr_battle, Clickable')
       //.bind("NextTurn", this.nextTurn)
+      .bind("RetreatUnits", this.retreatUnits)
       .bind("ResolveBattles", this.resolveIfNeeded)
       .bind("EndBattles", this.endIfNeeded)
       .attr({ type: "Battle" })
       ;
       this.z = 200;
       this.num_turns = 0;
+      this.retreated_units = [];
   },
 
   customSelect: function() {
@@ -390,6 +422,12 @@ Crafty.c('Battle', {
     }
   },
 
+  removeUnitById: function(unit_id) {
+    var units = this.attackers;
+    Units.removeUnitFromList(unit_id, this.attackers);
+    Units.removeUnitFromList(unit_id, this.defenders);
+  },
+
   unitDead: function(unit) {
     var unit_stats = this.getUnitUpdate(unit, 'killed');
     this.unit_updates.push(unit_stats);
@@ -398,47 +436,29 @@ Crafty.c('Battle', {
   },
 
   retreat: function(unit) {
-    var attackers = this.attackers;
-    var defenders = this.defenders;
-    var losses = Battle.calculateTotalLosses(this, attackers, defenders);
-
-    var attackers_quantity = Battle.getQuantity(attackers);
-    var defenders_quantity = Battle.getQuantity(defenders);
-
-    var attacker_ratios = Battle.getRatiosOfTotal(attackers, attackers_quantity);
-    var defender_ratios = Battle.getRatiosOfTotal(defenders, defenders_quantity);
-
-    var side = {};
-    side[Battle.ATTACKER] = { 
-      units: attackers,
-      ratios: attacker_ratios,
-    }
-    side[Battle.DEFENDER] = { 
-      units: defenders,
-      ratios: defender_ratios,
-    }
+    var losses = Battle.calculateRetreatLosses(
+      this, this.attackers, this.defenders, unit);
+    unit.sufferCasualties(losses, Morale.reasons.retreat);
 
     var unit_stats = this.getUnitUpdate(unit, 'retreated');
     this.unit_updates.push(unit_stats);
 
-    var units = side[unit.battle_side].units;
-
-    for (var i=0; i<units.length; i++) {
-      if (units[i].getId() == unit.getId()) {
-        var num_losses = Math.ceil(losses[unit.battle_side] * side[unit.battle_side].ratios[i]);
-        // @TODO Should use killUnits method and pass along reason
-        unit.sufferCasualties(num_losses, Morale.reasons.retreat);
-        break;
-      }
-    }
-
-    this.removeUnit(unit);
+    this.retreated_units.push(unit.getId());
 
     unit.battle_finished();
     if (!this.isBattleActive()) {
       this.end_battle = true;
     }
-    return num_losses;
+    return losses;
+  },
+
+  retreatUnits: function() {
+    for (var i in this.retreated_units) {
+      var unit_id = this.retreated_units[i];
+      this.removeUnitById(unit_id);
+    }
+
+    this.retreated_units = [];
   },
 
   getUnitUpdate: function(unit, event) {
