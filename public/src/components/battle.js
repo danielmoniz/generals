@@ -274,7 +274,7 @@ Battle = {
 
   killUnits: function(units, losses) {
     for (var i=0; i<units.length; i++) {
-      units[i].sufferCasualties(losses[i], Morale.reasons.battle);
+      units[i].sufferCasualties(losses[i], Morale.reasons.degrade.battle);
     }
   },
 
@@ -438,7 +438,7 @@ Crafty.c('Battle', {
   retreat: function(unit) {
     var losses = Battle.calculateRetreatLosses(
       this, this.attackers, this.defenders, unit);
-    unit.sufferCasualties(losses, Morale.reasons.retreat);
+    unit.sufferCasualties(losses, Morale.reasons.degrade.retreat);
 
     var unit_stats = this.getUnitUpdate(unit, 'retreated');
     this.unit_updates.push(unit_stats);

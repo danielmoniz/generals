@@ -34,7 +34,8 @@ var UnitData = function(type, stats) {
       //movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
-      dissent_improvement: 0.3,
+      dissent_improvement: 0.2,
+      dissent_improve_factor: 1,
       dissent_degrade_factor: 1,
     },
 

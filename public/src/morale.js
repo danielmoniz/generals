@@ -2,45 +2,77 @@
 var Morale = {
 
   reasons: {
-    fire: 'fire',
-    retreat: 'retreat',
-    battle: 'battle',
-    supply_attrition: 'supply attrition',
-    rain: 'rain',
-    unsupplied: 'unsupplied',
+    degrade: {
+      fire: 'fire',
+      retreat: 'retreat',
+      battle: 'battle',
+      supply_attrition: 'supply attrition',
+      rain: 'rain',
+      unsupplied: 'unsupplied',
+    },
+
+    improve: {
+      win_battle: 'win battle',
+      pillage: 'pillage',
+      sack: 'sack',
+      opponent_retreats: 'opponent retreats',
+    },
+
   },
 
   values: {
-    'fire': 1.5,
-    'retreat': 1,
-    'battle': 0.25,
-    'supply_attrition': 0.5,
-    'rain': 0.1,
+    degrade: {
+      'fire': 1.5,
+      'retreat': 1,
+      'battle': 0.25,
+      'supply attrition': 0.5,
+      'rain': 0.1,
 
-    //'unsupplied': 0.05,
-    //'full_movement': 0.05,
-    //'siege': 0.4,
-    //'injury_attrition': 0.02,
+      //'ally retreats': 0.1,
+      //'unsupplied': 0.05,
+      //'full_movement': 0.05,
+      //'siege': 0.4,
+      //'injury_attrition': 0.02,
+    },
+
+    improve: {
+      'win battle': 0.5,
+      'pillage': 0.4,
+      'sack': 0.6,
+
+      //'opponent retreats': 0.05,
+    },
+
   },
 
-  improve: function(unit) {
+  increment: function(unit) {
     if (!Game.dissent) return 0;
     var old_dissent = unit.dissent;
-    unit.dissent -= unit.dissent_improvement;
-    unit.dissent = Math.max(unit.best_dissent, unit.dissent);
+    unit.improveDissent(unit.dissent_improvement);
     if (unit.dissent < old_dissent) {
       console.log('improving dissent for {0} by {1}'.format(unit.name, unit.dissent_improvement));
     }
     return unit.dissent;
   },
 
+  improve: function(unit, reason) {
+    if (!Game.dissent) return 0;
+    if (this.values.improve[reason] === undefined) return 0;
+    var improvement = this.values.improve[reason] * unit.dissent_improve_factor;
+    unit.improveDissent(improvement);
+    // @TODO Handle improve reasons separately from drop reasons
+    unit.addDissentDropReason(this.reasons.improve[reason]);
+    console.log('improving dissent for {0} by {1} due to: {2}'.format(unit.name, improvement, reason));
+    return improvement;
+  },
+
   degrade: function(unit, reason) {
     if (!Game.dissent) return 0;
-    if (this.values[reason] === undefined) return 0;
-    var degradation = this.values[reason] * unit.dissent_degrade_factor;
+    if (this.values.degrade[reason] === undefined) return 0;
+    var degradation = this.values.degrade[reason] * unit.dissent_degrade_factor;
     unit.happy = false;
-    unit.dissent += degradation;
-    unit.addDissentDropReason(this.reasons[reason]);
+    unit.degradeDissent(degradation);
+    unit.addDissentDropReason(this.reasons.degrade[reason]);
     console.log('degrading dissent for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
     return degradation;
   },
