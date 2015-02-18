@@ -29,7 +29,6 @@ Crafty.c('Unit', {
     this.addStat('dissent', this.best_dissent);
     this.addStat('max_movement', this.movement);
     this.possible_moves = [];
-    this.possible_moves_data = {};
     this.dissent_reasons = [];
   },
 
@@ -73,7 +72,6 @@ Crafty.c('Unit', {
     this.first_location = this.at();
     if (this.last_moves === undefined) this.last_moves = [];
     this.possible_moves = [];
-    this.possible_moves_data = {};
 
     if (turn % 1 == 0) {
       // need visible enemy units for detecting stop points when moving
@@ -90,6 +88,8 @@ Crafty.c('Unit', {
       } else if (!this.battle && this.move_target_path) {
         this.moveTowardTarget();
       }
+
+      this.movement = this.max_movement;
     }
 
     this.testTargetAndPath();
@@ -123,7 +123,6 @@ Crafty.c('Unit', {
   },
 
   reset: function() {
-    this.movement = this.max_movement;
     this.turn_action = "move";
     this.performed_actions = [];
     this.updateActionChoices();
@@ -193,19 +192,21 @@ Crafty.c('Unit', {
     return actions;
   },
 
-  actionPerformed: function(action) {
-    var new_movement = this.movement - this.max_movement / 2;
+  reduceMovement: function(reduction) {
+    var new_movement = Math.floor(this.movement - reduction);
     this.movement = Math.max(new_movement, 0);
     this.possible_moves = [];
-    this.possible_moves_data = {};
     this.updatePossibleMoves();
     this.updateMovementPaths();
+  },
+
+  actionPerformed: function(action) {
+    this.reduceMovement(this.max_movement / 2);
   },
 
   updatePossibleMoves: function() {
     if (!Game.render_possible_moves) return;
 
-    var moves = {};
     var movement = this.movement;
     if (this.battle && this.side == Game.turn) movement += 1;
 
@@ -1015,10 +1016,13 @@ Crafty.c('Unit', {
     this.battle = true;
     this.stop_unit();
   },
-  battle_finished: function() {
+  battle_finished: function(outcome) {
     this.battle = false;
     delete this.battle_side;
     this.updateActionChoices();
+    if (outcome == 'win') {
+      this.reduceMovement(this.max_movement / 2);
+    }
   },
 
   sufferCasualties: function(casualties, reason) {

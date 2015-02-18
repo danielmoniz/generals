@@ -371,7 +371,7 @@ Crafty.c('Battle', {
     // @TODO Should use attackers and defenders, not unitsInCombat()
     var units_in_combat = this.unitsInCombat();
     for (var i=0; i < units_in_combat.length; i++) {
-      units_in_combat[i].battle_finished();
+      units_in_combat[i].battle_finished('win');
       this.winning_side = units_in_combat[i].side;
     }
     this.finished = true;
@@ -445,7 +445,7 @@ Crafty.c('Battle', {
 
     this.retreated_units.push(unit.getId());
 
-    unit.battle_finished();
+    unit.battle_finished('retreat');
     if (!this.isBattleActive()) {
       this.end_battle = true;
     }
