@@ -37,8 +37,8 @@ var Morale = {
 
     improve: {
       'win battle': 0.5,
-      'pillage': 0.4,
-      'sack': 0.6,
+      'sack': 0.4,
+      'pillage': 0.2,
 
       //'opponent retreats': 0.05,
     },
