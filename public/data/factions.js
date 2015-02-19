@@ -11,28 +11,31 @@ var Factions = {
       {
         name: "Subutai",
         type: "Cavalry",
-        quantity: 3500,
+        quantity: 2500,
       },
       {
         name: "Genghis Khan",
         type: "Cavalry",
-        quantity: 3000,
+        quantity: 2500,
       },
       {
         name: "Kublai Khan",
         type: "Cavalry",
-        quantity: 3000,
+        quantity: 2500,
       },
       {
         name: "Batu Khan",
         type: "Cavalry",
-        quantity: 3000,
+        quantity: 2500,
       },
+
+      /*
       {
         name: "Mandhuhai",
         type: "Scout",
         quantity: 2000,
       },
+      */
     ],
 
     cities: ['Avarga', 'Karakorum', 'Dadu', 'Ikh Khuree'],
@@ -61,7 +64,7 @@ var Factions = {
       {
         name: "Scipio",
         type: "Cavalry",
-        quantity: 4000,
+        quantity: 2500,
       },
       {
         name: "Agrippa",
