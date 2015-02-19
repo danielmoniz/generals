@@ -140,7 +140,7 @@ Battle = {
       var defensive_power = defensive_ability * terrain_defense * dissent_factor;
       total_defensive_power += defensive_power;
     }
-    return total_defensive_power;
+    return total_defensive_power / units.length;
   },
 
   calculateRetreatLosses: function(battle, attackers, defenders, unit) {
