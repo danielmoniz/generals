@@ -163,7 +163,11 @@ var Utility = {
     return points;
   },
 
-  removeDuplicates: function(list) {
+  /*
+   * Removes all duplicates points in a list. Modifies list in place.
+   */
+  removeDuplicatePoints: function(list, test) {
+    var duplicates = {};
     for (var i=list.length - 1; i>0; i--) {
       var point = list[i];
       for (var j=i-1; j>=0; j--) {
@@ -174,6 +178,30 @@ var Utility = {
         }
       }
     }
+  },
+
+  /*
+   * Removes all duplicates items (==) in a list. Modifies list in place.
+   * Returns a dictionary counting the quantity of each duplicate item.
+   */
+  removeDuplicates: function(list) {
+    var duplicates = {};
+    for (var i=list.length - 1; i>0; i--) {
+      var item = list[i];
+      for (var j=i-1; j>=0; j--) {
+        var compare_item = list[j];
+        if (item == compare_item) {
+          if (duplicates[compare_item] === undefined) {
+            duplicates[compare_item] = 0;
+          }
+          duplicates[compare_item] += 1;
+          list.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    return duplicates;
   },
 
   roundTo2Decimals: function(number) {

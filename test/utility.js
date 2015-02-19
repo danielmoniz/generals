@@ -211,4 +211,141 @@ describe('Utility', function() {
 
   });
 
+  describe('#removeDuplicatePoints()', function() {
+
+    it('should return empty list if input is empty', function() {
+      var points = [
+      ];
+      Utility.removeDuplicatePoints(points);
+
+      assert.equal(points.length, 0);
+    });
+
+    it('should return the same list if input has no duplicates', function() {
+      var points = [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+      ];
+      Utility.removeDuplicatePoints(points);
+
+      assert.equal(points.length, 2);
+    });
+
+    it('should return smaller list if input has one duplicate', function() {
+      var points = [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+      ];
+      Utility.removeDuplicatePoints(points);
+
+      assert.equal(points.length, 1);
+    });
+
+    it('should remove multiple duplicates of the same item', function() {
+      var points = [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+      ];
+      Utility.removeDuplicatePoints(points);
+
+      assert.equal(points.length, 2);
+    });
+
+    it('should remove multiple duplicates of different items', function() {
+      var points = [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 1, y: 0 },
+        { x: 1, y: 0 },
+      ];
+      Utility.removeDuplicatePoints(points);
+
+      assert.equal(points.length, 2);
+    });
+
+  });
+
+  describe('#removeDuplicates()', function() {
+
+    it('should not modify list if input is empty', function() {
+      var list = [
+      ];
+      var duplicates = Utility.removeDuplicates(list);
+
+      assert.equal(list.length, 0);
+      assert.equal(Object.keys(duplicates).length, 0);
+    });
+
+    it('should not modify list if input has one item', function() {
+      var list = [
+        'unique',
+      ];
+      var duplicates = Utility.removeDuplicates(list);
+
+      assert.equal(list.length, 1);
+      assert.equal(Object.keys(duplicates).length, 0);
+    });
+
+    it('should not modify list if input has no duplicates', function() {
+      var list = [
+        'unique',
+        'unique2',
+        'unique3',
+      ];
+      var duplicates = Utility.removeDuplicates(list);
+
+      assert.equal(list.length, 3);
+      assert.equal(Object.keys(duplicates).length, 0);
+    });
+
+    it('should create smaller list if input has one duplicate', function() {
+      var list = [
+        'unique',
+        'word',
+        'word',
+      ];
+      var duplicates = Utility.removeDuplicates(list);
+
+      assert.equal(list.length, 2);
+      assert.equal(Object.keys(duplicates).length, 1);
+      assert.equal(duplicates['word'], 1);
+    });
+
+    it('should remove multiple duplicates of the same word', function() {
+      var list = [
+        'unique',
+        'word',
+        'word',
+        'word',
+      ];
+      var duplicates = Utility.removeDuplicates(list);
+
+      assert.equal(list.length, 2);
+      assert.equal(Object.keys(duplicates).length, 1);
+      assert.equal(duplicates['word'], 2);
+    });
+
+    it('should remove multiple duplicates from different words', function() {
+      var list = [
+        'word1',
+        'word2',
+        'word1',
+        'word2',
+        'word1',
+        'word2',
+      ];
+      var duplicates = Utility.removeDuplicates(list);
+
+      assert.equal(list.length, 2);
+      assert.equal(Object.keys(duplicates).length, 2);
+      assert.equal(duplicates['word1'], 2);
+      assert.equal(duplicates['word2'], 2);
+    });
+
+  });
+
 });
