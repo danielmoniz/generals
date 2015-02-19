@@ -40,8 +40,6 @@ var Action = {
       func.apply(this, args_to_pass);
       this.postAction();
     } else {
-      console.log("function_name");
-      console.log(function_name);
       throw new Error('ActionDoesNotExist', 'Relevant action function does not exist for {0}'.format(function_name));
     }
   },
