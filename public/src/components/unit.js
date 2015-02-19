@@ -254,7 +254,9 @@ Crafty.c('Unit', {
     var total_pillage_ability = this.pillage_ability * this.getActive();
     if (local_terrain.has('Farm')) {
       var amount = local_terrain.pillage(this, total_pillage_ability);
-      Morale.improve(this, Morale.reasons.improve.pillage);
+      if (local_terrain.side != this.side) {
+        Morale.improve(this, Morale.reasons.improve.pillage);
+      }
     } else if (local_terrain.has("Settlement") && !local_terrain.sacked) {
       var amount = local_terrain.pillage(this, total_pillage_ability);
       Morale.improve(this, Morale.reasons.improve.sack);
