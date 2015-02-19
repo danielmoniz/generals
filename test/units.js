@@ -61,7 +61,7 @@ describe('Units', function() {
       assert.equal(units.friendly.length, 0);
       assert.equal(units.enemy.length, 3);
     });
-    
+
     it('should categorize units into friendly and enemy if given a valid side', function() {
       Entity.get = function(name) {
         if (name == 'Unit') {
@@ -113,7 +113,7 @@ describe('Units', function() {
       var units = Units.getFriendlyUnits('myside');
       assert.equal(units.length, 0);
     });
-    
+
     it('should return friendly units if given a valid side', function() {
       Entity.get = function(name) {
         if (name == 'Unit') {
@@ -164,7 +164,7 @@ describe('Units', function() {
       var units = Units.getEnemyUnits('myside');
       assert.equal(units.length, 3);
     });
-    
+
     it('should return enemy units if given a valid side', function() {
       Entity.get = function(name) {
         if (name == 'Unit') {
