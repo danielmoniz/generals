@@ -1099,17 +1099,19 @@ Crafty.c('Unit', {
     }
   },
 
-  degradeDissent: function(amount) {
-    this.changeDissent(amount);
+  degradeDissent: function(amount, reason) {
+    this.changeDissent(amount, reason);
+    this.happy = false;
   },
 
-  improveDissent: function(amount) {
-    this.changeDissent(amount * -1);
+  improveDissent: function(amount, reason) {
+    this.changeDissent(amount * -1, reason);
   },
 
-  changeDissent: function(amount) {
+  changeDissent: function(amount, reason) {
     this.dissent += amount;
     this.dissent = Math.max(this.best_dissent, this.dissent);
+    if (reason) this.addDissentChangeReason(reason);
   },
 
   addDissentChangeReason: function(reason) {

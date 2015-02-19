@@ -58,6 +58,9 @@ var Morale = {
 
   },
 
+  /*
+   * Improves an entity's dissent by one unit of improvement.
+   */
   increment: function(unit, supplied) {
     if (!Game.dissent) return 0;
     var old_dissent = unit.dissent;
@@ -72,31 +75,60 @@ var Morale = {
     return unit.dissent;
   },
 
+  /*
+   * Improves an entity's dissent given a reason for the improvement.
+   */
   improve: function(unit, reason) {
-    if (!Game.dissent) return 0;
-    if (this.values.improve[reason] === undefined) this.badReason(reason);
-    var improvement = this.values.improve[reason] * unit.dissent_improve_factor;
-    unit.improveDissent(improvement);
-    // @TODO Handle improve reasons separately from drop reasons
-    unit.addDissentChangeReason(reason);
-    console.log('improving dissent for {0} by {1} due to: {2}'.format(unit.name, improvement, reason));
-    return improvement;
+    if (this.values.improve[reason] === undefined)  {
+      this.badReason();
+    }
+    if (unit.dissent_improve_factor === undefined) {
+      throw new Error(
+        'BadParam',
+        'unit must have dissent_improve_factor property to improve dissent');
+    }
+    var value = -1 * this.values.improve[reason] * unit.dissent_improve_factor;
+    return this.changeDissent(unit, reason, value);
   },
 
   /*
-   * 'quantity' is a variable representing something to be multiplied against
-   * the reason's value. Eg. % troops lost.
+   * Degrades an entity's dissent given a reason for the degradation.
+   * 'quantity' is an optional variable representing something to be multiplied 
+   * against the reason's value. Eg. % troops lost.
    */
   degrade: function(unit, reason, quantity) {
-    if (!quantity) quantity = 1;
+    if (this.values.degrade[reason] === undefined)  {
+      this.badReason();
+    }
+    if (unit.dissent_degrade_factor === undefined) {
+      throw new Error(
+        'BadParam',
+        'unit must have dissent_degrade_factor property to degrade dissent');
+    }
+    var value = this.values.degrade[reason] * unit.dissent_degrade_factor;
+    return this.changeDissent(unit, reason, value, quantity);
+  },
+
+  /*
+   * Should be called only through degrade() and improve()
+   */
+  changeDissent: function(unit, reason, reason_value, quantity) {
+    if (!unit || unit.dissent_degrade_factor === undefined) {
+      throw new Error('BadParam', 'unit must be specified');
+    }
+    if (reason_value === undefined) this.badReason(reason);
     if (!Game.dissent) return 0;
-    if (this.values.degrade[reason] === undefined) this.badReason(reason);
-    var degradation = this.values.degrade[reason] * unit.dissent_degrade_factor * quantity;
-    unit.happy = false;
-    unit.degradeDissent(degradation);
-    unit.addDissentChangeReason(reason);
-    console.log('degrading dissent for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
-    return degradation;
+    if (quantity === undefined) quantity = 1;
+    var change = reason_value * quantity;
+    if (change > 0) {
+      unit.degradeDissent(change, reason);
+      console.log('degrading dissent for {0} by {1} due to: {2}'.format(unit.name, change, reason));
+    } else {
+      var positive_change = -1 * change;
+      unit.improveDissent(positive_change, reason);
+      console.log('improving dissent for {0} by {1} due to: {2}'.format(unit.name, positive_change, reason));
+    }
+    return change;
   },
 
   /*
@@ -121,22 +153,41 @@ var Morale = {
     5: '[should disband!]',
   },
 
+  /*
+   * Return a string representing the mood of an entity using its dissent.
+   */
   getStatus: function(dissent_points) {
+    if (isNaN(dissent_points) || dissent_points < 0) {
+      throw new Error('BadParam', 'dissent_points needs to be a number > 0');
+    }
     var status_level = Math.floor(dissent_points);
     status_level = Math.min(status_level, Object.keys(this.levels).length - 1);
     return this.levels[status_level];
   },
 
+  /*
+   * Return a fraction ( 0 <= fraction <= 1) given some number of dissent
+   * points. Used to determine the effect of dissent gain/morale loss.
+   */
   calculateDissentFactor: function(dissent_points) {
+    if (isNaN(dissent_points)) {
+      throw new Error('BadParam', 'dissent_points needs to be a number');
+    }
     var dissent_factor = Math.pow(Game.dissent_factor, dissent_points);
     return dissent_factor;
   },
 
+  /*
+   * Calculate a percentage given a dissent factor fraction
+   */
   calculateDissentPercentage: function(dissent_points) {
     var actual_percentage = this.calculateDissentFactor(dissent_points) * 100;
     return Utility.roundTo2Decimals(actual_percentage);
   },
 
+  /*
+   * Convenience method. Error and log the provided reason.
+   */
   badReason: function(reason) {
     console.log("reason");
     console.log(reason);
