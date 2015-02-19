@@ -342,6 +342,10 @@ Crafty.c('Battle', {
       var unit = this.defenders[i];
       unit.notify_of_battle(Battle.DEFENDER);
     }
+
+    if (this.attacker.terrifying) {
+      this.terrifyDefenders();
+    }
   },
 
   start: function(attacker) {
@@ -396,6 +400,10 @@ Crafty.c('Battle', {
     var retreat_constraints = this.getRetreatConstraints(unit.at());
     // @TODO Is this updating the retreat constraints in this object?
     retreat_constraints.addUnit(battle_side, unit.last_location);
+
+    if (this.num_turns == 0 && unit.terrifying) {
+      this.terrifyDefenders();
+    }
 
     if (this.num_turns > 0) {
       this.new_units.push(unit);
@@ -530,6 +538,15 @@ Crafty.c('Battle', {
     battle_sides[this.attacking_side] = Battle.ATTACKER;
     battle_sides[this.defending_side] = Battle.DEFENDER;
     return battle_sides[player];
+  },
+
+  terrifyDefenders: function() {
+    if (this.terrify_used) return;
+    for (var i in this.defenders) {
+      var unit = this.defenders[i];
+      Morale.degrade(unit, Morale.reasons.degrade.terrified);
+    }
+    this.terrify_used = true;
   },
 
 });

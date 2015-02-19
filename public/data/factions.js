@@ -44,6 +44,10 @@ var Factions = {
       },
       'defensive': false,
     },
+
+    special_abilities: [
+      'terrifying',
+    ],
   },
 
   romans: {

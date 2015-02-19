@@ -8,7 +8,10 @@ var Morale = {
       battle: 'battle',
       supply_attrition: 'supply attrition',
       rain: 'rain',
+      terrified: 'terrified',
+
       unsupplied: 'unsupplied',
+      surrounded: 'surrounded',
     },
 
     improve: {
@@ -27,7 +30,9 @@ var Morale = {
       'battle': 0.25,
       'supply attrition': 0.5,
       'rain': 0.1,
+      'terrified': 0.3,
 
+      //'surrounded': 0.3,
       //'ally retreats': 0.1,
       //'unsupplied': 0.05,
       //'full_movement': 0.05,
