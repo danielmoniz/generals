@@ -26,8 +26,8 @@ var Morale = {
   values: {
     degrade: {
       'fire': 1.5,
-      'retreat': 1,
-      'battle': 0.25,
+      'retreat': 2, // this will be reduced in practice based on % casualties
+      'battle': 1, // this will be reduced in practice based on % casualties
       'supply attrition': 0.5,
       'rain': 0.1,
       'terrified': 0.3,
@@ -71,15 +71,33 @@ var Morale = {
     return improvement;
   },
 
-  degrade: function(unit, reason) {
+  /*
+   * 'quantity' is a variable representing something to be multiplied against
+   * the reason's value. Eg. % troops lost.
+   */
+  degrade: function(unit, reason, quantity) {
+    if (!quantity) quantity = 1;
     if (!Game.dissent) return 0;
     if (this.values.degrade[reason] === undefined) return 0;
-    var degradation = this.values.degrade[reason] * unit.dissent_degrade_factor;
+    var degradation = this.values.degrade[reason] * unit.dissent_degrade_factor * quantity;
     unit.happy = false;
     unit.degradeDissent(degradation);
     unit.addDissentDropReason(this.reasons.degrade[reason]);
     console.log('degrading dissent for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
     return degradation;
+  },
+
+  /*
+   * unit; the unit taking casualties
+   * reason: battle, fire, attrition, etc.
+   * quantity: number of troops affected
+   * total_active: total number of active troops prior to casualties
+   */
+  takeCasualties: function(unit, reason, quantity, total_active) {
+    if (reason === undefined) throw new Error('BadParam', "'reason' must be defined.");
+    var fraction_lost = quantity / total_active;
+    var degradation = this.degrade(unit, reason, fraction_lost);
+    return unit.dissent;
   },
 
   levels: {
@@ -105,22 +123,6 @@ var Morale = {
   calculateDissentPercentage: function(dissent_points) {
     var actual_percentage = this.calculateDissentFactor(dissent_points) * 100;
     return Utility.roundTo2Decimals(actual_percentage);
-  },
-
-
-
-  /*
-   * unit; the unit taking casualties
-   * type: dead, injured
-   * quantity: number of troops affected
-   * reason: battle, fire, attrition, etc.
-   */
-  takeCasualties: function(unit, type, quantity, reason) {
-    if (reason === undefined) throw new Error('BadParam', "'reason' must be defined.");
-    // @TODO Consider using quantity/percentage of units lost to damage morale
-    // proportionally
-    var degradation = this.degrade(unit, reason);
-    return unit.dissent;
   },
 
 };

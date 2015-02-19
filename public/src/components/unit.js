@@ -1026,6 +1026,7 @@ Crafty.c('Unit', {
   sufferCasualties: function(casualties, reason) {
     var deaths = Math.round(casualties * Game.battle_death_rate);
     var injuries = Math.round(casualties * (1 - Game.battle_death_rate));
+    Morale.takeCasualties(this, reason, casualties, this.getActive());
     this.kill(deaths, reason);
     this.injure(injuries, false, reason);
     this.updateStatus();
@@ -1039,11 +1040,11 @@ Crafty.c('Unit', {
     if (isNaN(num_troops)) throw "NaN: num_troops in unit.kill()";
     if (num_troops === undefined) throw "undefined: num_troops in unit.kill()";
     if (injured === undefined) injured = false;
+
     var num_killed = Math.ceil(Math.min(this.quantity, Math.ceil(num_troops)));
     this.quantity -= num_killed;
     if (injured) this.injured -= num_killed;
 
-    if (!ignore_dissent) Morale.takeCasualties(this, Morale.reasons.degrade.kill, num_troops, reason);
 
     this.updateMaxSupply();
   },
@@ -1057,8 +1058,6 @@ Crafty.c('Unit', {
     if (isNaN(num_troops)) throw "NaN: num_troops in unit.injure()";
     if (num_troops === undefined) throw "undefined: num_troops in unit.injure()";
     this.injured += Math.ceil(Math.min(this.quantity, Math.ceil(num_troops)));
-
-    //Morale.takeCasualties(this, Morale.reasons.degrade.injure, num_troops, reason);
 
     this.updateMaxSupply();
   },
