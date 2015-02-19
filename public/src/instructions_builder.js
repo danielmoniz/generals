@@ -18,6 +18,7 @@ var InstructionsBuilder = {
     this.addInstruction('morale');
     this.addSubTitle('Combat');
     this.addInstruction('combat_general');
+    this.addInstruction('combat_winning');
     this.addInstruction('casualties');
     this.addSubTitle('Injured troops');
     this.addInstruction('injured_display');
@@ -32,6 +33,11 @@ var InstructionsBuilder = {
     this.addSubTitle('Retreating');
     this.addInstruction('retreat_general');
     this.addInstruction('retreat_constraints');
+    this.addSubTitle('Dissent');
+    this.addInstruction('dissent_general');
+    this.addInstructionList('dissent_examples');
+    this.addInstruction('dissent_in_combat');
+    this.addInstruction('dissent_improvement');
     this.addSubTitle('Terrain Types');
     this.addInstruction('terrain_types_intro');
     this.addInstructionList('terrain_types');

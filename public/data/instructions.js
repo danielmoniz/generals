@@ -12,7 +12,7 @@ var Instructions = {
 
   general_instructions: "Select armies by clicking on them and move them by right-clicking where you want them to go. Queue up moves for all of your units and click Next Turn (or hit space bar). Units will sometimes have actions available to perform such as pillaging a farm or starting a fire. Click on the corresponding action button beside your unit's display box below the map.",
 
-  how_to_start_combat: "Moving one of your armies into the same tile as another Army will start a combat. Note that a combat will be started regardless of your intentions if you attempt to move through an opposing army.",
+  how_to_start_combat: "Moving one of your armies into the same tile as another army will start combat/battle.",
 
   terrain_types_general: "Terrain affects the movement and combat ability of your armies. For example, water is impassable, while forests are slow but provide a defensive bonus. (see Terrain Types)",
 
@@ -30,6 +30,8 @@ var Instructions = {
 
   combat_general: "Combat occurs when two opposing armies are in the same tile. Each turn represents a single day of combat. Because of this, combat between two large armies can take days or even weeks to complete if both sides have a similar number of troops. Note, however, that even a small advantage in troop numbers at the beginning can turn into a large advantage within a few turns. The result is that, in almost every case, one side needs to retreat as soon as possible.",
 
+  combat_winning: "A battle is won when one side no longer has any troops in combat. This could happen due to retreating or taking too many casualties. The army that wins a battle must consolidate their forces before moving on or pursuing. This means that movement on the next turn is decreased.",
+
   casualties: "Each turn, all armies on both sides will take some number of casualties. These will be divided between killed and injured troops. This is a calculation based on the total number of troops on each side.If you have multiple armies in a battle, they will receive casualties that corresponds to the relative size of their armies. For example, One army with 6000 troops might lose 600, but two armies with 3000 troops would each lose 300 in that same scenario.",
 
   injured_troops: "Injured or wounded troops are casualties that are not killed. They are unable to fight. Moreover, each turn a percentage of your wounded will succumb to their battle wounds and die. Injured troops count the same toward your victory score as uninjured (or active) troops. However, an army with only injured troops will be disbanded.",
@@ -38,7 +40,7 @@ var Instructions = {
 
   healing: "Injured troops may be healed. This can be automatic, as some very small fraction of your wounded will be healed each turn. Placing an army in an unsacked city will greatly speed up the healing process. Sacked cities provide no such advantage. Armies are also unable to benefit fron this bonus during combat.",
 
-  retreat_general: "You may retreat from a combat at any time if it is your turn. This will, however, inflict casualties to the retreating army as if they stayed in combat for one more turn. They will inflict no casualties on any opposing armies until they enter a new combat.",
+  retreat_general: "You may retreat from a combat at any time if it is your turn. This will, however, inflict casualties to the retreating army as if they stayed in combat for one more turn. They will inflict no casualties on any opposing armies until they enter a new combat. The dissent of the retreating army will also take a massive increase.",
 
   retreat_constraints: "Armies can only retreat from combat in certain directions. Initially, an attacking army may only retreat into the tile from which it attacked, while the defending army can move into the other tiles. Should another attacking army join from a different direction, both of those armies may now retreat in two directions, while the defenders are limited to the opposite two directions as well. Because of this, it is possible to not be able to retreat at all if your opponent has had armies join from all four directions. This can be remedied by entering the combat with a new army in order to open up that lane for retreating. Note also that retreat constraints do block supply (see Supply section).",
 
@@ -51,6 +53,19 @@ var Instructions = {
   supplied: "As soon as your army is once again connected to your own supply rooms, the army is considered supplied. At the start of each of your turns, each supplied army will increase its supply by 1 (up to its maximum).",
 
   other_factors: "If at any point an army's retreat is blocked, that blockade also prevents supply from that direction. This means that keeping the rear of your armies clear is of vital importance.",
+
+  dissent_general: "Armies do not always perform as they should. An army low on morale, or high on dissent, will become less organized and effective. Dissent gets worse when negative events happen to your army. Some examples in order of severity:",
+
+  dissent_examples: [
+    'Retreating from battle.',
+    'Losing troops due to supply attrition (starvation).',
+    'Taking casualties in battle.',
+    'Being outside (not in a city) when it rains.',
+  ],
+
+  dissent_in_combat: "Dissent is gained in combat when casualties are taken. It is based on the percentage of active troops lost (either dead or injured). Retreating works the same way, but casualties taken during a retreat have a much larger effect on dissent.",
+
+  dissent_improvement: "If an army has a full turn without increasing its dissent, the army's morale improves. Thus, giving your armies a rest can be vital to keeping them alive and effective. An army's dissent decreases less if it is unsupplied. It can also be improved by sacking towns and cities and by pillaging farms.",
 
   terrain_types_intro: "Terrain affects both combat and movement. The defender always gets the combat advantage if it exists.",
 
@@ -119,6 +134,12 @@ var Instructions = {
     "Having an army's supply cut at a bad time can be devastating. Use this by getting between your opponent and their source of supply.",
 
     "Most terrain features such as trees, grass, and farms automatically provide some supply to present armies.",
+
+    "An army that wins a battle must consolidate their troops before pursuing. The army therefore gets less movement on their next turn. This helps retreating armies escape.",
+
+    "Managing dissent is vital to keeping your armies effective.",
+
+    "Retreating is damaging to both an army's manpower and its dissent, but sometimes it has to be done.",
   ],
 
 };
