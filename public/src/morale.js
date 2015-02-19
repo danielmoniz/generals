@@ -62,11 +62,11 @@ var Morale = {
 
   improve: function(unit, reason) {
     if (!Game.dissent) return 0;
-    if (this.values.improve[reason] === undefined) return 0;
+    if (this.values.improve[reason] === undefined) this.badReason(reason);
     var improvement = this.values.improve[reason] * unit.dissent_improve_factor;
     unit.improveDissent(improvement);
     // @TODO Handle improve reasons separately from drop reasons
-    unit.addDissentDropReason(this.reasons.improve[reason]);
+    unit.addDissentChangeReason(reason);
     console.log('improving dissent for {0} by {1} due to: {2}'.format(unit.name, improvement, reason));
     return improvement;
   },
@@ -78,11 +78,11 @@ var Morale = {
   degrade: function(unit, reason, quantity) {
     if (!quantity) quantity = 1;
     if (!Game.dissent) return 0;
-    if (this.values.degrade[reason] === undefined) return 0;
+    if (this.values.degrade[reason] === undefined) this.badReason(reason);
     var degradation = this.values.degrade[reason] * unit.dissent_degrade_factor * quantity;
     unit.happy = false;
     unit.degradeDissent(degradation);
-    unit.addDissentDropReason(this.reasons.degrade[reason]);
+    unit.addDissentChangeReason(reason);
     console.log('degrading dissent for {0} by {1} due to: {2}'.format(unit.name, degradation, reason));
     return degradation;
   },
@@ -123,6 +123,12 @@ var Morale = {
   calculateDissentPercentage: function(dissent_points) {
     var actual_percentage = this.calculateDissentFactor(dissent_points) * 100;
     return Utility.roundTo2Decimals(actual_percentage);
+  },
+
+  badReason: function(reason) {
+    console.log("reason");
+    console.log(reason);
+    throw new Error('BadReason');
   },
 
 };

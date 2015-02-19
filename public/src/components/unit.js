@@ -89,6 +89,8 @@ Crafty.c('Unit', {
         this.moveTowardTarget();
       }
 
+      this.previous_dissent_reasons = this.dissent_reasons;
+      this.dissent_reasons = [];
       this.movement = this.max_movement;
     }
 
@@ -120,8 +122,6 @@ Crafty.c('Unit', {
     this.performed_actions = [];
     this.updateActionChoices();
     this.happy = true;
-    this.previous_dissent_reasons = this.dissent_reasons;
-    this.dissent_reasons = [];
   },
 
   canSiege: function() {
@@ -560,7 +560,7 @@ Crafty.c('Unit', {
       }
     }
 
-    if (unsupplied > 0) Morale.degrade(this, Morale.reasons.degrade.unsupplied);
+    //if (unsupplied > 0) Morale.degrade(this, Morale.reasons.degrade.unsupplied);
 
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
     this.supply_remaining -= unsupplied;
@@ -1112,7 +1112,7 @@ Crafty.c('Unit', {
     this.dissent = Math.max(this.best_dissent, this.dissent);
   },
 
-  addDissentDropReason: function(reason) {
+  addDissentChangeReason: function(reason) {
     this.dissent_reasons.push(reason);
   },
 

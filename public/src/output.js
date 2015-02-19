@@ -565,12 +565,13 @@ Output = {
     // MORALE -----------
     if (Game.dissent) {
       /*
+      // Testing code
       var div = this.createDiv("", "{0}: {1}".format('Dissent', Utility.roundTo2Decimals(unit.dissent)));
       unit_info_panel.append(div);
       var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Pretty.Morale.moralePercentage(unit.dissent)));
       unit_info_panel.append(div);
       */
-      var morale_improvement = Pretty.Morale.getImprovementText(unit.dissent, unit.previous_dissent_reasons);
+      var morale_improvement = Pretty.Morale.getImprovementText(unit.dissent, unit.dissent_reasons);
       var text = "{0}: {1}{2}".format('Mood', Morale.getStatus(unit.dissent), morale_improvement);
       unit_info_panel.append(this.createDiv("", text));
     }
