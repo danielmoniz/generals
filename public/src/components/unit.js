@@ -91,6 +91,8 @@ Crafty.c('Unit', {
 
       this.previous_dissent_reasons = this.dissent_reasons;
       this.dissent_reasons = [];
+      this.updateDissent();
+      this.happy = true;
       this.movement = this.max_movement;
     }
 
@@ -109,7 +111,6 @@ Crafty.c('Unit', {
       this.takeFireCasualties();
       this.handleWeatherOnDissent();
 
-      this.updateDissent();
       this.reset(); // should happen after every other active effect!
     }
     this.updateStats(); // should happen last!
@@ -121,7 +122,6 @@ Crafty.c('Unit', {
     this.turn_action = "move";
     this.performed_actions = [];
     this.updateActionChoices();
-    this.happy = true;
   },
 
   canSiege: function() {
@@ -1094,7 +1094,7 @@ Crafty.c('Unit', {
 
   updateDissent: function() {
     if (this.happy) {
-      Morale.increment(this);
+      Morale.increment(this, this.is_supplied);
       return;
     }
   },
