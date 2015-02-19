@@ -21,6 +21,10 @@ var Morale = {
       opponent_retreats: 'opponent retreats',
     },
 
+    modifiers: {
+      'unsupplied': 'unsupplied',
+    },
+
   },
 
   values: {
@@ -48,14 +52,22 @@ var Morale = {
       //'opponent retreats': 0.05,
     },
 
+    modifiers: {
+      'unsupplied': 1/2,
+    },
+
   },
 
-  increment: function(unit) {
+  increment: function(unit, supplied) {
     if (!Game.dissent) return 0;
     var old_dissent = unit.dissent;
-    unit.improveDissent(unit.dissent_improvement);
+    var improvement = unit.dissent_improvement;
+    if (!supplied) {
+      var improvement = unit.dissent_improvement * this.values.modifiers.unsupplied;
+    }
+    unit.improveDissent(improvement);
     if (unit.dissent < old_dissent) {
-      console.log('improving dissent for {0} by {1}'.format(unit.name, unit.dissent_improvement));
+      console.log('improving dissent for {0} by {1}'.format(unit.name, improvement));
     }
     return unit.dissent;
   },
