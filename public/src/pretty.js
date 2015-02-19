@@ -203,6 +203,7 @@ Pretty = {
         if (dissent == 0) return '';
         return ', improving';
       }
+      var duplicates = Utility.removeDuplicates(dissent_reasons);
       return ' ({0})'.format(dissent_reasons.join(', '));
     },
   },

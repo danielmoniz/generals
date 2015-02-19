@@ -744,7 +744,7 @@ Crafty.c('Unit', {
       var first_move_end_node = next_partial_path[next_partial_path.length - 1];
       var extra_stop_points = this.getStopPoints(first_move_end_node, start_location, false);
       stop_points = stop_points.concat(extra_stop_points);
-      Utility.removeDuplicates(stop_points);
+      Utility.removeDuplicatePoints(stop_points);
       var next_partial_path = Pathing.getPartialPath(path, movement_amount, stop_points);
 
       for (var i=0; i<next_partial_path.length; i++) {
@@ -838,7 +838,7 @@ Crafty.c('Unit', {
       }
     }
 
-    Utility.removeDuplicates(stop_points);
+    Utility.removeDuplicatePoints(stop_points);
     return stop_points;
   },
 
@@ -877,7 +877,7 @@ Crafty.c('Unit', {
     var first_move_end_node = partial_path[partial_path.length - 1];
     var extra_stop_points = this.getStopPoints(first_move_end_node, this.first_location, 'all enemies');
     stop_points = stop_points.concat(extra_stop_points);
-    Utility.removeDuplicates(stop_points);
+    Utility.removeDuplicatePoints(stop_points);
 
     // check for enemies that will be bumped into
     for (var i in partial_path) {
