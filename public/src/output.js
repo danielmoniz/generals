@@ -393,11 +393,7 @@ Output = {
       var morale_bar_container = this.createDiv('bar_container');
       var morale_bar = this.createDiv('morale bar');
 
-      var morale_percent = Pretty.Morale.moralePercentage(unit.dissent);
-      if (morale_percent != 0 && morale_percent != 99) {
-        morale_bar.addClass('add_marker');
-      }
-      morale_bar.css('width', '{0}%'.format(morale_percent));
+      this.updateMoraleBar(unit, morale_bar);
 
       morale_div.append(morale_bar_container);
       morale_bar_container.append(morale_bar);
@@ -408,6 +404,19 @@ Output = {
     unit_div.append(first_row).append(second_row).append(third_row);
 
     return unit_div;
+  },
+
+  updateMoraleBar: function(unit, morale_bar) {
+    if (!morale_bar) {
+      var unit_div = this.getUnitDiv(unit);
+      morale_bar = unit_div.find("div.morale.bar");
+    }
+    morale_bar.removeClass('add_marker');
+    var morale_percent = Pretty.Morale.moralePercentage(unit.dissent);
+    if (morale_percent != 0 && morale_percent != 99) {
+      morale_bar.addClass('add_marker');
+    }
+    morale_bar.css('width', '{0}%'.format(morale_percent));
   },
 
   createBattleContainerDiv: function(battle_id, classes) {
@@ -918,6 +927,8 @@ Output = {
     var supply_remaining = Pretty.Unit.supplied_turns(supply, unit.quantity);
     //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
     supply_div.text(supply_remaining);
+
+    this.updateMoraleBar(unit);
   },
 
   getActionsChoicesDiv: function(unit) {

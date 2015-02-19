@@ -411,7 +411,7 @@ Crafty.c('Unit', {
       this.resupply();
     } else {
       this.is_supplied = false;
-      var units_lost = this.sufferAttrition();
+      this.sufferAttrition();
     }
   },
 
@@ -420,11 +420,11 @@ Crafty.c('Unit', {
     if (local_terrain.on_fire) {
       var fire_casualty_rate_injured = 0.95;
       var injured_to_kill = Math.ceil(fire_casualty_rate_injured * this.injured);
-      this.kill(injured_to_kill, 'fire', true, 'ignore dissent');
+      this.kill(injured_to_kill, Morale.reasons.degrade.fire, true, 'ignore dissent');
 
       var fire_casualty_rate = 0.75;
       var casualties = Math.ceil(fire_casualty_rate * this.getActive());
-      this.sufferCasualties(casualties, 'fire');
+      this.sufferBattleCasualties(casualties, Morale.reasons.degrade.fire);
     }
   },
 
@@ -566,18 +566,9 @@ Crafty.c('Unit', {
     this.supply_remaining -= unsupplied;
     if (this.supply_remaining < 0) {
       var attrition_casualties = Math.max(0, (unsupplied - supplied_units)) * Game.attrition_rate;
-      var to_kill = Math.floor(attrition_casualties * Game.attrition_death_rate);
-      var to_injure = Math.floor(attrition_casualties * (1 - Game.attrition_death_rate));
-      this.kill(to_kill, Morale.reasons.degrade.supply_attrition);
-      this.injure(to_injure);
+      this.sufferAttritionCasualties(attrition_casualties, Morale.reasons.degrade.supply_attrition);
       this.supply_remaining = Math.max(0, this.supply_remaining);
-
-      if (!this.isAlive()) this.die();
-      if (this.getActive() <= 0) this.disband();
-
-      return to_kill;
     }
-    return 0;
   },
 
   getPresentUnits: function(ignore_self, location) {
@@ -1023,14 +1014,24 @@ Crafty.c('Unit', {
     }
   },
 
-  sufferCasualties: function(casualties, reason) {
-    var deaths = Math.round(casualties * Game.battle_death_rate);
-    var injuries = Math.round(casualties * (1 - Game.battle_death_rate));
-    Morale.takeCasualties(this, reason, casualties, this.getActive());
-    this.kill(deaths, reason);
-    this.injure(injuries, false, reason);
-    this.updateStatus();
+  sufferBattleCasualties: function(casualties, reason) {
+    var to_kill = Math.round(casualties * Game.battle_death_rate);
+    var to_injure = Math.round(casualties * (1 - Game.battle_death_rate));
+    this.sufferCasualties(to_kill, to_injure, reason);
+  },
 
+  sufferAttritionCasualties: function(casualties, reason) {
+    var to_kill = Math.floor(casualties * Game.attrition_death_rate);
+    var to_injure = Math.floor(casualties * (1 - Game.attrition_death_rate));
+    this.sufferCasualties(to_kill, to_injure, reason);
+  },
+
+  sufferCasualties: function(to_kill, to_injure, reason) {
+    Morale.takeCasualties(this, reason, to_kill + to_injure, this.getActive());
+    this.kill(to_kill, reason);
+    this.injure(to_injure, false, reason);
+
+    this.updateStatus();
     if (!this.isAlive()) this.die();
     if (this.getActive() <= 0) this.disband();
   },
@@ -1041,6 +1042,8 @@ Crafty.c('Unit', {
     if (num_troops === undefined) throw "undefined: num_troops in unit.kill()";
     if (injured === undefined) injured = false;
 
+    //Morale.takeCasualties(this, reason, casualties, this.getActive());
+
     var num_killed = Math.ceil(Math.min(this.quantity, Math.ceil(num_troops)));
     this.quantity -= num_killed;
     if (injured) this.injured -= num_killed;
@@ -1049,17 +1052,17 @@ Crafty.c('Unit', {
     this.updateMaxSupply();
   },
 
-  updateMaxSupply: function() {
-    this.max_supply = this.getActive() * this.max_supply_multiplier;
-    this.supply_remaining = Math.min(this.max_supply, this.supply_remaining);
-  },
-
   injure: function(num_troops, reason) {
     if (isNaN(num_troops)) throw "NaN: num_troops in unit.injure()";
     if (num_troops === undefined) throw "undefined: num_troops in unit.injure()";
     this.injured += Math.ceil(Math.min(this.quantity, Math.ceil(num_troops)));
 
     this.updateMaxSupply();
+  },
+
+  updateMaxSupply: function() {
+    this.max_supply = this.getActive() * this.max_supply_multiplier;
+    this.supply_remaining = Math.min(this.max_supply, this.supply_remaining);
   },
 
   heal: function(num_to_heal) {

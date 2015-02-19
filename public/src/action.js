@@ -148,6 +148,7 @@ var Action = {
     unit.performed_actions.push(action);
 
     Crafty.trigger("UpdateActionChoices", unit.at());
+    Output.updateUnitDisplay(unit);
     Output.updateUnitInfo(unit);
     Game.select(unit);
   },

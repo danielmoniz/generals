@@ -25,12 +25,12 @@ var Morale = {
 
   values: {
     degrade: {
-      'fire': 1.5,
-      'retreat': 2, // this will be reduced in practice based on % casualties
-      'battle': 1, // this will be reduced in practice based on % casualties
-      'supply attrition': 0.5,
-      'rain': 0.1,
+      'supply attrition': 5, // reduced based on % casualties
+      'retreat': 4, // reduced based on % casualties
+      'fire': 2, // reduced based on % casualties
+      'battle': 1, // reduced based on % casualties
       'terrified': 0.3,
+      'rain': 0.1,
 
       //'surrounded': 0.3,
       //'ally retreats': 0.1,
