@@ -24,6 +24,7 @@ var UnitData = function(type, stats) {
       injured: 0,
       happy: true,
       best_dissent: 0,
+      special_abilities: [],
 
       max_supply_multiplier: 3,
       max_sight: 6,

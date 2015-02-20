@@ -48,9 +48,17 @@ var Factions = {
       'defensive': false,
     },
 
+    /* Other (simple) format - is given to every army in faction
     special_abilities: [
       'terrifying',
     ],
+    */
+    special_abilities: {
+      'terrifying': {
+        cavalry: true,
+      },
+    },
+
   },
 
   romans: {
@@ -89,6 +97,14 @@ var Factions = {
     ],
 
     cities: ['Rome', 'Constantinople', 'Antioch', 'Alexandria', 'Ephesus', 'Carthage'],
+
+    special_abilities: {
+      'organized': {
+        infantry: true,
+        cavalry: false,
+      },
+    },
+
   },
 
   aztecs: {

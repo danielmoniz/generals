@@ -722,18 +722,35 @@ var MapCreator = function(options) {
     var unit_object = new UnitData(faction_data.type, faction_data);
     var rank = unit_number + 1;
     unit_object.add({ side: side, location: location, rank: rank });
+    var special_abilities = this.getSpecialAbilities(unit_object, special_abilities);
     for (var i in special_abilities) {
       var ability = special_abilities[i];
       var object = {};
       object[ability] = true;
       unit_object.add(object);
+      unit_object.stats.special_abilities.push(ability);
     }
     return unit_object;
   };
 
+  this.getSpecialAbilities = function(unit_object, faction_abilities) {
+    var special_abilities = [];
+    for (var key in faction_abilities) {
+      var special_ability;
+      var ability = faction_abilities[key];
+      if (ability === Object(ability)) {
+        var type = unit_object.type.toLowerCase();
+        if (!ability[type]) continue;
+        special_ability = key;
+      } else {
+        special_ability = ability;
+      }
 
+      special_abilities.push(special_ability);
+    }
 
-
+    return special_abilities;
+  };
 
   this.buildNewComposedMap = function(options) {
     this.Game.height_map = this.generateHeightMap(options, options.location);

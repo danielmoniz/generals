@@ -557,6 +557,13 @@ Output = {
 
     var div = this.createDiv("", "{0}".format(unit.name));
     unit_info_panel.append(div);
+
+    for (var i in unit.special_abilities) {
+      var ability = unit.special_abilities[i];
+      var text = Utility.capitalizeFirstLetter("{0}".format(ability));
+      unit_info_panel.append(this.createDiv("", text));
+    }
+
     var div = this.createDiv("", "{0}: {1}/{2}".format('Supply', unit.supply_remaining, unit.max_supply));
     unit_info_panel.append(div);
     var div = this.createDiv("", "{0}: {1}%".format('Army health', Math.round(unit.getActive() / unit.quantity * 100)));
@@ -575,6 +582,7 @@ Output = {
       var text = "{0}: {1}{2}".format('Mood', Morale.getStatus(unit.dissent), morale_improvement);
       unit_info_panel.append(this.createDiv("", text));
     }
+
   },
 
   updateUnitInfo: function(unit) {

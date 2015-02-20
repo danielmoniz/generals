@@ -186,7 +186,7 @@ Crafty.c('Unit', {
   },
 
   reduceMovement: function(reduction) {
-    var new_movement = Math.floor(this.movement - reduction);
+    var new_movement = this.movement - reduction;
     this.movement = Math.max(new_movement, 0);
     this.possible_moves = [];
     this.updatePossibleMoves();
@@ -1009,7 +1009,9 @@ Crafty.c('Unit', {
     delete this.battle_side;
     this.updateActionChoices();
     if (outcome == 'win') {
-      this.reduceMovement(this.max_movement / 2);
+      var reduction = this.max_movement / 2;
+      if (this.organized) reduction = this.max_movement / 4;
+      this.reduceMovement(reduction);
       Morale.improve(this, Morale.reasons.improve.win_battle);
     }
   },
