@@ -42,7 +42,7 @@ var UnitData = function(type, stats) {
 
     "Cavalry": {
       movement: 10,
-      combat_ability: 2,
+      combat_ability: 1.5,
       pursuit_ability: 2,
       retreat_ability: 2,
     },
