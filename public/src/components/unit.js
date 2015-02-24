@@ -81,6 +81,7 @@ Crafty.c('Unit', {
     this.testTargetAndPath();
 
     if (turn == (this.side + 0.5) % 2) {
+      this.last_turn_location = this.at();
       this.start_location = this.at();
       this.last_moves = [];
       if (this.battle && this.move_target_path) {
@@ -813,7 +814,9 @@ Crafty.c('Unit', {
         var ignore = false;
         for (var k in friendly_units) {
           var friendly_unit = friendly_units[k];
-          if (friendly_unit.isAtLocation(point)) {
+          // unit must have been there for one full turn to ignore stop point
+          if (friendly_unit.isAtLocation(point) && 
+              friendly_unit.isAtLocation(friendly_unit.last_turn_location)) {
             ignore = true;
             break;
           }

@@ -32,6 +32,7 @@ Crafty.c('Grid', {
    * have an at() function.
    */
   isAtLocation: function(location) {
+    if (location === undefined) return false;
     if (this.at().x == location.x && this.at().y == location.y) {
       return true;
     }
