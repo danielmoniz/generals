@@ -1170,6 +1170,14 @@ Crafty.c('Unit', {
     */
   },
 
+  charge: function() {
+    this.charging = true;
+  },
+
+  stopCharge: function() {
+    this.charging = false;
+  },
+
   pick_side: function(side) {
     if (side !== undefined) this.side = side;
   },

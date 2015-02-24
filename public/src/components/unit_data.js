@@ -32,6 +32,7 @@ var UnitData = function(type, stats) {
       defensive_ability: 1,
       pursuit_ability: 1,
       retreat_ability: 1,
+      charge_ability: 1,
       //movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
@@ -42,9 +43,10 @@ var UnitData = function(type, stats) {
 
     "Cavalry": {
       movement: 10,
-      combat_ability: 1.5,
+      combat_ability: 1.3,
       pursuit_ability: 2,
       retreat_ability: 2,
+      charge_ability: 1.7,
     },
 
     "Infantry": {

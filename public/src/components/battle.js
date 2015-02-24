@@ -119,6 +119,7 @@ Battle = {
       var combat_ability = Battle.getCombatAbility([unit]);
       var attack_power = combat_ability * dissent_factor;
       if (is_retreat) attack_power *= unit.pursuit_ability;
+      if (unit.charging) attack_power *= unit.charge_ability;
       total_attack_power += attack_power;
     }
     return total_attack_power;
@@ -323,6 +324,11 @@ Crafty.c('Battle', {
     this.casualties[Battle.ATTACKER] = battle_info.total_losses[Battle.ATTACKER];
     this.casualties[Battle.DEFENDER] = battle_info.total_losses[Battle.DEFENDER];
 
+    var units = this.attackers.concat(this.defenders);
+    for (var i in units) {
+      units[i].stopCharge();
+    }
+
     if (!this.isBattleActive()) {
       this.end_battle = true;
       Victory.updateWillToFight();
@@ -350,6 +356,7 @@ Crafty.c('Battle', {
 
   start: function(attacker) {
     var attacker_direction = attacker.last_location;
+    attacker.charge();
 
     this.attacker = attacker;
     this.attacking_side = attacker.side;
@@ -387,6 +394,7 @@ Crafty.c('Battle', {
 
   join: function(unit) {
     this.end_battle = false;
+    unit.charge();
     var battle_side = undefined;
     if (unit.side == this.attacking_side) {
       this.attackers.push(unit);
