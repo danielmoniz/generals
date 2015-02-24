@@ -206,16 +206,19 @@ Crafty.c('Unit', {
     var graph = new Graph(Game.terrain_difficulty_with_roads);
     this.updateTerrainGraphWithRetreatBlocks(graph);
 
-    var no_target = false;
+    var target = false;
     var all_enemies = false;
-    if (this.side !== Game.player) all_enemies = 'all enemies';
-    var stop_points = this.getStopPoints(no_target, this.at(), all_enemies);
+    if (this.side !== Game.player) all_enemies = true;
+    var stop_points = this.getStopPoints(target, this.at(), all_enemies);
     var start = graph.grid[this.at().x][this.at().y];
 
     var possible_moves = Game.pathfind.findReachablePoints(graph, start, movement, stop_points);
 
-    // ensure that enemy units are highlighted if they can be attacked
+    // NOTE: since enemy units have stop points around them, no enemy units
+    // will be reachable! Ensure that enemy units are highlighted if they 
+    // can be reached.
     var enemy_units = LineOfSight.getEnemyUnitsInSight(this.side);
+    graph = new Graph(Game.terrain_difficulty_with_roads);
     for (var i in enemy_units) {
       var unit = enemy_units[i];
       var target = unit.at();
@@ -643,6 +646,7 @@ Crafty.c('Unit', {
   },
 
   prepareMove: function(target_x, target_y, ignore_visuals, queue_move, use_last_move) {
+    this.updatePossibleMoves();
 
     if (this.at().x == target_x && this.at().y == target_y) {
       delete this.move_target;
@@ -662,6 +666,8 @@ Crafty.c('Unit', {
 
     var graph = new Graph(Game.terrain_difficulty_with_roads);
 
+    // @TODO Is this working at all? retreat_constraints requires target to be
+    // adjacent to the battle!
     if (!this.updateTerrainGraphWithRetreatBlocks(graph, target)) {
       return false;
     }
@@ -769,7 +775,6 @@ Crafty.c('Unit', {
     // the same side)
     if (!target) target = { x: -1, y: -1 };
     if (current_location === undefined) current_location = this.at();
-    if (all_enemies === undefined) all_enemies = false;
 
     var stop_points = [];
     if (all_enemies) {
