@@ -83,13 +83,21 @@ Victory = {
         if (typeof total == 'object') total = total.length;
         var factor = total * this[info.name][i];
 
-        /*
-        console.log(info.name);
-        console.log("this[info.name][i]");
-        console.log(this[info.name][i]);
-        console.log("factor");
-        console.log(factor);
-        */
+        if (isNaN(factor)) {
+          console.log('side');
+          console.log(i);
+          console.log("total");
+          console.log(total);
+          console.log("info.name");
+          console.log(info.name);
+          console.log('factor number');
+          console.log(j);
+          console.log("this[info.name][i]");
+          console.log(this[info.name][i]);
+          console.log("factor");
+          console.log(factor);
+          throw new Error('BadVictoryFactor', 'factors must be numbers');
+        }
 
         if (info.max_effect === undefined) {
           will_to_fight *= factor;
@@ -97,6 +105,13 @@ Victory = {
           will_to_fight *= (factor + info.max_effect[0]) / info.max_effect[1];
         }
       }
+
+      if (isNaN(will_to_fight)) {
+        console.log("will_to_fight");
+        console.log(will_to_fight);
+        throw new Error('BadWillToFight', 'will to fight must always be a number');
+      }
+
       this.will_to_fight[i] = will_to_fight;
     }
 
