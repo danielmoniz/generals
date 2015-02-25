@@ -29,6 +29,7 @@ Crafty.c('Terrain', {
     var ignite_stats = {
       on_fire: true,
       flammable: false,
+      provides_supply: 0,
     };
     this.addStats(ignite_stats);
   },
@@ -133,6 +134,7 @@ Crafty.c('Farm', {
         pillaged: true,
         supply_to_steal: 0,
         flammable: false,
+        provides_supply: 0,
       });
     this.destroyTerrain(unit);
     return supply;
@@ -215,6 +217,7 @@ Crafty.c('City', {
         sacked: true,
         supply_to_steal: 0,
         defense_bonus: 1.1,
+        provides_supply: 0,
       });
       this.addComponent("spr_city_sacked");
 
@@ -324,6 +327,7 @@ Crafty.c('Town', {
         sacked: true,
         supply_to_steal: 0,
         defense_bonus: 1.1,
+        provides_supply: 0,
       });
       this.addComponent("spr_town_sacked");
 
