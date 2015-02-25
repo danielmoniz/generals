@@ -393,7 +393,7 @@ Crafty.c('Unit', {
     return this.active;
   },
 
-  injuryAttrition: function() {
+  injuryAttrition: function(supplied) {
     var succumb_rate = 1/20;
     var num_to_kill = this.injured * succumb_rate;
     this.kill(num_to_kill, 'injury_attrition', true);
@@ -401,20 +401,22 @@ Crafty.c('Unit', {
     var num_to_heal = Game.healing_rate * this.injured;
     this.heal(num_to_heal);
 
-    var city = this.isCityPresent();
-    if (city && !city.sacked && city.supply_remaining > 0 && !this.battle) {
-      var num_to_heal = Game.city_healing_rate * this.injured;
-      this.heal(num_to_heal);
+    if (supplied) {
+      var city = this.isCityPresent();
+      if (city && !city.sacked && city.supply_remaining > 0 && !this.battle) {
+        var num_to_heal = Game.city_healing_rate * this.injured;
+        this.heal(num_to_heal);
+      }
     }
   },
 
   handleAttrition: function() {
-    this.injuryAttrition();
-    if (this.isSupplied()) {
-      this.is_supplied = true;
+    var is_supplied = this.isSupplied();
+    this.is_supplied = is_supplied;
+    this.injuryAttrition(is_supplied);
+    if (is_supplied) {
       this.resupply();
     } else {
-      this.is_supplied = false;
       this.sufferAttrition();
     }
   },
