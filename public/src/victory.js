@@ -81,9 +81,15 @@ Victory = {
         var info = this.factor_values[j];
         var total = this[info.getFunction](i);
         if (typeof total == 'object') total = total.length;
-        var factor = total * this[info.name][i];
+        var factor_value = this[info.name][i];
+        var factor = total * factor_value;
+        // handle cases where zero entities causes a factor value of Infinity
+        if (factor_value == Infinity) {
+          factor = 1;
+        }
 
         if (isNaN(factor)) {
+          console.log('Error found -------------------');
           console.log('side');
           console.log(i);
           console.log("total");
@@ -124,7 +130,9 @@ Victory = {
         var info = this.factor_values[j];
         var total = this[info.getFunction](i);
         if (typeof total == 'object') total = total.length;
+        // This value can be Infinity if total is zero. Handle elsewhere.
         this[info.name][i] = 1 / total;
+        }
       }
     }
 
