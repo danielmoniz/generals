@@ -85,11 +85,32 @@ var Action = {
   },
 
   leftClick: function(entity, selected) {
-    if (!selected || selected != entity) {
+    if (!selected) {
       Game.select(entity);
     } else {
-      Game.deselect();
+      if (entity != selected) {
+        Game.select(entity);
+        return;
+      }
+
+      // cycle through present units if need be
+      var units = Units.getPresentUnits(entity.at());
+      if (units.length == 0) {
+        if (entity == selected) Game.deselect();
+        else Game.select(entity);
+        return;
+      }
+
+      var index = units.indexOf(entity);
+      index = (index + 1) % (units.length);
+      var next_unit = units[index];
+      if (next_unit === undefined) {
+        Game.deselect();
+      } else {
+        Game.select(next_unit);
+      }
     }
+
   },
 
   rightClick: function(entity, e, double_hold) {
@@ -152,7 +173,10 @@ var Action = {
   },
 
   select: function(clickable_object) {
-    if (Game.selected) Game.deselect();
+    if (Game.selected) {
+      var old_select = Game.selected;
+      Game.deselect();
+    }
     Game.selected = clickable_object;
     if (Game.selected.side == Game.turn) Game.player_selected[Game.turn] = clickable_object;
     Game.select_highlight = Entity.create('Selected');
@@ -162,6 +186,9 @@ var Action = {
 
     if (Game.selected.select) {
       Game.selected.select();
+      if (Game.selected.has('Unit')) {
+        Game.selected.pushToTop();
+      }
     } else {
       throw "NotImplementedError: select() for {0}".format(Game.selected.type);
     }

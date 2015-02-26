@@ -1184,6 +1184,22 @@ Crafty.c('Unit', {
     if (side !== undefined) this.side = side;
   },
 
+  /*
+   * Ensure this unit is pushed to the top of other units. This will
+   * ensure it is selected in the future when that location is clicked.
+   */
+  pushToTop: function(units) {
+    if (units === undefined) units = this.getPresentUnits(this.at());
+    var biggest_z = 0;
+    for (var i in units) {
+      var unit = units[i];
+      if (unit.z > biggest_z) biggest_z = unit.z;
+    }
+    if (this.z <= biggest_z) {
+      this.z = biggest_z + 1;
+    }
+  },
+
 });
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
