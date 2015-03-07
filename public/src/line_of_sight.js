@@ -48,7 +48,9 @@ LineOfSight = {
 
   handleLineOfSight: function(fog_of_war, side, ignore_sight_outlines) {
     if (!fog_of_war) return false;
-    this.unitLineOfSight(side);
+    var points = this.determinePointsInSight(side);
+    points = this.getSpacialArrayFromList(points);
+    this.unitLineOfSight(points, side);
     this.allEntitiesVisible('Shadow');
     var tiles_in_sight = this.tileLineOfSight(side);
     this.makeInvisible(tiles_in_sight);
@@ -62,6 +64,27 @@ LineOfSight = {
     // Uncomment below if battles should be hidden from in-between turn views
     //this.battleLineOfSight(side);
 
+  },
+
+  determinePointsInSight: function(side) {
+    var points = [];
+    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side);
+    for (var i in tiles_in_sight) {
+      var tile = tiles_in_sight[i];
+      points.push(tile.at());
+    }
+    return points;
+  },
+
+  getSpacialArrayFromList: function(points) {
+    var spacial = [];
+    for (var i in points) {
+      var x = points[i].x;
+      var y = points[i].y;
+      if (spacial[x] === undefined) spacial[x] = [];
+      spacial[x][y] = true;
+    }
+    return spacial;
   },
 
   handleSightOutlines: function(side) {
@@ -142,15 +165,23 @@ LineOfSight = {
     }
   },
 
-  unitLineOfSight: function(side) {
+  unitLineOfSight: function(visible_points, side) {
     this.allUnitsInvisible();
+    var units = Units.getAllUnits();
     if (Game.turn_count < 0) {
-      var units_in_sight = Units.getAllUnits();
-    } else {
-      var units_in_sight = this.getUnitsInSight(side);
+      return units;
     }
-    if (Game.show_units) this.makeVisible(units_in_sight);
-    return units_in_sight;
+
+    var visible_units = [];
+    for (var i in units) {
+      var unit = units[i];
+      if (visible_points[unit.at().x] &&
+          visible_points[unit.at().x][unit.at().y]) {
+        visible_units.push(unit);
+      }
+    }
+    if (Game.show_units) this.makeVisible(visible_units);
+    return visible_units;
   },
 
   battleLineOfSight: function(side) {
