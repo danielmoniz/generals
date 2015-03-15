@@ -132,7 +132,6 @@ Victory = {
         if (typeof total == 'object') total = total.length;
         // This value can be Infinity if total is zero. Handle elsewhere.
         this[info.name][i] = 1 / total;
-        }
       }
     }
 
