@@ -78,8 +78,10 @@ Crafty.scene('Game', function() {
   }
 
   function colourHeightMap(location_map, shadow) {
+    var tile_map = [];
     var colour_scale_factor = 1/3;
     for (var x = 0; x < Game.map_grid.width; x++) {
+      if (tile_map[x] === undefined) tile_map[x] = [];
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Math.ceil(Game.height_map[x][y] * 255 * colour_scale_factor);
         if (shadow) {
@@ -95,15 +97,18 @@ Crafty.scene('Game', function() {
         ground.color('rgb(' + r + ', ' + g + ', ' + b + ')');
         ground.setColour(r, g, b);
         if (shadow) ground.dimColour(ground.dim_value, ground.dim_value, ground.dim_value);
+
+        tile_map[x][y] = ground;
         // Use below for grey-scale heightmap
         //ground.color('rgb(' + height + ', ' + height + ',' + height + ')')
         ;
       }
     }
+    return tile_map;
   }
 
   function shadowHeightMap(location_map) {
-    colourHeightMap(location_map, "shadow height map");
+    return colourHeightMap(location_map, "shadow height map");
   }
 
   function addRoadGraphics() {
@@ -245,7 +250,7 @@ Crafty.scene('Game', function() {
     buildTerrainFromData(Game.roads, false);
 
     if (Game.fog_of_war) {
-      shadowHeightMap(Game.location);
+      Game.fog_map = shadowHeightMap(Game.location);
       LineOfSight.clearFog();
     }
 
@@ -274,7 +279,7 @@ Crafty.scene('Game', function() {
     colourWater();
 
     if (Game.fog_of_war) {
-      shadowHeightMap(Game.location);
+      Game.fog_map = shadowHeightMap(Game.location);
     }
 
     addUnitsFromLoad();
@@ -332,7 +337,7 @@ Crafty.scene('Game', function() {
     buildTerrainFromData(game_data.roads, false);
 
     if (Game.fog_of_war) {
-      shadowHeightMap(Game.location);
+      Game.fog_map = shadowHeightMap(Game.location);
       LineOfSight.clearFog();
     }
 

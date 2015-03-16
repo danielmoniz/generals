@@ -1,5 +1,74 @@
 LineOfSight = {
 
+  handleLineOfSight: function(fog_of_war, side, ignore_sight_outlines) {
+    var friendly_units = [];
+    if (side !== undefined) friendly_units = Units.getFriendlyUnits(side);
+
+    var points = this.determinePointsInSight(friendly_units);
+    this.points_in_sight[side] = points;
+    var units_in_sight = this.unitLineOfSight(points, side);
+
+    if (Game.fog_of_war) {
+      this.allEntitiesVisible('Shadow');
+      var fog_in_sight = this.tileLineOfSight(points, side);
+      this.makeInvisible(fog_in_sight);
+    }
+
+    if (!ignore_sight_outlines) this.handleSightOutlines(side);
+  },
+
+  determinePointsInSight: function(units) {
+    var points = [];
+    if (Game.fog_of_war) {
+      for (var i in units) {
+        var unit = units[i];
+        var nearby = Utility.getPointsWithinDistance(unit.at(), unit.max_sight, Game.map_grid);
+        points.push(unit.at());
+        points = points.concat(nearby);
+      }
+    } else {
+      for (var x=0; x<Game.map_grid.width; x++) {
+        for (var y=0; y<Game.map_grid.height; y++) {
+          points.push(Game.terrain[x][y].at());
+        }
+      }
+    }
+
+    var positional_points = this.getSpacialArrayFromList(points);
+    for (var i in points) {
+      var point = points[i];
+    }
+    return positional_points;
+  },
+
+  getSpacialArrayFromList: function(points) {
+    var spacial = [];
+    for (var i in points) {
+      var x = points[i].x;
+      var y = points[i].y;
+      if (spacial[x] === undefined) spacial[x] = [];
+      // @TODO This should probably be a coordinate (or be false/undefined)
+      spacial[x][y] = true;
+    }
+    return spacial;
+  },
+
+  handleSightOutlines: function(side) {
+    if (side === undefined) side = Game.player;
+    this.hideSightOutlines();
+    var points_in_sight = this.points_in_sight[side];
+
+    if (Game.ally_sight_lines && side !== undefined) {
+      this.outlineVisibleRegions(points_in_sight);
+    }
+
+    if (Game.enemy_sight_lines) {
+      var enemy_units_in_sight = this.getEnemyUnitsInSight(side);
+      var points = this.determinePointsInSight(enemy_units_in_sight);
+      this.outlineVisibleRegions(points, 'enemy');
+    }
+  },
+
   points_in_sight: {},
 
   clearFog: function() {
@@ -46,63 +115,6 @@ LineOfSight = {
   allEntitiesInvisible: function(entity) {
     var entities = Entity.get(entity);
     return this.makeInvisible(entities);
-  },
-
-  handleLineOfSight: function(fog_of_war, side, ignore_sight_outlines) {
-    if (!fog_of_war) return false;
-    var points = this.determinePointsInSight(side);
-    points = this.getSpacialArrayFromList(points);
-    this.points_in_sight[side] = points;
-    var units = this.unitLineOfSight(points, side);
-
-    this.allEntitiesVisible('Shadow');
-    var fog_in_sight = this.tileLineOfSight(points, side);
-    this.makeInvisible(fog_in_sight);
-
-    if (!ignore_sight_outlines) this.handleSightOutlines(side);
-
-    // Uncomment below if battles should be hidden from in-between turn views
-    //this.battleLineOfSight(side);
-
-  },
-
-  determinePointsInSight: function(side, units) {
-    var points = [];
-    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side, units);
-    for (var i in tiles_in_sight) {
-      var tile = tiles_in_sight[i];
-      points.push(tile.at());
-    }
-    return points;
-  },
-
-  getSpacialArrayFromList: function(points) {
-    var spacial = [];
-    for (var i in points) {
-      var x = points[i].x;
-      var y = points[i].y;
-      if (spacial[x] === undefined) spacial[x] = [];
-      spacial[x][y] = true;
-    }
-    return spacial;
-  },
-
-  handleSightOutlines: function(side) {
-    if (side === undefined) side = Game.player;
-    this.hideSightOutlines();
-    var points_in_sight = this.points_in_sight[side];
-
-    if (side !== undefined && Game.ally_sight_lines) {
-      this.outlineVisibleRegions(points_in_sight);
-    }
-
-    if (Game.enemy_sight_lines) {
-      var enemy_units_in_sight = this.getEnemyUnitsInSight(side);
-      var points = this.determinePointsInSight(side, enemy_units_in_sight);
-      points = this.getSpacialArrayFromList(points);
-
-      this.outlineVisibleRegions(points, 'enemy');
-    }
   },
 
   hideSightOutlines: function() {
@@ -182,15 +194,14 @@ LineOfSight = {
     return visible_units;
   },
 
-  battleLineOfSight: function(side) {
-    this.allEntitiesInvisible('Battle');
-    var battles_in_sight = this.getGenericEntitiesInSight('Battle', side);
-    this.makeVisible(battles_in_sight);
-    return this;
-  },
-
   tileLineOfSight: function(points, side, units) {
-    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side, units);
+    var tiles_in_sight = [];
+    for (var x in points) {
+      for (var y in points[x]) {
+        var fog_tile = Game.fog_map[x][y];
+        tiles_in_sight.push(fog_tile);
+      }
+    }
     return tiles_in_sight;
   },
 
@@ -203,55 +214,10 @@ LineOfSight = {
     return visible_units;
   },
 
-  getGenericEntitiesInSight: function(entity, side, units) {
-    var entities = Entity.get(entity);
-    if (!Game.fog_of_war) {
-      return entities;
-    }
-    if (side === undefined) return [];
-    if (units !== undefined) {
-      var friendly_units = units;
-    } else {
-      var friendly_units = Units.getFriendlyUnits(side);
-    }
-    return this.getEntitiesInSight(entities, friendly_units);
-  },
-
-  /*
-   * Filters param entities to only those that can be seen by the
-   * seeing entities.
-   */
-  getEntitiesInSight: function(entities, friendly_units) {
-    var entities_in_sight = [];
-    for (var i=0; i<entities.length; i++) {
-      var in_sight = false;
-      var entity = entities[i];
-      for (var j=0; j<friendly_units.length; j++) {
-        var friend = friendly_units[j];
-        var distance = Utility.getDistance(friend.at(), entity.at());
-        if (distance <= friend.max_sight) {
-          in_sight = true;
-          break;
-        }
-      }
-      if (in_sight) {
-        entities_in_sight.push(entity);
-      }
-    }
-    return entities_in_sight;
-  },
-
-  entityInSight: function(entity, seeing_entities) {
-    return this.positionInSight(entity.at(), seeing_entities);
-  },
-
-  positionInSight: function(position, seeing_entities) {
-    for (var i=0; i<seeing_entities.length; i++) {
-      var entity = seeing_entities[i];
-      var distance = Utility.getDistance(entity.at(), position);
-      if (distance <= entity.max_sight) {
-        return true;
-      }
+  positionInSight: function(position, seeing_side) {
+    var visible_points = this.points_in_sight[seeing_side];
+    if (visible_points[position.x] && visible_points[position.x][position.y]) {
+      return true;
     }
     return false;
   },
