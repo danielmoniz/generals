@@ -93,10 +93,21 @@ var Utility = {
 
     if (distance < 0) throw new Error('BadDistance', 'Distance must be positive.');
     var points = [];
+
     // Count backwards in order to start at outer ring
-    for (var i=Math.ceil(distance); i>=0; i--) {
-      points = points.concat(this.getRingAtDistance(start, i));
-    }
+    // NOTE: No longer going from the outside in! Is this a problem?
+    var i = Math.ceil(distance);
+    //for (var i=Math.ceil(distance); i>=0; i--) {
+      for (var x=Math.floor(start.x - i); x <= start.x + i; x++) {
+        for (var y=Math.floor(start.y - i); y <= start.y + i; y++) {
+          var point = { x: x, y: y };
+          if (x == start.x && y == start.y) continue;
+          var actual_distance = Utility.getDistance(start, point);
+          if (actual_distance <= distance) points.push(point);
+        }
+      }
+    //}
+
     if (map_grid !== undefined) {
       points = this.filterPointsWithinBoundaries(points, map_grid.width, map_grid.height);
     }

@@ -45,11 +45,11 @@ describe('Utility', function() {
       });
     });
 
-    it('should return 24 spaces if distance is 3', function() {
+    it('should return 28 spaces if distance is 3', function() {
       var start = { x: 15, y: 5 };
       var distance = 3;
       var points = Utility.getPointsWithinDistance(start, distance);
-      assert.equal(points.length, 24);
+      assert.equal(points.length, 28);
       for (var i in points) {
         assert(Utility.getDistance(start, points[i]) <= 3);
       }
