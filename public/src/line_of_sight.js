@@ -1,5 +1,7 @@
 LineOfSight = {
 
+  points_in_sight: {},
+
   clearFog: function() {
     var fog = Entity.get('Shadow');
     this.makeInvisible(fog);
@@ -50,14 +52,12 @@ LineOfSight = {
     if (!fog_of_war) return false;
     var points = this.determinePointsInSight(side);
     points = this.getSpacialArrayFromList(points);
-    this.unitLineOfSight(points, side);
-    this.allEntitiesVisible('Shadow');
-    var tiles_in_sight = this.tileLineOfSight(side);
-    this.makeInvisible(tiles_in_sight);
+    this.points_in_sight[side] = points;
+    var units = this.unitLineOfSight(points, side);
 
-    // @TODO spies!
-    //var tiles_in_sight_of_enemy = this.tileLineOfSight(side, enemy_units_in_sight);
-    //this.makeInvisible(tiles_in_sight_of_enemy);
+    this.allEntitiesVisible('Shadow');
+    var fog_in_sight = this.tileLineOfSight(points, side);
+    this.makeInvisible(fog_in_sight);
 
     if (!ignore_sight_outlines) this.handleSightOutlines(side);
 
@@ -66,9 +66,9 @@ LineOfSight = {
 
   },
 
-  determinePointsInSight: function(side) {
+  determinePointsInSight: function(side, units) {
     var points = [];
-    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side);
+    var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side, units);
     for (var i in tiles_in_sight) {
       var tile = tiles_in_sight[i];
       points.push(tile.at());
@@ -90,18 +90,18 @@ LineOfSight = {
   handleSightOutlines: function(side) {
     if (side === undefined) side = Game.player;
     this.hideSightOutlines();
-    if (Game.enemy_sight_lines) {
-      var enemy_units_in_sight = this.getEnemyUnitsInSight(side);
-      var tiles_in_sight_of_enemy = this.tileLineOfSight(side, enemy_units_in_sight);
-
-      this.outlineVisibleRegions(tiles_in_sight_of_enemy, 'enemy');
-    }
+    var points_in_sight = this.points_in_sight[side];
 
     if (side !== undefined && Game.ally_sight_lines) {
-      var units = Units.getFriendlyUnits(side);
-      var tiles_in_sight = this.tileLineOfSight(side, units);
+      this.outlineVisibleRegions(points_in_sight);
+    }
 
-      this.outlineVisibleRegions(tiles_in_sight);
+    if (Game.enemy_sight_lines) {
+      var enemy_units_in_sight = this.getEnemyUnitsInSight(side);
+      var points = this.determinePointsInSight(side, enemy_units_in_sight);
+      points = this.getSpacialArrayFromList(points);
+
+      this.outlineVisibleRegions(points, 'enemy');
     }
   },
 
@@ -109,15 +109,7 @@ LineOfSight = {
     Crafty.trigger("RemoveBoxSurrounds");
   },
 
-  outlineVisibleRegions: function(tiles_in_sight, enemy) {
-    var coords_in_sight = {};
-    for (var x=0; x<Game.map_grid.width; x++) {
-      coords_in_sight[x] = {};
-    }
-    for (var i in tiles_in_sight) {
-      var tile = tiles_in_sight[i];
-      coords_in_sight[tile.getX()][tile.getY()] = true;
-    }
+  outlineVisibleRegions: function(coords_in_sight, enemy) {
 
     for (var x in coords_in_sight) {
       for (var y in coords_in_sight[x]) {
@@ -126,7 +118,7 @@ LineOfSight = {
         for (var i in adjacent_points) {
           var adjacent = adjacent_points[i];
 
-          if (!coords_in_sight[adjacent.x][adjacent.y]) {
+          if (!coords_in_sight[adjacent.x] || !coords_in_sight[adjacent.x][adjacent.y]) {
             // @TODO Should find a more efficient way than creating every time
             // Eg. recycle tiles, or build entirely at the start and re-use
             this.renderOutline(point, adjacent, enemy);
@@ -172,15 +164,21 @@ LineOfSight = {
       return units;
     }
 
+    var visible_units = this.getUnitsWithinPoints(units, visible_points);
+    if (Game.show_units) this.makeVisible(visible_units);
+    return visible_units;
+  },
+
+  getUnitsWithinPoints: function(units, points) {
     var visible_units = [];
     for (var i in units) {
       var unit = units[i];
-      if (visible_points[unit.at().x] &&
-          visible_points[unit.at().x][unit.at().y]) {
+      if (points[unit.at().x] &&
+          points[unit.at().x][unit.at().y]) {
         visible_units.push(unit);
       }
     }
-    if (Game.show_units) this.makeVisible(visible_units);
+
     return visible_units;
   },
 
@@ -191,23 +189,18 @@ LineOfSight = {
     return this;
   },
 
-  tileLineOfSight: function(side, units) {
+  tileLineOfSight: function(points, side, units) {
     var tiles_in_sight = this.getGenericEntitiesInSight('Shadow', side, units);
     return tiles_in_sight;
   },
 
-  getUnitsInSight: function(side, enemies_only) {
-    // @TODO Fix for no fog of war
-    //if (!Game.fog_of_war) return Units.getAllUnits();
-    if (side === undefined) return [];
-    var units = Units.getUnitsBySide(side);
-    var enemies_in_sight = this.getEntitiesInSight(units.enemy, units.friendly);
-    if (enemies_only) return enemies_in_sight;
-    return enemies_in_sight.concat(units.friendly);
-  },
-
   getEnemyUnitsInSight: function(side) {
-    return this.getUnitsInSight(side, 'enemies only');
+    if (side === undefined) return [];
+    var units = Units.getUnitsBySide(side).enemy;
+    if (this.points_in_sight[side] === undefined) return units;
+    var points_in_sight = this.points_in_sight[side];
+    var visible_units = this.getUnitsWithinPoints(units, points_in_sight);
+    return visible_units;
   },
 
   getGenericEntitiesInSight: function(entity, side, units) {
