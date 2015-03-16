@@ -5,6 +5,10 @@ LineOfSight = {
     if (side !== undefined) friendly_units = Units.getFriendlyUnits(side);
 
     var points = this.determinePointsInSight(friendly_units);
+    if (Game.line_of_sight_blocking) {
+      // send points and determine true line of sight
+      // update points
+    }
     this.points_in_sight[side] = points;
     var units_in_sight = this.unitLineOfSight(points, side);
 
