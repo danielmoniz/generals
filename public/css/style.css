@@ -83,3 +83,5 @@ div#units-panel .unit .icon { display:inline-block; }
 .victory.title { font-size: 30px; }
 .victory.outcome { font-size: 24px; }
 .victory.message { font-size: 16px; margin-bottom: 20px; }
+
+.not-applicable, .unavailable { color: red; }

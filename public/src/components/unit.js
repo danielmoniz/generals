@@ -557,7 +557,8 @@ Crafty.c('Unit', {
 
     if (Game.live_off_land && !this.battle) {
       var local_terrain = Game.terrain[this.at().x][this.at().y];
-      var is_correct_side = local_terrain.side === undefined || local_terrain.side == this.side;
+      var is_correct_side = local_terrain.providesSupplyToSide(this.side);
+
       if (local_terrain.provides_supply && is_correct_side) {
         var supply = local_terrain.remaining_provided_supply;
         var supply_used = Math.min(this.quantity * this.supply_usage, supply);

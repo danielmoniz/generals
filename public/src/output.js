@@ -475,9 +475,17 @@ Output = {
     } else if (terrain.pillaged) {
       output.push("(pillaged)");
     }
+
     if (terrain.provides_supply) {
-      output.push("Supports: {0}".format(terrain.provides_supply));
+      var provides_supply_class = "not-applicable";
+      var provides_supply = terrain.providesSupplyToSide(Game.player);
+      if (provides_supply) {
+        provides_supply_class = "";
+      }
+      var provides_supply_html = "<span class='{0}'>{1}</span>".format(provides_supply_class, terrain.provides_supply);
+      output.push("Supports: {0}".format(provides_supply_html));
     }
+
     if (terrain.base_type == "Settlement") {
       output.push("Pop. {0}".format(terrain.population));
       if (terrain.supply_remaining > 0) {

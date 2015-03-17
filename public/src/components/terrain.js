@@ -71,6 +71,14 @@ Crafty.c('Terrain', {
     Victory.entityDestroyed(this, unit);
   },
 
+  providesSupplyToSide: function(side) {
+    var is_correct_side = true;
+    if (this.has('Settlement')) { // can't supply from enemy cities
+      is_correct_side = side === undefined || this.side === undefined || this.side == side;
+    }
+    return is_correct_side;
+  },
+
 });
 
 // A Transportation object is one meant to carry people/items, eg. a road,
