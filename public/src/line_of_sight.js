@@ -5,10 +5,6 @@ LineOfSight = {
     if (side !== undefined) friendly_units = Units.getFriendlyUnits(side);
 
     var points = this.determinePointsInSight(friendly_units);
-    if (Game.line_of_sight_blocking) {
-      // send points and determine true line of sight
-      // update points
-    }
     this.points_in_sight[side] = points;
     var units_in_sight = this.unitLineOfSight(points, side);
 
@@ -26,9 +22,12 @@ LineOfSight = {
     if (Game.fog_of_war) {
       for (var i in units) {
         var unit = units[i];
-        var nearby = Utility.getPointsWithinDistance(unit.at(), unit.max_sight, Game.map_grid);
         points.push(unit.at());
-        points = points.concat(nearby);
+        var visible_points = Utility.getPointsWithinDistance(unit.at(), unit.max_sight, Game.map_grid);
+        if (Game.line_of_sight_blocking) {
+          visible_points = getTilesInSight(unit.at(), visible_points, Game.terrain);
+        }
+        points = points.concat(visible_points);
       }
     } else {
       for (var x=0; x<Game.map_grid.width; x++) {
