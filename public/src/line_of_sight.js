@@ -25,7 +25,7 @@ LineOfSight = {
         points.push(unit.at());
         var visible_points = Utility.getPointsWithinDistance(unit.at(), unit.max_sight, Game.map_grid);
         if (Game.line_of_sight_blocking) {
-          visible_points = getTilesInSight(unit.at(), unit.max_sight, visible_points, Game.terrain);
+          visible_points = LineOfSightBlocking.getTilesInSight(unit.at(), unit.max_sight, visible_points, Game.terrain);
         }
         points = points.concat(visible_points);
       }

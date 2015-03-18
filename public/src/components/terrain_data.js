@@ -15,6 +15,7 @@ var TerrainData = function(type, stats) {
     // Can be used only indirectly, as a parent
     'Terrain': {
       z: 80,
+      sightImpede: 1,
     },
 
     "Water": {
@@ -42,6 +43,7 @@ var TerrainData = function(type, stats) {
       flammable: true,
       provides_supply: 2000,
       remaining_provided_supply: 2000,
+      sightImpede: 2,
     },
 
     "Farm": {
