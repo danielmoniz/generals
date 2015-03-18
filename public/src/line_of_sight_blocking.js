@@ -70,7 +70,8 @@ function getLineOfTilesFromCentre_IteratingY(centre, target, boardLocations) {
 
 function assignPartialSightValuesX(m, x, y, centre, target, boardLocations){
   var tilesAlongLine = [];
-  var tileRoundUp = boardLocations[x][Math.trunc(y) + 1 * (target.y-centre.y)/Math.abs(target.y-centre.y))];
+  var y_value = Math.trunc(y) + 1 * (target.y-centre.y) / Math.abs(target.y-centre.y);
+  var tileRoundUp = boardLocations[x][y_value];
   var portion = Math.abs(y%1); 
   var tileData = {
     'tile': tileRoundUp,
@@ -93,7 +94,9 @@ function assignPartialSightValuesX(m, x, y, centre, target, boardLocations){
 
 function assignPartialSightValuesY(m, y, x, centre, target, boardLocations){
   var tilesAlongLine = [];
-  var tileRoundUp = boardLocations[Math.trunc(x) + 1 * (target.x-centre.x) / Math.abs(target.x-centre.x))][y];
+  var x_value = Math.trunc(x) + 1 * (target.x-centre.x) / Math.abs(target.x-centre.x);
+  var tileRoundUp = boardLocations[x_value][y];
+  var tileRoundUp = boardLocations[][y];
   var portion = Math.abs(x%1); 
   var tileData = {
     'tile': tileRoundUp,
