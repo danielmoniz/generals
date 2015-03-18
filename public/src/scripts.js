@@ -146,6 +146,7 @@ $(document).ready(function() {
       ],
       'advanced': [
         'dissent',
+        'line_of_sight_blocking',
       ],
     };
     var preset_rank = ['beginner', 'intermediate', 'advanced'];
@@ -189,12 +190,13 @@ $(document).ready(function() {
 
   // TEST ONLY -----------------
   //$("#start-hotseat-button").click();
-  //$("input[name=map_size][value=tiny]").click();
+  //$("input[name=map_size][value=large]").click();
   //$("input[name=factions_0][value=mongols]").click();
   //$("input[name=factions_1][value=aztecs]").click();
   //$('input[name=sight_outlines]').click();
   //$('input[name=fog_of_war]').click();
   //$("input[name=advanced_victory]").click();
+  //$("input[name=line_of_sight_blocking]").click();
   //$("#start-game").click();
 
   $('#test_button').click(function() {

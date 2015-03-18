@@ -15,6 +15,8 @@ var TerrainData = function(type, stats) {
     // Can be used only indirectly, as a parent
     'Terrain': {
       z: 80,
+      // @TODO This value does not get added to terrain. Fix this!
+      sight_impedance: 1,
     },
 
     "Water": {
@@ -23,6 +25,7 @@ var TerrainData = function(type, stats) {
       build_over: 5,
       defense_bonus: 0,
       colour: { r: 0, g: 128, b: 255 },
+      sight_impedance: 1,
     },
 
     "Grass": {
@@ -32,6 +35,7 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1,
       provides_supply: 1000,
       remaining_provided_supply: 1000,
+      sight_impedance: 1,
     },
 
     "Tree": {
@@ -42,6 +46,7 @@ var TerrainData = function(type, stats) {
       flammable: true,
       provides_supply: 2000,
       remaining_provided_supply: 2000,
+      sight_impedance: 2.5,
     },
 
     "Farm": {
@@ -55,6 +60,7 @@ var TerrainData = function(type, stats) {
       flammable: true,
       provides_supply: 4000,
       remaining_provided_supply: 4000,
+      sight_impedance: 1,
     },
 
     "Settlement": {
@@ -64,6 +70,7 @@ var TerrainData = function(type, stats) {
       supply: 1,
       max_supply_multiplier: 3,
       base_type: 'Settlement',
+      sight_impedance: 1,
     },
 
     "City": {
@@ -71,6 +78,7 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1.55,
       population: 9000,
       provides_supply: 4000,
+      sight_impedance: 1,
     },
 
     "Town": {
@@ -78,6 +86,7 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1.25,
       population: 2500,
       provides_supply: 2000,
+      sight_impedance: 1,
     },
 
     "Road": {
@@ -87,6 +96,7 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1,
       is_supply_route: false,
       supply: 1,
+      sight_impedance: 1,
     },
 
     "Bridge": {
@@ -97,6 +107,7 @@ var TerrainData = function(type, stats) {
       supply: 1,
       z: 81,
       colour: { r: 192, g: 192, b: 192 },
+      sight_impedance: 1,
     },
   };
 
