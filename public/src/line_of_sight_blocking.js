@@ -2,6 +2,7 @@ LineOfSightBlocking = {
 
   getTilesInSight: function(unitLocation, max_sight, pointsInMaxSightRadius, boardLocations) {
     var listOfVisibleTiles = [];
+    console.log('-------------------------------------');
 
     for(var i in pointsInMaxSightRadius){
       var lineToCheck = this.getLineOfTilesFromCentre(unitLocation, pointsInMaxSightRadius[i], boardLocations);
@@ -10,6 +11,8 @@ LineOfSightBlocking = {
       if (visible) {
         listOfVisibleTiles.push(visible);
       }
+      // @TEST
+      return listOfVisibleTiles;
     }
 
     return listOfVisibleTiles;
@@ -24,17 +27,23 @@ LineOfSightBlocking = {
       tilesAlongLine = this.getLineOfTilesFromCentre_IteratingY(centre, target, boardLocations);
     }
 
+    console.log("tilesAlongLine");
+    console.log(tilesAlongLine);
     return tilesAlongLine;
   },
 
   determineTileInSightFromLine: function(alongEachPath, max_sight) {
     var totalSightImpedance = 0;
+    console.log("alongEachPath");
+    console.log(alongEachPath);
     for (var i in alongEachPath) {
       totalSightImpedance += alongEachPath[i].portion * alongEachPath[i].sightImpede;
 
       if (i < alongEachPath.length - 1) continue;
       if (totalSightImpedance <= max_sight) return tileAlongLine[i];
     }
+    console.log("totalSightImpedance");
+    console.log(totalSightImpedance);
 
     return false;
   },
@@ -51,10 +60,9 @@ LineOfSightBlocking = {
           // and then we add a tile to the list, rather than add coordinates
           subsetTilesAlongLine = this.assignPartialSightValuesX(m, x, y, centre, target, boardLocations);
           tilesAlongLine.push(subsetTilesAlongLine);
-      }
-      else{
+      } else {
           subsetTilesAlongLine = this.assignWholeSightValueX(m, x, y, boardLocations);
-            tilesAlongLine.push(subsetTilesAlongLine);
+          tilesAlongLine.push(subsetTilesAlongLine);
       }
     }
     return tilesAlongLine;
@@ -73,8 +81,7 @@ LineOfSightBlocking = {
           // and then we add a tile to the list, rather than add coordinates
         subsetTilesAlongLine = this.assignPartialSightValuesY(m, y, x, centre, target, boardLocations);
         tilesAlongLine.push(subsetTilesAlongLine);
-      }
-      else{
+      } else {
         subsetTilesAlongLine = this.assignWholeSightValueY(m, y, x, boardLocations);
         tilesAlongLine.push(subsetTilesAlongLine);
       }
@@ -87,31 +94,17 @@ LineOfSightBlocking = {
     //var y_value = Math.trunc(y) + 1 * (target.y-centre.y) / Math.abs(target.y-centre.y);
     var y_value = Math.trunc(y) + 1;
     var tileRoundUp = boardLocations[x][y_value];
-    if (tileRoundUp === undefined) {
-      console.log("x");
-      console.log(x);
-      console.log("y");
-      console.log(y);
-      console.log("y_value");
-      console.log(y_value);
-    }
+
     var portion = Math.abs(y%1);
-    var tileData = {
-      'tile': tileRoundUp,
-      'portion': portion,
-      'sightImpede': tileRoundUp.sightImpede,
-    };
+    var tileData = this.buildTileData();
+    var tileData = this.buildTileData(tileRoundUp, portion, tileRoundUp.sightImpede);
     tilesAlongLine.push(tileData);
 
     var tileRoundDown = boardLocations[x][Math.trunc(y)];
     var portion = 1 - Math.abs(y%1);
 
-    var tileData = {
-      'tile': tileRoundDown,
-      'portion': portion,
-      'SightImpede': tileRoundDown.sightImpede,
-    };
-    tilesAlongLine.push(tileData) ;
+    var tileData = this.buildTileData(tileRoundDown, portion, tileRoundDown.sightImpede);
+    tilesAlongLine.push(tileData);
     return tilesAlongLine;
   },
 
@@ -121,44 +114,35 @@ LineOfSightBlocking = {
     var x_value = Math.trunc(x) + 1;
     var tileRoundUp = boardLocations[x_value][y];
     var portion = Math.abs(x%1);
-    var tileData = {
-      'tile': tileRoundUp,
-      'portion': portion,
-      'SightImpede': tileRoundUp.sightImpede,
-    };
-    tilesAlongLine.push(tileData) ;
+    var tileData = this.buildTileData(tileRoundUp, portion, tileRoundUp.sightImpede);
+    tilesAlongLine.push(tileData);
 
     var tileRoundDown = boardLocations[Math.trunc(x)][y];
     var portion = 1 - Math.abs(x%1);
-    var tileData = {
-      'tile': tileRoundDown,
-      'portion': portion,
-      'SightImpede': tileRoundDown.sightImpede,
-    };
-    tilesAlongLine.push(tileData) ;
+    var tileData = this.buildTileData(tileRoundDown, portion, tileRoundDown.sightImpede);
+    tilesAlongLine.push(tileData);
     return tilesAlongLine;
   },
 
   assignWholeSightValueX: function(m, x, y, boardLocations) {
-
     var tileUnrounded = boardLocations[x][y];
-    var tileData = {//Is that what you are thinking?
-      'tile': tileUnrounded,
-      'portion': 1,
-      'SightImpede': tileUnrounded.sightImpede,
-    };
+    var tileData = this.buildTileData(tileUnrounded, portion, tileUnrounded.sightImpede);
     return tileData
   },
 
   assignWholeSightValueY: function(m, y, x, boardLocations){
-
     var tileUnrounded = boardLocations[x][y];
-    var tileData = {
-      'tile': tileUnrounded,
-      'portion': 1,
-      'SightImpede': tileUnrounded.sightImpede,
-    };
+    var tileData = this.buildTileData(tileUnrounded, 1, tileUnrounded.sightImpede);
     return tileData;
+  },
+
+  buildTileData: function(tile, portion, sight_impede) {
+    var tile_data = {
+      'tile': tile,
+      'portion': portion,
+      'SightImpede': sight_impede,
+    };
+    return tile_data;
   },
 
 }
