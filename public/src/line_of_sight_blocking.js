@@ -73,9 +73,9 @@ function assignPartialSightValuesX(m, x, y, centre, target, boardLocations){
   var tileRoundUp = boardLocations[x][Math.trunc(y) + 1 * (target.y-centre.y)/Math.abs(target.y-centre.y))];
   var portion = Math.abs(y%1); 
   var tileData = {
-    ‘tile’: tileRoundUp,
-    ‘portion’: portion,
-    ‘sightImpede’: tileRoundUp.sightImpede,
+    'tile': tileRoundUp,
+    'portion': portion,
+    'sightImpede': tileRoundUp.sightImpede,
   };
   tilesAlongLine.push(tileData);
 
@@ -83,9 +83,9 @@ function assignPartialSightValuesX(m, x, y, centre, target, boardLocations){
   var portion = 1 - Math.abs(y%1);
 
   var tileData = {
-    ‘tile’: tileRoundDown,
-    ‘portion’: portion,
-    ‘SightImpede’: tileRoundDown.sightImpede,
+    'tile': tileRoundDown,
+    'portion': portion,
+    'SightImpede': tileRoundDown.sightImpede,
   };
   tilesAlongLine.push(tileData) ;
   return tilesAlongLine;
@@ -96,18 +96,18 @@ function assignPartialSightValuesY(m, y, x, centre, target, boardLocations){
   var tileRoundUp = boardLocations[Math.trunc(x) + 1 * (target.x-centre.x) / Math.abs(target.x-centre.x))][y];
   var portion = Math.abs(x%1); 
   var tileData = {
-    ‘tile’: tileRoundUp,
-    ‘portion’: portion,
-    ‘SightImpede’: tileRoundUp.sightImpede,
+    'tile': tileRoundUp,
+    'portion': portion,
+    'SightImpede': tileRoundUp.sightImpede,
   };
   tilesAlongLine.push(tileData) ;
 
   var tileRoundDown = boardLocations[math.trunc(x)][y];
   var portion = 1 - Math.abs(x%1);
   var tileData = {
-    ‘tile’: tileRoundDown,
-    ‘portion’: portion,
-    ‘SightImpede’: tileRoundDown.sightImpede,
+    'tile': tileRoundDown,
+    'portion': portion,
+    'SightImpede': tileRoundDown.sightImpede,
   };
   tilesAlongLine.push(tileData) ;
   return tilesAlongLine;
@@ -117,9 +117,9 @@ function assignWholeSightValueX(m, x, y, boardLocations) {
 
   var tileUnrounded = boardLocations[x][y];
   var tileData = {//Is that what you are thinking?
-    ‘tile’ = tileUnrounded,
-    ‘portion’ = 1,
-    ‘SightImpede’: tileUnrounded.sightImpede,
+    'tile': tileUnrounded,
+    'portion': 1,
+    'SightImpede': tileUnrounded.sightImpede,
   };
   return tileData
 }
@@ -128,9 +128,9 @@ function assignWholeSightValueY(m, y, x, boardLocations){
 
   var tileUnrounded = boardLocations[x][y];
   var tileData = {
-    ‘tile’ = tileUnrounded,
-    ‘portion’ = 1,
-    ‘SightImpede’: tileUnrounded.sightImpede,
+    'tile': tileUnrounded,
+    'portion': 1,
+    'SightImpede': tileUnrounded.sightImpede,
   };
   return tileData;
 }
