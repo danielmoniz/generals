@@ -27,9 +27,11 @@ LineOfSight = {
         if (Game.line_of_sight_blocking) {
           visible_points = LineOfSightBlocking.getTilesInSight(unit.at(), unit.max_sight, visible_points, Game.terrain);
         }
+
         points = points.concat(visible_points);
       }
     } else {
+
       for (var x=0; x<Game.map_grid.width; x++) {
         for (var y=0; y<Game.map_grid.height; y++) {
           points.push(Game.terrain[x][y].at());
@@ -41,6 +43,7 @@ LineOfSight = {
     for (var i in points) {
       var point = points[i];
     }
+
     return positional_points;
   },
 

@@ -2,7 +2,6 @@ LineOfSightBlocking = {
 
   getTilesInSight: function(unitLocation, max_sight, pointsInMaxSightRadius, boardLocations) {
     var listOfVisibleTiles = [];
-    console.log('-------------------------------------');
 
     for(var i in pointsInMaxSightRadius){
       var lineToCheck = this.getLineOfTilesFromCentre(unitLocation, pointsInMaxSightRadius[i], boardLocations);
@@ -11,11 +10,16 @@ LineOfSightBlocking = {
       if (visible) {
         listOfVisibleTiles.push(visible);
       }
-      // @TEST
-      return listOfVisibleTiles;
     }
 
-    return listOfVisibleTiles;
+    var points = [];
+    for (var i in listOfVisibleTiles) {
+      var tile = listOfVisibleTiles[i].tile;
+      var point = { x: tile.at().x, y: tile.at().y };
+      points.push(point);
+    }
+
+    return points;
   },
 
   getLineOfTilesFromCentre: function(centre, target, boardLocations) {
@@ -135,7 +139,7 @@ LineOfSightBlocking = {
     var tile_data = {
       'tile': tile,
       'portion': portion,
-      'SightImpede': sight_impede,
+      'sightImpede': sight_impede,
     };
     return tile_data;
   },
