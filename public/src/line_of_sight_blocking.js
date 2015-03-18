@@ -1,16 +1,16 @@
 
-function outputTilesInSight(unitLocation, tilesInMaxSightRadius, boardLocations) { 
+function getTilesInSight(unitLocation, max_sight, pointsInMaxSightRadius, boardLocations) {
   var listOfVisibleTiles = [];
 
-  for(var i in tilesInMaxSightRadius){
+  for(var i in pointsInMaxSightRadius){
+    var lineToCheck = getLineOfTilesFromCentre(unitLocation, pointsInMaxSightRadius[i], boardLocations);
 
-    var lineToCheck = getLineOfTilesFromCentre(unitLocation, tilesInMaxSightRadius[i], boardLocations);
-
-
-    var visible= determineTilesInSightFromLine(lineToCheck);
-    listOfVisibleTiles.push(visible);
-
+    var visible = determineTileInSightFromLine(lineToCheck, max_sight);
+    if (visible) {
+      listOfVisibleTiles.push(visible);
+    }
   }
+
   return listOfVisibleTiles;
 }
 
@@ -19,13 +19,22 @@ function getLineOfTilesFromCentre(centre, target, boardLocations){
 
   if (Math.abs(target.x-centre.x) >= Math.abs(target.y-centre.y)){ //if target has a greater x than y value
     tilesAlongLine = getLineOfTilesFromCentre_IteratingX(centre, target, boardLocations);
-  }
-
-  else{
+  } else{
     tilesAlongLine = getLineOfTilesFromCentre_IteratingY(centre, target, boardLocations);
   }
 
   return tilesAlongLine;
+}
+
+function determineTileInSightFromLine(alongEachPath, max_sight) {
+  for (var i in alongEachPath) {
+    var totalSightImpedance += alongEachPath[i].portion * alongEachPath[i].sightImpede;
+
+    if (i < alongEachPath.length - 1) continue;
+    if (totalSightImpedance <= max_sight) return tileAlongLine[i];
+  }
+
+  return false;
 }
 
 function getLineOfTilesFromCentre_IteratingX(centre, target, boardLocations){
