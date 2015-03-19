@@ -25,7 +25,7 @@ var TerrainData = function(type, stats) {
       build_over: 5,
       defense_bonus: 0,
       colour: { r: 0, g: 128, b: 255 },
-      sight_impedance: 1,
+      sight_impedance: 0.5,
     },
 
     "Grass": {
@@ -78,7 +78,7 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1.55,
       population: 9000,
       provides_supply: 4000,
-      sight_impedance: 1,
+      sight_impedance: 3,
     },
 
     "Town": {
@@ -86,7 +86,7 @@ var TerrainData = function(type, stats) {
       defense_bonus: 1.25,
       population: 2500,
       provides_supply: 2000,
-      sight_impedance: 1,
+      sight_impedance: 1.75,
     },
 
     "Road": {
