@@ -143,6 +143,7 @@ Crafty.c('Farm', {
         supply_to_steal: 0,
         flammable: false,
         provides_supply: 0,
+        sight_impedance: 1,
       });
     this.destroyTerrain(unit);
     return supply;
