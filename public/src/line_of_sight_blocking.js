@@ -4,9 +4,9 @@ LineOfSightBlocking = {
     var listOfVisibleTiles = [];
 
     for(var i in pointsInMaxSightRadius){
-      var lineToCheck = this.getLineOfTilesFromCentre(unitLocation, pointsInMaxSightRadius[i], boardLocations);
+      var tileLineData = this.getLineOfTilesFromCentre(unitLocation, pointsInMaxSightRadius[i], boardLocations);
 
-      var visible = this.determineTileInSightFromLine(lineToCheck, max_sight);
+      var visible = this.determineTileInSightFromLine(tileLineData, max_sight);
       if (visible) {
         listOfVisibleTiles.push(visible);
       }
@@ -31,16 +31,23 @@ LineOfSightBlocking = {
       tilesAlongLine = this.getLineOfTilesFromCentre_IteratingY(centre, target, boardLocations);
     }
 
+    var deltaX = Math.abs(target.x - centre.x);
+    var deltaY = Math.abs(target.y - centre.y);
+    var lengthThroughTile = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) / Math.max(deltaX, deltaY);
+    return { tiles: tilesAlongLine, lengthThroughTile: lengthThroughTile };
+
     return tilesAlongLine;
   },
 
-  determineTileInSightFromLine: function(alongEachPath, max_sight) {
+  determineTileInSightFromLine: function(tileLineData, max_sight) {
     var totalSightImpedance = 0;
-    for (var i in alongEachPath) {
-      var tileData = alongEachPath[i];
-      totalSightImpedance += tileData.portion * tileData.sight_impedance;
+    var tileLine = tileLineData.tiles;
+    var tileLineLength = tileLineData.lengthThroughTile;
+    for (var i in tileLine) {
+      var tileData = tileLine[i];
+      totalSightImpedance += tileData.portion * tileData.sight_impedance * tileLineLength;
 
-      if (i < alongEachPath.length - 1) continue;
+      if (i < tileLine.length - 1) continue;
       if (totalSightImpedance <= max_sight) return tileData;
     }
 
@@ -64,6 +71,7 @@ LineOfSightBlocking = {
         tilesAlongLine.push(subsetTilesAlongLine);
       }
     }
+
     return tilesAlongLine;
   },
 
