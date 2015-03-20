@@ -44,6 +44,7 @@ var MapCreator = function(options) {
     this.buildTerrainData(options, this.Game, this.Game.terrain_type);
     this.addSupplyRoads(options, this.Game, cities, 1);
     this.addRoadsBetweenCities(options, this.Game, cities);
+    this.cleanRoads(options, this.Game.roads);
     this.buildTerrainDataWithRoads(options, this.Game, this.Game.terrain_type, this.Game.roads);
 
     // call again to ensure bridge values are set
@@ -566,6 +567,67 @@ var MapCreator = function(options) {
             game_object.occupied[x][y] = true;
           }
         }
+      }
+    }
+  };
+
+  this.cleanRoads = function(options, roads) {
+    for (var x in roads) {
+      for (var y in roads[x]) {
+        var road = roads[x][y];
+        var location = { x: x, y: y };
+
+        var point_sets = [
+          [ // top left
+            { x: -1, y: -1 },
+            { x: -1, y: 0 },
+            { x: 0, y: -1 },
+          ],
+          [ // top right
+            { x: 0, y: -1 },
+            { x: 1, y: -1 },
+            { x: 1, y: 0 },
+          ],
+          [ // bottom right
+            { x: 1, y: 0 },
+            { x: 1, y: 1 },
+            { x: 0, y: 1 },
+          ],
+          [ // bottom left
+            { x: 0, y: 1 },
+            { x: -1, y: 1 },
+            { x: -1, y: 0 },
+          ],
+        ];
+
+        function isRoadSquare(location, indices, roads) {
+          var all_roads = true;
+          for (i in indices) {
+            var point = indices[i];
+            var x = parseInt(location.x) + parseInt(point.x);
+            var y = parseInt(location.y) + parseInt(point.y);
+            if (!roads[x] || !roads[x][y]) {
+              all_roads = false;
+              break;
+            }
+          }
+          return all_roads;
+        }
+
+        for (var i in point_sets) {
+          var all_roads = isRoadSquare(location, point_sets[i], roads);
+          if (all_roads) {
+            console.log('---');
+            console.log('found a square of roads at:');
+            console.log(location);
+          }
+          // find which roads have 2 connections
+            // delete one of them!
+          //var points = 
+        }
+
+        // update roads graph (as normally done when updating roads)
+
       }
     }
   };
