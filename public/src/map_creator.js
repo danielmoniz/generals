@@ -120,37 +120,94 @@ var MapCreator = function(options) {
     }
   };
 
+  this.addCities = function(options, game_object, estimated_cities, vertical_sections) {
+    if (!vertical_sections) vertical_sections = 1;
+    var cities = [];
+    var sections = game_object.section_positions;
+    var base = 0;
+    for (var i=0; i<sections.length; i++) {
+      for (var y=0; y<vertical_sections; y++) {
+        var min_x = base;
+        var max_x = sections[i];
+        //var min_y = y * vertical_section_height;
+        //var max_y = (1 + y) * vertical_section_height;
+        var min_y = Math.round(y * options.map_grid.height / vertical_sections);
+        var max_y = Math.round((1 + y) * options.map_grid.height / vertical_sections);
+
+        var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, cities, min_x, max_x, min_y, max_y);
+
+        cities = cities.concat(new_cities);
+
+        base = sections[i];
+      }
+    }
+
+    return cities;
+  };
+
   this.addCitiesToSection = function(options, game_object, estimated_cities, other_cities, min_x, max_x, min_y, max_y) {
     if (max_y === undefined) max_y = options.map_grid.height;
     if (min_y === undefined) min_y = 0;
     var cities = [];
     var num_cities = 0;
     var num_tries = 0;
-    var max_tries = 20;
+    var max_tries = 5;
+    var max_cities = estimated_cities + 1;
+
+    var width = max_x - min_x - 1;
+    var height = max_y - min_y - 2;
+
+    var test = Math.floor(Math.sqrt((width * height) / estimated_cities)) * 3/4;
+
+    var min_separation = (width + height) / (2 * estimated_cities);
+    var min_separation = Math.pow(width * height, 1/estimated_cities);
+    var min_separation = test;
+    var num_tiles = (max_y - min_y) * (max_x - min_x);
+    var num_tiles_remaining = num_tiles;
+    var bad_locations = [];
+
+    var all_cities = other_cities.concat(cities);
+
     while (num_cities < estimated_cities && num_tries < max_tries) {
       num_tries += 1;
       for (var x = min_x; x < max_x; x++) {
+        if (!bad_locations[x]) bad_locations[x] = [];
         for (var y = min_y; y < max_y; y++) {
-          var at_map_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
-          if (at_map_edge) continue;
 
-          var num_tiles = (max_y - min_y) * (max_x - min_x);
-          var probability = estimated_cities / num_tiles;
+          if (bad_locations[x][y]) continue;
+
+          var at_map_edge = x == 0 || x == options.map_grid.width - 1 || y == 0 || y == options.map_grid.height - 1;
+          if (at_map_edge) {
+            bad_locations[x][y] = true;
+            num_tiles_remaining -= 1;
+            continue;
+          }
+
+          var is_too_near = false;
+          var current_location = { x: x, y: y };
+          var all_cities = other_cities.concat(cities);
+          for (var i in all_cities) {
+            if (Utility.getDistance(current_location, all_cities[i]) < min_separation) {
+              is_too_near = true;
+              break;
+            }
+          }
+
+          if (is_too_near) {
+            bad_locations[x][y] = true;
+            num_tiles_remaining -= 1;
+            continue;
+          }
+
+          var probability = estimated_cities / num_tiles_remaining;
           var value = Math.random();
 
-          if (value >= 1 - probability && !game_object.occupied[x][y]) {
-            // if there is another city adjacent, try again
-            var is_adjacent = false;
-            var current_location = { x: x, y: y };
-            var all_cities = other_cities.concat(cities);
-            for (var i in all_cities) {
-              if (Utility.getDistance(current_location, all_cities[i]) <= 2.5) {
-                is_adjacent = true;
-                break;
-              }
-            }
-            if (is_adjacent) continue;
-
+          if (game_object.occupied[x][y]) {
+            bad_locations[x][y] = true;
+            num_tiles_remaining -= 1;
+            continue;
+          }
+          if (value >= 1 - probability) { // create city
             num_cities += 1;
             var color = Math.ceil(game_object.height_map[x][y] * 255);
 
@@ -174,33 +231,9 @@ var MapCreator = function(options) {
             cities.push(city_obj);
             game_object.terrain_type[x][y] = city_obj;
 
-            if (num_cities >= 1 + estimated_cities) return cities;
+            if (num_cities >= max_cities) return cities;
           }
         }
-      }
-    }
-    return cities;
-  };
-
-  this.addCities = function(options, game_object, estimated_cities, vertical_sections) {
-    if (!vertical_sections) vertical_sections = 1;
-    var cities = [];
-    var sections = game_object.section_positions;
-    var base = 0;
-    for (var i=0; i<sections.length; i++) {
-      for (var y=0; y<vertical_sections; y++) {
-        var min_x = base;
-        var max_x = sections[i];
-        //var min_y = y * vertical_section_height;
-        //var max_y = (1 + y) * vertical_section_height;
-        var min_y = Math.round(y * options.map_grid.height / vertical_sections);
-        var max_y = Math.round((1 + y) * options.map_grid.height / vertical_sections);
-
-        var new_cities = this.addCitiesToSection(options, game_object, estimated_cities / options.num_sections, cities, min_x, max_x, min_y, max_y);
-
-        cities = cities.concat(new_cities);
-
-        base = sections[i];
       }
     }
 
