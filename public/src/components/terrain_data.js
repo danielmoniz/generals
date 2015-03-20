@@ -22,7 +22,7 @@ var TerrainData = function(type, stats) {
     "Water": {
       z: 80,
       move_difficulty: 0, 
-      build_over: 5,
+      build_over: 500,
       defense_bonus: 0,
       colour: { r: 0, g: 128, b: 255 },
       sight_impedance: 1,
@@ -31,7 +31,7 @@ var TerrainData = function(type, stats) {
     "Grass": {
       z: 80,
       move_difficulty: 1.25,
-      build_over: 1,
+      build_over: 100,
       defense_bonus: 1,
       provides_supply: 1000,
       remaining_provided_supply: 1000,
@@ -41,7 +41,7 @@ var TerrainData = function(type, stats) {
     "Tree": {
       z: 82,
       move_difficulty: 2.5,
-      build_over: 3,
+      build_over: 300,
       defense_bonus: 1.05,
       flammable: true,
       provides_supply: 2000,
@@ -51,7 +51,7 @@ var TerrainData = function(type, stats) {
 
     "Farm": {
       z: 80,
-      build_over: 1,
+      build_over: 100,
       move_difficulty: 1.6,
       defense_bonus: 1,
       alpha: 0.6,
@@ -66,7 +66,7 @@ var TerrainData = function(type, stats) {
     "Settlement": {
       z: 82,
       move_difficulty: 1,
-      build_over: 0.01,
+      build_over: 1,
       supply: 1,
       max_supply_multiplier: 3,
       base_type: 'Settlement',
@@ -92,7 +92,7 @@ var TerrainData = function(type, stats) {
     "Road": {
       z: 81,
       move_difficulty: 1,
-      build_over: 0.01,
+      build_over: 1,
       defense_bonus: 1,
       is_supply_route: false,
       supply: 1,
@@ -102,7 +102,7 @@ var TerrainData = function(type, stats) {
     "Bridge": {
       'parent': 'Road',
       move_difficulty: 1,
-      build_over: 0.02 ,
+      build_over: 2 ,
       defense_bonus: 2,
       supply: 1,
       z: 81,
