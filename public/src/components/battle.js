@@ -107,7 +107,7 @@ Battle = {
     return total_weighted_dissent / total_troops;
   },
 
-  getAttackPower: function(units, is_retreat) {
+  getAttackPower: function(units, terrain, is_retreat) {
     var total_attack_power = 0;
     for (var i in units) {
       var unit = units[i];
@@ -119,7 +119,10 @@ Battle = {
       var combat_ability = Battle.getCombatAbility([unit]);
       var attack_power = combat_ability * dissent_factor;
       if (is_retreat) attack_power *= unit.pursuit_ability;
-      if (unit.charging) attack_power *= unit.charge_ability;
+      if (unit.charging) {
+        var charge_ability = unit.getChargeAbility(terrain);
+        attack_power *= charge_ability;
+      }
       total_attack_power += attack_power;
     }
     return total_attack_power;
@@ -148,8 +151,9 @@ Battle = {
     var TROOP_LOSS = Game.troop_loss_constant;
     // @TODO Calculate ranged attacker damage first
 
-    var attacker_attack_power = Battle.getAttackPower(attackers, 'retreat');
-    var defender_attack_power = Battle.getAttackPower(defenders, 'retreat');
+    var terrain = Game.terrain[battle.at().x][battle.at().y];
+    var attacker_attack_power = Battle.getAttackPower(attackers, terrain, 'retreat');
+    var defender_attack_power = Battle.getAttackPower(defenders, terrain, 'retreat');
 
     var side = {};
     var all_units = attackers.concat(defenders);
@@ -178,8 +182,9 @@ Battle = {
     var DISSENT_FACTOR = Game.dissent_factor; // not yet used in this function
     // @TODO Calculate ranged attacker damage first
 
-    var attacker_attack_power = Battle.getAttackPower(attackers);
-    var defender_attack_power = Battle.getAttackPower(defenders);
+    var terrain = Game.terrain[battle.at().x][battle.at().y];
+    var attacker_attack_power = Battle.getAttackPower(attackers, terrain);
+    var defender_attack_power = Battle.getAttackPower(defenders, terrain);
 
     var ignore_terrain = true;
     //if (battle.siege_battle) ignore_terrain = false;

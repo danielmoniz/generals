@@ -46,7 +46,10 @@ var UnitData = function(type, stats) {
       combat_ability: 1.3,
       pursuit_ability: 2,
       retreat_ability: 2,
-      charge_ability: 1.7,
+      charge_ability: {
+        other: 1.7,
+        tree: 1.3,
+      },
     },
 
     "Infantry": {
