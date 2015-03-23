@@ -192,6 +192,7 @@ LineOfSight = {
     this.allUnitsInvisible();
     var units = Units.getAllUnits();
     if (Game.turn_count < 0) {
+      if (Game.show_units) this.makeVisible(units);
       return units;
     }
 

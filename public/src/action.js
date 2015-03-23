@@ -76,7 +76,8 @@ var Action = {
 
   toggleShowUnits: function(name) {
     this.toggleOption(name);
-    LineOfSight.unitLineOfSight(Game.player);
+    var visible_points = LineOfSight.points_in_sight[Game.player];
+    LineOfSight.unitLineOfSight(visible_points, Game.player);
   },
 
   toggleEnemyMovement: function(name) {
