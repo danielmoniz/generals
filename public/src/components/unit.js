@@ -1220,10 +1220,8 @@ Crafty.c('Unit', {
   },
 
   getTerrainAbility: function(terrain, ability) {
+    ability = '{0}_ability'.format(ability);
     if (this[ability] === undefined) {
-      console.log(this.name);
-      console.log("ability");
-      console.log(ability);
       throw new Error('BadAbilityName, {0} is not an ability possessed by unit {1}.'.format(ability, this.name));
     }
     var type = terrain.type.toLowerCase();
@@ -1238,7 +1236,7 @@ Crafty.c('Unit', {
   },
 
   getChargeAbility: function(terrain) {
-    var ability = 'charge_ability';
+    var ability = 'charge';
     return this.getTerrainAbility(terrain, ability);
   },
 
