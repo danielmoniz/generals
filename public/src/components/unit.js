@@ -255,6 +255,7 @@ Crafty.c('Unit', {
     // can be reached.
     var enemy_units = LineOfSight.getEnemyUnitsInSight(this.side);
     graph = new Graph(Game.terrain_difficulty_with_roads);
+    var start = graph.grid[this.at().x][this.at().y];
     for (var i in enemy_units) {
       var unit = enemy_units[i];
       var target = unit.at();
