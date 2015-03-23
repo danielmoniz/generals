@@ -138,8 +138,9 @@ Crafty.c('Farm', {
     var supply = this.supply_to_steal;
     this.addNewComponent("PillagedFarm");
     this.addStats({
-        move_difficulty: 1.35,
         pillaged: true,
+        ruined: true,
+        move_difficulty: 1.35,
         supply_to_steal: 0,
         flammable: false,
         provides_supply: 0,
@@ -224,6 +225,7 @@ Crafty.c('City', {
     if (this.supply_remaining <= 0) {
       this.addStats({
         sacked: true,
+        ruined: true,
         supply_to_steal: 0,
         defense_bonus: 1.1,
         provides_supply: 0,
@@ -334,6 +336,7 @@ Crafty.c('Town', {
     if (this.supply_remaining <= 0) {
       this.addStats({
         sacked: true,
+        ruined: true,
         supply_to_steal: 0,
         defense_bonus: 1.1,
         provides_supply: 0,

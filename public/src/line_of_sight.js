@@ -1,10 +1,20 @@
 LineOfSight = {
 
   handleLineOfSight: function(fog_of_war, side, ignore_sight_outlines) {
+    var seeing_entities = [];
     var friendly_units = [];
     if (side !== undefined) friendly_units = Units.getFriendlyUnits(side);
+    seeing_entities = seeing_entities.concat(friendly_units);
 
-    var points = this.determinePointsInSight(friendly_units);
+    var settlements = Entity.get('Settlement');
+    for (var i in settlements) {
+      var settlement = settlements[i];
+      if (settlement.side == side && !settlement.ruined && settlement.side !== undefined) {
+        seeing_entities.push(settlement);
+      }
+    }
+
+    var points = this.determinePointsInSight(seeing_entities);
     this.points_in_sight[side] = points;
     var units_in_sight = this.unitLineOfSight(points, side);
 
@@ -17,18 +27,21 @@ LineOfSight = {
     if (!ignore_sight_outlines) this.handleSightOutlines(side);
   },
 
-  determinePointsInSight: function(units) {
+  determinePointsInSight: function(entities) {
     var points = [];
     if (Game.fog_of_war) {
-      for (var i in units) {
-        var unit = units[i];
-        points.push(unit.at());
-        var visible_points = Utility.getPointsWithinDistance(unit.at(), unit.max_sight, Game.map_grid);
-        if (Game.line_of_sight_blocking) {
-          visible_points = LineOfSightBlocking.getTilesInSight(unit.at(), unit.max_sight, visible_points, Game.terrain);
+      for (var i in entities) {
+        var entity = entities[i];
+        points.push(entity.at());
+        if (entity.max_sight) {
+          var visible_points = Utility.getPointsWithinDistance(entity.at(), entity.max_sight, Game.map_grid);
+          if (Game.line_of_sight_blocking) {
+            visible_points = LineOfSightBlocking.getTilesInSight(entity.at(), entity.max_sight, visible_points, Game.terrain);
+          }
+
+          points = points.concat(visible_points);
         }
 
-        points = points.concat(visible_points);
       }
     } else {
 

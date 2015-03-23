@@ -79,6 +79,7 @@ var TerrainData = function(type, stats) {
       population: 9000,
       provides_supply: 4000,
       sight_impedance: 3,
+      max_sight: 1.2,
     },
 
     "Town": {
