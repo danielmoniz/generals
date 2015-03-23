@@ -10,6 +10,8 @@ $(document).ready(function() {
         UI.pillage();
       } else if (e.keyCode == 83 || e.keyCode == 115) { // S or s
         UI.sack();
+      } else if (e.keyCode == 67 || e.keyCode == 99) { // C or c
+        UI.capture();
       } else if (e.keyCode == 70 || e.keyCode == 102) { // F or f
         UI.startFire();
       } else if (e.keyCode == 71 || e.keyCode == 103) { // G or g
@@ -190,7 +192,7 @@ $(document).ready(function() {
 
   // TEST ONLY -----------------
   //$("#start-hotseat-button").click();
-  //$("input[name=map_size][value=large]").click();
+  //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
   //$("input[name=factions_1][value=aztecs]").click();
   //$('input[name=sight_outlines]').click();
@@ -300,6 +302,10 @@ UI = {
 
   sack: function(e) {
     this.performAction("sack");
+  },
+
+  capture: function(e) {
+    this.performAction("capture");
   },
 
   startFire: function() {
