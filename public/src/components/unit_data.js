@@ -27,7 +27,7 @@ var UnitData = function(type, stats) {
       special_abilities: [],
 
       max_supply_multiplier: 3,
-      max_sight: 6,
+      max_sight: 12,
       combat_ability: 1,
       defensive_ability: 1,
       pursuit_ability: 1,
@@ -71,7 +71,7 @@ var UnitData = function(type, stats) {
     "Scout": {
       movement: 6,
       combat_ability: 0.5,
-      max_sight: 7,
+      max_sight: 14,
       retreat_ability: 1.5,
     },
 
@@ -92,7 +92,7 @@ var UnitData = function(type, stats) {
 
     "Test": {
       max_supply_multiplier: 3,
-      max_sight: 6,
+      max_sight: 12,
       combat_ability: 1,
       movement: 5,
       supply_usage: 1,
@@ -104,7 +104,7 @@ var UnitData = function(type, stats) {
     "Test2": {
       movement: 6,
       combat_ability: 0.5,
-      max_sight: 7,
+      max_sight: 14,
     },
 
   };
