@@ -142,8 +142,10 @@ var Action = {
       unit.pillage();
       Victory.updateWillToFight();
       Output.updateVictoryBar();
+    } else if (action == "capture") {
+      unit.captureTerrain();
     } else if (action == "start_fire") {
-      var local_terrain = Game.terrain[unit.at().x][unit.at().y];
+      var local_terrain = this.getLocalTerrain();
       local_terrain.ignite();
     } else if (action == "siege") {
       unit.siege();

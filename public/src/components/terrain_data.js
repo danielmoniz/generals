@@ -71,6 +71,7 @@ var TerrainData = function(type, stats) {
       max_supply_multiplier: 3,
       base_type: 'Settlement',
       sight_impedance: 1,
+      capturable: true,
     },
 
     "City": {
@@ -80,6 +81,7 @@ var TerrainData = function(type, stats) {
       provides_supply: 4000,
       sight_impedance: 3,
       max_sight: 1.2,
+      passive_capture: false,
     },
 
     "Town": {
@@ -88,6 +90,7 @@ var TerrainData = function(type, stats) {
       population: 2500,
       provides_supply: 2000,
       sight_impedance: 1.75,
+      passive_capture: true,
     },
 
     "Road": {

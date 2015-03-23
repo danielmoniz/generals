@@ -79,7 +79,7 @@ Crafty.c('Unit', {
     }
 
     if (turn == this.side) {
-      this.captureTerrain();
+      this.captureTerrain('passive');
     }
 
     this.testTargetAndPath();
@@ -123,15 +123,32 @@ Crafty.c('Unit', {
     this.testTargetAndPath();
   },
 
-  captureTerrain: function() {
+  /*
+   * Captures terrain if possible.
+   * 'passive' means that the unit did not manually take a capture action.
+   */
+  captureTerrain: function(passive) {
     var local_terrain = this.getLocalTerrain();
-    if (local_terrain.has('Settlement') 
-      && !this.battle
-      && !local_terrain.ruined 
-      && local_terrain.owner != this.side 
-      && local_terrain.side != 1 - this.side) {
-        local_terrain.capture(this.side);
+    if (this.canCaptureTerrain(local_terrain, passive)) {
+      local_terrain.capture(this.side);
     }
+  },
+
+  /*
+   * Determines whether terrain tile can be captured.
+   * 'passive' allows for terrain to be captured passively, i.e. without a 
+   * manual * action taken.
+   */
+  canCaptureTerrain: function(terrain, passive) {
+    if (passive && !terrain.passive_capture) return false;
+    if (terrain.capturable
+      && !this.battle
+      && !terrain.ruined 
+      && terrain.owner != this.side 
+      && terrain.side != 1 - this.side) {
+        return true;
+      }
+      return false;
   },
 
   reset: function() {
@@ -191,6 +208,9 @@ Crafty.c('Unit', {
     }
     if (local_terrain.base_type == 'Settlement' && local_terrain.side != this.side && !local_terrain.sacked) {
       actions.push("sack");
+      if (this.canCaptureTerrain(local_terrain)) {
+        actions.push("capture");
+      }
     }
     if (Game.fire && local_terrain.flammable) {
       actions.push('start_fire');
