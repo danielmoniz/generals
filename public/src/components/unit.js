@@ -221,16 +221,21 @@ Crafty.c('Unit', {
     return actions;
   },
 
+  actionPerformed: function(action) {
+    var reduction = this.max_movement / 2;
+    var reduction_map = {
+      'capture': this.max_movement,
+    };
+    if (reduction_map[action]) reduction = reduction_map[action];
+    this.reduceMovement(reduction);
+  },
+
   reduceMovement: function(reduction) {
     var new_movement = this.movement - reduction;
     this.movement = Math.max(new_movement, 0);
     this.possible_moves = [];
     this.updatePossibleMoves();
     this.updateMovementPaths();
-  },
-
-  actionPerformed: function(action) {
-    this.reduceMovement(this.max_movement / 2);
   },
 
   updatePossibleMoves: function() {
