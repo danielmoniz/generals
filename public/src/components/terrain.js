@@ -79,6 +79,24 @@ Crafty.c('Terrain', {
     return is_correct_side;
   },
 
+  getStat: function(stat, side) {
+    if (this[stat] === undefined) {
+      throw new Error('BadStatName, {0} is not an stat possessed by terrain {1}.'.format(stat, this.type));
+    }
+
+    var owner_text = this.getOwnerText(side);
+    if (this[stat][owner_text] === undefined) {
+      return this[stat];
+    }
+    return this[stat][owner_text];
+  },
+
+  getOwnerText: function(side) {
+    if (side == this.owner) return 'ally';
+    if (this.owner === undefined) return 'neutral';
+    if (side != this.owner) return 'enemy';
+  },
+
 });
 
 // A Transportation object is one meant to carry people/items, eg. a road,

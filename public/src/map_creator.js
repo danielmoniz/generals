@@ -704,24 +704,20 @@ var MapCreator = function(options) {
   this.buildTerrainData = function(options, game_object, terrain_list) {
     // build Game.terrain Graph for pathfinding purposes
     var terrain_difficulty = [];
-    var terrain_defense_bonus = [];
     var terrain_build_difficulty = [];
 
     for (var x = 0; x < terrain_list.length; x++) {
-      terrain_defense_bonus[x] = [];
       terrain_difficulty[x] = [];
       terrain_build_difficulty[x] = [];
 
       for (var y = 0; y < terrain_list[x].length; y++) {
         terrain_difficulty[x][y] = terrain_list[x][y].move_difficulty;
-        terrain_defense_bonus[x][y] = terrain_list[x][y].defense_bonus;
         terrain_build_difficulty[x][y] = terrain_list[x][y].build_over;
       }
     }
 
     //Game.terrain_type = terrain_type;
     game_object.terrain_difficulty = terrain_difficulty;
-    game_object.terrain_defense_bonus = terrain_defense_bonus;
     game_object.terrain_build_difficulty = terrain_build_difficulty;
 
     // Uncomment below for Supply overlay
@@ -741,7 +737,6 @@ var MapCreator = function(options) {
     */
 
     game_object.terrain_graph = new Graph(terrain_difficulty);
-    game_object.terrain_defense_bonus_graph = new Graph(terrain_defense_bonus);
     game_object.terrain_build_graph = new Graph(terrain_build_difficulty);
   };
 

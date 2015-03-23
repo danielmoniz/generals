@@ -76,7 +76,11 @@ var TerrainData = function(type, stats) {
 
     "City": {
       parent: 'Settlement',
-      defense_bonus: 1.55,
+      defense_bonus: {
+        'ally': 1.55,
+        'neutral': 1.4,
+        'enemy': 1.25,
+      },
       population: 9000,
       provides_supply: 4000,
       sight_impedance: 3,
@@ -86,7 +90,11 @@ var TerrainData = function(type, stats) {
 
     "Town": {
       parent: 'Settlement',
-      defense_bonus: 1.25,
+      defense_bonus: {
+        'ally': 1.25,
+        'neutral': 1.15,
+        'enemy': 1.05,
+      },
       population: 2500,
       provides_supply: 2000,
       sight_impedance: 1.75,

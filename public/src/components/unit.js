@@ -1232,7 +1232,7 @@ Crafty.c('Unit', {
         return this[ability]['other'];
       }
     }
-    return this.charge_ability[type];
+    return this[ability][type];
   },
 
   getChargeAbility: function(terrain) {

@@ -128,13 +128,13 @@ Battle = {
     return total_attack_power;
   },
 
-  getDefensivePower: function(units, ignore_terrain) {
+  getDefensivePower: function(units, terrain, ignore_terrain) {
     var total_defensive_power = 0;
     for (var i in units) {
       var unit = units[i];
       var terrain_defense = 1;
       if (!ignore_terrain) {
-        var terrain_defense = Game.terrain_defense_bonus[unit.at().x][unit.at().y];
+        var terrain_defense = terrain.getStat('defense_bonus', unit.side);
       }
       var dissent_factor = Battle.calculateDissentFactor(unit.dissent);
       if (dissent_factor != 1) {
@@ -188,8 +188,8 @@ Battle = {
 
     var ignore_terrain = true;
     //if (battle.siege_battle) ignore_terrain = false;
-    var attacker_defensive_ability = Battle.getDefensivePower(attackers, ignore_terrain);
-    var defender_defensive_ability = Battle.getDefensivePower(defenders);
+    var attacker_defensive_ability = Battle.getDefensivePower(attackers, terrain, ignore_terrain);
+    var defender_defensive_ability = Battle.getDefensivePower(defenders, terrain);
 
     var attacker_troops = Units.getTotalTroops(attackers)[battle.attacking_side].active;
     var defender_troops = Units.getTotalTroops(defenders)[battle.defending_side].active;
