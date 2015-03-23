@@ -9,7 +9,7 @@ LineOfSight = {
     var settlements = Entity.get('Settlement');
     for (var i in settlements) {
       var settlement = settlements[i];
-      if (settlement.side == side && !settlement.ruined && settlement.side !== undefined) {
+      if (settlement.owner == side && !settlement.ruined && settlement.owner !== undefined) {
         seeing_entities.push(settlement);
       }
     }

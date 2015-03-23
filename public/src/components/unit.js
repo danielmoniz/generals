@@ -78,6 +78,10 @@ Crafty.c('Unit', {
       this.visible_enemies = Units.getVisibleEnemyUnits(this.side);
     }
 
+    if (turn == this.side) {
+      this.captureTerrain();
+    }
+
     this.testTargetAndPath();
 
     if (turn == (this.side + 0.5) % 2) {
@@ -117,6 +121,17 @@ Crafty.c('Unit', {
     this.updateStats(); // should happen last!
 
     this.testTargetAndPath();
+  },
+
+  captureTerrain: function() {
+    var local_terrain = this.getLocalTerrain();
+    if (local_terrain.has('Settlement') 
+      && !this.battle
+      && !local_terrain.ruined 
+      && local_terrain.owner != this.side 
+      && local_terrain.side != 1 - this.side) {
+        local_terrain.capture(this.side);
+    }
   },
 
   reset: function() {
@@ -1010,11 +1025,13 @@ Crafty.c('Unit', {
     this.stop_unit();
     battle.join(this);
   },
+
   notify_of_battle: function(battle_side) {
     this.battle_side = battle_side;
     this.battle = true;
     this.stop_unit();
   },
+
   battle_finished: function(outcome) {
     this.battle = false;
     delete this.battle_side;
@@ -1222,6 +1239,10 @@ Crafty.c('Unit', {
     if (this.z <= biggest_z) {
       this.z = biggest_z + 1;
     }
+  },
+
+  getLocalTerrain: function() {
+    return Game.terrain[this.at().x][this.at().y];
   },
 
 });

@@ -183,6 +183,14 @@ Crafty.c('Settlement', {
   setStats: function() {
     this.addStat('max_supply', this.population * this.max_supply_multiplier);
     this.addStat('supply_remaining', this.population * this.max_supply_multiplier);
+    this.addStat('owner', this.side);
+  },
+
+  capture: function(side) {
+    var flag = Crafty.e('Flag').pickSide(side);
+    flag.at(this.at().x, this.at().y);
+    this.addStat('flag', flag);
+    this.owner = side;
   },
 
 });

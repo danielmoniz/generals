@@ -491,6 +491,9 @@ Output = {
       if (terrain.supply_remaining > 0) {
         var supply = terrain.supply_remaining;
         output.push("Supply: {0}".format(supply));
+        if (terrain.side === undefined && terrain.owner !== undefined) {
+          output.push("Owner: {0}".format(Pretty.Player.name(terrain.owner)));
+        }
       } else {
         output.push("Sacked!");
       }
