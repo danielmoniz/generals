@@ -48,7 +48,9 @@ var UnitData = function(type, stats) {
       retreat_ability: 2,
       charge_ability: {
         other: 1.7,
+        town: 1.4,
         tree: 1.3,
+        city: 1.2,
       },
     },
 
