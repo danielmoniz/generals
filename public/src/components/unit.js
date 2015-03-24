@@ -486,16 +486,14 @@ Crafty.c('Unit', {
   isSupplied: function(side) {
     if (side === undefined) side = this.side;
 
-    /*
-    var local_terrain = Game.terrain[this.at().x][this.at().y];
-    if (!local_terrain.supply) {
-      return false;
-    }
-    */
+    if (Game.city_based_supply) return this.isSuppliedByCities(side);
+    else return this.isSuppliedBySupplyRoute(side);
 
+  },
+
+  isSuppliedBySupplyRoute: function(side) {
     var is_supplied = true;
-    // detect possible lack of supply
-    // @TODO: Allow for more than two supply endpoints
+
     var target_location = Game.supply_route[side];
     var target = Game.terrain[target_location.x][target_location.y];
     if (this.isAtLocation(target.at())) {
@@ -506,42 +504,8 @@ Crafty.c('Unit', {
     var start = graph.grid[this.at().x][this.at().y];
     var end = graph.grid[target.at().x][target.at().y];
 
-    var enemy_units = Units.getEnemyUnits(this.side);
-
-    var no_supply_objects = Entity.get('NoSupply');
-    for (var i=0; i<no_supply_objects.length; i++) {
-      no_supply_objects[i].destroy();
-    }
-    // @TODO remove this or comment out! Not using supply blocks yet.
-    var supply_blocks = Entity.get('SupplyBlock');
-    for (var i=0; i<supply_blocks.length; i++) {
-      var block = supply_blocks[i];
-      graph.grid[block.at().x][block.at().y].weight = 0;
-      //Crafty.e('NoSupply').at(block.at().x, block.at().y);
-      console.log("FOUND SUPPLY BLOCK! At {0}, {1}".format(block.at().x, block.at().y));
-    }
-
-    for (var i=0; i<enemy_units.length; i++) {
-      // add enemy units to Game supply graph as blockers of supply lines
-      var unit = enemy_units[i];
-      if (unit.getActive() < Game.min_troops_for_supply_cut) continue;
-      graph.grid[unit.at().x][unit.at().y].weight = 0;
-      // Uncomment below line for supply overlay
-      //Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
-
-      var local_terrain = Game.terrain[unit.at().x][unit.at().y];
-      if (local_terrain.has('Transportation')) {
-        // @TODO Re-add supply blocking as a decision later on
-        //Crafty.e('SupplyBlock').at(unit.at().x, unit.at().y);
-      }
-    }
-
-    // @TODO Add fire entities as supply blocks
-    var fires = Entity.get('Fire');
-    for (var i in fires) {
-      var fire = fires[i];
-      graph.grid[fire.at().x][fire.at().y].weight = 0;
-    }
+    var supply_blockers = this.getSupplyBlockers();
+    this.makeEntitiesUnreachable(graph.grid, supply_blockers);
 
     var supply_route = Game.pathfind.search(graph, start, end);
     if (supply_route.length == 0) is_supplied = false;
@@ -550,6 +514,9 @@ Crafty.c('Unit', {
     }
 
     return is_supplied;
+  },
+
+  isSuppliedByCities: function(side) {
   },
 
   /*
@@ -591,6 +558,29 @@ Crafty.c('Unit', {
       };
       var my_supply_route = direction_map[this.side];
       return retreat_info[my_supply_route.x][my_supply_route.y];
+  },
+
+  makeEntitiesUnreachable: function(grid, entities) {
+    for (var i in entities) {
+      var entity = entities[i];
+      grid[entity.at().x][entity.at().y].weight = 0;
+    }
+  },
+
+  getSupplyBlockers: function() {
+    var supply_blockers = [];
+    var enemy_units = Units.getEnemyUnits(this.side);
+    for (var i=0; i<enemy_units.length; i++) {
+      if (enemy_units[i].getActive() >= Game.min_troops_for_supply_cut) {
+        supply_blockers.push(enemy_units[i]);
+      }
+
+      // Uncomment below line for supply overlay
+      //Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
+    }
+
+    supply_blockers = supply_blockers.concat(Entity.get('Fire'));
+    return supply_blockers;
   },
 
   sufferAttrition: function() {
