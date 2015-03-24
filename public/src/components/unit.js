@@ -532,6 +532,13 @@ Crafty.c('Unit', {
       var city = owned_cities[i];
       var start = graph.grid[city.at().x][city.at().y];
 
+      if (this.isAtLocation(city.at())) {
+        if (!this.battle || this.battle_side == 'defender') {
+          return true;
+        }
+        return false;
+      }
+
       var supply_range_per_turn = [city.supply_range, 0];
       var supply_route = Game.pathfind.search(graph, start, end, supply_range_per_turn);
       if (supply_route.length > 0) {
