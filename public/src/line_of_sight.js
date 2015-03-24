@@ -1,6 +1,6 @@
 LineOfSight = {
 
-  handleLineOfSight: function(fog_of_war, side, ignore_sight_outlines) {
+  handleLineOfSight: function(side, ignore_sight_outlines) {
     var seeing_entities = [];
     var friendly_units = [];
     if (side !== undefined) friendly_units = Units.getFriendlyUnits(side);
@@ -18,7 +18,7 @@ LineOfSight = {
     this.points_in_sight[side] = points;
     var units_in_sight = this.unitLineOfSight(points, side);
 
-    if (fog_of_war) {
+    if (Game.fog_of_war) {
       this.allEntitiesVisible('Shadow');
       var fog_in_sight = this.tileLineOfSight(points, side);
       this.makeInvisible(fog_in_sight);
@@ -125,7 +125,7 @@ LineOfSight = {
   },
 
   hideSightOutlines: function() {
-    Crafty.trigger("RemoveBoxSurrounds");
+    Crafty.trigger("RemoveSightLines");
   },
 
   unitLineOfSight: function(visible_points, side) {

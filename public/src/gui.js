@@ -20,10 +20,9 @@ var GUI = {
     }
   },
 
-  displayCitySupplyRanges: function(enabled, side) {
-    console.log("enabled");
-    console.log(enabled);
-    if (!enabled) return false;
+  displayCitySupplyRanges: function(side) {
+    Crafty.trigger("RemoveSupplyDisplays");
+    if (!Game.city_supply_ranges) return false;
     if (side === undefined) return false;
 
     var points = Supply.getCitySupplyArea(side);
@@ -37,6 +36,7 @@ var GUI = {
     new_surround_object.at(x, y);
 
     if (style == 'enemy sight range') {
+      new_surround_object.addComponent('SightLine');
       if (adjacent.x < x) {
         new_surround_object.addComponent('spr_box_surround_enemy_left');
       } else if (adjacent.x > x) {
@@ -47,18 +47,8 @@ var GUI = {
         new_surround_object.addComponent('spr_box_surround_enemy_bottom');
       }
 
-    } else if (style == 'all cities supply range') {
-      if (adjacent.x < x) {
-        new_surround_object.addComponent('spr_box_surround_teal_left');
-      } else if (adjacent.x > x) {
-        new_surround_object.addComponent('spr_box_surround_teal_right');
-      } else if (adjacent.y < y) {
-        new_surround_object.addComponent('spr_box_surround_teal_top');
-      } else if (adjacent.y > y) {
-        new_surround_object.addComponent('spr_box_surround_teal_bottom');
-      }
-
     } else if (style == 'ally sight range') {
+      new_surround_object.addComponent('SightLine');
       if (adjacent.x < x) {
         new_surround_object.addComponent('spr_box_surround_left');
       } else if (adjacent.x > x) {
@@ -67,6 +57,18 @@ var GUI = {
         new_surround_object.addComponent('spr_box_surround_top');
       } else if (adjacent.y > y) {
         new_surround_object.addComponent('spr_box_surround_bottom');
+      }
+
+    } else if (style == 'all cities supply range') {
+      new_surround_object.addComponent('SupplyDisplay');
+      if (adjacent.x < x) {
+        new_surround_object.addComponent('spr_box_surround_teal_left');
+      } else if (adjacent.x > x) {
+        new_surround_object.addComponent('spr_box_surround_teal_right');
+      } else if (adjacent.y < y) {
+        new_surround_object.addComponent('spr_box_surround_teal_top');
+      } else if (adjacent.y > y) {
+        new_surround_object.addComponent('spr_box_surround_teal_bottom');
       }
 
     } else {

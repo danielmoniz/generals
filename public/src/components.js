@@ -507,6 +507,22 @@ Crafty.c('BoxSurround', {
 
 });
 
+Crafty.c('SightLine', {
+  init: function() {
+    this.bind("RemoveSightLines", this.destroy);
+    return this;
+  },
+
+});
+
+Crafty.c('SupplyDisplay', {
+  init: function() {
+    this.bind("RemoveSupplyDisplays", this.destroy);
+    return this;
+  },
+
+});
+
 var RetreatBlockComponents = {
   friendly: {
     left: 'spr_retreat_block_left_green',

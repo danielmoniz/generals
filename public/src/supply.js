@@ -31,8 +31,12 @@ var Supply = {
 
     var points = [];
     var cities = Entity.get('City');
-    for (var i in cities) {
-      var city = cities[i];
+    var owned_cities = cities.filter(function(city) {
+      return !city.ruined && city.owner == side;
+    });
+
+    for (var i in owned_cities) {
+      var city = owned_cities[i];
       var start = graph.grid[city.at().x][city.at().y];
 
       var supply_range_per_turn = [city.supply_range, 0];

@@ -55,6 +55,7 @@ var Action = {
    * Eg. the scene should always be redrawn after actions.
    */
   postAction: function() {
+    GUI.displayCitySupplyRanges(Game.player);
     Crafty.trigger('RenderScene');
   },
 
@@ -87,10 +88,7 @@ var Action = {
 
   toggleCitySupplyRanges: function(name) {
     this.toggleOption(name);
-    console.log('toggling city supply ranges to:');
-    console.log(Game[name]);
-    console.log(name);
-    GUI.displayCitySupplyRanges(Game.city_supply_ranges, Game.player);
+    GUI.displayCitySupplyRanges(Game.player);
   },
 
   leftClick: function(entity, selected) {
