@@ -18,7 +18,7 @@ LineOfSight = {
     this.points_in_sight[side] = points;
     var units_in_sight = this.unitLineOfSight(points, side);
 
-    if (Game.fog_of_war) {
+    if (fog_of_war) {
       this.allEntitiesVisible('Shadow');
       var fog_in_sight = this.tileLineOfSight(points, side);
       this.makeInvisible(fog_in_sight);
@@ -52,24 +52,12 @@ LineOfSight = {
       }
     }
 
-    var positional_points = this.getSpacialArrayFromList(points);
+    var positional_points = Utility.getSpacialArrayFromList(points);
     for (var i in points) {
       var point = points[i];
     }
 
     return positional_points;
-  },
-
-  getSpacialArrayFromList: function(points) {
-    var spacial = [];
-    for (var i in points) {
-      var x = points[i].x;
-      var y = points[i].y;
-      if (spacial[x] === undefined) spacial[x] = [];
-      // @TODO This should probably be a coordinate (or be false/undefined)
-      spacial[x][y] = true;
-    }
-    return spacial;
   },
 
   handleSightOutlines: function(side) {
@@ -78,13 +66,13 @@ LineOfSight = {
     var points_in_sight = this.points_in_sight[side];
 
     if (Game.ally_sight_lines && side !== undefined) {
-      this.outlineVisibleRegions(points_in_sight);
+      GUI.outlineVisibleRegions(points_in_sight, 'ally sight range');
     }
 
     if (Game.enemy_sight_lines) {
       var enemy_units_in_sight = this.getEnemyUnitsInSight(side);
       var points = this.determinePointsInSight(enemy_units_in_sight);
-      this.outlineVisibleRegions(points, 'enemy');
+      GUI.outlineVisibleRegions(points, 'enemy sight range');
     }
   },
 
@@ -138,54 +126,6 @@ LineOfSight = {
 
   hideSightOutlines: function() {
     Crafty.trigger("RemoveBoxSurrounds");
-  },
-
-  outlineVisibleRegions: function(coords_in_sight, enemy) {
-
-    for (var x in coords_in_sight) {
-      for (var y in coords_in_sight[x]) {
-        var point = { x: x, y: y };
-        var adjacent_points = Utility.getPointsWithinDistance(point, 1, Game.map_grid);
-        for (var i in adjacent_points) {
-          var adjacent = adjacent_points[i];
-
-          if (!coords_in_sight[adjacent.x] || !coords_in_sight[adjacent.x][adjacent.y]) {
-            // @TODO Should find a more efficient way than creating every time
-            // Eg. recycle tiles, or build entirely at the start and re-use
-            this.renderOutline(point, adjacent, enemy);
-          }
-        }
-      }
-    }
-  },
-
-  renderOutline: function(point, adjacent, enemy) {
-    var new_surround_object = Entity.create('BoxSurround');
-    var x = point.x;
-    var y = point.y;
-    new_surround_object.at(x, y);
-
-    if (enemy) {
-      if (adjacent.x < x) {
-        new_surround_object.addComponent('spr_box_surround_enemy_left');
-      } else if (adjacent.x > x) {
-        new_surround_object.addComponent('spr_box_surround_enemy_right');
-      } else if (adjacent.y < y) {
-        new_surround_object.addComponent('spr_box_surround_enemy_top');
-      } else if (adjacent.y > y) {
-        new_surround_object.addComponent('spr_box_surround_enemy_bottom');
-      }
-    } else {
-      if (adjacent.x < x) {
-        new_surround_object.addComponent('spr_box_surround_left');
-      } else if (adjacent.x > x) {
-        new_surround_object.addComponent('spr_box_surround_right');
-      } else if (adjacent.y < y) {
-        new_surround_object.addComponent('spr_box_surround_top');
-      } else if (adjacent.y > y) {
-        new_surround_object.addComponent('spr_box_surround_bottom');
-      }
-    }
   },
 
   unitLineOfSight: function(visible_points, side) {

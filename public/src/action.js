@@ -85,6 +85,14 @@ var Action = {
     EnemyMoves.displayEnemyMoves(Game.player, Game.turn);
   },
 
+  toggleCitySupplyRanges: function(name) {
+    this.toggleOption(name);
+    console.log('toggling city supply ranges to:');
+    console.log(Game[name]);
+    console.log(name);
+    GUI.displayCitySupplyRanges(Game.city_supply_ranges, Game.player);
+  },
+
   leftClick: function(entity, selected) {
     if (!selected) {
       Game.select(entity);

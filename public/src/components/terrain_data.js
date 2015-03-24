@@ -85,6 +85,7 @@ var TerrainData = function(type, stats) {
       sight_impedance: 6,
       max_sight: 2.4,
       passive_capture: false,
+      supply_range: 5,
     },
 
     "Town": {
@@ -98,6 +99,7 @@ var TerrainData = function(type, stats) {
       provides_supply: 2000,
       sight_impedance: 3.5,
       passive_capture: true,
+      supply_range: 1.6,
     },
 
     "Road": {

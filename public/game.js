@@ -132,6 +132,7 @@ Game = {
 
     // re-update line of sight after battles may have been cleared
     LineOfSight.handleLineOfSight(Game.fog_of_war, this.player);
+    GUI.displayCitySupplyRanges(this.city_supply_ranges, this.player);
     EnemyMoves.displayEnemyMoves(this.player, this.turn);
 
     this.map_creator.updateMovementDifficultyData(this, this, this.terrain_difficulty_with_roads);

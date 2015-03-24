@@ -504,8 +504,8 @@ Crafty.c('Unit', {
     var start = graph.grid[this.at().x][this.at().y];
     var end = graph.grid[target.at().x][target.at().y];
 
-    var supply_blockers = this.getSupplyBlockers();
-    this.makeEntitiesUnreachable(graph.grid, supply_blockers);
+    var supply_blockers = Supply.getSupplyBlockers(this.side);
+    Supply.makeEntitiesUnreachable(graph.grid, supply_blockers);
 
     var supply_route = Game.pathfind.search(graph, start, end);
     if (supply_route.length == 0) is_supplied = false;
@@ -517,6 +517,30 @@ Crafty.c('Unit', {
   },
 
   isSuppliedByCities: function(side) {
+    var all_cities = Entity.get('City');
+    var that = this;
+    var owned_cities = all_cities.filter(function(city) {
+      return city.owner == that.side;
+    });
+
+    var graph = new Graph(Game.terrain_difficulty_with_roads);
+    var end = graph.grid[this.at().x][this.at().y];
+    var supply_blockers = Supply.getSupplyBlockers(this.side);
+    Supply.makeEntitiesUnreachable(graph.grid, supply_blockers);
+
+    for (var i in owned_cities) {
+      var city = owned_cities[i];
+      var start = graph.grid[city.at().x][city.at().y];
+
+      var supply_range_per_turn = [city.supply_range, 0];
+      var supply_route = Game.pathfind.search(graph, start, end, supply_range_per_turn);
+      if (supply_route.length > 0) {
+        if (this.battle) return this.isSuppliedInBattle(graph, end);
+        return true;
+      }
+    }
+
+    return false;
   },
 
   /*
@@ -558,29 +582,6 @@ Crafty.c('Unit', {
       };
       var my_supply_route = direction_map[this.side];
       return retreat_info[my_supply_route.x][my_supply_route.y];
-  },
-
-  makeEntitiesUnreachable: function(grid, entities) {
-    for (var i in entities) {
-      var entity = entities[i];
-      grid[entity.at().x][entity.at().y].weight = 0;
-    }
-  },
-
-  getSupplyBlockers: function() {
-    var supply_blockers = [];
-    var enemy_units = Units.getEnemyUnits(this.side);
-    for (var i=0; i<enemy_units.length; i++) {
-      if (enemy_units[i].getActive() >= Game.min_troops_for_supply_cut) {
-        supply_blockers.push(enemy_units[i]);
-      }
-
-      // Uncomment below line for supply overlay
-      //Crafty.e('NoSupply').at(unit.at().x, unit.at().y);
-    }
-
-    supply_blockers = supply_blockers.concat(Entity.get('Fire'));
-    return supply_blockers;
   },
 
   sufferAttrition: function() {

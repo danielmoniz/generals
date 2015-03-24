@@ -199,6 +199,7 @@ $(document).ready(function() {
   //$('input[name=fog_of_war]').click();
   //$("input[name=advanced_victory]").click();
   //$("input[name=line_of_sight_blocking]").click();
+  //$("input[name=city_based_supply]").click();
   //$("#start-game").click();
 
   $('#test_button').click(function() {

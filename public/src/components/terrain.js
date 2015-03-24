@@ -47,6 +47,7 @@ Crafty.c('Terrain', {
       flammable: false,
       on_fire: false,
       burned: true,
+      ruined: true,
 
       supply_to_steal: false,
     };

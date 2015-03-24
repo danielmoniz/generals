@@ -219,6 +219,18 @@ var Utility = {
     return Math.round(number * 100) / 100;
   },
 
+  getSpacialArrayFromList: function(points) {
+    var spacial = [];
+    for (var i in points) {
+      var x = points[i].x;
+      var y = points[i].y;
+      if (spacial[x] === undefined) spacial[x] = [];
+      // @TODO This should probably be a coordinate (or be false/undefined)
+      spacial[x][y] = true;
+    }
+    return spacial;
+  },
+
 }
 
 if (!String.prototype.format) {

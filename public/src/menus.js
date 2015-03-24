@@ -33,6 +33,10 @@ var Overlays = {
         name: 'enemy_movement',
         hotkey: 'm',
       },
+      {
+        name: 'city_supply_ranges',
+        hotkey: 'g',
+      },
     ];
 
     $(document).off('keypress.menu');
