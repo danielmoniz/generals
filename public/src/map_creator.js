@@ -27,12 +27,14 @@ var MapCreator = function(options) {
   this.options = options;
 
   this.buildNewMap = function(options) {
+    this.Game.section_widths = this.getWidthOfSections(options);
+    this.adjustMapSizeForNumberOfSections(options, this.Game.section_widths);
+    this.Game.section_positions = this.getPositionOfSections(this.Game);
+
     this.Game.height_map = this.generateHeightMap(options, options.location);
     this.buildEmptyGameData(options, this.Game);
     this.addWater(options, this.Game, options.location);
 
-    this.Game.section_widths = this.getWidthOfSections(options);
-    this.Game.section_positions = this.getPositionOfSections(this.Game);
     var cities = this.addCities(options, this.Game, options.num_cities_total);
     var town_locations = this.addTownsAroundCities(options, this.Game, cities);
     this.addFarms(options, this.Game, cities);
@@ -66,6 +68,66 @@ var MapCreator = function(options) {
    map_data.supply_route = this.Game.supply_route;
 
    return this.Game;
+  };
+
+  this.getWidthOfSections = function(options) {
+    var map_width = options.map_grid.width;
+    var section_widths = [];
+
+    var width_remaining = map_width;
+    var num_sections_left = options.num_sections;
+    var left_sections = [];
+    var right_sections_reversed = [];
+
+    while (num_sections_left >= 2) {
+      var exact_layer_width = width_remaining / num_sections_left;
+      var layer_width = Math.floor(exact_layer_width);
+      left_sections.push(layer_width);
+      right_sections_reversed.push(layer_width);
+
+      num_sections_left -= 2;
+      width_remaining -= layer_width * 2;
+    }
+
+    if (width_remaining && num_sections_left > 0) left_sections.push(width_remaining);
+    section_widths = section_widths.concat(left_sections);
+    section_widths = section_widths.concat(right_sections_reversed.reverse());
+
+    return section_widths;
+  };
+
+  /*
+   * Ensure both sides have an equal width by adjust total width.
+   */
+  this.adjustMapSizeForNumberOfSections = function(options, section_widths) {
+    var required_map_width = section_widths.reduce(
+      function(a, b) { return a + b; }, 0);
+    if (options.map_grid.width != required_map_width) {
+      console.log('Reducing map width by {0}'.format(options.map_grid.width - required_map_width));
+      options.map_grid.width = required_map_width;
+    }
+    return;
+
+    var width = options.map_grid.width;
+    var num_sections = options.num_sections;
+    if (width % num_sections != 0) {
+      if (num_sections == 2) {
+        options.map_grid.width -= width % num_sections;
+        console.log('Reducing map width by {0}'.format(width % num_sections));
+      }
+    }
+  };
+
+  this.getPositionOfSections = function(options) {
+    var widths = options.section_widths;
+    var divider_positions = [];
+    var sum = 0;
+    for (var i in widths) {
+      var width = sum + widths[i];
+      sum = width;
+      divider_positions.push(width);
+    }
+    return divider_positions;
   };
 
   this.buildEmptyGameData = function(options, game) {
@@ -126,6 +188,7 @@ var MapCreator = function(options) {
     var cities = [];
     var sections = game_object.section_positions;
     var base = 0;
+
     for (var i=0; i<sections.length; i++) {
       for (var y=0; y<vertical_sections; y++) {
         var min_x = base;
@@ -158,11 +221,7 @@ var MapCreator = function(options) {
     var width = max_x - min_x - 1;
     var height = max_y - min_y - 2;
 
-    var test = Math.floor(Math.sqrt((width * height) / estimated_cities)) * 3/4;
-
-    var min_separation = (width + height) / (2 * estimated_cities);
-    var min_separation = Math.pow(width * height, 1/estimated_cities);
-    var min_separation = test;
+    var min_separation = Math.floor(Math.sqrt((width * height) / estimated_cities)) * 3/4;
     var num_tiles = (max_y - min_y) * (max_x - min_x);
     var num_tiles_remaining = num_tiles;
     var bad_locations = [];
@@ -288,32 +347,6 @@ var MapCreator = function(options) {
     }
 
     return town_locations;
-  };
-
-  this.getWidthOfSections = function(options) {
-    var map_width = options.map_grid.width;
-    var perfect_width = map_width / options.num_sections;
-    var floor = Math.floor(perfect_width);
-    if (map_width % options.num_sections == 0) {
-      return [perfect_width, perfect_width, perfect_width];
-    } else if (map_width % options.num_sections == 1) {
-      return [floor, floor + 1, floor];
-    } else if (map_width % options.num_sections == 2) {
-      return [floor + 1, floor, floor + 1];
-    }
-    throw new Error('InvalidOptions', "num_sections should be 3.");
-  };
-
-  this.getPositionOfSections = function(options) {
-    var widths = options.section_widths;
-    var divider_positions = [];
-    var sum = 0;
-    for (var i in widths) {
-      var width = sum + widths[i];
-      sum = width;
-      divider_positions.push(width);
-    }
-    return divider_positions;
   };
 
   this.getMapSide = function(options, x) {
