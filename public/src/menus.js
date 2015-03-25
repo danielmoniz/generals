@@ -36,11 +36,23 @@ var Overlays = {
       {
         name: 'city_supply_ranges',
         hotkey: 'g',
+        prerequisites: ['city_based_supply'],
       },
     ];
 
     $(document).off('keypress.menu');
     for (var i in option_data) {
+      var satisfies_prerequisites = true;
+      for (var j in option_data[i].prerequisites) {
+        var prereq = option_data[i].prerequisites[j];
+        var game_option = Game[prereq];
+        if (!game_option) {
+          satisfies_prerequisites = false;
+          break;
+        }
+      }
+      if (!satisfies_prerequisites) continue;
+
       var option = this.buildOverlayOption(option_data[i]);
       form.append(option);
     }

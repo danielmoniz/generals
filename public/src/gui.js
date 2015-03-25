@@ -21,6 +21,7 @@ var GUI = {
   },
 
   displayCitySupplyRanges: function(side) {
+    if (!Game.city_based_supply) return false;
     Crafty.trigger("RemoveSupplyDisplays");
     if (!Game.city_supply_ranges) return false;
     if (side === undefined) return false;
