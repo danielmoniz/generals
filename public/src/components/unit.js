@@ -488,7 +488,6 @@ Crafty.c('Unit', {
 
     if (Game.city_based_supply) return this.isSuppliedByCities(side);
     else return this.isSuppliedBySupplyRoute(side);
-
   },
 
   isSuppliedBySupplyRoute: function(side) {
@@ -517,29 +516,26 @@ Crafty.c('Unit', {
   },
 
   isSuppliedByCities: function(side) {
-    var all_cities = Entity.get('City');
     var that = this;
-    var owned_cities = all_cities.filter(function(city) {
-      return city.owner == that.side;
-    });
+    var owned_settlements = Supply.getOwnedSettlements(side);
 
     var graph = new Graph(Game.terrain_difficulty_with_roads);
     var end = graph.grid[this.at().x][this.at().y];
     var supply_blockers = Supply.getSupplyBlockers(this.side);
     Supply.makeEntitiesUnreachable(graph.grid, supply_blockers);
 
-    for (var i in owned_cities) {
-      var city = owned_cities[i];
-      var start = graph.grid[city.at().x][city.at().y];
+    for (var i in owned_settlements) {
+      var settlement = owned_settlements[i];
+      var start = graph.grid[settlement.at().x][settlement.at().y];
 
-      if (this.isAtLocation(city.at())) {
+      if (this.isAtLocation(settlement.at())) {
         if (!this.battle || this.battle_side == 'defender') {
           return true;
         }
         return false;
       }
 
-      var supply_range_per_turn = [city.supply_range, 0];
+      var supply_range_per_turn = [settlement.supply_range, 0];
       var supply_route = Game.pathfind.search(graph, start, end, supply_range_per_turn);
       if (supply_route.length > 0) {
         if (this.battle) return this.isSuppliedInBattle(graph, end);

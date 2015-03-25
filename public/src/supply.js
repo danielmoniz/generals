@@ -30,23 +30,28 @@ var Supply = {
     Supply.makeEntitiesUnreachable(graph.grid, supply_blockers);
 
     var points = [];
-    var cities = Entity.get('City');
-    var owned_cities = cities.filter(function(city) {
-      return !city.ruined && city.owner == side;
-    });
+    var owned_settlements = this.getOwnedSettlements(side);
 
-    for (var i in owned_cities) {
-      var city = owned_cities[i];
-      var start = graph.grid[city.at().x][city.at().y];
+    for (var i in owned_settlements) {
+      var settlement = owned_settlements[i];
+      var start = graph.grid[settlement.at().x][settlement.at().y];
 
-      var supply_range_per_turn = [city.supply_range, 0];
+      var supply_range_per_turn = [settlement.supply_range, 0];
       var reachable_points = Game.pathfind.findReachablePoints(graph, start, supply_range_per_turn);
-      reachable_points.push(city.at());
+      reachable_points.push(settlement.at());
       points = points.concat(reachable_points);
     }
 
     var spacial_points = Utility.getSpacialArrayFromList(points);
     return spacial_points;
+  },
+
+  getOwnedSettlements: function(side) {
+    var settlements = Entity.get('Settlement');
+    var owned_settlements = settlements.filter(function(settlement) {
+      return !settlement.ruined && settlement.owner == side;
+    });
+    return owned_settlements;
   },
 
 };
