@@ -208,7 +208,7 @@ Crafty.c('Unit', {
     }
     if (local_terrain.base_type == 'Settlement' && local_terrain.side != this.side && !local_terrain.sacked) {
       actions.push("sack");
-      if (this.canCaptureTerrain(local_terrain)) {
+      if (this.getActive() > Game.min_troops_for_capture && this.canCaptureTerrain(local_terrain)) {
         actions.push("capture");
       }
     }
