@@ -520,25 +520,25 @@ Crafty.c('Unit', {
     var owned_settlements = Supply.getOwnedSettlements(side);
 
     var graph = new Graph(Game.terrain_difficulty_with_roads);
-    var end = graph.grid[this.at().x][this.at().y];
+    var start = graph.grid[this.at().x][this.at().y];
     var supply_blockers = Supply.getSupplyBlockers(this.side);
     Supply.makeEntitiesUnreachable(graph.grid, supply_blockers);
 
     for (var i in owned_settlements) {
       var settlement = owned_settlements[i];
-      var start = graph.grid[settlement.at().x][settlement.at().y];
+      var end = graph.grid[settlement.at().x][settlement.at().y];
 
       if (this.isAtLocation(settlement.at())) {
         if (!this.battle || this.battle_side == 'defender') {
           return true;
         }
-        return false;
+        continue;
       }
 
       var supply_range_per_turn = [settlement.supply_range, 0];
       var supply_route = Game.pathfind.search(graph, start, end, supply_range_per_turn);
       if (supply_route.length > 0) {
-        if (this.battle) return this.isSuppliedInBattle(graph, end);
+        if (this.battle) return this.isSuppliedByCitiesInBattle(graph, end, settlement.supply_range);
         return true;
       }
     }
@@ -561,9 +561,39 @@ Crafty.c('Unit', {
       var space = spaces[i];
       var local_terrain = Game.terrain[space.x][space.y];
       if (local_terrain.move_difficulty == 0) continue; // impassible
+      // @TODO If adjacent space on supply end point, return true
       if (!local_terrain.supply && !Game.roads[space.x][space.y]) continue; // not a road/bridge/city
       var start = graph.grid[space.x][space.y];
       var supply_route = Game.pathfind.search(graph, start, supply_end_point);
+
+      if (supply_route.length > 0) return true;
+    }
+    return false;
+  },
+
+  /*
+   * Assumes that the location with the army can be supplied (ie. that this has
+   * already been checked).
+   */
+  isSuppliedByCitiesInBattle: function(graph, supply_end_point, range) {
+    var battle = this.isBattlePresent();
+    var retreat_constraints = battle.getRetreatConstraints(this.at());
+
+    var spaces = retreat_constraints.getAdjacentUnblockedSpaces(this.battle_side, Game.map_grid);
+    var route_cost = undefined;
+
+    for (var i in spaces) {
+      var space = spaces[i];
+      var local_terrain = Game.terrain[space.x][space.y];
+      if (local_terrain.move_difficulty == 0) continue; // impassible
+      // @TODO Handle supply endpoint being adjacent
+      if (space.x == supply_end_point.x && space.y == supply_end_point.y) return true;
+
+      var start = graph.grid[space.x][space.y];
+      var tile_difficulty = Game.terrain_difficulty_with_roads[space.x][space.y];
+      var tile_difficulty = graph.grid[space.x][space.y].weight;
+      var supply_range_per_turn = [range - tile_difficulty, 0];
+      var supply_route = Game.pathfind.search(graph, start, supply_end_point, supply_range_per_turn);
 
       if (supply_route.length > 0) return true;
     }
