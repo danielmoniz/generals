@@ -1,6 +1,7 @@
 
 if (typeof require !== 'undefined') {
   Utility = require("./utility");
+  GUI = require("./gui");
 }
 
 /*

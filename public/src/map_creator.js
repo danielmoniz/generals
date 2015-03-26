@@ -81,7 +81,11 @@ var MapCreator = function(options) {
 
     while (num_sections_left >= 2) {
       var exact_layer_width = width_remaining / num_sections_left;
-      var layer_width = Math.floor(exact_layer_width);
+      if (num_sections_left > 2) {
+        var layer_width = Math.round(exact_layer_width);
+      } else {
+        var layer_width = Math.floor(exact_layer_width);
+      }
       left_sections.push(layer_width);
       right_sections_reversed.push(layer_width);
 
