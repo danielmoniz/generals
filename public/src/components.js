@@ -56,10 +56,16 @@ Crafty.c('Grid', {
     var at = this.at();
     return at.x;
   },
+
   getY: function() {
     var at = this.at();
     return at.y;
   },
+
+  getLocalTerrain: function() {
+    return Game.terrain[this.at().x][this.at().y];
+  },
+
 });
 
 // An "Actor" is an entity that is drawn in 2D on canvas

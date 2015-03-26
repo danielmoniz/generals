@@ -26,7 +26,7 @@ var GUI = {
     if (!Game.city_supply_ranges) return false;
     if (side === undefined) return false;
 
-    var points = Supply.getCitySupplyArea(side);
+    var points = Supply.getCitySupplyArea(side, false);
     GUI.outlineVisibleRegions(points, 'all cities supply range');
   },
 

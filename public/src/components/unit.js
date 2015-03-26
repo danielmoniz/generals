@@ -258,26 +258,9 @@ Crafty.c('Unit', {
     // NOTE: since enemy units have stop points around them, no enemy units
     // will be reachable! Ensure that enemy units are highlighted if they 
     // can be reached.
-    var enemy_units = LineOfSight.getEnemyUnitsInSight(this.side);
     graph = new Graph(Game.terrain_difficulty_with_roads);
-    var start = graph.grid[this.at().x][this.at().y];
-    for (var i in enemy_units) {
-      var unit = enemy_units[i];
-      var target = unit.at();
-      if (target.x == this.at().x && target.y == this.at().y) continue;
-      var end = graph.grid[target.x][target.y];
-      var stop_points = this.getStopPoints(target, this.at(), all_enemies);
-
-      var new_path = Game.pathfind.search(graph, start, end, movement, stop_points);
-      // @TODO This feels hacky. Should update pathing library return path cost
-      // data, eg. how many turns it takes to get to each tile
-      var partial_path = Pathing.getPartialPath(new_path, movement, stop_points);
-      if (!new_path || partial_path.length != new_path.length) {
-        continue;
-      }
-      //if (!new_path || new_path[new_path.length - 1].turns > 0) continue;
-      possible_moves.push({ x: unit.at().x, y: unit.at().y});
-    }
+    var enemy_units = LineOfSight.getEnemyUnitsInSight(this.side);
+    this.addReachableEnemyUnitsToPoints(graph, possible_moves, this.at(), enemy_units, all_enemies, movement);
 
     this.possible_moves = [];
     for (var i in possible_moves) {
@@ -285,6 +268,29 @@ Crafty.c('Unit', {
       this.possible_moves.push(Game.possible_moves[node.x][node.y]);
     }
 
+  },
+
+  addReachableEnemyUnitsToPoints: function(graph, points, location, enemy_units, all_enemies, range) {
+    var start = graph.grid[location.x][location.y];
+    for (var i in enemy_units) {
+      var unit = enemy_units[i];
+      var target = unit.at();
+      if (target.x == location.x && target.y == location.y) continue;
+      var end = graph.grid[target.x][target.y];
+      var stop_points = this.getStopPoints(target, location, all_enemies);
+
+      var new_path = Game.pathfind.search(graph, start, end, range, stop_points);
+      // @TODO This feels hacky. Should update pathing library return path cost
+      // data, eg. how many turns it takes to get to each tile
+      var partial_path = Pathing.getPartialPath(new_path, range, stop_points);
+      if (!new_path || partial_path.length != new_path.length) {
+        continue;
+      }
+      //if (!new_path || new_path[new_path.length - 1].turns > 0) continue;
+      points.push({ x: unit.at().x, y: unit.at().y});
+    }
+
+    return points;
   },
 
   updateActionChoices: function(location) {
@@ -500,6 +506,9 @@ Crafty.c('Unit', {
     }
 
     var graph = new Graph(Game.terrain_supply);
+    // @TODO Needs to be reversed - currently calculating from the unit to the
+    // supply source, which could cause incorrectness. But reversing causes
+    // units in battle to be unsupplied no matter what!
     var start = graph.grid[this.at().x][this.at().y];
     var end = graph.grid[target.at().x][target.at().y];
 
@@ -516,33 +525,8 @@ Crafty.c('Unit', {
   },
 
   isSuppliedByCities: function(side) {
-    var that = this;
-    var owned_settlements = Supply.getOwnedSettlements(side);
-
-    var graph = new Graph(Game.terrain_difficulty_with_roads);
-    var start = graph.grid[this.at().x][this.at().y];
-    var supply_blockers = Supply.getSupplyBlockers(this.side);
-    Supply.makeEntitiesUnreachable(graph.grid, supply_blockers);
-
-    for (var i in owned_settlements) {
-      var settlement = owned_settlements[i];
-      var end = graph.grid[settlement.at().x][settlement.at().y];
-
-      if (this.isAtLocation(settlement.at())) {
-        if (!this.battle || this.battle_side == 'defender') {
-          return true;
-        }
-        continue;
-      }
-
-      var supply_range_per_turn = [settlement.supply_range, 0];
-      var supply_route = Game.pathfind.search(graph, start, end, supply_range_per_turn);
-      if (supply_route.length > 0) {
-        if (this.battle) return this.isSuppliedByCitiesInBattle(graph, end, settlement.supply_range);
-        return true;
-      }
-    }
-
+    var points = Supply.getCitySupplyArea(side, 'use_all_enemies');
+    if (points[this.at().x] && points[this.at().x][this.at().y]) return true;
     return false;
   },
 
@@ -555,7 +539,6 @@ Crafty.c('Unit', {
     var retreat_constraints = battle.getRetreatConstraints(this.at());
 
     var spaces = retreat_constraints.getAdjacentUnblockedSpaces(this.battle_side, Game.map_grid);
-    var route_cost = undefined;
 
     for (var i in spaces) {
       var space = spaces[i];
@@ -580,7 +563,6 @@ Crafty.c('Unit', {
     var retreat_constraints = battle.getRetreatConstraints(this.at());
 
     var spaces = retreat_constraints.getAdjacentUnblockedSpaces(this.battle_side, Game.map_grid);
-    var route_cost = undefined;
 
     for (var i in spaces) {
       var space = spaces[i];
@@ -858,6 +840,9 @@ Crafty.c('Unit', {
       // if enemy is on target, ignore adjacent stop points
       // otherwise, add enemy adjacent regions as 'stop points'
       var enemy = enemy_units[i];
+
+      // @TODO Is this code necessary? Why iterate visible units if already
+      // filtered above?
       var enemy_was_visible = false;
       for (var j in this.visible_enemies) {
         var visible_enemy = this.visible_enemies[j];
@@ -1287,10 +1272,6 @@ Crafty.c('Unit', {
     if (this.z <= biggest_z) {
       this.z = biggest_z + 1;
     }
-  },
-
-  getLocalTerrain: function() {
-    return Game.terrain[this.at().x][this.at().y];
   },
 
 });

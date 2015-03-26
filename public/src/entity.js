@@ -47,7 +47,9 @@ var Entity = {
   /*
    * Takes a search string of components and returns a list of entities.
    */
-  get: function(search) {
+  get: function(search, flush_first) {
+    if (flush_first) this.flushSpecialCache(search);
+
     if (this.special_cache[search] !== undefined && Game.turn_count > 0) {
       return this.special_cache[search];
     }
