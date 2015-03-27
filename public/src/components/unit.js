@@ -202,7 +202,7 @@ Crafty.c('Unit', {
     if (local_terrain.type == 'Farm' && !local_terrain.pillaged) {
       actions.push("pillage");
     }
-    if (local_terrain.base_type == 'Settlement' && local_terrain.side != this.side && !local_terrain.sacked) {
+    if (local_terrain.base_type == 'Settlement' && local_terrain.owner != this.side && local_terrain.side != this.side && !local_terrain.sacked) {
       actions.push("sack");
       if (this.getActive() > Game.min_troops_for_capture && this.canCaptureTerrain(local_terrain)) {
         actions.push("capture");
@@ -238,7 +238,7 @@ Crafty.c('Unit', {
     if (!Game.render_possible_moves) return;
 
     var movement = this.movement;
-    if (this.battle && this.side == Game.turn) movement += 1;
+    if (this.battle && Game.turn == this.side) movement += 1;
 
     var graph = new Graph(Game.terrain_difficulty_with_roads);
     this.updateTerrainGraphWithRetreatBlocks(graph);
@@ -446,7 +446,7 @@ Crafty.c('Unit', {
 
     if (supplied) {
       var city = this.isCityPresent();
-      if (city && !city.sacked && city.supply_remaining > 0 && !this.battle) {
+      if (city && city.owner == this.side && !city.ruined && city.supply_remaining > 0 && !this.battle) {
         var num_to_heal = Game.city_healing_rate * this.injured;
         this.heal(num_to_heal);
       }
