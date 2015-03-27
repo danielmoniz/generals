@@ -85,6 +85,7 @@ var TerrainData = function(type, stats) {
       sight_impedance: 6,
       max_sight: 2.4,
       passive_capture: false,
+      capture_time: 1,
       supply_range: 5,
     },
 
@@ -98,7 +99,8 @@ var TerrainData = function(type, stats) {
       population: 2500,
       provides_supply: 2000,
       sight_impedance: 3.5,
-      passive_capture: true,
+      passive_capture: false,
+      capture_time: 1/2,
       supply_range: 1.6,
     },
 

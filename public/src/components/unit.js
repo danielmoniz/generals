@@ -78,10 +78,6 @@ Crafty.c('Unit', {
       this.visible_enemies = Units.getVisibleEnemyUnits(this.side);
     }
 
-    if (turn == this.side) {
-      this.captureTerrain('passive');
-    }
-
     this.testTargetAndPath();
 
     if (turn == (this.side + 0.5) % 2) {
@@ -223,10 +219,10 @@ Crafty.c('Unit', {
 
   actionPerformed: function(action) {
     var reduction = this.max_movement / 2;
-    var reduction_map = {
-      'capture': this.max_movement,
-    };
-    if (reduction_map[action]) reduction = reduction_map[action];
+    if (action == 'capture') {
+      var capture_time = this.getLocalTerrain().capture_time;
+      reduction = this.max_movement * capture_time;
+    }
     this.reduceMovement(reduction);
   },
 
