@@ -22,6 +22,32 @@ LineOfSight = {
       this.allEntitiesVisible('Shadow');
       var fog_in_sight = this.tileLineOfSight(points, side);
       this.makeInvisible(fog_in_sight);
+
+      var greyable = Entity.get('Hideable');
+      for (var i in greyable) {
+        var entity = greyable[i];
+        if (points[entity.at().x] && points[entity.at().x][entity.at().y]) {
+
+          entity.spot(side);
+          entity.visible = true;
+          if (entity.destroyed) entity.visible = false;
+
+        } else {
+          if (entity.spotted[side] == 'active') {
+            entity.visible = true;
+          } else if (entity.state == 'gone') {
+            entity.visible = false;
+          } else {
+            entity.visible = false;
+          }
+          entity.hide(side);
+        }
+
+        console.log("side");
+        console.log(side);
+        console.log("entity.spotted[side]");
+        console.log(entity.spotted[side]);
+      }
     }
 
     if (!ignore_sight_outlines) this.handleSightOutlines(side);
