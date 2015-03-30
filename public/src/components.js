@@ -498,6 +498,42 @@ Crafty.c('PossibleMove', {
 
 });
 
+Crafty.c('Hideable', {
+  init: function() {
+    this.spotted = [];
+  },
+
+  hide: function(side) {
+    this.waitToDestroy();
+  },
+
+  spot: function(side) {
+    this.spotted[side] = this.state;
+    if (this.spotted[0] == this.state && this.spotted[1] == this.state) {
+      this.canRemoveWhenNeeded();
+    }
+  },
+
+  canRemoveWhenNeeded: function() {
+    if (this.destroyed) this.destroyIfPossible();
+    this.can_destroy = true;
+  },
+
+  waitToDestroy: function() {
+    this.can_destroy = false;
+  },
+
+  destroyIfPossible: function() {
+    if (this.can_destroy) {
+      console.log('destroying entity: ********');
+      console.log(this);
+      Entity.destroy(this);
+    } else {
+      this.destroyed = true;
+    }
+  },
+});
+
 Crafty.c('BoxSurround', {
   init: function() {
     this.requires('Actor')
@@ -557,18 +593,27 @@ Crafty.c('RetreatBlock', {
 
 Crafty.c('Fire', {
   init: function() {
-    this.requires('Actor, spr_fire');
+    this.requires('Actor, Hideable, spr_fire');
     this.bind("SpreadFire", this.updateFire)
     this.z = 75;
+    this.z = 500;
     this.days_left = 3;
     this.turn_started = Game.turn;
 
     this.prob_extinguished_by_rain = .1;
     this.prob_contained_by_rain = .5;
+
+    this.state = 'active';
+    this.get_to_state = {
+      undefined: function(entity) { entity.visible = false; },
+      active: function(entity) { entity.visible = true; },
+      gone: function(entity) { entity.visible = false; },
+    };
   },
 
   updateFire: function() {
     if (Game.turn != this.turn_started) return false;
+    if (this.destroyed) return false;
 
     this.days_left -= 1;
     this.handleRain();
@@ -576,7 +621,8 @@ Crafty.c('Fire', {
     if (this.days_left <= 0) {
       var local_terrain = Game.terrain[this.at().x][this.at().y];
       local_terrain.burn();
-      this.destroy();
+      this.state = 'gone';
+      this.destroyIfPossible();
     }
   },
 

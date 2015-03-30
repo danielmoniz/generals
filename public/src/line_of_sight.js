@@ -27,26 +27,12 @@ LineOfSight = {
       for (var i in greyable) {
         var entity = greyable[i];
         if (points[entity.at().x] && points[entity.at().x][entity.at().y]) {
-
           entity.spot(side);
-          entity.visible = true;
-          if (entity.destroyed) entity.visible = false;
-
         } else {
-          if (entity.spotted[side] == 'active') {
-            entity.visible = true;
-          } else if (entity.state == 'gone') {
-            entity.visible = false;
-          } else {
-            entity.visible = false;
-          }
           entity.hide(side);
         }
 
-        console.log("side");
-        console.log(side);
-        console.log("entity.spotted[side]");
-        console.log(entity.spotted[side]);
+        entity.get_to_state[entity.spotted[side]](entity);
       }
     }
 

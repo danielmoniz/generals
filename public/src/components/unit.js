@@ -876,7 +876,7 @@ Crafty.c('Unit', {
       // @TODO Ensure only new positions are added to stop_points
     }
 
-    var fires = Entity.get('Fire');
+    var fires = Entity.getNonDestroyed('Fire');
     for (i in fires) {
       stop_points.push(fires[i].at());
     }

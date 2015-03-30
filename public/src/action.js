@@ -156,7 +156,7 @@ var Action = {
       unit.captureTerrain();
     } else if (action == "start_fire") {
       var local_terrain = unit.getLocalTerrain();
-      local_terrain.ignite();
+      local_terrain.ignite(unit);
     } else if (action == "siege") {
       unit.siege();
     } else {

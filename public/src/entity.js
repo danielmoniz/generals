@@ -65,6 +65,14 @@ var Entity = {
     return result;
   },
 
+  getNonDestroyed: function(search, flush_first) {
+    var entities = this.get(search, flush_first);
+    var non_destroyed_entities = entities.filter(function(entity) {
+      return !entity.destroyed;
+    });
+    return non_destroyed_entities;
+  },
+
   flushCaches: function() {
     this.cache = {};
   },

@@ -23,8 +23,8 @@ Crafty.c('Terrain', {
     return this;
   },
 
-  ignite: function() {
-    Crafty.e('Fire').at(this.at().x, this.at().y);
+  ignite: function(unit) {
+    var fire = Crafty.e('Fire').at(this.at().x, this.at().y);
 
     var ignite_stats = {
       on_fire: true,
@@ -32,6 +32,8 @@ Crafty.c('Terrain', {
       provides_supply: 0,
     };
     this.addStats(ignite_stats);
+
+    if (unit !== undefined) fire.spot(unit.side);
   },
 
   extinguish: function() {
