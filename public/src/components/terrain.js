@@ -54,18 +54,9 @@ Crafty.c('Terrain', {
       supply_to_steal: false,
     };
     this.addStats(burned_stats);
+
     if (this.pillage) {
       this.pillage();
-    } else {
-      var extra_burned_stats = {
-        move_difficulty: 1.3,
-        defense_bonus: 1.05,
-      };
-      this.addStats(extra_burned_stats);
-      this.addComponent('Color');
-      if (this.has('Color')) {
-        this.addStat('colour', 'gray');
-      }
     }
   },
 
@@ -136,8 +127,38 @@ Crafty.c('Impassable', {
 // A Tree is just an actor with a certain color
 Crafty.c('Tree', {
   init: function() {
-    this.requires('spr_tree, Terrain, Passable');
+    this.requires('Terrain, Passable, Hideable, SpriteAnimation, spr_tree, Color');
+    this.reel('healthy', 1000, 0, 0, 1);
+    this.reel('ruined', 1000, 1, 0, 1);
+
+    this.state = 'healthy';
+    this.get_to_state = {
+      undefined: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      healthy: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      ruined: function(entity) {
+        entity.animate('ruined', -1);
+      },
+    };
   },
+
+  pillage: function() {
+    var extra_burned_stats = {
+      move_difficulty: 1.3,
+      defense_bonus: 1.05,
+    };
+    this.addStats(extra_burned_stats);
+
+    this.state = 'ruined';
+    this.get_to_state[this.state](this);
+
+    var supply = this.supply_to_steal;
+    return supply;
+  },
+
 });
 
 // Grass is just green, passable terrain
@@ -152,7 +173,7 @@ Crafty.c('Farm', {
   init: function() {
     this.requires('Terrain, Passable, Hideable, SpriteAnimation, spr_farm');
     this.reel('healthy', 1000, 0, 0, 1);
-    this.reel('ruined', 10000, 1, 0, 1);
+    this.reel('ruined', 1000, 1, 0, 1);
 
     this.state = 'healthy';
     this.get_to_state = {
