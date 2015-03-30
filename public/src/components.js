@@ -91,7 +91,7 @@ Crafty.c('Actor', {
       } else {
         var colour_string = dict['colour'];
       }
-      if (this.color() != colour_string) {
+      if (this.color && this.color() != colour_string) {
         this.color(colour_string);
       }
     }
@@ -596,7 +596,6 @@ Crafty.c('Fire', {
     this.requires('Actor, Hideable, spr_fire');
     this.bind("SpreadFire", this.updateFire)
     this.z = 75;
-    this.z = 500;
     this.days_left = 3;
     this.turn_started = Game.turn;
 

@@ -70,7 +70,6 @@ Crafty.c('Terrain', {
   },
 
   destroyTerrain: function(unit) {
-    this.destroyed = true;
     Victory.entityDestroyed(this, unit);
   },
 
@@ -151,13 +150,31 @@ Crafty.c('Grass', {
 // Farmland is open terrain that provides supply
 Crafty.c('Farm', {
   init: function() {
-    //this.requires('Terrain, Passable, Color');
-    this.requires('Terrain, Passable, Color, spr_farm');
+    this.requires('Terrain, Passable, Hideable, SpriteAnimation, spr_farm');
+    this.reel('healthy', 1000, 0, 0, 1);
+    this.reel('ruined', 10000, 1, 0, 1);
+
+    this.state = 'healthy';
+    this.get_to_state = {
+      undefined: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      healthy: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      ruined: function(entity) {
+        entity.animate('ruined', -1);
+      },
+    };
+
   },
 
   pillage: function(unit) {
+    this.state = 'ruined';
+    if (unit !== undefined) this.spot(unit.side);
+    this.get_to_state[this.state](this);
+
     var supply = this.supply_to_steal;
-    this.addNewComponent("PillagedFarm");
     this.addStats({
         pillaged: true,
         ruined: true,
@@ -171,12 +188,6 @@ Crafty.c('Farm', {
     return supply;
   },
 
-});
-
-Crafty.c('PillagedFarm', {
-  init: function() {
-    this.requires('spr_farm_pillaged, Terrain');
-  }
 });
 
 Crafty.c('Water', {
