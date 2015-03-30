@@ -38,28 +38,12 @@ var Supply = {
       return !unit.battle;
     });
 
-    var friendly_unit = units.friendly[0];
     var battles = Entity.get('Battle', 'flush first');
-    var barriers = [];
-    for (var i in battles) {
-      var battle = battles[i];
-      var retreat_constraints = battle.getRetreatConstraints(battle.at());
-      var battle_side = battle.getBattleSideFromPlayer(side);
-      var spaces = retreat_constraints.getAdjacentBlockedSpaces(battle_side, Game.map_grid);
-      for (var j in spaces) {
-        var barrier = {};
-        barrier.start = battle.at();
-        barrier.blocked = spaces[j];
-        barriers.push(barrier);
-        var barrier = {};
-        barrier.start = spaces[j];
-        barrier.blocked = battle.at();
-        barriers.push(barrier);
-      }
-    }
+    var barriers = this.getBattleBarriers(battles, side);
 
     var target = { x: -1, y: -1 };
     var current_location = { x: -1, y: -1 };
+    var friendly_unit = units.friendly[0];
     var stop_points = friendly_unit.getStopPoints(target, current_location, use_all_enemies);
 
     for (var i in owned_settlements) {
@@ -93,6 +77,24 @@ var Supply = {
 
     var spacial_points = Utility.getSpacialArrayFromList(points);
     return spacial_points;
+  },
+
+  getBattleBarriers: function(battles, side) {
+    var barriers = [];
+    for (var i in battles) {
+      var battle = battles[i];
+      var retreat_constraints = battle.getRetreatConstraints(battle.at());
+      var battle_side = battle.getBattleSideFromPlayer(side);
+      var spaces = retreat_constraints.getAdjacentBlockedSpaces(battle_side, Game.map_grid);
+      for (var j in spaces) {
+        var barrier_out = { start: battle.at(), blocked: spaces[j] };
+        barriers.push(barrier_out);
+        var barrier_in = { start: spaces[j], blocked: battle.at() };
+        barriers.push(barrier_in);
+      }
+    }
+
+    return barriers;
   },
 
   getOwnedSettlements: function(side) {
