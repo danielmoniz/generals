@@ -34,8 +34,29 @@ var Supply = {
       var enemy_units = Units.getVisibleEnemyUnits(side);
     }
 
+    var enemy_units = enemy_units.filter(function(unit) {
+      return !unit.battle;
+    });
+
     var friendly_unit = units.friendly[0];
     var battles = Entity.get('Battle', 'flush first');
+    var barriers = [];
+    for (var i in battles) {
+      var battle = battles[i];
+      var retreat_constraints = battle.getRetreatConstraints(battle.at());
+      var battle_side = battle.getBattleSideFromPlayer(side);
+      var spaces = retreat_constraints.getAdjacentBlockedSpaces(battle_side, Game.map_grid);
+      for (var j in spaces) {
+        var barrier = {};
+        barrier.start = battle.at();
+        barrier.blocked = spaces[j];
+        barriers.push(barrier);
+        var barrier = {};
+        barrier.start = spaces[j];
+        barrier.blocked = battle.at();
+        barriers.push(barrier);
+      }
+    }
 
     var target = { x: -1, y: -1 };
     var current_location = { x: -1, y: -1 };
@@ -66,67 +87,13 @@ var Supply = {
 
       var start = graph.grid[settlement.at().x][settlement.at().y];
 
-      var reachable_points = Game.pathfind.findReachablePoints(graph, start, settlement.supply_range, stop_points);
+      var reachable_points = Game.pathfind.findReachablePoints(graph, start, settlement.supply_range, stop_points, 1, barriers);
       points = points.concat(reachable_points);
-
-      var reachable_battles = this.getReachableBattlePoints(battles, stop_points, settlement.at(), settlement.supply_range, side);
-      points = points.concat(reachable_battles);
     }
 
     var spacial_points = Utility.getSpacialArrayFromList(points);
     return spacial_points;
   },
-
-  getReachableBattlePoints: function(battles, stop_points, supply_source, supply_range, side) {
-    var graph = new Graph(Game.terrain_difficulty_with_roads);
-    var supply_blockers = Entity.get('Fire');
-    this.makeEntitiesUnreachable(graph.grid, supply_blockers);
-
-    var points = [];
-    for (var i in battles) {
-      var battle = battles[i];
-      if (this.isBattleSupplied(graph, battle, supply_source, side, supply_range, stop_points)) {
-        points.push(battle.at());
-        console.log('battle supplied from:');
-        console.log(supply_source);
-      }
-    }
-    return points;
-  },
-
-  /*
-   * @TODO Needs update for future siege mechanics of battles on > 1 space.
-   */
-  isBattleSupplied: function(graph, battle, supply_source, side, supply_range, stop_points) {
-    var retreat_constraints = battle.getRetreatConstraints(battle.at());
-    var battle_side = battle.getBattleSideFromPlayer(side);
-
-    var spaces = retreat_constraints.getAdjacentUnblockedSpaces(battle_side, Game.map_grid);
-    var tile_difficulty = graph.grid[battle.at().x][battle.at().y].weight;
-
-    var start = graph.grid[supply_source.x][supply_source.y];
-    for (var i in spaces) {
-      var space = spaces[i];
-      var local_terrain = Game.terrain[space.x][space.y];
-      if (local_terrain.move_difficulty == 0) continue; // impassible
-      // @TODO Handle supply endpoint being adjacent with more pathing
-      if (space.x == supply_source.x && space.y == supply_source.y) return true;
-
-      var end = graph.grid[space.x][space.y];
-      //var tile_difficulty = Game.terrain_difficulty_with_roads[space.x][space.y];
-      var modified_supply_range = supply_range - tile_difficulty;
-
-      var max_per_turn = [modified_supply_range, 0];
-      var supply_route = Game.pathfind.search(graph, start, end, max_per_turn, stop_points);
-
-      if (supply_route.length > 0) {
-        return true;
-      }
-    }
-
-    return false;
-  },
-
 
   getOwnedSettlements: function(side) {
     var settlements = Entity.get('Settlement');

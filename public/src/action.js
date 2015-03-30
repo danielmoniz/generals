@@ -56,7 +56,9 @@ var Action = {
    * Eg. the scene should always be redrawn after actions.
    */
   postAction: function() {
-    GUI.displayCitySupplyRanges(Game.player);
+    if (Game && Game.player) {
+      GUI.displayCitySupplyRanges(Game.player);
+    }
     Crafty.trigger('RenderScene');
   },
 

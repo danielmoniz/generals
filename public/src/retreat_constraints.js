@@ -93,51 +93,44 @@ RetreatConstraints.prototype.isMoveTargetValid = function(side, location) {
  * Return actual map positions of unblocked spaces.
  */
 RetreatConstraints.prototype.getAdjacentUnblockedSpaces = function(side, map_grid) {
-  var spaces = [
-    { x: 0, y: 1 },
-    { x: 1, y: 0 },
-    { x: 1, y: 2 },
-    { x: 2, y: 1 },
-  ];
-
-  var unblocked = [];
-  for (var i in spaces) {
-    if (this.area[side][spaces[i].x][spaces[i].y]) {
-      var actual = this.convertToActual(spaces[i]);
-      if (actual.x < 0 || actual.x > map_grid.width - 1 || actual.y < 0 || actual.y > map_grid.height - 1) {
-        continue;
-      }
-      unblocked.push(actual);
-    }
-  }
-  return unblocked;
+  return this.getBlockedOrUnblockedSpaces(side, map_grid, true);
 };
 
 /*
- * Return actual map positions of unblocked spaces.
+ * Return actual map positions of blocked spaces.
  */
-/*
 RetreatConstraints.prototype.getAdjacentBlockedSpaces = function(side, map_grid) {
+  return this.getBlockedOrUnblockedSpaces(side, map_grid, false);
+};
+
+/*
+ * Returns adjacent blocked or unblocked spaces depending on parameters.
+ */
+RetreatConstraints.prototype.getBlockedOrUnblockedSpaces = function(side, map_grid, unblocked) {
+  var spaces = this.getAdjacentSpaces();
+  var valid_spaces = [];
+  for (var i in spaces) {
+    var space_value = this.area[side][spaces[i].x][spaces[i].y];
+    if (Boolean(space_value) == unblocked) {
+      var actual = this.convertToActual(spaces[i]);
+      if (actual.x < 0 || actual.x > map_grid.width - 1 || actual.y < 0 || actual.y > map_grid.height - 1) {
+        continue;
+      }
+      valid_spaces.push(actual);
+    }
+  }
+  return valid_spaces;
+};
+
+RetreatConstraints.prototype.getAdjacentSpaces = function() {
   var spaces = [
     { x: 0, y: 1 },
     { x: 1, y: 0 },
     { x: 1, y: 2 },
     { x: 2, y: 1 },
   ];
-
-  var blocked = [];
-  for (var i in spaces) {
-    if (!this.area[side][spaces[i].x][spaces[i].y]) {
-      var actual = this.convertToActual(spaces[i]);
-      if (actual.x < 0 || actual.x > map_grid.width - 1 || actual.y < 0 || actual.y > map_grid.height - 1) {
-        continue;
-      }
-      blocked.push(actual);
-    }
-  }
-  return blocked;
+  return spaces;
 };
-*/
 
 RetreatConstraints.prototype.resetCornersAndCentre = function() {
   this.area[0][0] = 1;
