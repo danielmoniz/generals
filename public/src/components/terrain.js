@@ -243,7 +243,13 @@ Crafty.c('Settlement', {
     var flag = Crafty.e('Flag').pickSide(side);
     flag.at(this.at().x, this.at().y);
     this.addStat('flag', flag);
+    var old_owner = this.owner;
     this.owner = side;
+
+    // inform previous owner of capturing their city
+    if (side == 1 - old_owner) {
+      flag.spot(old_owner);
+    }
   },
 
 });
@@ -309,8 +315,16 @@ Crafty.c('City', {
 
 Crafty.c('Flag', {
   init: function() {
-    this.requires('Actor');
+    this.requires('Actor, Hideable');
     this.z = 88;
+
+    this.state = 'active';
+    this.get_to_state = {
+      undefined: function(entity) { entity.visible = false; },
+      active: function(entity) { entity.visible = true; },
+      gone: function(entity) { entity.visible = false; },
+    };
+
     return this;
   },
 
