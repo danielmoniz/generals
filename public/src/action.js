@@ -49,6 +49,7 @@ var Action = {
    * Perform certain tasks before every user action.
    */
   preAction: function() {
+    if (typeof Output !== 'undefined') Output.clearMessage();
   },
 
   /*
@@ -154,9 +155,26 @@ var Action = {
       Output.updateVictoryBar();
     } else if (action == "capture") {
       unit.captureTerrain();
+
     } else if (action == "start_fire") {
       var local_terrain = unit.getLocalTerrain();
       local_terrain.ignite(unit);
+
+      // update unit possible moves/paths if they conflict with the fire
+      var units = Units.getFriendlyUnits(unit.side);
+      var here = unit.at();
+      for (var i in units) {
+        units[i].updatePossibleMoves();
+
+        var move_path = units[i].move_target_path;
+        var target = units[i].move_target;
+        if (target && here.x == target.x && here.y == target.y) {
+          units[i].deleteMoveTargetPath();
+        } else if (Utility.isPointInList(here, units[i].move_target_path)) {
+          units[i].prepareMove(target.x, target.y);
+        }
+      }
+
     } else if (action == "siege") {
       unit.siege();
     } else {

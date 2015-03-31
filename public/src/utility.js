@@ -231,6 +231,17 @@ var Utility = {
     return spacial;
   },
 
+  isPointInList: function(point, points) {
+    for (var i in points) {
+      var current_point = points[i];
+      if (point.x == current_point.x && point.y == current_point.y) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
 }
 
 if (!String.prototype.format) {

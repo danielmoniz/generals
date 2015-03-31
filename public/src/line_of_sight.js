@@ -72,6 +72,10 @@ LineOfSight = {
     return positional_points;
   },
 
+  getPointsInSight: function(side) {
+    return this.points_in_sight[side];
+  },
+
   handleSightOutlines: function(side) {
     if (side === undefined) side = Game.player;
     this.hideSightOutlines();

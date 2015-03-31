@@ -229,7 +229,6 @@ Crafty.c('Unit', {
   reduceMovement: function(reduction) {
     var new_movement = this.movement - reduction;
     this.movement = Math.max(new_movement, 0);
-    this.possible_moves = [];
     this.updatePossibleMoves();
     this.updateMovementPaths();
   },
@@ -242,6 +241,9 @@ Crafty.c('Unit', {
 
     var graph = new Graph(Game.terrain_difficulty_with_roads);
     this.updateTerrainGraphWithRetreatBlocks(graph);
+
+    var fires_in_sight = Query.getNonDestroyedFiresInSight(this.side);
+    Supply.makeEntitiesUnreachable(graph.grid, fires_in_sight);
 
     var target = false;
     var all_enemies = false;
@@ -697,8 +699,7 @@ Crafty.c('Unit', {
 
     if (this.at().x == target_x && this.at().y == target_y) {
       delete this.move_target;
-      this.updateMoveTargetPath('delete');
-      Pathing.destroyMovementPath(this.movement_path);
+      this.deleteMoveTargetPath();
       delete this.movement_path;
       return false;
     }
@@ -712,6 +713,9 @@ Crafty.c('Unit', {
     var target = { x: target_x, y: target_y };
 
     var graph = new Graph(Game.terrain_difficulty_with_roads);
+
+    var fires_in_sight = Query.getNonDestroyedFiresInSight(this.side);
+    Supply.makeEntitiesUnreachable(graph.grid, fires_in_sight);
 
     // @TODO Is this working at all? retreat_constraints requires target to be
     // adjacent to the battle!
@@ -734,7 +738,7 @@ Crafty.c('Unit', {
 
     var new_path = Game.pathfind.search(graph, start, end, movement, stop_points);
 
-    if (!new_path) {
+    if (new_path.length == 0) {
       Output.message("Target impossible to reach!");
       return false;
     }
@@ -936,10 +940,21 @@ Crafty.c('Unit', {
     stop_points = stop_points.concat(extra_stop_points);
     Utility.removeDuplicatePoints(stop_points);
 
+    var impassable = Entity.getNonDestroyed('Fire');
+
+    var impassable_points = [];
+    for (var i in impassable) {
+      impassable_points.push(impassable[i].at());
+    }
+
     // check for enemies that will be bumped into
     for (var i in partial_path) {
       this.last_location = this.at();
       var next_move = partial_path[i];
+
+      var end_movement = Utility.isPointInList(next_move, impassable_points);
+      if (end_movement) break;
+
       this.at(next_move.x, next_move.y);
       this.last_moves.push({ x: next_move.x, y: next_move.y });
       var new_path = this.move_target_path.slice(1, this.move_target_path.length);
@@ -948,13 +963,7 @@ Crafty.c('Unit', {
       this.moved();
       if (this.battle) break;
 
-      var end_movement = false;
-      for (var j in stop_points) {
-        if (this.isAtLocation(stop_points[j])) {
-          end_movement = true;
-          break;
-        }
-      }
+      var end_movement = Utility.isPointInList(this.at(), stop_points);
       if (end_movement) break;
     }
 
@@ -998,9 +1007,8 @@ Crafty.c('Unit', {
   },
 
   stop_unit: function() {
-    Pathing.destroyMovementPath(this.movement_path);
+    this.deleteMoveTargetPath();
     delete this.movement_path;
-    this.updateMoveTargetPath('delete');
     delete this.move_target;
     //this.stop = true;
   },
@@ -1219,6 +1227,11 @@ Crafty.c('Unit', {
       this.move_target = { x: end_node.x, y: end_node.y };
     }
     */
+  },
+
+  deleteMoveTargetPath: function() {
+    this.updateMoveTargetPath('delete');
+    Pathing.destroyMovementPath(this.movement_path);
   },
 
   charge: function() {
