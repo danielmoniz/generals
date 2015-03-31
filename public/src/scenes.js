@@ -167,7 +167,6 @@ Crafty.scene('Game', function() {
   }
 
   function addUnitsFromLoad() {
-    this.player.at(0, 0);
 
     var units = Game.starting_units;
     for (var side=0; side<2; side++) {
@@ -309,6 +308,15 @@ Crafty.scene('Game', function() {
 
   } else { // eg. local hotseat play
     startNewGame();
+  }
+
+  var sides = [0, 1];
+  for (var i in sides) {
+    var hideable = Entity.get('Hideable');
+    for (var j in hideable) {
+      var entity = hideable[j];
+      entity.spot(sides[i]);
+    }
   }
 
   if (Game.render_possible_moves) addPossibleMoves();
