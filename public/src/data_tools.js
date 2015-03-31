@@ -47,9 +47,9 @@ var DataTools = {
    */
   render: function() {
     if (this.stats.parent == 'Unit') {
-      var entity = Crafty.e('Unit');
+      var entity = Entity.create('Unit');
     } else {
-      var entity = Crafty.e(this.stats.type);
+      var entity = Entity.create(this.stats.type);
     }
     entity.addStats(this.stats);
     if (entity.setStats !== undefined) {

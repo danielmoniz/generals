@@ -127,7 +127,7 @@ Game = {
     Crafty.trigger("ResolveBattles");
     Crafty.trigger("EndBattles");
     Crafty.trigger("ResolveSieges");
-    this.flushCaches(); // run after battles complete for an up-to-date cache
+    this.flushCaches();
     // ------------------------------------
 
     // re-update line of sight after battles may have been cleared
@@ -188,7 +188,6 @@ Game = {
 
   flushCaches: function() {
     Units.flushCaches();
-    Entity.flushCaches();
   },
 
   nextTurnOnline: function() {

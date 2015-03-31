@@ -262,8 +262,6 @@ Crafty.c('City', {
       })
       .bind("NextTurn", this.handleSupply)
       ;
-      console.log("this");
-      console.log(this);
   },
 
   renderOthers: function() {

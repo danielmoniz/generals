@@ -7,44 +7,38 @@
  */
 var Entity = {
 
-  // @TODO Is the special cache needed?
   cache: {},
-  special_cache: {},
-  special_caches: [
-    'Unit',
-    'Battle',
-    'SimpleBattle',
-    'SiegeBattle',
-    'Fire',
+
+  // This is a list of important components that need to be kept updated.
+  // Primary components (eg. Unit, City, etc.) are kept updated automatically.
+  // Therefore only special secondary components need to be here.
+  keep_updated: [
+    'Hideable',
   ],
 
   /*
    * Takes a string of space separated components and creates a rendered
    * entity.
+   * @TODO Instead of flushing cache, simply add to it.
    */
-  create: function(components) {
-    var entity = Crafty.e(components);
-    this.flushCache(components);
-    this.flushSpecialCache(components);
+  create: function(component) {
+    //console.log('creating entity: {0}'.format(component));
+    var entity = Crafty.e(component);
+    if (entity.cached_as !== undefined) throw new Error('BadProperty', 'entity already has cached_as property');
+    entity.cached_as = component;
+
+    this.flushCache(component);
+    this.flushImportantCaches(entity);
     return entity;
   },
 
+  // @TODO Instead of flushing cache, simply remove from it.
   destroy: function(entity) {
-    var caches_to_flush =[];
-    for (var i in this.special_caches) {
-      var component = this.special_caches[i];
-      if (entity.has(component)) {
-        caches_to_flush.push(component);
-      }
-    }
-
+    //console.log('destroying entity: {0}'.format(entity.cached_as));
+    //console.log(entity);
     entity.destroy();
-
-    for (var i in caches_to_flush) {
-      var cache = caches_to_flush[i];
-      this.flushSpecialCache(cache);
-      this.flushCache(cache);
-    }
+    this.flushCache(entity.cached_as);
+    this.flushImportantCaches(entity);
   },
 
   /*
@@ -53,44 +47,38 @@ var Entity = {
   get: function(search, flush_first) {
     if (flush_first) {
       this.flushCache(search);
-      this.flushSpecialCache(search);
     }
 
-    if (this.special_cache[search] !== undefined && Game.turn_count > 0) {
-      return this.special_cache[search];
-    }
-    if (this.cache[search] !== undefined && Game.turn_count > 0) {
+    //if (this.cache[search] !== undefined && Game.turn_count > 0) {
+    if (this.cache[search] !== undefined) {
       return this.cache[search];
     }
     var result = Crafty(search).get();
-    if (this.special_caches.indexOf(search) > -1) {
-      this.special_cache[search] = result;
-    } else {
+    if (result.length) {
+      //console.log('building cache from search: {0}'.format(search));
+      //console.log(result.length);
       this.cache[search] = result;
     }
     return result;
   },
 
-  getNonDestroyed: function(search, flush_first) {
-    var entities = this.get(search, flush_first);
-    var non_destroyed_entities = entities.filter(function(entity) {
-      return !entity.destroyed;
-    });
-    return non_destroyed_entities;
-  },
-
   flushCache: function(search) {
+    //console.log('flushing cache: {0}'.format(search));
     this.cache[search] = undefined;
   },
 
   flushCaches: function() {
+    //console.log('flushing all caches');
     this.cache = {};
   },
 
-  flushSpecialCache: function(name) {
-    //console.log('Flushing special cache: {0}'.format(name));
-    delete this.special_cache[name];
+  flushImportantCaches: function(entity) {
+    for (var i in this.keep_updated) {
+      var component = this.keep_updated[i];
+      if (entity.has(component)) this.flushCache(component);
+    }
   },
+
 };
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

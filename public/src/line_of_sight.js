@@ -23,17 +23,7 @@ LineOfSight = {
       var fog_in_sight = this.tileLineOfSight(points, side);
       this.makeInvisible(fog_in_sight);
 
-      var greyable = Entity.get('Hideable');
-      for (var i in greyable) {
-        var entity = greyable[i];
-        if (points[entity.at().x] && points[entity.at().x][entity.at().y]) {
-          entity.spot(side);
-        } else {
-          entity.hide(side);
-        }
-
-        entity.get_to_state[entity.spotted[side]](entity);
-      }
+      this.handleHideableElements(points, side);
     }
 
     if (!ignore_sight_outlines) this.handleSightOutlines(side);
@@ -70,6 +60,20 @@ LineOfSight = {
     }
 
     return positional_points;
+  },
+
+  handleHideableElements: function(visible_points, side) {
+    var greyable = Entity.get('Hideable');
+    for (var i in greyable) {
+      var entity = greyable[i];
+      if (visible_points[entity.at().x] && visible_points[entity.at().x][entity.at().y]) {
+        entity.spot(side);
+      } else {
+        entity.hide(side);
+      }
+
+      entity.get_to_state[entity.spotted[side]](entity);
+    }
   },
 
   getPointsInSight: function(side) {

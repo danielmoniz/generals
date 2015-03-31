@@ -17,20 +17,20 @@ Crafty.scene('Game', function() {
   }
 
   function addTitleBar() {
-    var title = Crafty.e("TitleBar");
+    var title = Entity.create("TitleBar");
     title.at(0, 0)
       .text("GENERALS");
 
-    var turn_counter = Crafty.e("TitleBar");
+    var turn_counter = Entity.create("TitleBar");
       turn_counter.at(4, 0);
 
-    var turn_indicator = Crafty.e("TitleBar");
+    var turn_indicator = Entity.create("TitleBar");
       turn_indicator.at(6, 0);
 
-    var willpower = Crafty.e("TitleBar");
+    var willpower = Entity.create("TitleBar");
       willpower.at(11, 0);
 
-    var victory_bar = Crafty.e("VictoryBar");
+    var victory_bar = Entity.create("VictoryBar");
     var victory_bar_start = 19;
     victory_bar.at(victory_bar_start, 0);
     var victory_bar_id = "will-container";
@@ -85,9 +85,9 @@ Crafty.scene('Game', function() {
       for (var y = 0; y < Game.map_grid.height; y++) {
         var height = Math.ceil(Game.height_map[x][y] * 255 * colour_scale_factor);
         if (shadow) {
-          var ground = Crafty.e('Shadow');
+          var ground = Entity.create('Shadow');
         } else {
-          var ground = Crafty.e('FakeGrass');
+          var ground = Entity.create('FakeGrass');
         }
         ground.at(x, y);
         var r = Math.ceil(location_map.ground.r - (2 / 3 * height));
@@ -133,7 +133,7 @@ Crafty.scene('Game', function() {
         if (terrain_datum === undefined) continue;
         if (terrain_datum === null) continue;
         if (typeof terrain_datum == 'string') {
-          var terrain = Crafty.e(terrain_datum);
+          var terrain = Entity.create(terrain_datum);
         } else if (typeof terrain_datum == 'object') {
           terrain_datum.location = { x: x, y: y};
           var terrain_object = new TerrainData(terrain_datum.type, terrain_datum);
@@ -156,7 +156,7 @@ Crafty.scene('Game', function() {
       for (var i=0; i<unit_data[side].length; i++) {
         var unit_stats = unit_data[side][i];
         if (use_colour_indicators) {
-          var colour_square = Crafty.e('ColourSquare');
+          var colour_square = Entity.create('ColourSquare');
           colour_square.pickSide(side);
           unit_stats.colocated_entities = [colour_square];
         }
@@ -167,7 +167,6 @@ Crafty.scene('Game', function() {
   }
 
   function addUnitsFromLoad() {
-    this.player = Crafty.e('PlayerCharacter')
     this.player.at(0, 0);
 
     var units = Game.starting_units;
@@ -234,7 +233,7 @@ Crafty.scene('Game', function() {
     for (var x=0; x < Game.map_grid.width; x++) {
       Game.possible_moves[x] = [];
       for (var y=0; y < Game.map_grid.height; y++) {
-        var possible_move = Crafty.e('PossibleMove');
+        var possible_move = Entity.create('PossibleMove');
         possible_move.at(x, y);
         Game.possible_moves[x][y] = possible_move;
       }
@@ -318,7 +317,7 @@ Crafty.scene('Game', function() {
   Output.setSideInfoPanel();
   Output.createWeatherPanel();
 
-  this.player = Crafty.e('PlayerCharacter');
+  this.player = Entity.create('PlayerCharacter');
   this.player.at(0, 0);
 
   // rendering the scene should be the last thing that happens
@@ -371,7 +370,7 @@ Crafty.scene('Game', function() {
 Crafty.scene('Victory', function() {
   console.log("$text_css");
   console.log($text_css);
-  var victory = Crafty.e('2D, DOM, HTML');
+  var victory = Entity.create('2D, DOM, HTML');
     victory.attr({ x: 0, y: 0, w: Game.width() });
 
   var victory_html = Output.getVictoryHtml(Game.player_winner);
@@ -403,7 +402,7 @@ Crafty.scene('Loading', function() {
   var tip = Instructions.tips[rand];
   var loading_message = loading.format(tip);
 
-  Crafty.e('2D, DOM, Text')
+  Entity.create('2D, DOM, Text')
     .text(loading_message)
     .attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
     .css($text_css)

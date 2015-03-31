@@ -881,7 +881,7 @@ Crafty.c('Unit', {
     }
 
     if (ignore_sight) {
-      var fires = Entity.getNonDestroyed('Fire');
+      var fires = Query.getNonDestroyed('Fire');
     } else {
       var fires = Query.getNonDestroyedFiresInSight(this.side);
     }
@@ -944,7 +944,7 @@ Crafty.c('Unit', {
     stop_points = stop_points.concat(extra_stop_points);
     Utility.removeDuplicatePoints(stop_points);
 
-    var impassable = Entity.getNonDestroyed('Fire');
+    var impassable = Query.getNonDestroyed('Fire');
 
     var impassable_points = [];
     for (var i in impassable) {

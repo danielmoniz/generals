@@ -49,7 +49,7 @@ var Supply = {
     for (var i in owned_settlements) {
       var graph = new Graph(Game.terrain_difficulty_with_roads);
       var supply_blockers = this.getEnemySupplyBlockers(side);
-      supply_blockers = supply_blockers.concat(Entity.getNonDestroyed('Fire'));
+      supply_blockers = supply_blockers.concat(Query.getNonDestroyed('Fire'));
       this.makeEntitiesUnreachable(graph.grid, enemy_units);
 
       var settlement = owned_settlements[i];

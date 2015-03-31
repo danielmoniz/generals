@@ -372,7 +372,7 @@ Crafty.c('Battle', {
 
     this.casualties = [];
     this.new_units = [];
-    Entity.flushSpecialCache('SimpleBattle');
+
     this.prepareBattle();
   },
 
