@@ -104,6 +104,13 @@ var Action = {
         return;
       }
 
+      // disallow click-cycling if target is unseen
+      var side = Game.player;
+      var visible_points = LineOfSight.getPointsInSight(side);
+      if (!visible_points[entity.at().x] || !visible_points[entity.at().x][entity.at().x]) {
+        return;
+      }
+
       // cycle through present units if need be
       var units = Units.getPresentUnits(entity.at());
       if (units.length == 0) {
