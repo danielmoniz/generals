@@ -14,6 +14,7 @@ var Entity = {
   // Therefore only special secondary components need to be here.
   keep_updated: [
     'Hideable',
+    'Settlement',
   ],
 
   /*
