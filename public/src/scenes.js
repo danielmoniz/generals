@@ -310,7 +310,7 @@ Crafty.scene('Game', function() {
     startNewGame();
   }
 
-  var sides = [0, 1];
+  var sides = [0, 1, undefined];
   for (var i in sides) {
     var hideable = Entity.get('Hideable');
     for (var j in hideable) {
