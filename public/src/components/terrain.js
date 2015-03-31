@@ -240,7 +240,7 @@ Crafty.c('Settlement', {
   },
 
   capture: function(side) {
-    var flag = Crafty.e('Flag').pickSide(side);
+    var flag = Entity.create('Flag').pickSide(side);
     flag.at(this.at().x, this.at().y);
     this.addStat('flag', flag);
     var old_owner = this.owner;
@@ -265,13 +265,13 @@ Crafty.c('City', {
   },
 
   renderOthers: function() {
-    var city_left = Crafty.e('CitySide').pickSide('left');
+    var city_left = Entity.create('CitySide').pickSide('left');
     city_left.at(this.at().x - 1, this.at().y);
-    var city_right = Crafty.e('CitySide').pickSide('right');
+    var city_right = Entity.create('CitySide').pickSide('right');
     city_right.at(this.at().x + 1, this.at().y);
     this.addStat('city_sides', [city_left, city_right]);
 
-    var flag = Crafty.e('Flag').pickSide(this.side);
+    var flag = Entity.create('Flag').pickSide(this.side);
     flag.at(this.at().x, this.at().y);
     this.addStat('flag', flag);
   },
@@ -283,7 +283,7 @@ Crafty.c('City', {
 
   pillage: function(unit, pillage_power) {
     if (this.being_sacked === undefined) {
-      this.being_sacked = Crafty.e('CityBeingSacked');
+      this.being_sacked = Entity.create('CityBeingSacked');
       this.being_sacked.at(this.at().x, this.at().y);
     }
 
@@ -390,7 +390,7 @@ Crafty.c('Town', {
   },
 
   renderOthers: function() {
-    var flag = Crafty.e('Flag').pickSide(this.side);
+    var flag = Entity.create('Flag').pickSide(this.side);
     flag.at(this.at().x, this.at().y);
     this.addStat('flag', flag);
   },
@@ -402,7 +402,7 @@ Crafty.c('Town', {
 
   pillage: function(unit, pillage_power) {
     if (this.being_sacked === undefined) {
-      this.being_sacked = Crafty.e('TownBeingSacked');
+      this.being_sacked = Entity.create('TownBeingSacked');
       this.being_sacked.at(this.at().x, this.at().y);
     }
 
@@ -519,7 +519,7 @@ Crafty.c('Road', {
         this.sprite_key = modifyStringIndex(this.sprite_key, 2, 'T');
       }
 
-      var supply_route = Crafty.e('SupplyRoute');
+      var supply_route = Entity.create('SupplyRoute');
       supply_route.at(this.at().x, this.at().y);
     }
 
