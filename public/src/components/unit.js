@@ -246,9 +246,9 @@ Crafty.c('Unit', {
     Supply.makeEntitiesUnreachable(graph.grid, fires_in_sight);
 
     var target = false;
-    var all_enemies = false;
-    if (this.side !== Game.player) all_enemies = true;
-    var stop_points = this.getStopPoints(target, this.at(), all_enemies);
+    var ignore_sight = false;
+    if (this.side !== Game.player) ignore_sight = true;
+    var stop_points = this.getStopPoints(target, this.at(), ignore_sight);
     var start = graph.grid[this.at().x][this.at().y];
 
     var possible_moves = Game.pathfind.findReachablePoints(graph, start, movement, stop_points);
@@ -258,7 +258,7 @@ Crafty.c('Unit', {
     // can be reached.
     graph = new Graph(Game.terrain_difficulty_with_roads);
     var enemy_units = LineOfSight.getEnemyUnitsInSight(this.side);
-    this.addReachableEnemyUnitsToPoints(graph, possible_moves, this.at(), enemy_units, all_enemies, movement);
+    this.addReachableEnemyUnitsToPoints(graph, possible_moves, this.at(), enemy_units, ignore_sight, movement);
 
     this.possible_moves = [];
     for (var i in possible_moves) {
@@ -268,14 +268,14 @@ Crafty.c('Unit', {
 
   },
 
-  addReachableEnemyUnitsToPoints: function(graph, points, location, enemy_units, all_enemies, range) {
+  addReachableEnemyUnitsToPoints: function(graph, points, location, enemy_units, ignore_sight, range) {
     var start = graph.grid[location.x][location.y];
     for (var i in enemy_units) {
       var unit = enemy_units[i];
       var target = unit.at();
       if (target.x == location.x && target.y == location.y) continue;
       var end = graph.grid[target.x][target.y];
-      var stop_points = this.getStopPoints(target, location, all_enemies);
+      var stop_points = this.getStopPoints(target, location, ignore_sight);
 
       var new_path = Game.pathfind.search(graph, start, end, range, stop_points);
       // @TODO This feels hacky. Should update pathing library return path cost
@@ -821,14 +821,14 @@ Crafty.c('Unit', {
     return movement_path;
   },
 
-  getStopPoints: function(target, current_location, all_enemies) {
+  getStopPoints: function(target, current_location, ignore_sight) {
     // @TODO Cache stop_points and use same set of points for all paths (for
     // the same side)
     if (!target) target = { x: -1, y: -1 };
     if (current_location === undefined) current_location = this.at();
 
     var stop_points = [];
-    if (all_enemies) {
+    if (ignore_sight) {
       var enemy_units = Units.getEnemyUnits(this.side);
     } else {
       var enemy_units = Units.getVisibleEnemyUnits(this.side);
@@ -880,12 +880,16 @@ Crafty.c('Unit', {
       // @TODO Ensure only new positions are added to stop_points
     }
 
-    var fires = Entity.getNonDestroyed('Fire');
+    if (ignore_sight) {
+      var fires = Entity.getNonDestroyed('Fire');
+    } else {
+      var fires = Query.getNonDestroyedFiresInSight(this.side);
+    }
     for (i in fires) {
       stop_points.push(fires[i].at());
     }
 
-    // @TODO Take all_enemies (out of sight or not) into account.
+    // @TODO Take ignore_sight (out of sight or not) into account.
     // This will not likely be necessary for now because each siege will be
     // visible by both sides for the foreseeable future.
     var sieges = Entity.get('Siege');
@@ -934,9 +938,9 @@ Crafty.c('Unit', {
     }
 
     // get stop points for both end target and end of this turn's final space
-    var stop_points = this.getStopPoints(target, this.first_location, 'all enemies');
+    var stop_points = this.getStopPoints(target, this.first_location, 'ignore sight');
     var first_move_end_node = partial_path[partial_path.length - 1];
-    var extra_stop_points = this.getStopPoints(first_move_end_node, this.first_location, 'all enemies');
+    var extra_stop_points = this.getStopPoints(first_move_end_node, this.first_location, 'ignore sight');
     stop_points = stop_points.concat(extra_stop_points);
     Utility.removeDuplicatePoints(stop_points);
 
@@ -953,7 +957,10 @@ Crafty.c('Unit', {
       var next_move = partial_path[i];
 
       var end_movement = Utility.isPointInList(next_move, impassable_points);
-      if (end_movement) break;
+      if (end_movement) {
+        this.deleteMoveTargetPath();
+        break;
+      }
 
       this.at(next_move.x, next_move.y);
       this.last_moves.push({ x: next_move.x, y: next_move.y });

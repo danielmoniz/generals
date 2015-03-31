@@ -7,6 +7,7 @@
  */
 var Entity = {
 
+  // @TODO Is the special cache needed?
   cache: {},
   special_cache: {},
   special_caches: [
@@ -14,6 +15,7 @@ var Entity = {
     'Battle',
     'SimpleBattle',
     'SiegeBattle',
+    'Fire',
   ],
 
   /*
@@ -22,6 +24,7 @@ var Entity = {
    */
   create: function(components) {
     var entity = Crafty.e(components);
+    this.flushCache(components);
     this.flushSpecialCache(components);
     return entity;
   },
@@ -32,7 +35,6 @@ var Entity = {
       var component = this.special_caches[i];
       if (entity.has(component)) {
         caches_to_flush.push(component);
-        this.flushSpecialCache(component);
       }
     }
 
@@ -41,6 +43,7 @@ var Entity = {
     for (var i in caches_to_flush) {
       var cache = caches_to_flush[i];
       this.flushSpecialCache(cache);
+      this.flushCache(cache);
     }
   },
 
@@ -48,7 +51,10 @@ var Entity = {
    * Takes a search string of components and returns a list of entities.
    */
   get: function(search, flush_first) {
-    if (flush_first) this.flushSpecialCache(search);
+    if (flush_first) {
+      this.flushCache(search);
+      this.flushSpecialCache(search);
+    }
 
     if (this.special_cache[search] !== undefined && Game.turn_count > 0) {
       return this.special_cache[search];
@@ -71,6 +77,10 @@ var Entity = {
       return !entity.destroyed;
     });
     return non_destroyed_entities;
+  },
+
+  flushCache: function(search) {
+    this.cache[search] = undefined;
   },
 
   flushCaches: function() {

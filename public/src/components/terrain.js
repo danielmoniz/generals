@@ -24,7 +24,7 @@ Crafty.c('Terrain', {
   },
 
   ignite: function(unit) {
-    var fire = Crafty.e('Fire').at(this.at().x, this.at().y);
+    var fire = Entity.create('Fire').at(this.at().x, this.at().y);
 
     var ignite_stats = {
       on_fire: true,
@@ -262,6 +262,8 @@ Crafty.c('City', {
       })
       .bind("NextTurn", this.handleSupply)
       ;
+      console.log("this");
+      console.log(this);
   },
 
   renderOthers: function() {
