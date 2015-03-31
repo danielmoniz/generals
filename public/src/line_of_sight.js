@@ -1,6 +1,22 @@
 LineOfSight = {
 
   handleLineOfSight: function(side, ignore_sight_outlines) {
+    var points = this.determineSidePointsInSight(side);
+    this.unitLineOfSight(points, side);
+
+    if (Game.fog_of_war) {
+      this.allEntitiesVisible('Shadow');
+      var fog_in_sight = this.tileLineOfSight(points, side);
+      this.makeInvisible(fog_in_sight);
+
+      this.handleHideableElements(points, side);
+    }
+
+
+    if (!ignore_sight_outlines) this.handleSightOutlines(side);
+  },
+
+  determineSidePointsInSight: function(side) {
     var seeing_entities = [];
     var friendly_units = [];
     if (side !== undefined) friendly_units = Units.getFriendlyUnits(side);
@@ -16,17 +32,7 @@ LineOfSight = {
 
     var points = this.determinePointsInSight(seeing_entities);
     this.points_in_sight[side] = points;
-    var units_in_sight = this.unitLineOfSight(points, side);
-
-    if (Game.fog_of_war) {
-      this.allEntitiesVisible('Shadow');
-      var fog_in_sight = this.tileLineOfSight(points, side);
-      this.makeInvisible(fog_in_sight);
-
-      this.handleHideableElements(points, side);
-    }
-
-    if (!ignore_sight_outlines) this.handleSightOutlines(side);
+    return points;
   },
 
   determinePointsInSight: function(entities) {
@@ -89,9 +95,13 @@ LineOfSight = {
       GUI.outlineVisibleRegions(points_in_sight, 'ally sight range');
     }
 
-    if (Game.enemy_sight_lines) {
-      var enemy_units_in_sight = this.getEnemyUnitsInSight(side);
-      var points = this.determinePointsInSight(enemy_units_in_sight);
+    if (Game.enemy_sight_lines && side !== undefined) {
+      var enemy_units = Units.getEnemyUnits(side);
+      var enemy_settlements = Query.getEnemySettlements(side);
+      var seeing_entities = enemy_units.concat(enemy_settlements);
+      var entities_in_sight = this.getEntitiesInSight(seeing_entities, side);
+
+      var points = this.determinePointsInSight(entities_in_sight);
       GUI.outlineVisibleRegions(points, 'enemy sight range');
     }
   },
@@ -200,6 +210,19 @@ LineOfSight = {
       return true;
     }
     return false;
+  },
+
+  getEntitiesInSight: function(entities, side) {
+
+    var points_in_sight = this.getPointsInSight(side);
+    var entities_in_sight = entities.filter(function(entity) {
+      try {
+        return points_in_sight[entity.at().x][entity.at().y];
+      } catch(error) {};
+      return false;
+    });
+
+    return entities_in_sight;
   },
 
 }

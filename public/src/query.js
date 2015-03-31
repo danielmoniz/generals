@@ -22,4 +22,23 @@ var Query = {
     return fires_in_sight;
   },
 
+  getEnemySettlements: function(side) {
+    if (side === undefined) return [];
+
+    var settlements = Entity.get('Settlement');
+    var enemy_settlements = settlements.filter(function(entity) {
+      return !entity.ruined && entity.owner == 1 - side;
+    });
+
+    return enemy_settlements;
+  },
+
+  getOwnedSettlements: function(side) {
+    var settlements = Entity.get('Settlement');
+    var owned_settlements = settlements.filter(function(settlement) {
+      return !settlement.ruined && settlement.owner == side;
+    });
+    return owned_settlements;
+  },
+
 };

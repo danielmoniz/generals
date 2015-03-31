@@ -25,7 +25,7 @@ var Supply = {
 
   getCitySupplyArea: function(side, use_all_enemies) {
     var points = [];
-    var owned_settlements = this.getOwnedSettlements(side);
+    var owned_settlements = Query.getOwnedSettlements(side);
 
     var units = Units.getUnitsBySide(side);
     if (use_all_enemies) {
@@ -95,14 +95,6 @@ var Supply = {
     }
 
     return barriers;
-  },
-
-  getOwnedSettlements: function(side) {
-    var settlements = Entity.get('Settlement');
-    var owned_settlements = settlements.filter(function(settlement) {
-      return !settlement.ruined && settlement.owner == side;
-    });
-    return owned_settlements;
   },
 
 };
