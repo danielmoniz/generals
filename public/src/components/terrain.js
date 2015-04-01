@@ -153,7 +153,7 @@ Crafty.c('Tree', {
     this.addStats(extra_burned_stats);
 
     this.state = 'ruined';
-    this.get_to_state[this.state](this);
+    this.getToVisualState(this.state);
 
     var supply = this.supply_to_steal;
     return supply;
@@ -193,7 +193,7 @@ Crafty.c('Farm', {
   pillage: function(unit) {
     this.state = 'ruined';
     if (unit !== undefined) this.spot(unit.side);
-    this.get_to_state[this.state](this);
+    this.getToVisualState(this.state);
 
     var supply = this.supply_to_steal;
     this.addStats({
@@ -244,24 +244,41 @@ Crafty.c('Settlement', {
     flag.at(this.at().x, this.at().y);
     this.addStat('flag', flag);
     var old_owner = this.owner;
-    this.owner = side;
+    this.addStat('owner', side);
 
     // inform previous owner of capturing their city
     if (side == 1 - old_owner) {
       flag.spot(old_owner);
     }
+    this.spot(side);
   },
 
 });
 
 Crafty.c('City', {
   init: function() {
-    this.requires('spr_city, Settlement, Passable')
+    this.requires('Settlement, Passable, Hideable, SpriteAnimation, spr_city')
       .attr({
         farms: [],
       })
       .bind("NextTurn", this.handleSupply)
+      .reel('healthy', 1000, 1, 0, 1)
+      .reel('ruined', 1000, 1, 1, 1)
       ;
+
+    this.state = 'healthy';
+    this.get_to_state = {
+      undefined: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      healthy: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      ruined: function(entity) {
+        entity.animate('ruined', -1);
+      },
+    };
+
   },
 
   renderOthers: function() {
@@ -297,16 +314,22 @@ Crafty.c('City', {
         defense_bonus: 1.1,
         provides_supply: 0,
       });
-      this.addComponent("spr_city_sacked");
 
       // for now, destroy the city sides when the city is sacked
-      this.city_sides[0].destroy();
-      this.city_sides[1].destroy();
-      this.being_sacked.destroy();
+      this.city_sides[0].ruin();
+      this.city_sides[1].ruin();
+
+      this.being_sacked.end();
+      this.being_sacked.spot(unit.side);
+
       this.flag.destroy();
       this.destroyTerrain(unit);
+
+      this.state = 'ruined';
+      this.getToVisualState(this.state);
     } else {
       this.being_sacked.show();
+      this.being_sacked.spot(unit.side);
     }
 
     return supply_to_steal;
@@ -337,34 +360,62 @@ Crafty.c('Flag', {
 
 Crafty.c('CityBeingSacked', {
   init: function() {
-    this.requires('Actor, spr_city_being_sacked')
+    this.requires('Actor, Hideable, spr_city_being_sacked')
       .bind('NextTurn', this.nextTurn)
     ;
     this.z = 87;
-    this.visible = false;
+
+    this.state = 'active';
+    this.get_to_state = {
+      undefined: function(entity) {
+        entity.visible = false;
+      },
+      active: function(entity) {
+        entity.visible = true;
+      },
+      gone: function(entity) {
+        entity.visible = false;
+      },
+    };
   },
 
   nextTurn: function() {
     if (Game.turn == this.turn_started) {
-      this.hide();
+      this.end();
     }
   },
 
   show: function() {
     this.visible = true;
-    this.turn_started = Game.turn;
+    this.addStat('turn_started', Game.turn);
+    this.state = 'active';
+    this.destroyed = false;
   },
 
-  hide: function() {
-    this.visible = false;
-    this.turn_started = undefined;
+  end: function() {
+    this.addStat('turn_started', undefined);
+    this.state = 'gone';
+    this.destroyed = true;
   },
 });
 
 Crafty.c('CitySide', {
   init: function() {
-    this.requires('Actor');
+    this.requires('Actor, Hideable');
     this.z = 85;
+
+    this.state = 'healthy';
+    this.get_to_state = {
+      undefined: function(entity) {
+        entity.visible = true;
+      },
+      healthy: function(entity) {
+        entity.visible = true;
+      },
+      ruined: function(entity) {
+        entity.visible = false;
+      },
+    };
   },
 
   pickSide: function(side) {
@@ -377,16 +428,38 @@ Crafty.c('CitySide', {
     }
     return this;
   },
+
+  ruin: function() {
+    this.state = 'ruined';
+    this.destroyed = true;
+    this.getToVisualState(this.state);
+  },
+
 });
 
 Crafty.c('Town', {
   init: function() {
-    this.requires('spr_town, Settlement, Passable')
+    this.requires('Settlement, Passable, Hideable, SpriteAnimation, spr_town')
       .attr({
         farms: [],
       })
       .bind("NextTurn", this.handleSupply)
+      .reel('healthy', 1000, 0, 0, 1)
+      .reel('ruined', 1000, 2, 0, 1)
       ;
+
+    this.state = 'healthy';
+    this.get_to_state = {
+      undefined: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      healthy: function(entity) {
+        entity.animate('healthy', -1);
+      },
+      ruined: function(entity) {
+        entity.animate('ruined', -1);
+      },
+    };
   },
 
   renderOthers: function() {
@@ -416,14 +489,20 @@ Crafty.c('Town', {
         defense_bonus: 1.1,
         provides_supply: 0,
       });
-      this.addComponent("spr_town_sacked");
 
       // for now, destroy the town sides when the town is sacked
-      this.being_sacked.destroy();
+      this.being_sacked.end();
+      this.being_sacked.spot(unit.side);
+
       this.flag.destroy();
       this.destroyTerrain(unit);
+
+      this.state = 'ruined';
+      this.getToVisualState(this.state);
+
     } else {
       this.being_sacked.show();
+      this.being_sacked.spot(unit.side);
     }
 
     return supply_to_steal;
@@ -432,27 +511,42 @@ Crafty.c('Town', {
 
 Crafty.c('TownBeingSacked', {
   init: function() {
-    this.requires('Actor, spr_town_being_sacked')
+    this.requires('Actor, Hideable, spr_town_being_sacked')
       .bind('NextTurn', this.nextTurn)
     ;
     this.z = 87;
-    this.visible = false;
+
+    this.state = 'active';
+    this.get_to_state = {
+      undefined: function(entity) {
+        entity.visible = false;
+      },
+      active: function(entity) {
+        entity.visible = true;
+      },
+      gone: function(entity) {
+        entity.visible = false;
+      },
+    };
   },
 
   nextTurn: function() {
     if (Game.turn == this.turn_started) {
-      this.hide();
+      this.end();
     }
   },
 
   show: function() {
     this.visible = true;
-    this.turn_started = Game.turn;
+    this.addStat('turn_started', Game.turn);
+    this.state = 'active';
+    this.destroyed = false;
   },
 
-  hide: function() {
-    this.visible = false;
-    this.turn_started = undefined;
+  end: function() {
+    this.addStat('turn_started', undefined);
+    this.state = 'gone';
+    this.destroyed = true;
   },
 });
 

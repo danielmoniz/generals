@@ -12,7 +12,6 @@ LineOfSight = {
       this.handleHideableElements(points, side);
     }
 
-
     if (!ignore_sight_outlines) this.handleSightOutlines(side);
   },
 
@@ -78,7 +77,11 @@ LineOfSight = {
         entity.hide(side);
       }
 
-      entity.get_to_state[entity.spotted[side]](entity);
+      var data = entity.spotted[side];
+      var state = undefined;
+      if (data !== undefined) state = data.state;
+
+      entity.getToVisualState(state);
     }
   },
 

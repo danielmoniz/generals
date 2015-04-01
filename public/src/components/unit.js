@@ -320,6 +320,8 @@ Crafty.c('Unit', {
       var message = "Pillaged {0} supply!".format(amount_pillaged);
       Output.message(message);
     }
+
+    local_terrain.spot(this);
   },
 
   siege: function() {

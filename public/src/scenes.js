@@ -264,6 +264,7 @@ Crafty.scene('Game', function() {
     map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain_type, Game.roads);
 
     Victory.reset();
+    spotTerrain();
     Game.determineSelectionOnline();
   } else if (Game.load_game) {
     buildTerrainFromData(Game.terrain_type);
@@ -288,6 +289,7 @@ Crafty.scene('Game', function() {
     Crafty.trigger("UpdateMovementPaths");
 
     loadPlayerSelections();
+    spotTerrain();
     Game.determineSelection();
 
   } else if (Game.load_map) {
@@ -304,19 +306,11 @@ Crafty.scene('Game', function() {
     addPlayers();
 
     Victory.reset();
+    spotTerrain();
     Game.select(Crafty('Unit').get(0));
 
   } else { // eg. local hotseat play
     startNewGame();
-  }
-
-  var sides = [0, 1, undefined];
-  for (var i in sides) {
-    var hideable = Entity.get('Hideable');
-    for (var j in hideable) {
-      var entity = hideable[j];
-      entity.spot(sides[i]);
-    }
   }
 
   if (Game.render_possible_moves) addPossibleMoves();
@@ -356,7 +350,23 @@ Crafty.scene('Game', function() {
     buildUnitsFromData(game_data.starting_units);
 
     Victory.reset();
+    spotTerrain();
+
     Game.select(Crafty('Unit').get(0));
+  }
+
+  function spotTerrain() {
+    // start with initial terrain spotted by both sides
+    var hideable = Entity.get('Hideable', true);
+    var sides = [0, 1, undefined];
+    for (var j in hideable) {
+      var entity = hideable[j];
+      entity.TEST = {};
+      for (var i in sides) {
+        entity.spot(sides[i]);
+        entity.TEST[sides[i]] = true;
+      }
+    }
   }
 
   function getShortestPath(graph, start, end) {

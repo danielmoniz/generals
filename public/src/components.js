@@ -79,6 +79,10 @@ Crafty.c('Actor', {
     });
   },
 
+  getStats: function() {
+    return this.stats;
+  },
+
   addStats: function(dict) {
     this.attr(dict);
     for (var key in dict) {
@@ -503,15 +507,37 @@ Crafty.c('Hideable', {
     this.spotted = [];
   },
 
+  getHideableStats: function(side) {
+    var side_data = this.spotted[side];
+    if (side_data) return side_data.stats;
+    throw new Error('BadStats', 'spotted stats should exist');
+  },
+
   hide: function(side) {
     this.waitToDestroy();
   },
 
   spot: function(side) {
-    this.spotted[side] = this.state;
-    if (this.spotted[0] == this.state && this.spotted[1] == this.state) {
+    var spotted_data = {};
+    spotted_data.state = this.state;
+    if (this.stats !== undefined) {
+      var new_stats = {};
+      Utility.loadDataIntoObject(this.stats, new_stats);
+      spotted_data.stats = new_stats;
+    } else {
+      spotted_data.stats = undefined;
+    }
+    this.spotted[side] = spotted_data;
+
+    if (this.spotted[0] && this.spotted[0].state == this.state 
+        && this.spotted[1] && this.spotted[1].state == this.state) {
       this.canRemoveWhenNeeded();
     }
+  },
+
+  getToVisualState: function(state) {
+    var state_transformation = this.get_to_state[state];
+    state_transformation(this);
   },
 
   canRemoveWhenNeeded: function() {
@@ -525,8 +551,6 @@ Crafty.c('Hideable', {
 
   destroyIfPossible: function() {
     if (this.can_destroy) {
-      console.log('destroying entity: ********');
-      console.log(this);
       Entity.destroy(this);
     } else {
       this.destroyed = true;
@@ -596,7 +620,8 @@ Crafty.c('Fire', {
     this.requires('Actor, Hideable, spr_fire');
     this.bind("SpreadFire", this.updateFire)
     this.z = 75;
-    this.days_left = 3;
+
+    this.addStat('days_left', 3);
     this.turn_started = Game.turn;
 
     this.prob_extinguished_by_rain = .1;
@@ -615,6 +640,7 @@ Crafty.c('Fire', {
     if (this.destroyed) return false;
 
     this.days_left -= 1;
+    this.addStat('days_left', this.days_left);
     this.handleRain();
     this.spread();
     if (this.days_left <= 0) {
@@ -644,8 +670,8 @@ Crafty.c('Fire', {
     // spread in direction of wind
     var wind_spot = this.getWindSpreadSpot();
     if (wind_spot) {
-      var fire = Crafty.e('Fire');
-      fire.at(wind_spot.x, wind_spot.y);
+      var terrain = Game.terrain[wind_spot.x][wind_spot.y];
+      if (terrain.flammable) terrain.ignite();
     }
 
     // spread in a random direction with a random chance

@@ -456,43 +456,45 @@ Output = {
   printTerrain: function(terrain) {
     $(this.terrain_panel).empty();
     var output = [];
-    if (terrain.name !== undefined) output.push(terrain.name);
-    if (terrain.type != 'City' || terrain.name === undefined) {
-      output.push(terrain.type);
+    var stats = Stats.getLastSeenData(terrain, Game.player);
+
+    if (stats.name !== undefined) output.push(stats.name);
+    if (stats.type != 'City' || stats.name === undefined) {
+      output.push(stats.type);
     }
 
-    var x = terrain.getX();
-    var y = terrain.getY();
+    var x = stats.location.x;
+    var y = stats.location.y;
     if (Game.roads[x][y]) {
       output.push('(Road)');
     }
 
     if (terrain.has('Impassable')) output.push("(Impassable)");
-    if (terrain.on_fire) {
+    if (stats.on_fire) {
       output.push('(burning!)');
-    } else if (terrain.burned) {
+    } else if (stats.burned) {
       output.push('(ruined)');
-    } else if (terrain.pillaged) {
+    } else if (stats.pillaged) {
       output.push("(pillaged)");
     }
 
-    if (terrain.provides_supply) {
+    if (stats.provides_supply) {
       var provides_supply_class = "not-applicable";
       var provides_supply = terrain.providesSupplyToSide(Game.player);
       if (provides_supply) {
         provides_supply_class = "";
       }
-      var provides_supply_html = "<span class='{0}'>{1}</span>".format(provides_supply_class, terrain.provides_supply);
+      var provides_supply_html = "<span class='{0}'>{1}</span>".format(provides_supply_class, stats.provides_supply);
       output.push("Supports: {0}".format(provides_supply_html));
     }
 
-    if (terrain.base_type == "Settlement") {
-      output.push("Pop. {0}".format(terrain.population));
-      if (terrain.supply_remaining > 0) {
-        var supply = terrain.supply_remaining;
+    if (stats.base_type == "Settlement") {
+      output.push("Pop. {0}".format(stats.population));
+      if (stats.supply_remaining > 0) {
+        var supply = stats.supply_remaining;
         output.push("Supply: {0}".format(supply));
-        if (terrain.side === undefined && terrain.owner !== undefined) {
-          output.push("Owner: {0}".format(Pretty.Player.name(terrain.owner)));
+        if (stats.side === undefined && stats.owner !== undefined) {
+          output.push("Owner: {0}".format(Pretty.Player.name(stats.owner)));
         }
       } else {
         output.push("Sacked!");
