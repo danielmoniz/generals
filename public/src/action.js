@@ -107,7 +107,7 @@ var Action = {
       // disallow click-cycling if target is unseen
       var side = Game.player;
       var visible_points = LineOfSight.getPointsInSight(side);
-      if (!visible_points[entity.at().x] || !visible_points[entity.at().x][entity.at().x]) {
+      if (!visible_points[entity.at().x] || !visible_points[entity.at().x][entity.at().y]) {
         return;
       }
 
