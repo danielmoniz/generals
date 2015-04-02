@@ -152,19 +152,17 @@ var Action = {
 
   unitAction: function(unit, action) {
     unit.turn_action = action;
-    if (action == "pillage") {
+    var local_terrain = unit.getLocalTerrain();
+
+    if (action == "pillage" || action == "sack") {
       unit.pillage();
       Victory.updateWillToFight();
       Output.updateVictoryBar();
-    } else if (action == "sack") {
-      unit.pillage();
-      Victory.updateWillToFight();
-      Output.updateVictoryBar();
+
     } else if (action == "capture") {
       unit.captureTerrain();
 
     } else if (action == "start_fire") {
-      var local_terrain = unit.getLocalTerrain();
       local_terrain.ignite(unit);
 
       // update unit possible moves/paths if they conflict with the fire
@@ -189,6 +187,7 @@ var Action = {
     }
 
     unit.actionPerformed(action);
+    if (local_terrain.spot) local_terrain.spot(unit.side);
 
     Game.flushCaches(); // run after unit actions for an up-to-date cache
 

@@ -60,6 +60,22 @@ Crafty.c('Terrain', {
     }
   },
 
+  pillage: function() {
+    var old_owner = this.owner;
+
+    var supply_to_steal = this.pillageCustom.apply(this, arguments);
+
+    this.updateStats();
+    this.getToVisualState(this.state);
+
+    // inform previous owner of capturing their city
+    if (old_owner !== undefined) {
+      this.spot(old_owner);
+    }
+
+    return supply_to_steal;
+  },
+
   destroyTerrain: function(unit) {
     Victory.entityDestroyed(this, unit);
   },
@@ -145,7 +161,7 @@ Crafty.c('Tree', {
     };
   },
 
-  pillage: function() {
+  pillageCustom: function() {
     var extra_burned_stats = {
       move_difficulty: 1.3,
       defense_bonus: 1.05,
@@ -153,7 +169,6 @@ Crafty.c('Tree', {
     this.addStats(extra_burned_stats);
 
     this.state = 'ruined';
-    this.getToVisualState(this.state);
 
     var supply = this.supply_to_steal;
     return supply;
@@ -190,11 +205,7 @@ Crafty.c('Farm', {
 
   },
 
-  pillage: function(unit) {
-    this.state = 'ruined';
-    if (unit !== undefined) this.spot(unit.side);
-    this.getToVisualState(this.state);
-
+  pillageCustom: function(unit) {
     var supply = this.supply_to_steal;
     this.addStats({
         pillaged: true,
@@ -205,6 +216,9 @@ Crafty.c('Farm', {
         provides_supply: 0,
         sight_impedance: 1,
       });
+
+    this.state = 'ruined';
+
     this.destroyTerrain(unit);
     return supply;
   },
@@ -247,8 +261,9 @@ Crafty.c('Settlement', {
     this.addStat('owner', side);
 
     // inform previous owner of capturing their city
-    if (side == 1 - old_owner) {
+    if (old_owner !== undefined) {
       flag.spot(old_owner);
+      this.spot(old_owner);
     }
     this.spot(side);
   },
@@ -298,7 +313,7 @@ Crafty.c('City', {
     // from a supply route (depends on side, or if it is owned/neutral)
   },
 
-  pillage: function(unit, pillage_power) {
+  pillageCustom: function(unit, pillage_power) {
     if (this.being_sacked === undefined) {
       this.being_sacked = Entity.create('CityBeingSacked');
       this.being_sacked.at(this.at().x, this.at().y);
@@ -326,7 +341,6 @@ Crafty.c('City', {
       this.destroyTerrain(unit);
 
       this.state = 'ruined';
-      this.getToVisualState(this.state);
     } else {
       this.being_sacked.show();
       this.being_sacked.spot(unit.side);
@@ -473,7 +487,7 @@ Crafty.c('Town', {
     // from a supply route (depends on side, or if it is owned/neutral)
   },
 
-  pillage: function(unit, pillage_power) {
+  pillageCustom: function(unit, pillage_power) {
     if (this.being_sacked === undefined) {
       this.being_sacked = Entity.create('TownBeingSacked');
       this.being_sacked.at(this.at().x, this.at().y);
@@ -498,7 +512,6 @@ Crafty.c('Town', {
       this.destroyTerrain(unit);
 
       this.state = 'ruined';
-      this.getToVisualState(this.state);
 
     } else {
       this.being_sacked.show();
