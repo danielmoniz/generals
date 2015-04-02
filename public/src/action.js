@@ -57,9 +57,6 @@ var Action = {
    * Eg. the scene should always be redrawn after actions.
    */
   postAction: function() {
-    if (typeof Game !== 'undefined') {
-      GUI.displayCitySupplyRanges(Game.player);
-    }
     Crafty.trigger('RenderScene');
   },
 
@@ -188,6 +185,9 @@ var Action = {
 
     unit.actionPerformed(action);
     if (local_terrain.spot) local_terrain.spot(unit.side);
+
+    GUI.displayCitySupplyRanges(Game.player);
+    LineOfSight.handleSightOutlines(Game.player);
 
     Game.flushCaches(); // run after unit actions for an up-to-date cache
 
