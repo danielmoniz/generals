@@ -336,6 +336,9 @@ Crafty.c('City', {
 
       this.being_sacked.end();
       this.being_sacked.spot(unit.side);
+      if (this.owner !== undefined) {
+        this.being_sacked.spot(this.owner);
+      }
 
       this.flag.destroy();
       this.destroyTerrain(unit);
