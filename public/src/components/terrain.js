@@ -261,7 +261,20 @@ Crafty.c('City', {
       ;
 
     this.state = 'healthy';
-    this.state_transforms = State.healthyRuinedAnimation();
+    this.state_transforms = {
+      undefined: function(entity) {
+        entity.animate('healthy', -1);
+        entity.city_sides.forEach(function(entity) { entity.show(); });
+      },
+      healthy: function(entity) {
+        entity.animate('healthy', -1);
+        entity.city_sides.forEach(function(entity) { entity.show(); });
+      },
+      ruined: function(entity) {
+        entity.animate('ruined', -1);
+        entity.city_sides.forEach(function(entity) { entity.hide(); });
+      },
+    };
   },
 
   renderOthers: function() {
@@ -297,10 +310,6 @@ Crafty.c('City', {
         defense_bonus: 1.1,
         provides_supply: 0,
       });
-
-      // for now, destroy the city sides when the city is sacked
-      this.city_sides[0].ruin();
-      this.city_sides[1].ruin();
 
       this.being_sacked.end();
       this.being_sacked.spot(unit.side);
@@ -372,11 +381,8 @@ Crafty.c('CityBeingSacked', {
 
 Crafty.c('CitySide', {
   init: function() {
-    this.requires('Actor, Hideable');
+    this.requires('Actor');
     this.z = 85;
-
-    this.state = 'healthy';
-    this.state_transforms = State.showUntilRuined();
   },
 
   pickSide: function(side) {
@@ -390,10 +396,12 @@ Crafty.c('CitySide', {
     return this;
   },
 
-  ruin: function() {
-    this.state = 'ruined';
-    this.destroyed = true;
-    this.getToVisualState(this.state);
+  show: function() {
+    this.visible = true;
+  },
+
+  hide: function() {
+    this.visible = false;
   },
 
 });
