@@ -536,7 +536,7 @@ Crafty.c('Hideable', {
   },
 
   getToVisualState: function(state) {
-    var state_transformation = this.get_to_state[state];
+    var state_transformation = this.state_transforms[state];
     state_transformation(this);
   },
 
@@ -628,11 +628,7 @@ Crafty.c('Fire', {
     this.prob_contained_by_rain = .5;
 
     this.state = 'active';
-    this.get_to_state = {
-      undefined: function(entity) { entity.visible = false; },
-      active: function(entity) { entity.visible = true; },
-      gone: function(entity) { entity.visible = false; },
-    };
+    this.state_transforms = State.hideUntilActive();
   },
 
   updateFire: function() {

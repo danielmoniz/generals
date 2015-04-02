@@ -148,17 +148,7 @@ Crafty.c('Tree', {
     this.reel('ruined', 1000, 1, 0, 1);
 
     this.state = 'healthy';
-    this.get_to_state = {
-      undefined: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      healthy: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      ruined: function(entity) {
-        entity.animate('ruined', -1);
-      },
-    };
+    this.state_transforms = State.healthyRuinedAnimation();
   },
 
   pillageCustom: function() {
@@ -191,18 +181,7 @@ Crafty.c('Farm', {
     this.reel('ruined', 1000, 1, 0, 1);
 
     this.state = 'healthy';
-    this.get_to_state = {
-      undefined: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      healthy: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      ruined: function(entity) {
-        entity.animate('ruined', -1);
-      },
-    };
-
+    this.state_transforms = State.healthyRuinedAnimation();
   },
 
   pillageCustom: function(unit) {
@@ -282,18 +261,7 @@ Crafty.c('City', {
       ;
 
     this.state = 'healthy';
-    this.get_to_state = {
-      undefined: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      healthy: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      ruined: function(entity) {
-        entity.animate('ruined', -1);
-      },
-    };
-
+    this.state_transforms = State.healthyRuinedAnimation();
   },
 
   renderOthers: function() {
@@ -359,11 +327,7 @@ Crafty.c('Flag', {
     this.z = 88;
 
     this.state = 'active';
-    this.get_to_state = {
-      undefined: function(entity) { entity.visible = false; },
-      active: function(entity) { entity.visible = true; },
-      gone: function(entity) { entity.visible = false; },
-    };
+    this.state_transforms = State.hideUntilActive();
 
     return this;
   },
@@ -383,17 +347,7 @@ Crafty.c('CityBeingSacked', {
     this.z = 87;
 
     this.state = 'active';
-    this.get_to_state = {
-      undefined: function(entity) {
-        entity.visible = false;
-      },
-      active: function(entity) {
-        entity.visible = true;
-      },
-      gone: function(entity) {
-        entity.visible = false;
-      },
-    };
+    this.state_transforms = State.hideUntilActive();
   },
 
   nextTurn: function() {
@@ -422,17 +376,7 @@ Crafty.c('CitySide', {
     this.z = 85;
 
     this.state = 'healthy';
-    this.get_to_state = {
-      undefined: function(entity) {
-        entity.visible = true;
-      },
-      healthy: function(entity) {
-        entity.visible = true;
-      },
-      ruined: function(entity) {
-        entity.visible = false;
-      },
-    };
+    this.state_transforms = State.showUntilRuined();
   },
 
   pickSide: function(side) {
@@ -466,17 +410,7 @@ Crafty.c('Town', {
       ;
 
     this.state = 'healthy';
-    this.get_to_state = {
-      undefined: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      healthy: function(entity) {
-        entity.animate('healthy', -1);
-      },
-      ruined: function(entity) {
-        entity.animate('ruined', -1);
-      },
-    };
+    this.state_transforms = State.healthyRuinedAnimation();
   },
 
   renderOthers: function() {
@@ -510,6 +444,9 @@ Crafty.c('Town', {
       // for now, destroy the town sides when the town is sacked
       this.being_sacked.end();
       this.being_sacked.spot(unit.side);
+      if (this.owner !== undefined) {
+        this.being_sacked.spot(this.owner);
+      }
 
       this.flag.destroy();
       this.destroyTerrain(unit);
@@ -533,17 +470,7 @@ Crafty.c('TownBeingSacked', {
     this.z = 87;
 
     this.state = 'active';
-    this.get_to_state = {
-      undefined: function(entity) {
-        entity.visible = false;
-      },
-      active: function(entity) {
-        entity.visible = true;
-      },
-      gone: function(entity) {
-        entity.visible = false;
-      },
-    };
+    this.state_transforms = State.hideUntilActive();
   },
 
   nextTurn: function() {
