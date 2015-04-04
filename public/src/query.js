@@ -9,6 +9,14 @@ var Query = {
     return non_destroyed_entities;
   },
 
+  getSpottedFires: function(side) {
+    var fires = Entity.get('Fire');
+    fires = fires.filter(function(fire) {
+      return fire.spotted[side] !== undefined && fire.spotted[side].state == 'active';
+    });
+    return fires;
+  },
+
   getNonDestroyedFiresInSight: function(side, flush_cache) {
     var fires = this.getNonDestroyed('Fire', flush_cache);
     return LineOfSight.getEntitiesInSight(fires, side);

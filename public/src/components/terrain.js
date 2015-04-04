@@ -155,6 +155,7 @@ Crafty.c('Tree', {
     var extra_burned_stats = {
       move_difficulty: 1.3,
       defense_bonus: 1.05,
+      sight_impedance: this.sight_impedance / 2,
     };
     this.addStats(extra_burned_stats);
 
@@ -193,7 +194,7 @@ Crafty.c('Farm', {
         supply_to_steal: 0,
         flammable: false,
         provides_supply: 0,
-        sight_impedance: 1,
+        sight_impedance: this.sight_impedance * 3/4,
       });
 
     this.state = 'ruined';
@@ -309,6 +310,7 @@ Crafty.c('City', {
         supply_to_steal: 0,
         defense_bonus: 1.1,
         provides_supply: 0,
+        sight_impedance: this.sight_impedance * 2/3,
       });
 
       this.being_sacked.end();
@@ -447,6 +449,7 @@ Crafty.c('Town', {
         supply_to_steal: 0,
         defense_bonus: 1.1,
         provides_supply: 0,
+        sight_impedance: this.sight_impedance * 2/3,
       });
 
       // for now, destroy the town sides when the town is sacked

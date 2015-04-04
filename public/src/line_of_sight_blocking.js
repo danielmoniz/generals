@@ -15,7 +15,7 @@ LineOfSightBlocking = {
     var points = [];
     for (var i in listOfVisibleTiles) {
       var tile = listOfVisibleTiles[i].tile;
-      var point = { x: tile.at().x, y: tile.at().y };
+      var point = { x: tile.x, y: tile.y };
       points.push(point);
     }
 
@@ -47,8 +47,12 @@ LineOfSightBlocking = {
       var tileData = tileLine[i];
       totalSightImpedance += tileData.portion * tileData.sight_impedance * tileLineLength;
 
-      if (i < tileLine.length - 1) continue;
-      if (totalSightImpedance <= max_sight) return tileData;
+      if (i == tileLine.length - 1 && totalSightImpedance <= max_sight) {
+        return tileData;
+      }
+      if (tileData.stop) {
+        break;
+      }
     }
 
     return false;
@@ -103,7 +107,6 @@ LineOfSightBlocking = {
     var tileRoundUp = boardLocations[x][y_value];
 
     var portion = Math.abs(y%1);
-    var tileData = this.buildTileData();
     var tileData = this.buildTileData(tileRoundUp, portion, tileRoundUp.sight_impedance);
     tilesAlongLine.push(tileData);
 
@@ -148,6 +151,7 @@ LineOfSightBlocking = {
       'tile': tile,
       'portion': portion,
       'sight_impedance': sight_impede,
+      'stop': tile.stop,
     };
     return tile_data;
   },

@@ -34,7 +34,34 @@ LineOfSight = {
     return points;
   },
 
+  getSightGrid: function(grid) {
+    var sight_grid = [];
+    for (var x in grid) {
+      sight_grid[x] = [];
+      for (var y in grid[x]) {
+        var terrain = grid[x][y];
+        var tile_data = {
+          sight_impedance: terrain.sight_impedance,
+          x: terrain.at().x,
+          y: terrain.at().y,
+        };
+        sight_grid[x][y] = tile_data;
+      }
+    }
+
+    return sight_grid;
+  },
+
   determinePointsInSight: function(entities) {
+    var sight_grid = this.getSightGrid(Game.terrain);
+
+    var fires = Query.getNonDestroyed('Fire');
+    for (var i in fires) {
+      var fire = fires[i];
+      var grid_item = sight_grid[fire.at().x][fire.at().y];
+      grid_item.stop = true;
+    }
+
     var points = [];
     if (Game.fog_of_war) {
       for (var i in entities) {
@@ -43,7 +70,7 @@ LineOfSight = {
         if (entity.max_sight) {
           var visible_points = Utility.getPointsWithinDistance(entity.at(), entity.max_sight, Game.map_grid);
           if (Game.line_of_sight_blocking) {
-            visible_points = LineOfSightBlocking.getTilesInSight(entity.at(), entity.max_sight, visible_points, Game.terrain);
+            visible_points = LineOfSightBlocking.getTilesInSight(entity.at(), entity.max_sight, visible_points, sight_grid);
           }
 
           points = points.concat(visible_points);

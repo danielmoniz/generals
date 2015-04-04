@@ -242,8 +242,8 @@ Crafty.c('Unit', {
     var graph = new Graph(Game.terrain_difficulty_with_roads);
     this.updateTerrainGraphWithRetreatBlocks(graph);
 
-    var fires_in_sight = Query.getNonDestroyedFiresInSight(this.side);
-    Supply.makeEntitiesUnreachable(graph.grid, fires_in_sight);
+    var spotted_fires = Query.getSpottedFires(this.side);
+    Supply.makeEntitiesUnreachable(graph.grid, spotted_fires);
 
     var target = false;
     var ignore_sight = false;
@@ -717,8 +717,8 @@ Crafty.c('Unit', {
 
     var graph = new Graph(Game.terrain_difficulty_with_roads);
 
-    var fires_in_sight = Query.getNonDestroyedFiresInSight(this.side);
-    Supply.makeEntitiesUnreachable(graph.grid, fires_in_sight);
+    var spotted_fires = Query.getSpottedFires(this.side);
+    Supply.makeEntitiesUnreachable(graph.grid, spotted_fires);
 
     // @TODO Is this working at all? retreat_constraints requires target to be
     // adjacent to the battle!
