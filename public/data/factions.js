@@ -107,6 +107,49 @@ var Factions = {
 
   },
 
+  carthage: {
+    name: 'Carthage',
+    blurb: "Naval power, fought Rome in Punic Wars, Hannibal vs Scipio in 2nd Punic War, etc.",
+
+    units: [
+      {
+        name: "Hannibal",
+        type: "Cavalry",
+        quantity: 3000,
+      },
+      {
+        name: "Hasdrubal",
+        type: "Infantry",
+        quantity: 5000,
+      },
+      {
+        name: "Mago",
+        type: "Elephant",
+        quantity: 38,
+      },
+      {
+        name: "Himilco",
+        type: "Scout",
+        quantity: 1000,
+      },
+      {
+        name: "Hamilcar",
+        type: "Infantry",
+        quantity: 5000,
+      },
+    ],
+
+    cities: ['Carthage', 'fill-me-in', 'fill-me-in', 'fill-me-in', 'fill-me-in', 'fill-me-in'],
+
+    special_abilities: {
+      'testtest': {
+        infantry: true,
+        cavalry: false,
+      },
+    },
+
+  },
+
   aztecs: {
     name: 'Aztecs',
     blurb: "Mystery!",

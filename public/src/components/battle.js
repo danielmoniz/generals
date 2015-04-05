@@ -72,12 +72,10 @@ Battle = {
         console.log('Unit number (in tile): {0}'.format(i));
         continue;
       }
-      if (unit !== undefined) {
-        total += unit.getActive() * unit.defensive_ability;
-        total_troops += unit.getActive();
-      }
+      total += unit.getActive() * unit.defensive_ability;
+      total_troops += unit.getActive();
     }
-    return total / total_troops;
+    return total;
   },
 
   getRatiosOfTotal: function(units, total) {
@@ -194,8 +192,8 @@ Battle = {
     var attacker_troops = Units.getTotalTroops(attackers)[battle.attacking_side].active;
     var defender_troops = Units.getTotalTroops(defenders)[battle.defending_side].active;
 
-    var attacker_losses = (TROOP_LOSS * defender_attack_power) / attacker_defensive_ability;
-    var defender_losses = (TROOP_LOSS * attacker_attack_power) / defender_defensive_ability;
+    var attacker_losses = defender_troops * (TROOP_LOSS * defender_attack_power) / attacker_defensive_ability;
+    var defender_losses = attacker_troops * (TROOP_LOSS * attacker_attack_power) / defender_defensive_ability;
 
     var losses = {};
     losses[Battle.ATTACKER] = attacker_losses;
@@ -555,11 +553,14 @@ Crafty.c('Battle', {
 
   terrifyDefenders: function() {
     if (this.terrify_used) return;
-    for (var i in this.defenders) {
-      var unit = this.defenders[i];
-      Morale.degrade(unit, Morale.reasons.degrade.terrified);
-    }
+    this.degradeUnitsMorale(this.defenders, 'terrified');
     this.terrify_used = true;
+  },
+
+  degradeUnitsMorale: function(units, morale_loss_type) {
+    for (var i in units) {
+      Morale.degrade(units[i], Morale.reasons.degrade[morale_loss_type]);
+    }
   },
 
 });

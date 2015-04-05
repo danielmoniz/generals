@@ -63,16 +63,36 @@ var UnitData = function(type, stats) {
       combat_ability: 1.2,
     },
 
-    "Slave": {
-      combat_ability: 0.6,
-      best_dissent: 1,
-    },
-
     "Scout": {
       movement: 6,
       combat_ability: 0.5,
       max_sight: 14,
       retreat_ability: 1.5,
+    },
+
+    "Elephant": {
+      movement: 5,
+      combat_ability: 150,
+      defensive_ability: 20,
+      retreat_ability: 2,
+      charge_ability: {
+        other: 4,
+        town: 3,
+        tree: 2,
+        city: 2.5,
+      },
+      dissent_improvement: 0.4,
+      dissent_improve_factor: 2,
+      dissent_degrade_factor: 2,
+
+      special_abilities: [
+        'mortifying',
+      ],
+    },
+
+    "Slave": {
+      combat_ability: 0.6,
+      best_dissent: 1,
     },
 
     "Raider": {
