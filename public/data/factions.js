@@ -139,7 +139,7 @@ var Factions = {
       },
     ],
 
-    cities: ['Carthage', 'fill-me-in', 'fill-me-in', 'fill-me-in', 'fill-me-in', 'fill-me-in'],
+    cities: ['Carthage', 'Utique', 'Hippo Regius', 'Gades', 'Saguntum', 'Carthago Nova', 'Panormus', 'Lilybaeum', 'Hadrumetum', 'Zama Regia', 'Karalis', 'Malaca', 'Leptis Magna', 'Hippo Diarrhytus', 'Motya', 'Sulci', 'Tharros', 'Leptis Parva', 'Soluntum', 'Lixus', 'Oea', 'Theveste', 'Ibossim', 'Thapsus', 'Aleria', 'Tingis', 'Abyla', 'Sabratha', 'Rusadir', 'Baecula', 'Saldae'],
 
     special_abilities: {
       'testtest': {
