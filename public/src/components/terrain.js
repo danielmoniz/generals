@@ -33,6 +33,7 @@ Crafty.c('Terrain', {
     };
     this.addStats(ignite_stats);
 
+    this.updateGame();
     if (unit !== undefined) fire.spot(unit.side);
   },
 
@@ -58,6 +59,7 @@ Crafty.c('Terrain', {
     if (this.pillage) {
       this.pillage();
     }
+    this.updateGame();
   },
 
   pillage: function() {
@@ -73,6 +75,7 @@ Crafty.c('Terrain', {
       this.spot(old_owner);
     }
 
+    this.updateGame();
     return supply_to_steal;
   },
 
@@ -104,6 +107,10 @@ Crafty.c('Terrain', {
     if (side == this.owner) return 'ally';
     if (this.owner === undefined) return 'neutral';
     if (side != this.owner) return 'enemy';
+  },
+
+  updateGame: function() {
+    Game.updateTerrainGrids(this);
   },
 
 });

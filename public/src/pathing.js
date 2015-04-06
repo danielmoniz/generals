@@ -74,9 +74,8 @@ Pathing = {
     return path_list;
   },
 
-  getPathFromPathList: function(path_list, start_pos) {
+  getPathFromPathList: function(graph, path_list, start_pos) {
     if (path_list === undefined || path_list.length == 0) return undefined;
-    var graph = Game.terrain_with_roads_graph;
 
     var move_path = [];
     for (var i in path_list) {

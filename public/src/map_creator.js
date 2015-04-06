@@ -706,37 +706,46 @@ var MapCreator = function(options) {
   };
 
   this.buildTerrainDataWithRoads = function(options, game_object, terrain_list, roads) {
-    var terrain_difficulty_with_roads = [];
-    var terrain_build_difficulty_with_roads = [];
-    var terrain_supply = [];
+    game_object.terrain_difficulty_with_roads = [];
+    game_object.terrain_build_difficulty_with_roads = [];
+    game_object.terrain_supply = [];
+    game_object.sight_grid = [];
 
     for (var x = 0; x < terrain_list.length; x++) {
-      terrain_difficulty_with_roads[x] = [];
-      terrain_build_difficulty_with_roads[x] = [];
-      terrain_supply[x] = [];
+      game_object.terrain_difficulty_with_roads[x] = [];
+      game_object.terrain_build_difficulty_with_roads[x] = [];
+      game_object.terrain_supply[x] = [];
+      game_object.sight_grid[x] = [];
 
       for (var y = 0; y < terrain_list[x].length; y++) {
         var terrain = terrain_list[x][y];
-        try {
-          terrain_difficulty_with_roads[x][y] = roads[x][y].move_difficulty || terrain.move_difficulty;
-          terrain_build_difficulty_with_roads[x][y] = roads[x][y].build_over;
-          terrain_supply[x][y] = roads[x][y].supply;
-        } catch (ex) {
-          terrain_difficulty_with_roads[x][y] = terrain.move_difficulty;
-          terrain_build_difficulty_with_roads[x][y] = terrain.build_over;
-          terrain_supply[x][y] = terrain.supply ? 1 : 0;
-        }
+        this.updateTerrainGrids(game_object, terrain, roads, x, y);
       }
     }
 
-    game_object.terrain_difficulty_with_roads = terrain_difficulty_with_roads;
-    game_object.terrain_build_difficulty_with_roads = terrain_build_difficulty_with_roads;
-    game_object.terrain_supply = terrain_supply;
+    game_object.terrain_with_roads_graph = new Graph(game_object.terrain_difficulty_with_roads);
+    game_object.terrain_build_with_roads_graph = new Graph(game_object.terrain_build_difficulty_with_roads);
+    game_object.terrain_supply_graph = new Graph(game_object.terrain_supply);
+  };
 
-    game_object.terrain_with_roads_graph = new Graph(terrain_difficulty_with_roads);
-    game_object.terrain_build_with_roads_graph = new Graph(terrain_build_difficulty_with_roads);
-    game_object.terrain_supply_graph = new Graph(terrain_supply);
-  }
+  this.updateTerrainGrids = function(game_object, terrain, roads, x, y) {
+    try {
+      game_object.terrain_difficulty_with_roads[x][y] = roads[x][y].move_difficulty || terrain.move_difficulty;
+      game_object.terrain_build_difficulty_with_roads[x][y] = roads[x][y].build_over;
+      game_object.terrain_supply[x][y] = roads[x][y].supply;
+    } catch (ex) {
+      game_object.terrain_difficulty_with_roads[x][y] = terrain.move_difficulty;
+      game_object.terrain_build_difficulty_with_roads[x][y] = terrain.build_over;
+      game_object.terrain_supply[x][y] = terrain.supply ? 1 : 0;
+    }
+
+    var sight_data = {
+      sight_impedance: terrain.sight_impedance,
+      x: x,
+      y: y,
+    };
+    game_object.sight_grid[x][y] = sight_data;
+  };
 
   this.buildTerrainData = function(options, game_object, terrain_list) {
     // build Game.terrain Graph for pathfinding purposes

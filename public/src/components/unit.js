@@ -64,7 +64,8 @@ Crafty.c('Unit', {
     //this.stop = false;
     // rebuild movement path for pathfinding from stored data
 
-    var updated_move_target_path = Pathing.getPathFromPathList(this.move_target_path_list, this.at());
+    var graph = new Graph(Game.terrain_difficulty_with_roads);
+    var updated_move_target_path = Pathing.getPathFromPathList(graph, this.move_target_path_list, this.at());
     this.updateMoveTargetPath(updated_move_target_path);
 
     this.testTargetAndPath();

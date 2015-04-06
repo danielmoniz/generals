@@ -35,21 +35,7 @@ LineOfSight = {
   },
 
   getSightGrid: function(grid) {
-    var sight_grid = [];
-    for (var x in grid) {
-      sight_grid[x] = [];
-      for (var y in grid[x]) {
-        var terrain = grid[x][y];
-        var tile_data = {
-          sight_impedance: terrain.sight_impedance,
-          x: terrain.at().x,
-          y: terrain.at().y,
-        };
-        sight_grid[x][y] = tile_data;
-      }
-    }
-
-    return sight_grid;
+    return Game.sight_grid;
   },
 
   determinePointsInSight: function(entities) {

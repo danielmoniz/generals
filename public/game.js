@@ -356,6 +356,11 @@ Game = {
     Crafty.init(Game.width(), Game.height() + Game.board_title.height, "stage");
   },
 
+  updateTerrainGrids: function(terrain) {
+    this.map_creator.updateTerrainGrids(
+      this, terrain, this.roads, terrain.at().x, terrain.at().y);
+  },
+
   resetStatusVisuals: function(hard_reset) {
     Output.updateStatusBar();
     Output.updateVictoryBar(hard_reset);
