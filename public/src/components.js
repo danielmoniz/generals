@@ -529,6 +529,10 @@ Crafty.c('Hideable', {
     }
     this.spotted[side] = spotted_data;
 
+    if (side !== undefined) {
+      Game.map_creator.updateSideSpottedGrids(Game, this, Game.roads, this.at().x, this.at().y, side);
+    }
+
     if (this.spotted[0] && this.spotted[0].state == this.state 
         && this.spotted[1] && this.spotted[1].state == this.state) {
       this.canRemoveWhenNeeded();

@@ -74,7 +74,7 @@ Pathing = {
     return path_list;
   },
 
-  getPathFromPathList: function(graph, path_list, start_pos) {
+  getPathFromPathList: function(graph, path_list) {
     if (path_list === undefined || path_list.length == 0) return undefined;
 
     var move_path = [];

@@ -64,7 +64,7 @@ Crafty.c('Unit', {
     //this.stop = false;
     // rebuild movement path for pathfinding from stored data
 
-    var graph = new Graph(Game.terrain_difficulty_with_roads);
+    var graph = this.getSpottedMovementGraph();
     var updated_move_target_path = Pathing.getPathFromPathList(graph, this.move_target_path_list, this.at());
     this.updateMoveTargetPath(updated_move_target_path);
 
@@ -240,7 +240,7 @@ Crafty.c('Unit', {
     var movement = this.movement;
     if (this.battle && Game.turn == this.side) movement += 1;
 
-    var graph = new Graph(Game.terrain_difficulty_with_roads);
+    var graph = this.getSpottedMovementGraph();
     this.updateTerrainGraphWithRetreatBlocks(graph);
 
     var spotted_fires = Query.getSpottedFires(this.side);
@@ -257,7 +257,7 @@ Crafty.c('Unit', {
     // NOTE: since enemy units have stop points around them, no enemy units
     // will be reachable! Ensure that enemy units are highlighted if they 
     // can be reached.
-    graph = new Graph(Game.terrain_difficulty_with_roads);
+    graph = this.getSpottedMovementGraph();
     var enemy_units = LineOfSight.getEnemyUnitsInSight(this.side);
     this.addReachableEnemyUnitsToPoints(graph, possible_moves, this.at(), enemy_units, ignore_sight, movement);
 
@@ -574,7 +574,6 @@ Crafty.c('Unit', {
       if (space.x == supply_end_point.x && space.y == supply_end_point.y) return true;
 
       var start = graph.grid[space.x][space.y];
-      var tile_difficulty = Game.terrain_difficulty_with_roads[space.x][space.y];
       var tile_difficulty = graph.grid[space.x][space.y].weight;
       var supply_range_per_turn = [range - tile_difficulty, 0];
       var supply_route = Game.pathfind.search(graph, start, supply_end_point, supply_range_per_turn);
@@ -716,7 +715,7 @@ Crafty.c('Unit', {
 
     var target = { x: target_x, y: target_y };
 
-    var graph = new Graph(Game.terrain_difficulty_with_roads);
+    var graph = this.getSpottedMovementGraph();
 
     var spotted_fires = Query.getSpottedFires(this.side);
     Supply.makeEntitiesUnreachable(graph.grid, spotted_fires);
@@ -924,7 +923,10 @@ Crafty.c('Unit', {
     if (is_retreat === undefined) is_retreat = false;
     var movement = this.movement;
     if (is_retreat) movement += 1;
-    var partial_path = Pathing.getPartialPath(this.move_target_path, movement);
+
+    var graph = new Graph(Game.terrain_difficulty_with_roads);
+    var actual_path = Pathing.getPathFromPathList(graph, this.move_target_path);
+    var partial_path = Pathing.getPartialPath(actual_path, movement);
 
     var end_node = this.move_target_path[this.move_target_path.length - 1];
 
@@ -1292,6 +1294,14 @@ Crafty.c('Unit', {
     if (this.z <= biggest_z) {
       this.z = biggest_z + 1;
     }
+  },
+
+  getSpottedMovement: function() {
+    return Game.spotted[this.side].movement;
+  },
+
+  getSpottedMovementGraph: function() {
+    return new Graph(this.getSpottedMovement());
   },
 
 });

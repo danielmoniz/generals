@@ -361,12 +361,11 @@ Crafty.scene('Game', function() {
     var sides = [0, 1, undefined];
     for (var j in hideable) {
       var entity = hideable[j];
-      entity.TEST = {};
       for (var i in sides) {
         entity.spot(sides[i]);
-        entity.TEST[sides[i]] = true;
       }
     }
+
   }
 
   function getShortestPath(graph, start, end) {

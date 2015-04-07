@@ -711,15 +711,29 @@ var MapCreator = function(options) {
     game_object.terrain_supply = [];
     game_object.sight_grid = [];
 
+    var spotted = {};
+    var sides = [0, 1];
+    for (var i in sides) {
+      var index = sides[i];
+      var grids = {};
+      grids.movement = [];
+      spotted[index] = grids;
+    }
+    game_object.spotted = spotted;
+
+
     for (var x = 0; x < terrain_list.length; x++) {
       game_object.terrain_difficulty_with_roads[x] = [];
       game_object.terrain_build_difficulty_with_roads[x] = [];
       game_object.terrain_supply[x] = [];
       game_object.sight_grid[x] = [];
+      spotted[0].movement[x] = [];
+      spotted[1].movement[x] = [];
 
       for (var y = 0; y < terrain_list[x].length; y++) {
         var terrain = terrain_list[x][y];
         this.updateTerrainGrids(game_object, terrain, roads, x, y);
+        this.updateSpottedGrids(game_object, terrain, roads, x, y);
       }
     }
 
@@ -728,6 +742,36 @@ var MapCreator = function(options) {
     game_object.terrain_supply_graph = new Graph(game_object.terrain_supply);
   };
 
+  /*
+   * Update all sides' spotted grids based on a terrain tile.
+   */
+  this.updateSpottedGrids = function(game_object, terrain, roads, x, y) {
+    var sides = [0, 1];
+    for (var i in sides) {
+      this.updateSideSpottedGrids(game_object, terrain, roads, x, y, sides[i]);
+    }
+  };
+
+  /*
+   * Update spotted grids for a specific side based on a terrain tile.
+   */
+  this.updateSideSpottedGrids = function(game_object, terrain, roads, x, y, side) {
+    var old_value = game_object.spotted[side].movement[x][y];
+    var value;
+    if (roads[x] && roads[x][y]) {
+      value = roads[x][y].move_difficulty;
+    } else if (terrain.move_difficulty !== undefined) {
+      value = terrain.move_difficulty;
+    } else {
+      value = old_value;
+    }
+    game_object.spotted[side].movement[x][y] = value;
+  };
+
+  /*
+   * Updates terrain grids given a terrain tile.
+   * Eg. grids for movement, sight, etc.
+   */
   this.updateTerrainGrids = function(game_object, terrain, roads, x, y) {
     try {
       game_object.terrain_difficulty_with_roads[x][y] = roads[x][y].move_difficulty || terrain.move_difficulty;
