@@ -33,6 +33,14 @@ var Query = {
     return enemy_settlements;
   },
 
+  getSpottedEnemySettlements: function(side) {
+    var settlements = Entity.get('Settlement');
+    var spotted_enemy_settlements = settlements.filter(function(entity) {
+      return entity.spotted[side].stats.owner == 1 - side;
+    });
+    return spotted_enemy_settlements;
+  },
+
   getOwnedSettlements: function(side) {
     var settlements = Entity.get('Settlement');
     var owned_settlements = settlements.filter(function(settlement) {

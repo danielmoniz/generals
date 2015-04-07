@@ -113,11 +113,12 @@ LineOfSight = {
 
     if (Game.enemy_sight_lines && side !== undefined) {
       var enemy_units = Units.getEnemyUnits(side);
-      var enemy_settlements = Query.getEnemySettlements(side);
-      var seeing_entities = enemy_units.concat(enemy_settlements);
-      var entities_in_sight = this.getEntitiesInSight(seeing_entities, side);
+      var enemy_units_in_sight = this.getEntitiesInSight(enemy_units, side);
+      var settlements = Entity.get('Settlement');
+      var apparent_enemy_settlements = Query.getSpottedEnemySettlements(side);
 
-      var points = this.determinePointsInSight(entities_in_sight);
+      var seeing_entities = enemy_units_in_sight.concat(apparent_enemy_settlements);
+      var points = this.determinePointsInSight(seeing_entities);
       GUI.outlineVisibleRegions(points, 'enemy sight range');
     }
   },
