@@ -514,7 +514,7 @@ Crafty.c('Unit', {
     var start = graph.grid[this.at().x][this.at().y];
     var end = graph.grid[target.at().x][target.at().y];
 
-    var supply_blockers = Supply.getSupplyBlockers(this.side);
+    var supply_blockers = Supply.getEnemySupplyBlockers(this.side);
     Supply.makeEntitiesUnreachable(graph.grid, supply_blockers);
 
     var supply_route = Game.pathfind.search(graph, start, end);
