@@ -87,6 +87,7 @@ var TerrainData = function(type, stats) {
       passive_capture: false,
       capture_time: 1,
       supply_range: 5,
+      farms: [],
     },
 
     "Town": {

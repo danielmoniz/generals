@@ -260,9 +260,6 @@ Crafty.c('Settlement', {
 Crafty.c('City', {
   init: function() {
     this.requires('Settlement, Passable, Hideable, SpriteAnimation, spr_city')
-      .attr({
-        farms: [],
-      })
       .bind("NextTurn", this.handleSupply)
       .reel('healthy', 1000, 1, 0, 1)
       .reel('ruined', 1000, 1, 1, 1)
@@ -337,6 +334,13 @@ Crafty.c('City', {
 
     return supply_to_steal;
   },
+
+  customSelect: function() {
+    console.log('selecting city!');
+    //var supplied_points = Supply.getSupplyAreaForSettlement(this, enemy_units, stop_points, barriers);
+    //var supplied_area = Utility.getSpacialArrayFromList(supplied_points);
+  },
+
 });
 
 Crafty.c('Flag', {
@@ -418,9 +422,6 @@ Crafty.c('CitySide', {
 Crafty.c('Town', {
   init: function() {
     this.requires('Settlement, Passable, Hideable, SpriteAnimation, spr_town')
-      .attr({
-        farms: [],
-      })
       .bind("NextTurn", this.handleSupply)
       .reel('healthy', 1000, 0, 0, 1)
       .reel('ruined', 1000, 2, 0, 1)
