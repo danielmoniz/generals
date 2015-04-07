@@ -187,7 +187,7 @@ Crafty.c('Unit', {
   handleWeatherOnDissent: function() {
     if (!Game.weather.rain) return;
     var local_terrain = Game.terrain[this.at().x][this.at().y];
-    if (!local_terrain.has('City')) Dissent.degrade(this, Dissent.reasons.degrade.rain);
+    if (!local_terrain.has('Settlement')) Dissent.degrade(this, Dissent.reasons.degrade.rain);
   },
 
   getActionChoices: function() {
