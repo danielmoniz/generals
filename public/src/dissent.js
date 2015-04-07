@@ -1,5 +1,5 @@
 
-var Morale = {
+var Dissent = {
 
   reasons: {
     degrade: {
@@ -167,7 +167,7 @@ var Morale = {
 
   /*
    * Return a fraction ( 0 <= fraction <= 1) given some number of dissent
-   * points. Used to determine the effect of dissent gain/morale loss.
+   * points. Used to determine the effect of dissent gain.
    */
   calculateDissentFactor: function(dissent_points) {
     if (isNaN(dissent_points)) {
@@ -197,8 +197,8 @@ var Morale = {
 };
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = Morale;
+  module.exports = Dissent;
 } else {
-  window.Morale = Morale;
+  window.Dissent = Dissent;
 }
 

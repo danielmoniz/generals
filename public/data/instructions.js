@@ -54,7 +54,7 @@ var Instructions = {
 
   other_factors: "If at any point an army's retreat is blocked, that blockade also prevents supply from that direction. This means that keeping the rear of your armies clear is of vital importance.",
 
-  dissent_general: "Armies do not always perform as they should. An army low on morale, or high on dissent, will become less organized and effective. Dissent gets worse when negative events happen to your army. Some examples in order of severity:",
+  dissent_general: "Armies do not always perform as they should. An army high on dissent will become less organized and effective. Dissent gets worse when negative events happen to your army. Some examples in order of severity:",
 
   dissent_examples: [
     'Retreating from battle.',
@@ -65,7 +65,7 @@ var Instructions = {
 
   dissent_in_combat: "Dissent is gained in combat when casualties are taken. It is based on the percentage of active troops lost (either dead or injured). Retreating works the same way, but casualties taken during a retreat have a much larger effect on dissent.",
 
-  dissent_improvement: "If an army has a full turn without increasing its dissent, the army's morale improves. Thus, giving your armies a rest can be vital to keeping them alive and effective. An army's dissent decreases less if it is unsupplied. It can also be improved by sacking towns and cities and by pillaging farms.",
+  dissent_improvement: "If an army has a full turn without increasing its dissent, the army's dissent improves/decreases. Thus, giving your armies a rest can be vital to keeping them alive and effective. An army's dissent decreases less if it is unsupplied. It can also be improved by sacking towns and cities and by pillaging farms.",
 
   terrain_types_intro: "Terrain affects both combat and movement. The defender always gets the combat advantage if it exists.",
 

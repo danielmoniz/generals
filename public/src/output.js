@@ -389,16 +389,16 @@ Output = {
     var third_row = this.createDiv();
 
     if (Game.dissent) {
-      var morale_div = this.createDiv('unit-morale');
-      var morale_bar_container = this.createDiv('bar_container');
-      var morale_bar = this.createDiv('morale bar');
+      var dissent_div = this.createDiv('unit-dissent');
+      var dissent_bar_container = this.createDiv('bar_container');
+      var dissent_bar = this.createDiv('dissent bar');
 
-      this.updateMoraleBar(unit, morale_bar);
+      this.updateDissentBar(unit, dissent_bar);
 
-      morale_div.append(morale_bar_container);
-      morale_bar_container.append(morale_bar);
+      dissent_div.append(dissent_bar_container);
+      dissent_bar_container.append(dissent_bar);
 
-      third_row.append(morale_div);
+      third_row.append(dissent_div);
     }
 
     unit_div.append(first_row).append(second_row).append(third_row);
@@ -406,17 +406,17 @@ Output = {
     return unit_div;
   },
 
-  updateMoraleBar: function(unit, morale_bar) {
-    if (!morale_bar) {
+  updateDissentBar: function(unit, dissent_bar) {
+    if (!dissent_bar) {
       var unit_div = this.getUnitDiv(unit);
-      morale_bar = unit_div.find("div.morale.bar");
+      dissent_bar = unit_div.find("div.dissent.bar");
     }
-    morale_bar.removeClass('add_marker');
-    var morale_percent = Pretty.Morale.moralePercentage(unit.dissent);
-    if (morale_percent != 0 && morale_percent != 99) {
-      morale_bar.addClass('add_marker');
+    dissent_bar.removeClass('add_marker');
+    var dissent_percent = Pretty.Dissent.dissentPercentage(unit.dissent);
+    if (dissent_percent != 0 && dissent_percent != 99) {
+      dissent_bar.addClass('add_marker');
     }
-    morale_bar.css('width', '{0}%'.format(morale_percent));
+    dissent_bar.css('width', '{0}%'.format(dissent_percent));
   },
 
   createBattleContainerDiv: function(battle_id, classes) {
@@ -582,17 +582,17 @@ Output = {
     var div = this.createDiv("", "{0}: {1}%".format('Army health', Math.round(unit.getActive() / unit.quantity * 100)));
     unit_info_panel.append(div);
 
-    // MORALE -----------
+    // DISSENT -----------
     if (Game.dissent) {
       /*
       // Testing code
       var div = this.createDiv("", "{0}: {1}".format('Dissent', Utility.roundTo2Decimals(unit.dissent)));
       unit_info_panel.append(div);
-      var div = this.createDiv("", "{0}: {1}%".format('Morale (functional)', Pretty.Morale.moralePercentage(unit.dissent)));
+      var div = this.createDiv("", "{0}: {1}%".format('Dissent (functional)', Pretty.Dissent.dissentPercentage(unit.dissent)));
       unit_info_panel.append(div);
       */
-      var morale_improvement = Pretty.Morale.getImprovementText(unit.dissent, unit.dissent_reasons);
-      var text = "{0}: {1}{2}".format('Mood', Morale.getStatus(unit.dissent), morale_improvement);
+      var dissent_improvement = Pretty.Dissent.getImprovementText(unit.dissent, unit.dissent_reasons);
+      var text = "{0}: {1}{2}".format('Mood', Dissent.getStatus(unit.dissent), dissent_improvement);
       unit_info_panel.append(this.createDiv("", text));
     }
 
@@ -950,7 +950,7 @@ Output = {
     //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
     supply_div.text(supply_remaining);
 
-    this.updateMoraleBar(unit);
+    this.updateDissentBar(unit);
   },
 
   getActionsChoicesDiv: function(unit) {

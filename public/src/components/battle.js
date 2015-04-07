@@ -278,7 +278,7 @@ Battle = {
 
   killUnits: function(units, losses) {
     for (var i=0; i<units.length; i++) {
-      units[i].sufferBattleCasualties(losses[i], Morale.reasons.degrade.battle);
+      units[i].sufferBattleCasualties(losses[i], Dissent.reasons.degrade.battle);
     }
   },
 
@@ -457,7 +457,7 @@ Crafty.c('Battle', {
   retreat: function(unit) {
     var losses = Battle.calculateRetreatLosses(
       this, this.attackers, this.defenders, unit);
-    unit.sufferBattleCasualties(losses, Morale.reasons.degrade.retreat);
+    unit.sufferBattleCasualties(losses, Dissent.reasons.degrade.retreat);
 
     var unit_stats = this.getUnitUpdate(unit, 'retreated');
     this.unit_updates.push(unit_stats);
@@ -553,13 +553,13 @@ Crafty.c('Battle', {
 
   terrifyDefenders: function() {
     if (this.terrify_used) return;
-    this.degradeUnitsMorale(this.defenders, 'terrified');
+    this.degradeUnitsDissent(this.defenders, 'terrified');
     this.terrify_used = true;
   },
 
-  degradeUnitsMorale: function(units, morale_loss_type) {
+  degradeUnitsDissent: function(units, dissent_gain_type) {
     for (var i in units) {
-      Morale.degrade(units[i], Morale.reasons.degrade[morale_loss_type]);
+      Dissent.degrade(units[i], Dissent.reasons.degrade[dissent_gain_type]);
     }
   },
 

@@ -187,7 +187,7 @@ Crafty.c('Unit', {
   handleWeatherOnDissent: function() {
     if (!Game.weather.rain) return;
     var local_terrain = Game.terrain[this.at().x][this.at().y];
-    if (!local_terrain.has('City')) Morale.degrade(this, Morale.reasons.degrade.rain);
+    if (!local_terrain.has('City')) Dissent.degrade(this, Dissent.reasons.degrade.rain);
   },
 
   getActionChoices: function() {
@@ -306,12 +306,12 @@ Crafty.c('Unit', {
     if (local_terrain.has('Farm')) {
       var amount = local_terrain.pillage(this, total_pillage_ability);
       if (local_terrain.side != this.side) {
-        Morale.improve(this, Morale.reasons.improve.pillage);
+        Dissent.improve(this, Dissent.reasons.improve.pillage);
       }
 
     } else if (local_terrain.has("Settlement") && !local_terrain.sacked) {
       var amount = local_terrain.pillage(this, total_pillage_ability);
-      Morale.improve(this, Morale.reasons.improve.sack);
+      Dissent.improve(this, Dissent.reasons.improve.sack);
 
     } else {
       throw "CannotPillageEntity: {0} not valid type to be pillaged/sacked. At location: ({1}, {2})".format(local_terrain.type, local_terrain.at().x, local_terrain.at().y);
@@ -475,11 +475,11 @@ Crafty.c('Unit', {
     if (local_terrain.on_fire) {
       var fire_casualty_rate_injured = 0.95;
       var injured_to_kill = Math.ceil(fire_casualty_rate_injured * this.injured);
-      this.kill(injured_to_kill, Morale.reasons.degrade.fire, true, 'ignore dissent');
+      this.kill(injured_to_kill, Dissent.reasons.degrade.fire, true, 'ignore dissent');
 
       var fire_casualty_rate = 0.75;
       var casualties = Math.ceil(fire_casualty_rate * this.getActive());
-      this.sufferBattleCasualties(casualties, Morale.reasons.degrade.fire);
+      this.sufferBattleCasualties(casualties, Dissent.reasons.degrade.fire);
     }
   },
 
@@ -615,13 +615,13 @@ Crafty.c('Unit', {
       }
     }
 
-    //if (unsupplied > 0) Morale.degrade(this, Morale.reasons.degrade.unsupplied);
+    //if (unsupplied > 0) Dissent.degrade(this, Dissent.reasons.degrade.unsupplied);
 
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
     this.supply_remaining -= unsupplied;
     if (this.supply_remaining < 0) {
       var attrition_casualties = Math.max(0, (unsupplied - supplied_units)) * Game.attrition_rate;
-      this.sufferAttritionCasualties(attrition_casualties, Morale.reasons.degrade.supply_attrition);
+      this.sufferAttritionCasualties(attrition_casualties, Dissent.reasons.degrade.supply_attrition);
       this.supply_remaining = Math.max(0, this.supply_remaining);
     }
   },
@@ -1092,7 +1092,7 @@ Crafty.c('Unit', {
       var reduction = this.max_movement / 2;
       if (this.organized) reduction = this.max_movement / 4;
       this.reduceMovement(reduction);
-      Morale.improve(this, Morale.reasons.improve.win_battle);
+      Dissent.improve(this, Dissent.reasons.improve.win_battle);
     }
   },
 
@@ -1109,7 +1109,7 @@ Crafty.c('Unit', {
   },
 
   sufferCasualties: function(to_kill, to_injure, reason) {
-    Morale.takeCasualties(this, reason, to_kill + to_injure, this.getActive());
+    Dissent.takeCasualties(this, reason, to_kill + to_injure, this.getActive());
     this.kill(to_kill, reason);
     this.injure(to_injure, false, reason);
 
@@ -1124,7 +1124,7 @@ Crafty.c('Unit', {
     if (num_troops === undefined) throw "undefined: num_troops in unit.kill()";
     if (injured === undefined) injured = false;
 
-    //Morale.takeCasualties(this, reason, casualties, this.getActive());
+    //Dissent.takeCasualties(this, reason, casualties, this.getActive());
 
     var num_killed = Math.ceil(Math.min(this.quantity, Math.ceil(num_troops)));
     this.quantity -= num_killed;
@@ -1176,7 +1176,7 @@ Crafty.c('Unit', {
 
   updateDissent: function() {
     if (this.happy) {
-      Morale.increment(this, this.is_supplied);
+      Dissent.increment(this, this.is_supplied);
       return;
     }
   },

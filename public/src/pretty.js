@@ -192,10 +192,10 @@ Pretty = {
     },
   },
 
-  Morale: {
+  Dissent: {
 
-    moralePercentage: function(dissent_points) {
-      return Math.floor(Morale.calculateDissentFactor(dissent_points) * 100);
+    dissentPercentage: function(dissent_points) {
+      return Math.ceil((1 - Dissent.calculateDissentFactor(dissent_points)) * 100);
     },
 
     getImprovementText: function(dissent, dissent_reasons) {
