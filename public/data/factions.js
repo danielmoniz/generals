@@ -96,7 +96,7 @@ var Factions = {
       },
     ],
 
-    cities: ['Rome', 'Constantinople', 'Antioch', 'Alexandria', 'Ephesus', 'Carthage'],
+    cities: ['Rome', 'Constantinople', 'Antioch', 'Alexandria', 'Ephesus'],
 
     special_abilities: {
       'organized': {
@@ -114,7 +114,7 @@ var Factions = {
     units: [
       {
         name: "Hannibal",
-        type: "Cavalry",
+        type: "Light Cavalry",
         quantity: 3000,
       },
       {

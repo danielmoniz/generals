@@ -54,6 +54,19 @@ var UnitData = function(type, stats) {
       },
     },
 
+    "Light Cavalry": {
+      movement: 10,
+      combat_ability: 1.3,
+      pursuit_ability: 2,
+      retreat_ability: 2,
+      charge_ability: {
+        other: 1.7,
+        town: 1.4,
+        tree: 1.3,
+        city: 1.2,
+      },
+    },
+
     "Infantry": {
       movement: 5,
     },
