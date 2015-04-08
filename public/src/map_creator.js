@@ -385,7 +385,8 @@ var MapCreator = function(options) {
         for (var y = center.y - max_distance; y <= center.y + max_distance; y++) {
           if (y < 0 || y > options.map_grid.height - 1) continue;
           if (x == center.x && y == center.y) continue;
-          var distance = Utility.getDistance(center, { x: x, y: y });
+          var location = { x: x, y: y };
+          var distance = Utility.getDistance(center, location);
           //var probability = Math.pow(factor, distance + 1);
           var probability = Math.pow(factor, Math.pow(distance, distance));
           if (!game_object.occupied[x][y] && Math.random() < probability) {
@@ -396,6 +397,7 @@ var MapCreator = function(options) {
             var farm_obj = new TerrainData("Farm").add(data).stats;
             //farm_obj.side = this.getMapSide(options, x);
             game_object.terrain_type[x][y] = farm_obj;
+            city.farms.push(location);
           }
         }
       }
