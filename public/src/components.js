@@ -582,7 +582,6 @@ Crafty.c('SightLine', {
     this.bind("RemoveSightLines", this.destroy);
     return this;
   },
-
 });
 
 Crafty.c('SupplyDisplay', {
@@ -590,7 +589,14 @@ Crafty.c('SupplyDisplay', {
     this.bind("RemoveSupplyDisplays", this.destroy);
     return this;
   },
+});
 
+Crafty.c('SingleSupplyDisplay', {
+  init: function() {
+    this.bind("RemoveSingleCitySupplyDisplay", this.destroy);
+    this.z = 305;
+    return this;
+  },
 });
 
 var RetreatBlockComponents = {

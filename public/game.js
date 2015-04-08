@@ -41,6 +41,7 @@ Game = {
 
   deselect: function() {
     Crafty.trigger("DimPaths");
+    GUI.clearClickBasedOverlays();
     Output.clearCounts();
     Output.clearUnitsPanelSelect();
     Output.clearBattlesPanelSelect();

@@ -23,9 +23,11 @@ var Supply = {
     }
   },
 
-  getCitySupplyArea: function(side, use_all_enemies) {
+  // @TODO This can not yet handle being used to see an opponent's city's
+  // supply area without gibing away other information, eg. unspotted fire.
+  getCitySupplyArea: function(side, use_all_enemies, cities) {
     var points = [];
-    var owned_settlements = Query.getOwnedSettlements(side);
+    var owned_settlements = Query.getOwnedSettlements(side, cities);
 
     var units = Units.getUnitsBySide(side);
     if (use_all_enemies) {
@@ -38,7 +40,7 @@ var Supply = {
       return !unit.battle;
     });
 
-    var battles = Entity.get('Battle', 'flush first');
+    var battles = Entity.get('Battle');
     var barriers = this.getBattleBarriers(battles, side);
 
     var target = { x: -1, y: -1 };
@@ -48,8 +50,6 @@ var Supply = {
 
     for (var i in owned_settlements) {
       var graph = new Graph(Game.terrain_difficulty_with_roads);
-      var supply_blockers = this.getEnemySupplyBlockers(side);
-      supply_blockers = supply_blockers.concat(Query.getNonDestroyed('Fire'));
       this.makeEntitiesUnreachable(graph.grid, enemy_units);
 
       var settlement = owned_settlements[i];

@@ -15,6 +15,7 @@ var Entity = {
   keep_updated: [
     'Hideable',
     'Settlement',
+    'Battle',
   ],
 
   /*

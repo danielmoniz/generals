@@ -580,6 +580,13 @@ Crafty.scene('Loading', function() {
       spr_box_surround_teal_left: [3, 0],
     });
 
+    Crafty.sprite(32, 'assets_test/box_surround_black.png', {
+      spr_box_surround_black_top: [0, 0],
+      spr_box_surround_black_right: [1, 0],
+      spr_box_surround_black_bottom: [2, 0],
+      spr_box_surround_black_left: [3, 0],
+    });
+
     // Now that are sprites are ready to draw, start the game.
     Crafty.scene('Game');
   })

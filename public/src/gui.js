@@ -30,6 +30,20 @@ var GUI = {
     GUI.outlineVisibleRegions(points, 'all cities supply range');
   },
 
+  displaySingleEntitySupplyRange: function(entity, side, spotted_owner) {
+    if (!Game.city_based_supply) return false;
+    Crafty.trigger("RemoveSingleCitySupplyDisplay");
+    if (side === undefined) return false;
+    if (spotted_owner === undefined) return false;
+
+    var area = Supply.getCitySupplyArea(spotted_owner, false, [entity]);
+    GUI.outlineVisibleRegions(area, 'specific city supply range');
+  },
+
+  clearClickBasedOverlays: function() {
+    Crafty.trigger("RemoveSingleCitySupplyDisplay");
+  },
+
   renderOutline: function(point, adjacent, style) {
     var new_surround_object = Entity.create('BoxSurround');
     var x = point.x;
@@ -70,6 +84,18 @@ var GUI = {
         new_surround_object.addComponent('spr_box_surround_teal_top');
       } else if (adjacent.y > y) {
         new_surround_object.addComponent('spr_box_surround_teal_bottom');
+      }
+
+    } else if (style == 'specific city supply range') {
+      new_surround_object.addComponent('SingleSupplyDisplay');
+      if (adjacent.x < x) {
+        new_surround_object.addComponent('spr_box_surround_black_left');
+      } else if (adjacent.x > x) {
+        new_surround_object.addComponent('spr_box_surround_black_right');
+      } else if (adjacent.y < y) {
+        new_surround_object.addComponent('spr_box_surround_black_top');
+      } else if (adjacent.y > y) {
+        new_surround_object.addComponent('spr_box_surround_black_bottom');
       }
 
     } else {

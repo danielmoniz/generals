@@ -255,6 +255,12 @@ Crafty.c('Settlement', {
     this.spot(side);
   },
 
+  customSelect: function() {
+    var spotted_owner = this.spotted[Game.player].stats.owner;
+    if (Game.player != spotted_owner) return;
+    GUI.displaySingleEntitySupplyRange(this, Game.player, spotted_owner);
+  },
+
 });
 
 Crafty.c('City', {
@@ -333,12 +339,6 @@ Crafty.c('City', {
     }
 
     return supply_to_steal;
-  },
-
-  customSelect: function() {
-    console.log('selecting city!');
-    //var supplied_points = Supply.getSupplyAreaForSettlement(this, enemy_units, stop_points, barriers);
-    //var supplied_area = Utility.getSpacialArrayFromList(supplied_points);
   },
 
 });

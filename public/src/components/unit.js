@@ -393,6 +393,12 @@ Crafty.c('Unit', {
   },
 
   customSelect: function() {
+    // select settlement beneath unit to activate any displays
+    var settlement = this.isEntityPresent('Settlement');
+    if (settlement) {
+      settlement.select();
+    }
+
     Output.selectUnits([this]);
 
     if (this.movement_path) highlightPath(this.movement_path);
