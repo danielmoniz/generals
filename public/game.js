@@ -121,8 +121,8 @@ Game = {
 
     // ------------------------------------
     Supply.generateCitySupply(this.turn);
-    if (this.city_based_supply && this.turn_count > 1) {
-      Supply.unitsEat(this.turn);
+    if (this.turn_count >= 2) {
+      Supply.unitSupply(this.turn);
     }
     Crafty.trigger("NextTurn");
     Crafty.trigger("RetreatUnits");

@@ -110,7 +110,6 @@ Crafty.c('Unit', {
     this.testTargetAndPath();
 
     if (turn == this.side) {
-      if (Game.turn_count >= 2) this.handleAttrition();
       this.takeFireCasualties();
       this.handleWeatherOnDissent();
 
@@ -122,8 +121,6 @@ Crafty.c('Unit', {
   },
 
   eat: function() {
-    if (Game.turn != this.side) return;
-
     var points = Supply.getCitySupplyArea(this.side, 'use_all_enemies');
     var x = this.at().x;
     var y = this.at().y;
@@ -166,12 +163,30 @@ Crafty.c('Unit', {
       var attrition_casualties = num_starving * Game.attrition_rate;
       this.sufferAttritionCasualties(attrition_casualties, Dissent.reasons.degrade.supply_attrition);
     }
-    // should not be necessary to adjust this.supply_remaining
-    //this.supply_remaining = Math.max(0, this.supply_remaining);
 
   },
 
   storeSupply: function() {
+    var points = Supply.getCitySupplyArea(this.side, 'use_all_enemies');
+    var x = this.at().x;
+    var y = this.at().y;
+    var supply_room = this.max_supply - this.supply_remaining;
+    var supply_wanted = Math.min(this.quantity * this.supply_usage, supply_room);
+
+    if (points[x] && points[x][y]) {
+      // are in a supply zone. Find the supplying city and what can be stored.
+      var settlements = Query.getOwnedSettlements(this.side);
+      for (var i in settlements) {
+        var place = settlements[i];
+        if (place.supplied_points[x] && place.supplied_points[x][y]) {
+          var supply_used = Math.min(place.remaining_provided_supply, supply_wanted);
+          place.remaining_provided_supply -= supply_used;
+          supply_wanted -= supply_used;
+          this.supply_remaining += supply_used;
+        }
+      }
+
+    }
   },
 
   /*

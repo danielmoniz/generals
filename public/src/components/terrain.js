@@ -256,6 +256,13 @@ Crafty.c('Settlement', {
   },
 
   customSelect: function() {
+    console.log(this.name);
+    console.log(this.max_provided_supply);
+    console.log(this.remaining_provided_supply);
+    if (this.farms) {
+      console.log("this.farms.length");
+      console.log(this.farms.length);
+    }
     var spotted_owner = this.spotted[Game.player].stats.owner;
     if (Game.player != spotted_owner) return;
     GUI.displaySingleEntitySupplyRange(this, Game.player, spotted_owner);

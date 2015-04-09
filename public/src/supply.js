@@ -108,7 +108,23 @@ var Supply = {
 
   },
 
-  unitsEat: function(side) {
+  unitSupply: function(side) {
+    if (Game.city_based_supply) {
+      this.cityBasedUnitSupply(side);
+    } else {
+      this.routeBasedUnitSupply(side);
+    }
+  },
+
+  routeBasedUnitSupply: function(side) {
+    var units = Units.getFriendlyUnits(side);
+    for (var i in units) {
+      var unit = units[i];
+      unit.handleAttrition();
+    }
+  },
+
+  cityBasedUnitSupply: function(side) {
     var units = Units.getFriendlyUnits(side);
 
     // order the units by their supply needs, then by rank
@@ -119,11 +135,6 @@ var Supply = {
       return unit1.rank - unit2.rank;
     });
 
-    // @TEST
-    for (var i in units) {
-      //console.log(units[i].name);
-    }
-
     for (var i in units) {
       var unit = units[i];
       unit.eat();
@@ -131,7 +142,7 @@ var Supply = {
 
     for (var i in units) {
       var unit = units[i];
-      //unit.eat();
+      unit.storeSupply();
     }
 
   },
