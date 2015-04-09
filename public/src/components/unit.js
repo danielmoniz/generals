@@ -31,6 +31,7 @@ Crafty.c('Unit', {
     this.addStat('max_movement', this.movement);
     this.possible_moves = [];
     this.dissent_reasons = [];
+    this.replenished = true;
   },
 
   testTargetAndPath: function() {
@@ -128,7 +129,9 @@ Crafty.c('Unit', {
     var left_to_feed = need_to_eat;
     var supply_needed = need_to_eat * this.supply_usage;
 
+    this.is_supplied = false;
     if (points[x] && points[x][y]) {
+      this.is_supplied = true;
       // are supplied. Find the supplying city and eat what can be eaten.
       var settlements = Query.getOwnedSettlements(this.side);
       for (var i in settlements) {
@@ -156,10 +159,14 @@ Crafty.c('Unit', {
     var carried_supply_used = Math.min(supply_needed, this.supply_remaining);
     supply_needed -= carried_supply_used;
     this.supply_remaining -= carried_supply_used;
+    this.losing_supply = false;
+    if (carried_supply_used) this.losing_supply = true;
 
     // the remaining troops are starving
     var num_starving = Math.ceil(supply_needed / this.supply_usage);
+    this.starving = false;
     if (num_starving > 0) {
+      this.starving = true;
       var attrition_casualties = num_starving * Game.attrition_rate;
       this.sufferAttritionCasualties(attrition_casualties, Dissent.reasons.degrade.supply_attrition);
     }
@@ -171,11 +178,15 @@ Crafty.c('Unit', {
     var x = this.at().x;
     var y = this.at().y;
     var supply_room = this.max_supply - this.supply_remaining;
-    var supply_wanted = Math.min(this.quantity * this.supply_usage, supply_room);
+    var initial_supply_wanted = Math.min(this.quantity * this.supply_usage, supply_room);
+    var supply_wanted = initial_supply_wanted;
 
     if (points[x] && points[x][y]) {
       // are in a supply zone. Find the supplying city and what can be stored.
       var settlements = Query.getOwnedSettlements(this.side);
+      settlements.sort(function(a, b) {
+        return b.remaining_provided_supply - a.remaining_provided_supply;
+      });
       for (var i in settlements) {
         var place = settlements[i];
         if (place.supplied_points[x] && place.supplied_points[x][y]) {
@@ -187,6 +198,12 @@ Crafty.c('Unit', {
       }
 
     }
+
+    this.replenishing_supply = false;
+    if (supply_wanted != initial_supply_wanted) this.replenishing_supply = true;
+
+    this.replenished = false;
+    if (this.max_supply == this.supply_remaining) this.replenished = true;
   },
 
   /*
@@ -564,8 +581,11 @@ Crafty.c('Unit', {
   resupply: function(fill) {
     if (fill) {
       this.addSupply(this.max_supply);
+      this.replenished = true;
     } else {
       this.addSupply(this.quantity);
+      this.replenishing = true;
+      if (this.supply_remaining == this.max_supply) this.replenished = true;
     }
   },
 
@@ -693,11 +713,15 @@ Crafty.c('Unit', {
       }
     }
 
+    this.losing_supply = false;
+    if (unsupplied) this.losing_supply = true;
     //if (unsupplied > 0) Dissent.degrade(this, Dissent.reasons.degrade.unsupplied);
 
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
     this.supply_remaining -= unsupplied * this.supply_usage;
+    this.starving = false;
     if (this.supply_remaining < 0) {
+      this.starving = true;
       var attrition_casualties = Math.max(0, (unsupplied - supplied_units)) * Game.attrition_rate;
       this.sufferAttritionCasualties(attrition_casualties, Dissent.reasons.degrade.supply_attrition);
       this.supply_remaining = Math.max(0, this.supply_remaining);

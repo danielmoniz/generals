@@ -350,8 +350,11 @@ Output = {
     var status = Pretty.Unit.status(unit.getActive(), unit.injured);
     var supply_remaining = Pretty.Unit.supplied_turns(unit);
     //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
-    var supply_status = 'supplied';
-    if (!unit.is_supplied) supply_status = 'unsupplied';
+
+    var supply_status = 'replenishing';
+    if (!unit.replenished && !unit.replenishing_supply && !unit.starving) supply_status = 'maintaining_supply';
+    if (unit.losing_supply) supply_status = 'losing_supply';
+    if (unit.starving) supply_status = 'starving';
 
     var unit_div = this.createUnitDiv(unit.getId(), classes);
     unit_div.attr("rank", unit.rank);

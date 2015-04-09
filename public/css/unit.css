@@ -12,8 +12,10 @@
 .unit .unit-item { display: inline-block; margin-right: 0px; }
 .unit .square { width: 32px; height:32px; display:inline-block; font-size:28px; text-align: center; vertical-align:top; }
 .unit .supply { vertical-align:top; color: black; }
-.unit .supplied { background-image:url("../assets/green-supply.png"); }
-.unit .unsupplied { background-image:url("../assets/red-supply.png"); }
+.unit .replenishing { background-image:url("../assets/green-supply.png"); }
+.unit .maintaining_supply { background-image:url("../assets/colour_bar-yellow.png"); }
+.unit .losing_supply { background-image:url("../assets/orange-supply.png"); }
+.unit .starving { background-image:url("../assets/red-supply.png"); }
 .unit .battle.square { background-image:url("../assets/Combat2.png"); }
 .unit .status.small { color: red; }
 
