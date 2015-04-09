@@ -348,7 +348,7 @@ Output = {
   createStandardUnitDiv: function(unit, classes) {
     var name = Pretty.Unit.name(unit);
     var status = Pretty.Unit.status(unit.getActive(), unit.injured);
-    var supply_remaining = Pretty.Unit.supplied_turns(unit.supply_remaining, unit.quantity);
+    var supply_remaining = Pretty.Unit.supplied_turns(unit);
     //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
     var supply_status = 'supplied';
     if (!unit.is_supplied) supply_status = 'unsupplied';
@@ -436,7 +436,7 @@ Output = {
     if (!type) type = "unit";
     var type_id = "{0}_id".format(type);
     var func = function(event) {
-      console.log("{0} clicked!".format(Utility.capitalizeFirstLetter(type)));
+      //console.log("{0} clicked!".format(Utility.capitalizeFirstLetter(type)));
       var entity_id = parseInt($(this).attr(type_id));
       var entity = Crafty(entity_id);
       Game.select(entity);
@@ -946,7 +946,7 @@ Output = {
 
     var supply_div = unit_div.find("div.supply");
     var supply = unit.supply_remaining;
-    var supply_remaining = Pretty.Unit.supplied_turns(supply, unit.quantity);
+    var supply_remaining = Pretty.Unit.supplied_turns(unit);
     //var supply_remaining = Pretty.Unit.supply(unit.supply_remaining);
     supply_div.text(supply_remaining);
 

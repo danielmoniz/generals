@@ -15,6 +15,7 @@ Crafty.c('Unit', {
       .bind("StartSiegeBattles", this.startSiegeBattleIfNeeded)
       .bind("SiegeLifted", this.siegeLifted)
       ;
+
     this.lastMoveTarget = undefined;
   },
 
@@ -118,6 +119,59 @@ Crafty.c('Unit', {
     this.updateStats(); // should happen last!
 
     this.testTargetAndPath();
+  },
+
+  eat: function() {
+    if (Game.turn != this.side) return;
+
+    var points = Supply.getCitySupplyArea(this.side, 'use_all_enemies');
+    var x = this.at().x;
+    var y = this.at().y;
+    var need_to_eat = this.quantity;
+    var left_to_feed = need_to_eat;
+    var supply_needed = need_to_eat * this.supply_usage;
+
+    if (points[x] && points[x][y]) {
+      // are supplied. Find the supplying city and eat what can be eaten.
+      var settlements = Query.getOwnedSettlements(this.side);
+      for (var i in settlements) {
+        var place = settlements[i];
+        if (place.supplied_points[x] && place.supplied_points[x][y]) {
+          // eat what can be eaten, up to city's max remaining supply
+          var supply_used = Math.min(place.remaining_provided_supply, supply_needed);
+          place.remaining_provided_supply -= supply_used;
+          supply_needed -= supply_used;
+        }
+      }
+
+    }
+
+    // live off land if possible
+    // check if land has already been used to supply a town/city
+    /*
+        var local_terrain = this.getLocalTerrain();
+        var supply = local_terrain.remaining_provided_supply;
+        var supply_used = Math.min(this.quantity * this.supply_usage, supply);
+        unsupplied = this.quantity - Math.ceil(supply_used / this.supply_usage);
+        local_terrain.remaining_provided_supply -= supply_used;
+    */
+
+    var carried_supply_used = Math.min(supply_needed, this.supply_remaining);
+    supply_needed -= carried_supply_used;
+    this.supply_remaining -= carried_supply_used;
+
+    // the remaining troops are starving
+    var num_starving = Math.ceil(supply_needed / this.supply_usage);
+    if (num_starving > 0) {
+      var attrition_casualties = num_starving * Game.attrition_rate;
+      this.sufferAttritionCasualties(attrition_casualties, Dissent.reasons.degrade.supply_attrition);
+    }
+    // should not be necessary to adjust this.supply_remaining
+    //this.supply_remaining = Math.max(0, this.supply_remaining);
+
+  },
+
+  storeSupply: function() {
   },
 
   /*
@@ -466,13 +520,16 @@ Crafty.c('Unit', {
   },
 
   handleAttrition: function() {
-    var is_supplied = this.isSupplied();
-    this.is_supplied = is_supplied;
-    this.injuryAttrition(is_supplied);
-    if (is_supplied) {
-      this.resupply();
+    if (Game.city_based_supply) {
     } else {
-      this.sufferAttrition();
+      var is_supplied = this.isSupplied();
+      this.is_supplied = is_supplied;
+      this.injuryAttrition(is_supplied);
+      if (is_supplied) {
+        this.resupply();
+      } else {
+        this.sufferAttrition();
+      }
     }
   },
 
@@ -614,17 +671,17 @@ Crafty.c('Unit', {
       var is_correct_side = local_terrain.providesSupplyToSide(this.side);
 
       if (local_terrain.provides_supply && is_correct_side) {
-        var supply = local_terrain.remaining_provided_supply;
+        var supply = local_terrain.remaining_tile_supply;
         var supply_used = Math.min(this.quantity * this.supply_usage, supply);
         unsupplied = this.quantity - Math.ceil(supply_used / this.supply_usage);
-        local_terrain.remaining_provided_supply -= supply_used;
+        local_terrain.remaining_tile_supply -= supply_used;
       }
     }
 
     //if (unsupplied > 0) Dissent.degrade(this, Dissent.reasons.degrade.unsupplied);
 
     var supplied_units = Math.floor(this.supply_remaining / this.supply_usage);
-    this.supply_remaining -= unsupplied;
+    this.supply_remaining -= unsupplied * this.supply_usage;
     if (this.supply_remaining < 0) {
       var attrition_casualties = Math.max(0, (unsupplied - supplied_units)) * Game.attrition_rate;
       this.sufferAttritionCasualties(attrition_casualties, Dissent.reasons.degrade.supply_attrition);
@@ -1308,6 +1365,11 @@ Crafty.c('Unit', {
 
   getSpottedMovementGraph: function() {
     return new Graph(this.getSpottedMovement());
+  },
+
+  getSuppliedTurns: function() {
+    var turns_supplied = this.supply_remaining / (this.quantity * this.supply_usage);
+    return turns_supplied;
   },
 
 });

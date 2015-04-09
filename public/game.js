@@ -120,6 +120,10 @@ Game = {
     LineOfSight.handleLineOfSight(this.player);
 
     // ------------------------------------
+    Supply.generateCitySupply(this.turn);
+    if (this.city_based_supply && this.turn_count > 1) {
+      Supply.unitsEat(this.turn);
+    }
     Crafty.trigger("NextTurn");
     Crafty.trigger("RetreatUnits");
     Crafty.trigger("StartSiegeBattles");

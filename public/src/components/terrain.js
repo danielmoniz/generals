@@ -10,7 +10,7 @@ Crafty.c('Terrain', {
   },
 
   nextTurn: function() {
-    this.remaining_provided_supply = this.provides_supply;
+    this.remaining_tile_supply = this.provides_supply;
     this.updateStats();
   },
 

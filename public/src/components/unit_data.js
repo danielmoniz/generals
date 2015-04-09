@@ -97,6 +97,8 @@ var UnitData = function(type, stats) {
       dissent_improvement: 0.4,
       dissent_improve_factor: 2,
       dissent_degrade_factor: 2,
+      supply_usage: 75,
+      max_supply_multiplier: 75 * 3,
 
       special_abilities: [
         'mortifying',

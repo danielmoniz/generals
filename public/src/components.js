@@ -62,8 +62,10 @@ Crafty.c('Grid', {
     return at.y;
   },
 
-  getLocalTerrain: function() {
-    return Game.terrain[this.at().x][this.at().y];
+  getLocalTerrain: function(x, y) {
+    if (x === undefined) x = this.at().x;
+    if (y === undefined) y = this.at().y;
+    return Game.terrain[x][y];
   },
 
 });
