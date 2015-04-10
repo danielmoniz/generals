@@ -128,6 +128,7 @@ Crafty.c('Unit', {
     var need_to_eat = this.quantity;
     var left_to_feed = need_to_eat;
     var supply_needed = need_to_eat * this.supply_usage;
+    var location_used_for_supply = false;
 
     this.is_supplied = false;
     if (points[x] && points[x][y]) {
@@ -136,6 +137,11 @@ Crafty.c('Unit', {
       var settlements = Query.getOwnedSettlements(this.side);
       for (var i in settlements) {
         var place = settlements[i];
+
+        if (place.terrain_collected[x] && place.terrain_collected[x][y]) {
+          location_used_for_supply = true;
+        }
+
         if (place.supplied_points[x] && place.supplied_points[x][y]) {
           // eat what can be eaten, up to city's max remaining supply
           var supply_used = Math.min(place.remaining_provided_supply, supply_needed);
@@ -148,13 +154,13 @@ Crafty.c('Unit', {
 
     // live off land if possible
     // check if land has already been used to supply a town/city
-    /*
-        var local_terrain = this.getLocalTerrain();
-        var supply = local_terrain.remaining_provided_supply;
-        var supply_used = Math.min(this.quantity * this.supply_usage, supply);
-        unsupplied = this.quantity - Math.ceil(supply_used / this.supply_usage);
-        local_terrain.remaining_provided_supply -= supply_used;
-    */
+    if (!location_used_for_supply) {
+      var local_terrain = this.getLocalTerrain();
+      var supply = local_terrain.remaining_tile_supply;
+      var supply_used = Math.min(supply_needed, supply);
+      supply_needed -= supply_used;
+      local_terrain.remaining_provided_supply -= supply_used;
+    }
 
     var carried_supply_used = Math.min(supply_needed, this.supply_remaining);
     supply_needed -= carried_supply_used;
