@@ -1,9 +1,9 @@
 
 var assert = require("assert");
 
-var Morale = require("../public/src/morale");
+var Dissent = require("../public/src/dissent");
 
-describe('Morale', function() {
+describe('Dissent', function() {
 
   function createUnit() {
     var unit = {};
@@ -27,7 +27,7 @@ describe('Morale', function() {
     it('should error when provided any reason', function() {
 
       assert.throws(function() {
-        Morale.badReason();
+        Dissent.badReason();
       });
 
     });
@@ -49,22 +49,22 @@ describe('Morale', function() {
 
       var dissent = NaN;
       assert.throws(function() {
-        var dissent_factor = Morale.calculateDissentFactor(dissent);
+        var dissent_factor = Dissent.calculateDissentFactor(dissent);
       });
 
       var dissent = undefined;
       assert.throws(function() {
-        var dissent_factor = Morale.calculateDissentFactor(dissent);
+        var dissent_factor = Dissent.calculateDissentFactor(dissent);
       });
 
       var dissent = 'test';
       assert.throws(function() {
-        var dissent_factor = Morale.calculateDissentFactor(dissent);
+        var dissent_factor = Dissent.calculateDissentFactor(dissent);
       });
 
       var dissent = {};
       assert.throws(function() {
-        var dissent_factor = Morale.calculateDissentFactor(dissent);
+        var dissent_factor = Dissent.calculateDissentFactor(dissent);
       });
 
     });
@@ -72,7 +72,7 @@ describe('Morale', function() {
     it('should return 1 when given 0', function() {
 
       var dissent = 0;
-      var dissent_factor = Morale.calculateDissentFactor(dissent);
+      var dissent_factor = Dissent.calculateDissentFactor(dissent);
       assert.equal(dissent_factor, 1);
 
     });
@@ -82,7 +82,7 @@ describe('Morale', function() {
 
       for (var i=0; i<20; i++) {
         var dissent = Math.random() * 2;
-        var dissent_factor = Morale.calculateDissentFactor(dissent);
+        var dissent_factor = Dissent.calculateDissentFactor(dissent);
         var result = Math.pow(Game.dissent_factor, dissent);
         assert.equal(dissent_factor, result);
       }
@@ -94,23 +94,23 @@ describe('Morale', function() {
 
   describe('#calculateDissentPercentage()', function() {
 
-    var oldCalculateDissentFactor = Morale.calculateDissentFactor;
+    var oldCalculateDissentFactor = Dissent.calculateDissentFactor;
     var dissent_points_param = '3';
 
     beforeEach(function() {
-      Morale.calculateDissentFactor = function(dissent_points) {
+      Dissent.calculateDissentFactor = function(dissent_points) {
         assert.equal(dissent_points, dissent_points_param);
         return 0.5;
       };
     });
 
     afterEach(function() {
-      Morale.calculateDissentFactor = oldCalculateDissentFactor;
+      Dissent.calculateDissentFactor = oldCalculateDissentFactor;
     });
 
     it('should calculate a percentage given a fraction', function() {
 
-      var percentage = Morale.calculateDissentPercentage(dissent_points_param);
+      var percentage = Dissent.calculateDissentPercentage(dissent_points_param);
       assert.equal(percentage, 50);
 
     });
@@ -119,64 +119,64 @@ describe('Morale', function() {
 
   describe('#getStatus()', function() {
 
-    var oldLevels = Morale.levels;
+    var oldLevels = Dissent.levels;
 
     beforeEach(function() {
-      Morale.levels = {};
+      Dissent.levels = {};
       for (var i=0; i<10; i++) {
-        Morale.levels[i] = i;
+        Dissent.levels[i] = i;
       }
     });
 
     afterEach(function() {
-      Morale.levels = oldLevels;
+      Dissent.levels = oldLevels;
     });
 
     it('should error when given a negative number', function() {
       assert.throws(function() {
-        var status = Morale.getStatus(-1);
+        var status = Dissent.getStatus(-1);
       });
     });
 
     it('should error when given a non-number', function() {
       assert.throws(function() {
-        var status = Morale.getStatus('test');
+        var status = Dissent.getStatus('test');
       });
 
       assert.throws(function() {
-        var status = Morale.getStatus(undefined);
+        var status = Dissent.getStatus(undefined);
       });
     });
 
     it('should round down to find nearest level', function() {
-      var status = Morale.getStatus(0.5);
+      var status = Dissent.getStatus(0.5);
       assert.equal(status, 0);
 
-      var status = Morale.getStatus(2.9);
+      var status = Dissent.getStatus(2.9);
       assert.equal(status, 2);
 
-      var status = Morale.getStatus(3.1);
+      var status = Dissent.getStatus(3.1);
       assert.equal(status, 3);
     });
 
     it('should round down to maximum level if given a large input', function() {
-      var status = Morale.getStatus(100);
-      assert.equal(status, Object.keys(Morale.levels).length - 1);
+      var status = Dissent.getStatus(100);
+      assert.equal(status, Object.keys(Dissent.levels).length - 1);
     });
 
   });
 
   describe('#degrade()', function() {
 
-    var oldDissent = Morale.levels;
-    var oldValues = Morale.values;
+    var oldDissent = Dissent.levels;
+    var oldValues = Dissent.values;
     var DISSENT_VALUE = 3;
     var DISSENT_VALUE_2 = 2;
 
     beforeEach(function() {
       Game = {};
       Game.dissent = true;
-      Morale.values = {
+      Dissent.values = {
         degrade: {
           'test_reason': DISSENT_VALUE,
           'test_reason_2': DISSENT_VALUE_2,
@@ -186,15 +186,15 @@ describe('Morale', function() {
 
     afterEach(function() {
       delete Game;
-      Morale.values = oldValues;
+      Dissent.values = oldValues;
     });
 
     it('should error when given an empty or undefined unit', function() {
       assert.throws(function() {
-        var degradation = Morale.degrade(undefined);
+        var degradation = Dissent.degrade(undefined);
       });
       assert.throws(function() {
-        var degradation = Morale.degrade(false);
+        var degradation = Dissent.degrade(false);
       });
     });
 
@@ -205,12 +205,12 @@ describe('Morale', function() {
       };
       var reason = 'bad_reason';
       assert.throws(function() {
-        var degradation = Morale.degrade(unit, reason);
+        var degradation = Dissent.degrade(unit, reason);
       });
 
       var reason = undefined;
       assert.throws(function() {
-        var degradation = Morale.degrade(unit, reason);
+        var degradation = Dissent.degrade(unit, reason);
       });
     });
 
@@ -220,7 +220,7 @@ describe('Morale', function() {
       unit.degradeDissent = function() {
         throw new Error('degradeDissent() Should not be called');
       };
-      var degradation = Morale.degrade(unit, 'test_reason');
+      var degradation = Dissent.degrade(unit, 'test_reason');
       assert.equal(degradation, 0);
       delete Game.dissent;
     });
@@ -258,7 +258,7 @@ describe('Morale', function() {
 
     function testUnit(unit, reason, dissent, quantity) {
       var previous_unit_dissent = unit.dissent;
-      var degradation = Morale.degrade(unit, reason, quantity);
+      var degradation = Dissent.degrade(unit, reason, quantity);
       var new_dissent = dissent * quantity;
       if (quantity === undefined) new_dissent = dissent;
       assert.equal(degradation, new_dissent);
@@ -269,15 +269,15 @@ describe('Morale', function() {
 
   describe('#improve()', function() {
 
-    var oldDissent = Morale.levels;
-    var oldValues = Morale.values;
+    var oldDissent = Dissent.levels;
+    var oldValues = Dissent.values;
     var DISSENT_VALUE = 3;
     var DISSENT_VALUE_2 = 2;
 
     beforeEach(function() {
       Game = {};
       Game.dissent = true;
-      Morale.values = {
+      Dissent.values = {
         improve: {
           'test_reason': DISSENT_VALUE,
           'test_reason_2': DISSENT_VALUE_2,
@@ -287,15 +287,15 @@ describe('Morale', function() {
 
     afterEach(function() {
       delete Game;
-      Morale.values = oldValues;
+      Dissent.values = oldValues;
     });
 
     it('should error when given an empty or undefined unit', function() {
       assert.throws(function() {
-        var improvement = Morale.improve(undefined);
+        var improvement = Dissent.improve(undefined);
       });
       assert.throws(function() {
-        var improvement = Morale.improve(false);
+        var improvement = Dissent.improve(false);
       });
     });
 
@@ -306,12 +306,12 @@ describe('Morale', function() {
       };
       var reason = 'bad_reason';
       assert.throws(function() {
-        var improvement = Morale.improve(unit, reason);
+        var improvement = Dissent.improve(unit, reason);
       });
 
       var reason = undefined;
       assert.throws(function() {
-        var improvement = Morale.improve(unit, reason);
+        var improvement = Dissent.improve(unit, reason);
       });
     });
 
@@ -321,7 +321,7 @@ describe('Morale', function() {
       unit.improveDissent = function() {
         throw new Error('improveDissent() Should not be called');
       };
-      var improvement = Morale.improve(unit, 'test_reason');
+      var improvement = Dissent.improve(unit, 'test_reason');
       assert.equal(improvement, 0);
       delete Game.dissent;
     });
@@ -344,7 +344,7 @@ describe('Morale', function() {
 
     function testUnit(unit, reason, dissent) {
       var previous_unit_dissent = unit.dissent;
-      var improvement = Morale.improve(unit, reason);
+      var improvement = Dissent.improve(unit, reason);
       assert.equal(improvement, -1 * dissent);
       return unit;
     }
