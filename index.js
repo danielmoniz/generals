@@ -17,10 +17,12 @@ app.all('*', function(req, res, next) {
 
 var contentType = { "Content-Type": "text/html" };
 
-app.get('/about', function(req, res) {
+/*
+app.get('/terrain', function(req, res) {
   res.writeHead(200, contentType);
-  res.end("About page");
+  res.sendfile("public/terrain_builder.html");
 });
+*/
 
 /*
 app.get('*', function(req, res) {
