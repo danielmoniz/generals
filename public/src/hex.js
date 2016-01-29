@@ -1,9 +1,16 @@
 
+function getURLParameter(name) {
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
+
 $(document).ready(function() {
 
+var width = getURLParameter('width');
+var height = getURLParameter('height');
+
 var map_grid = {
-  width: 48,
-  height: 22
+  width: parseInt(width) || 48,
+  height: parseInt(height) || 22
 };
 
 var locations = {
