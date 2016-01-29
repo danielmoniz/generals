@@ -7,33 +7,15 @@ $(document).ready(function() {
 
 var width = getURLParameter('width');
 var height = getURLParameter('height');
+var location = getURLParameter('location');
 
 var map_grid = {
   width: parseInt(width) || 48,
   height: parseInt(height) || 22
 };
 
-var locations = {
-  black_forest: {
-    height_map: {
-      noise: 'perlin2',
-      size: 1/4,
-    },
-    ground: { r: 87, g: 109, b: 20 },
-    water: {
-      size: 1/4,
-      water_level: 0.65,
-    },
-    trees: {
-      size: 1/4,
-      freq: .80,
-      noise: 'perlin2',
-    },
-  }
-};
-
 var options = {
-  location: locations.black_forest,
+  location: locations[location] || locations.black_forest,
   map_grid: map_grid,
 
       board_title: {
@@ -53,7 +35,6 @@ var options = {
 };
 
 var mapCreator = new MapCreator();
-//var terrain_map = mapCreator.buildNewMap(options).terrain_type;
 var terrain_map = mapCreator.buildNewTerrainMap(options).terrain_type;
 
 var terrain_map = terrain_map[0].map(function(col, i) { 
