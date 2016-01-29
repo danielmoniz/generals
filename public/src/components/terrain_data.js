@@ -28,6 +28,16 @@ var TerrainData = function(type, stats) {
       sight_impedance: 1,
     },
 
+    "Mountain": {
+      z: 80,
+      move_difficulty: 0, 
+      build_over: 500,
+      defense_bonus: 2,
+      provides_supply: 250,
+      colour: { r: 128, g: 128, b: 128 },
+      sight_impedance: 8,
+    },
+
     "Grass": {
       z: 80,
       move_difficulty: 1.25,

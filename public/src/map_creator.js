@@ -70,6 +70,40 @@ var MapCreator = function(options) {
    return this.Game;
   };
 
+  /*
+   * Build a map that only includes natural features, eg. grass, trees, etc.
+   */
+  this.buildNewTerrainMap = function(options) {
+    this.Game.section_widths = this.getWidthOfSections(options);
+    this.adjustMapSizeForNumberOfSections(options, this.Game.section_widths);
+    this.Game.section_positions = this.getPositionOfSections(this.Game);
+
+    this.Game.height_map = this.generateHeightMap(options, options.location);
+    this.buildEmptyGameData(options, this.Game);
+    this.addWater(options, this.Game, options.location);
+    this.addTrees(options, this.Game, options.location);
+    this.addGrass(options, this.Game);
+
+    /*
+    var cities = this.addCities(options, this.Game, options.num_cities_total);
+    var town_locations = this.addTownsAroundCities(options, this.Game, cities);
+    this.addFarms(options, this.Game, cities);
+
+    //this.updateBuildDifficultyData(options, this.Game.terrain_type);
+
+    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
+    this.addSupplyRoads(options, this.Game, cities, 1);
+    this.addRoadsBetweenCities(options, this.Game, cities);
+    this.cleanRoads(options, this.Game.roads);
+    this.buildTerrainDataWithRoads(options, this.Game, this.Game.terrain_type, this.Game.roads);
+
+    // call again to ensure bridge values are set
+    this.buildTerrainData(options, this.Game, this.Game.terrain_type);
+    */
+
+    return this.Game;
+  };
+
   this.getWidthOfSections = function(options) {
     var map_width = options.map_grid.width;
     var section_widths = [];
