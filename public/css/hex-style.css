@@ -130,17 +130,6 @@ body {
     white-space: normal; 
 }
 
-.hexrow:nth-child(2) > div:nth-child(1) {
-}
-
-.hexrow:nth-child(2) > div:nth-child(1) > span {
-    /*change some other settings*/
-    margin: 0 -20px;
-    color: black;
-    font-size: .8em;
-    font-weight: bold;
-}
-
 .hexrow:nth-child(2) > div:nth-child(3) > div:before {
     /* nothing special needed here */
 }
