@@ -2,6 +2,18 @@ body {
     background-color: black;
 }
 
+.squarerow {
+  white-space: nowrap;
+  font-size: 0;
+}
+
+.square {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  background-size: cover;
+}
+
 .hexrow {
     white-space: nowrap;
     /*right/left margin set at (( width of child div x sin(30) ) / 2) makes a fairly tight fit; a 3px bottom seems to match*/
@@ -11,18 +23,18 @@ body {
 .hexrow > div {
     width: 100px;
     height: 173.2px; /* ( width x cos(30) ) x 2 */
+    line-height: 173.2px; /*equals height*/
     /* For margin:
     right/left = ( width x sin(30) ) makes no overlap 
     right/left = (( width x sin(30) ) / 2) leaves a narrow separation
     */
-    margin: 0 25px; 
+    margin: 0 26px; 
     position: relative;
     background-position: -50px 0; /* -left position -1 x width x sin(30) */
     background-repeat: no-repeat;
     background-size: auto 120%;
     color: #000000;
     text-align: center;
-    line-height: 173.2px; /*equals height*/
     display: inline-block;
 }
 
@@ -146,7 +158,10 @@ body {
 }
 
 .hexrow:nth-child(2) > div:nth-child(4) > div:before {
-    background-position: -100px -20px; /* the left shift is always less in the pseudo elements by the amount of the base shift */
+/* the left shift is always less in the pseudo elements by the amount of the base shift */
+    /*
+    background-position: -100px -20px; 
+    */
 }
 
 .hexrow .cool {
@@ -154,14 +169,23 @@ body {
 }
 
 .Tree {
+  /*
     background-image: url(http://www-evasion.imag.fr/people/Fabrice.Neyret/images/scenes_naturelles/foret_et_canopee/forest.aerial.jpg);
+  */
+  background: darkgreen;
 }
 
 .Grass {
+  /*
     background-image: url(http://everystockphoto.s3.amazonaws.com/green_colorfield_grass_899946_o.jpg);
+  */
+  background: lightgreen;
 }
 
 .Water {
+  /*
     background-image: url(https://upload.wikimedia.org/wikipedia/commons/7/71/Starr_030521-0158_Sesuvium_portulacastrum.jpg);
+  */
+  background: blue;
 }
 
