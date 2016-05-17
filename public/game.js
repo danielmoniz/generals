@@ -19,6 +19,14 @@ Game = {
   terrain_build_graph: undefined,
   terrain_supply_graph: undefined,
 
+  getTerrain: function(x, y) {
+    return this.terrain[x][y];
+  },
+
+  getTerrainAtPoint: function(point) {
+    return this.getTerrain(point.at().x, point.at().y);
+  },
+
   height_map: undefined,
   occupied: undefined,
   // The total width of the game screen. Since our grid takes up the entire

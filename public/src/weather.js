@@ -39,13 +39,14 @@ var Weather = function(climate) {
   };
 
   this.updateWind = function() {
-    if (this.wind_dir[0] == 0 && this.wind_dir[1] == 0) {
-      if (Random.random() < this.chance_of_wind) {
-        this.wind_dir = this.getRandomWindDir();
+    var is_wind = this.wind_dir[0] == 0 && this.wind_dir[1] == 0;
+    if (is_wind) {
+      if (Random.random() < this.prob_wind_changes) {
+        this.wind_dir = [0, 0]; // reset wind to no wind
       }
     } else {
-      if (Random.random() < this.prob_wind_changes) {
-        this.wind_dir = [0, 0];
+      if (Random.random() < this.chance_of_wind) {
+        this.wind_dir = this.getRandomWindDir();
       }
     }
 

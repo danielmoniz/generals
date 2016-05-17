@@ -235,42 +235,6 @@ Battle = {
     };
   },
 
-  fakeResolve: function() {
-  },
-
-  /*
-   * NOTE: Not yet fully functional!
-   * Intended to be used for determining which side will eventually win the
-   * combat.
-   */
-  determineEventualWinner: function(battle) {
-    var fake_battle = {};
-    Utility.loadDataIntoObject(battle, fake_battle);
-    console.log("fake_battle.getQuantity");
-    console.log(fake_battle.getQuantity);
-    fake_battle.attackers = [];
-    fake_battle.defenders = [];
-    for (var i in battle.attackers) {
-      var unit = battle.attackers[i];
-      var fake_unit = {};
-      Utility.loadDataIntoObject(unit, fake_unit);
-      fake_battle.attackers.push(fake_unit);
-    }
-    for (var i in battle.defenders) {
-      var unit = battle.defenders[i];
-      var fake_unit = {};
-      Utility.loadDataIntoObject(unit, fake_unit);
-      fake_battle.defenders.push(fake_unit);
-    }
-    console.log("fake_battle.defenders");
-    console.log(fake_battle.defenders);
-
-    for (var i=0; i<3; i++) {
-      var battle_info = Battle.determineCombatLosses(battle, fake_battle.attackers, fake_battle.defenders);
-      Battle.killUnits(battle_info.units, battle_info.losses);
-    }
-  },
-
   calculateDissentFactor: function(dissent_points) {
     var dissent_factor = Math.pow(Game.dissent_factor, dissent_points);
     return dissent_factor;
@@ -280,6 +244,57 @@ Battle = {
     for (var i=0; i<units.length; i++) {
       units[i].sufferBattleCasualties(losses[i], Dissent.reasons.degrade.battle);
     }
+  },
+
+  getFormationRatios: function(units) {
+    var formation_widths = units.map(function(unit) {
+      // Assume square formations for now
+      return Math.sqrt(unit.getActive());
+    });
+    var total_width = formation_widths.reduce(function(prevValue, width) {
+      return prevValue + width;
+    });
+    var ratios = formation_widths.map(function(width) {
+      return width / total_width;
+    });
+    return ratios;
+  },
+
+  getUnitDefensiveAbility: function(unit, terrain, use_terrain) {
+    var total_defensive_power = 0;
+    var terrain_defense = 1;
+    if (use_terrain) {
+      var terrain_defense = terrain.getStat('defense_bonus', unit.side);
+    }
+    var dissent_factor = Battle.calculateDissentFactor(unit.dissent);
+    if (dissent_factor != 1) {
+      console.log("{0}'s dissent is {1} (DF of {2}".format(unit.name, unit.dissent, dissent_factor));
+    }
+    return unit.defensive_ability * terrain_defense * dissent_factor;
+  },
+
+  calculateSideLosses: function(battle, attacking_units, defending_units, use_terrain) {
+    var TROOP_LOSS = Game.troop_loss_constant;
+    var terrain = Game.getTerrainAtPoint(battle);
+    var attack_power = this.getAttackPower(attacking_units, terrain) * TROOP_LOSS;
+    var ratios = this.getFormationRatios(defending_units);
+    var side_losses = defending_units.map(function(unit, index) {
+      var defensive_ability = this.getUnitDefensiveAbility(unit, terrain, use_terrain);
+      var exact_losses = ratios[index] * attack_power / defensive_ability;
+      return Math.ceil(exact_losses)
+    }.bind(this));
+    return side_losses;
+  },
+
+  resolveBattle: function(battle, attackers, defenders) {
+    var attacker_losses = this.calculateSideLosses(battle, defenders, attackers);
+    var defender_losses = this.calculateSideLosses(battle, attackers, defenders, true);
+    function add(a, b) { return a + b; }
+    battle.casualties[this.ATTACKER] = attacker_losses.reduce(add);
+    battle.casualties[this.DEFENDER] = defender_losses.reduce(add);
+
+    var units = attackers.concat(defenders);
+    this.killUnits(units, attacker_losses.concat(defender_losses));
   },
 
 }
@@ -298,6 +313,25 @@ Crafty.c('Battle', {
       this.retreated_units = [];
   },
 
+  resolveIfNeeded: function() {
+    if (Game.turn % 1 == 0) this.resolve();
+  },
+
+  resolve: function() {
+    this.num_turns += 1;
+    var units = this.attackers.concat(this.defenders);
+    Battle.resolveBattle(this, this.attackers, this.defenders);
+
+    units.forEach(function(unit) {
+      unit.stopCharge();
+    });
+
+    if (!this.isBattleActive()) {
+      this.end_battle = true;
+      Victory.updateWillToFight();
+    }
+  },
+
   customSelect: function() {
     // select current player's unit in battle
     if (this.attacking_side == Game.player) {
@@ -310,32 +344,6 @@ Crafty.c('Battle', {
 
     Game.select(units[0]);
     Output.selectBattles([this]);
-  },
-
-  resolveIfNeeded: function() {
-    if (Game.turn % 1 == 0) this.resolve();
-  },
-
-  resolve: function() {
-    this.num_turns += 1;
-
-    //Battle.determineEventualWinner(this);
-
-    var battle_info = Battle.determineCombatLosses(this);
-    Battle.killUnits(battle_info.units, battle_info.losses);
-
-    this.casualties[Battle.ATTACKER] = battle_info.total_losses[Battle.ATTACKER];
-    this.casualties[Battle.DEFENDER] = battle_info.total_losses[Battle.DEFENDER];
-
-    var units = this.attackers.concat(this.defenders);
-    for (var i in units) {
-      units[i].stopCharge();
-    }
-
-    if (!this.isBattleActive()) {
-      this.end_battle = true;
-      Victory.updateWillToFight();
-    }
   },
 
   prepareBattle: function() {
