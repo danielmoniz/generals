@@ -27,23 +27,6 @@ Battle = {
     if (battle_side == this.DEFENDER) return this.ATTACKER;
     throw "NoBattleSide: unit's battle_side should be {0} or {1}.".format(this.ATTACKER, this.DEFENDER);
   },
-  
-  getQuantity: function(units) {
-    var quantity = 0;
-    for (var i=0; i<units.length; i++) {
-      if (!units[i]) console.log(units[i]);
-      var unit = units[i];
-      if (unit === undefined) {
-        console.log('Unit is not defined!');
-        console.log('Unit number (in tile): {0}'.format(i));
-        continue;
-      }
-      if (unit !== undefined) {
-        quantity += unit.getActive();
-      }
-    }
-    return quantity;
-  },
 
   // @TODO Add terrain as a parameter to allow for terrain-specific bonuses
   getCombatAbility: function(units) {
@@ -59,50 +42,6 @@ Battle = {
       total += unit.getActive() * unit.combat_ability;
     }
     return total;
-  },
-
-  getDefensiveAbility: function(units) {
-    var total = 0;
-    var total_troops = 0;
-    for (var i=0; i<units.length; i++) {
-      if (!units[i]) console.log(units[i]);
-      var unit = units[i];
-      if (unit === undefined) {
-        console.log('Unit is not defined!');
-        console.log('Unit number (in tile): {0}'.format(i));
-        continue;
-      }
-      total += unit.getActive() * unit.defensive_ability;
-      total_troops += unit.getActive();
-    }
-    return total;
-  },
-
-  getRatiosOfTotal: function(units, total) {
-    var ratios = [];
-    for (var i=0; i<units.length; i++) {
-      ratios[i] = units[i].getActive() / total;
-    }
-    return ratios;
-  },
-
-  getLossesFromRatios: function(total_loss, ratios) {
-    var losses = [];
-    for (var i=0; i<ratios.length; i++) {
-      losses[i] = Math.ceil(total_loss * ratios[i]);
-    }
-    return losses;
-  },
-
-  calculateSideDissent: function(units) {
-    var total_weighted_dissent = 0;
-    var total_troops = 0;
-    for (var i in units) {
-      var unit = units[i];
-      total_troops += unit.getActive();
-      total_weighted_dissent += unit.dissent * unit.getActive();
-    }
-    return total_weighted_dissent / total_troops;
   },
 
   getAttackPower: function(units, terrain, is_retreat) {
@@ -124,115 +63,6 @@ Battle = {
       total_attack_power += attack_power;
     }
     return total_attack_power;
-  },
-
-  getDefensivePower: function(units, terrain, ignore_terrain) {
-    var total_defensive_power = 0;
-    for (var i in units) {
-      var unit = units[i];
-      var terrain_defense = 1;
-      if (!ignore_terrain) {
-        var terrain_defense = terrain.getStat('defense_bonus', unit.side);
-      }
-      var dissent_factor = Battle.calculateDissentFactor(unit.dissent);
-      if (dissent_factor != 1) {
-        console.log("{0}'s dissent is {1} (MF of {2}".format(unit.name, unit.dissent, dissent_factor));
-      }
-      var defensive_ability = Battle.getDefensiveAbility([unit]);
-      var defensive_power = defensive_ability * terrain_defense * dissent_factor;
-      total_defensive_power += defensive_power;
-    }
-    return total_defensive_power / units.length;
-  },
-
-  calculateRetreatLosses: function(battle, attackers, defenders, unit) {
-    var TROOP_LOSS = Game.troop_loss_constant;
-    // @TODO Calculate ranged attacker damage first
-
-    var terrain = Game.terrain[battle.at().x][battle.at().y];
-    var attacker_attack_power = Battle.getAttackPower(attackers, terrain, 'retreat');
-    var defender_attack_power = Battle.getAttackPower(defenders, terrain, 'retreat');
-
-    var side = {};
-    var all_units = attackers.concat(defenders);
-    side[Battle.ATTACKER] = {
-      enemy_units: defenders,
-      enemy_attack_power: defender_attack_power,
-      total_troops: Units.getTotalTroops(all_units)[unit.side].active,
-    }
-    side[Battle.DEFENDER] = {
-      enemy_units: attackers,
-      enemy_attack_power: attacker_attack_power,
-      total_troops: Units.getTotalTroops(all_units)[unit.side].active,
-    }
-
-    var data = side[unit.battle_side];
-    var ratio = unit.getActive() / data.total_troops;
-
-    var unit_losses = (TROOP_LOSS * data.enemy_attack_power) * ratio / unit.retreat_ability;
-    var unit_losses = Math.ceil(unit_losses);
-
-    return unit_losses;
-  },
-
-  calculateTotalLosses: function(battle, attackers, defenders) {
-    var TROOP_LOSS = Game.troop_loss_constant;
-    var DISSENT_FACTOR = Game.dissent_factor; // not yet used in this function
-    // @TODO Calculate ranged attacker damage first
-
-    var terrain = Game.terrain[battle.at().x][battle.at().y];
-    var attacker_attack_power = Battle.getAttackPower(attackers, terrain);
-    var defender_attack_power = Battle.getAttackPower(defenders, terrain);
-
-    var ignore_terrain = true;
-    //if (battle.siege_battle) ignore_terrain = false;
-    var attacker_defensive_ability = Battle.getDefensivePower(attackers, terrain, ignore_terrain);
-    var defender_defensive_ability = Battle.getDefensivePower(defenders, terrain);
-
-    var attacker_troops = Units.getTotalTroops(attackers)[battle.attacking_side].active;
-    var defender_troops = Units.getTotalTroops(defenders)[battle.defending_side].active;
-
-    var attacker_losses = defender_troops * (TROOP_LOSS * defender_attack_power) / attacker_defensive_ability;
-    var defender_losses = attacker_troops * (TROOP_LOSS * attacker_attack_power) / defender_defensive_ability;
-
-    var losses = {};
-    losses[Battle.ATTACKER] = attacker_losses;
-    losses[Battle.DEFENDER] = defender_losses;
-    return losses;
-  },
-
-  // determine combat losses for a single turn
-  determineCombatLosses: function(battle, attackers, defenders) {
-    if (attackers === undefined) attackers = battle.attackers;
-    if (defenders === undefined) defenders = battle.defenders;
-
-    var total_losses = Battle.calculateTotalLosses(battle, attackers, defenders);
-
-    var attackers_quantity = Battle.getQuantity(attackers);
-    var defenders_quantity = Battle.getQuantity(defenders);
-
-    var attacker_ratios = Battle.getRatiosOfTotal(attackers, attackers_quantity);
-    var defender_ratios = Battle.getRatiosOfTotal(defenders, defenders_quantity);
-
-    var attacker_losses = Battle.getLossesFromRatios(total_losses[Battle.ATTACKER], attacker_ratios);
-    var defender_losses = Battle.getLossesFromRatios(total_losses[Battle.DEFENDER], defender_ratios);
-
-    var units = attackers.concat(defenders);
-    var losses = attacker_losses.concat(defender_losses);
-
-    var total_losses = {};
-    total_losses[this.ATTACKER] = attacker_losses.reduce(function(a, b) {
-      return a + b;
-    }, 0);
-    total_losses[this.DEFENDER] = defender_losses.reduce(function(a, b) {
-      return a + b;
-    }, 0);
-
-    return {
-      units: units,
-      losses: losses,
-      total_losses: total_losses,
-    };
   },
 
   calculateDissentFactor: function(dissent_points) {
@@ -273,7 +103,30 @@ Battle = {
     return unit.defensive_ability * terrain_defense * dissent_factor;
   },
 
+  calculateRetreatLosses: function(battle, attackers, defenders, unit) {
+    var TROOP_LOSS = Game.troop_loss_constant;
+    // @TODO Calculate ranged attacker damage first
+
+    var terrain = Game.getTerrainAtPoint(battle);
+    var allied_units = defenders;
+    var opposite_units = attackers;
+    if (unit.battle_side == 'attacker') {
+      allied_units = attackers;
+      opposite_units = defenders;
+    }
+
+    var unit_index = allied_units.indexOf(unit);
+
+    var attack_power = this.getAttackPower(opposite_units, terrain) * TROOP_LOSS;
+    var ratios = this.getFormationRatios(allied_units);
+    var defensive_ability = this.getUnitDefensiveAbility(unit, terrain);
+    var exact_losses = ratios[unit_index] * attack_power / unit.retreat_ability;
+    var unit_losses = Math.ceil(exact_losses);
+    return unit_losses;
+  },
+
   calculateSideLosses: function(battle, attacking_units, defending_units, use_terrain) {
+    // @TODO Calculate ranged attacker damage first
     var TROOP_LOSS = Game.troop_loss_constant;
     var terrain = Game.getTerrainAtPoint(battle);
     var attack_power = this.getAttackPower(attacking_units, terrain) * TROOP_LOSS;
