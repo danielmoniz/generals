@@ -37,6 +37,19 @@ Crafty.c('Unit', {
   testTargetAndPath: function() {
     if (this.move_target_path === undefined) return;
     var path_end = this.move_target_path[this.move_target_path.length - 1];
+
+    if (this.move_target_path.length != this.move_target_path_list.length) {
+      console.log('---');
+      console.log(this.name);
+      console.log("this.move_target");
+      console.log(this.move_target);
+      console.log("this.move_target_path");
+      console.log(this.move_target_path);
+      console.log("this.move_target_path_list");
+      console.log(this.move_target_path_list);
+      throw new Error('PathListNotUpdated', 'move_target_path_list needs to be updated with move_target_path.');
+    }
+
     try {
       if (path_end.x != this.move_target.x || path_end.y != this.move_target.y) {
         console.log("---");
@@ -45,8 +58,11 @@ Crafty.c('Unit', {
         console.log(this.move_target);
         console.log("this.move_target_path");
         console.log(this.move_target_path);
+        console.log("path_end");
+        console.log(path_end);
         throw new Error('BadTargetOrPath', 'Target and path no longer match.');
       }
+
     } catch (ex) {
       console.log("---");
       console.log(this.name);
@@ -54,13 +70,16 @@ Crafty.c('Unit', {
       console.log(this.move_target);
       console.log("this.move_target_path");
       console.log(this.move_target_path);
-      throw new Error('BadTargetOrPath', 'Target and path no longer match.');
+      console.log("this.move_target_path_list");
+      console.log(this.move_target_path_list);
+      console.log("path_end");
+      console.log(path_end);
+      //throw new Error('BadTargetOrPath', 'Target and path no longer match.');
+      throw ex;
     }
   },
 
   nextTurn: function(turn) {
-
-    this.testTargetAndPath();
 
     if (turn === undefined) turn = Game.turn;
     //this.stop = false;
@@ -351,7 +370,9 @@ Crafty.c('Unit', {
     // can be reached.
     graph = this.getSpottedMovementGraph();
     var enemy_units = LineOfSight.getEnemyUnitsInSight(this.side);
+    //console.time('updatePossibleMoves - inside unit');
     this.addReachableEnemyUnitsToPoints(graph, possible_moves, this.at(), enemy_units, ignore_sight, movement);
+    //console.timeEnd('updatePossibleMoves - inside unit');
 
     this.possible_moves = [];
     for (var i in possible_moves) {
@@ -362,6 +383,7 @@ Crafty.c('Unit', {
   },
 
   addReachableEnemyUnitsToPoints: function(graph, points, location, enemy_units, ignore_sight, range) {
+    console.time('addReachableEnemyUnitsToPoints - inside unit');
     var start = graph.grid[location.x][location.y];
     for (var i in enemy_units) {
       var unit = enemy_units[i];
@@ -370,7 +392,9 @@ Crafty.c('Unit', {
       var end = graph.grid[target.x][target.y];
       var stop_points = this.getStopPoints(target, location, ignore_sight);
 
+      console.time('graph searching');
       var new_path = Game.pathfind.search(graph, start, end, range, stop_points);
+      console.timeEnd('graph searching');
       // @TODO This feels hacky. Should update pathing library return path cost
       // data, eg. how many turns it takes to get to each tile
       var partial_path = Pathing.getPartialPath(new_path, range, stop_points);
@@ -381,6 +405,7 @@ Crafty.c('Unit', {
       points.push({ x: unit.at().x, y: unit.at().y});
     }
 
+    console.timeEnd('addReachableEnemyUnitsToPoints - inside unit');
     return points;
   },
 
