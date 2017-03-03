@@ -209,6 +209,8 @@ var Action = {
   },
 
   select: function(clickable_object) {
+    if (clickable_object === undefined) return;
+
     if (Game.selected) {
       var old_select = Game.selected;
       Game.deselect();

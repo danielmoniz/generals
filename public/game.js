@@ -253,10 +253,12 @@ Game = {
     var units = Entity.get('Unit');
     //Game.map_creator.buildTerrainDataWithRoads(Game, Game, Game.terrain, Game.roads); // reset supply graph to remove old supply block info
 
+    console.time('updatePossibleUnitMoves');
     for (var i in units) {
       var unit = units[i];
       unit.updatePossibleMoves();
     }
+    console.timeEnd('updatePossibleUnitMoves');
   },
 
   determineSelection: function() {

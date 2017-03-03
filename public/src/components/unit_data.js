@@ -33,12 +33,26 @@ var UnitData = function(type, stats) {
       pursuit_ability: 1,
       retreat_ability: 1,
       charge_ability: 1,
-      //movement: 5,
+      movement: 5,
       supply_usage: 1,
       pillage_ability: 1,
       dissent_improvement: 0.2,
       dissent_improve_factor: 1,
       dissent_degrade_factor: 1,
+      range: 0,
+
+      wind_multiplier: 1,
+      rain_multiplier: 1,
+    },
+
+    "Archers": {
+      range: 1,
+      combat_ability: 3,
+      defensive_ability: 0.7,
+      pursuit_ability: 0.4,
+      charge_ability: 1,
+      wind_multiplier: 0.5,
+      rain_multiplier: 0.5,
     },
 
     "Cavalry": {
@@ -68,7 +82,6 @@ var UnitData = function(type, stats) {
     },
 
     "Infantry": {
-      movement: 5,
     },
 
     "Jaguar Warrior": {

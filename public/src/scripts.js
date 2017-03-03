@@ -191,16 +191,18 @@ $(document).ready(function() {
   $("input[name=experience][value=advanced]").click();
 
   // TEST ONLY -----------------
-  //$("#start-hotseat-button").click();
+  $("#start-hotseat-button").click();
   //$("input[name=map_size][value=tiny]").click();
   //$("input[name=factions_0][value=mongols]").click();
+  $("input[name=factions_0][value=carthage]").click();
   //$("input[name=factions_1][value=aztecs]").click();
   //$('input[name=sight_outlines]').click();
-  //$('input[name=fog_of_war]').click();
+  $('input[name=fog_of_war]').click();
   //$("input[name=advanced_victory]").click();
   //$("input[name=line_of_sight_blocking]").click();
-  //$("input[name=city_based_supply]").click();
-  //$("#start-game").click();
+  $("input[name=live_off_land]").click();
+  $("input[name=city_based_supply]").click();
+  $("#start-game").click();
 
   $('#test_button').click(function() {
     Crafty.trigger('RenderScene');

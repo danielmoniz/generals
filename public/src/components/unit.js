@@ -969,51 +969,13 @@ Crafty.c('Unit', {
     } else {
       var enemy_units = Units.getVisibleEnemyUnits(this.side);
     }
-    var friendly_units = Units.getFriendlyUnits(this.side);
 
     for (var i in enemy_units) {
       // add visible enemies as stop points
       // if enemy is on target, ignore adjacent stop points
       // otherwise, add enemy adjacent regions as 'stop points'
       var enemy = enemy_units[i];
-
-      // @TODO Is this code necessary? Why iterate visible units if already
-      // filtered above?
-      var enemy_was_visible = false;
-      for (var j in this.visible_enemies) {
-        var visible_enemy = this.visible_enemies[j];
-        if (enemy.getId() == this.visible_enemies[j].getId()) {
-          var enemy_was_visible = true;
-        }
-      }
-
-      if (enemy_was_visible) stop_points.push(enemy.at());
-      if (enemy.isAtLocation(target) && enemy_was_visible) continue;
-      // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
-      if (enemy.battle) continue;
-      if (Utility.getDistance(current_location, enemy.at()) <= 1) {
-        continue;
-      }
-
-      var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
-      var valid_adjacent_points = [];
-      for (var j in adjacent_points) {
-        var point = adjacent_points[j];
-        // if there is a friendly unit on that location, ignore stop point
-        var ignore = false;
-        for (var k in friendly_units) {
-          var friendly_unit = friendly_units[k];
-          // unit must have been there for one full turn to ignore stop point
-          if (friendly_unit.isAtLocation(point) && 
-              friendly_unit.isAtLocation(friendly_unit.last_turn_location)) {
-            ignore = true;
-            break;
-          }
-        }
-        if (!ignore) valid_adjacent_points.push(point);
-      }
-      stop_points = stop_points.concat(valid_adjacent_points);
-      // @TODO Ensure only new positions are added to stop_points
+      stop_points.push(enemy.at());
     }
 
     if (ignore_sight) {
@@ -1041,6 +1003,53 @@ Crafty.c('Unit', {
 
     Utility.removeDuplicatePoints(stop_points);
     return stop_points;
+  },
+
+  getPartialStopPoints: function(target, current_location, ignore_sight) {
+    if (!target) target = { x: -1, y: -1 };
+    if (current_location === undefined) current_location = this.at();
+
+    var friendly_units = Units.getFriendlyUnits(this.side);
+    if (ignore_sight) {
+      var enemy_units = Units.getEnemyUnits(this.side);
+    } else {
+      var enemy_units = Units.getVisibleEnemyUnits(this.side);
+    }
+
+    var partial_stop_points = [];
+    for (var i in enemy_units) {
+      // if enemy in battle, prevent adjacency blocking, but not regular unit blocking
+      if (enemy.battle) continue;
+      if (enemy.isAtLocation(target)) continue;
+      if (Utility.getDistance(current_location, enemy.at()) <= 1) {
+        continue;
+      }
+
+      var adjacent_points = Utility.getAdjacentPoints(enemy.at(), Game.map_grid);
+      var partial_stop_points = [];
+      for (var j in adjacent_points) {
+        var point = adjacent_points[j];
+        // if there is a friendly unit on that location, ignore stop point
+        var ignore = false;
+        for (var k in friendly_units) {
+          var friendly_unit = friendly_units[k];
+          // unit must have been there for one full turn to ignore stop point
+          if (friendly_unit.isAtLocation(point) && 
+              friendly_unit.isAtLocation(friendly_unit.last_turn_location)) {
+            ignore = true;
+            break;
+          }
+        }
+
+        if (ignore) continue;
+        var partial_stop_point = point;
+        partial_stop_point.allowedMoves = [enemy.at()];
+        partial_stop_points.push(partial_stop_point);
+      }
+    }
+
+    // @TODO Write and use consolidatePartsStopPoints function
+    return partial_stop_points;
   },
 
   retreat: function() {

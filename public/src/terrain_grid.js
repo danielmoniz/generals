@@ -43,6 +43,18 @@ function make_square(class_name, content, height) {
     class: class_name + ' square',
   });
 
+  //var normalized_height = 
+  var opacity = 1 - height / 1.2;
+  square_div.css('opacity', opacity);
+
+  /*
+  var red = colours.red.toString();
+  console.log(red);
+  var green = colours.green.toString();
+  var blue = colours.blue.toString();
+  square_div.css('background', "{0}{1}{2}".format(red, green, blue));
+ */
+
   //var contents = "<span>{0}</span><div></div><div></div>".format(content);
   //square_div.append(contents);
 
@@ -91,7 +103,9 @@ if (gridType == 'hex') {
     var row = add_square_row();
     for (var j=0; j < terrain_map[i].length; j++) {
       var text = '{0}, {1}'.format(i, j);
-      var square = make_square(terrain_map[i][j].type, '');
+      var terrain = terrain_map[i][j];
+      var colours = {};
+      var square = make_square(terrain.type, '', terrain.height);
       row.append(square);
     }
   }
